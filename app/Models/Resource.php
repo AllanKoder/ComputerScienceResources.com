@@ -9,21 +9,22 @@ class Resource extends Model
 {
     use HasFactory;
 
-    public $table = 'resource';
+    protected $table = 'resources';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'id',
-        'name',
+        'title',
         'description',
-        'field',
-        'resource_type',
+        'features',
+        'limitations',
+        'resource_url',
         'pricing',
-        'hands_on',
-        'tags'
+        'topics',
+        'difficulty'
     ];
 
     /**
@@ -32,7 +33,8 @@ class Resource extends Model
      * @var array
      */
     protected $casts = [
-        'hands_on' => 'boolean',
-        'tags' => 'array'
+        'features' => 'array',
+        'limitations' => 'array',
+        'topics' => 'array'
     ];
 }

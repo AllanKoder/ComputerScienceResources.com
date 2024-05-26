@@ -13,17 +13,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('resource', function (Blueprint $table) {
+        Schema::create('resources', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
             $table->text('description');
-            $table->string('field');
-            $table->enum('resource_type', ['video', 'youtube', 'book', 'blog', 'interactive', 'podcast', 'physical', 'other']);
-            $table->enum('pricing', ["free, subscription, one-time fee, freemium"]);
-            $table->boolean('hands_on');
-            $table->json('tags')->nullable();
+            $table->json('features'); // Changed to JSON to store an array of features
+            $table->json('limitations'); // Changed to JSON to store an array of limitations
+            $table->string('resource_url');
+            $table->string('pricing');
+            $table->json('topics')->nullable(); // Assuming topics is an array of strings
+            $table->string('difficulty'); // Changed to string to store the difficulty level
             $table->timestamps();
-        });        
+        });
     }
 
     /**
@@ -33,6 +34,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('resource');
+        Schema::dropIfExists('resources');
     }
 };
+

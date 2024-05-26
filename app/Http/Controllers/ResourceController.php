@@ -19,12 +19,14 @@ class ResourceController extends Controller
     // Show the form for creating a new resource.
     public function create()
     {
-        return view('resources.create-resource');
+        return view('resources.create');
     }
 
     // Store a newly created resource in storage.
     public function store(Request $request)
     {
+        \Log::info("storing resource", $request->all());
+
         $validator = $this->validateResource($request);
 
         if ($validator->fails()) {
@@ -81,13 +83,17 @@ class ResourceController extends Controller
     protected function validateResource(Request $request)
     {
         return Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'field' => 'required|string|regex:/^\S*$/|lower',
-            'resource_type' => 'required|in:video,youtube,book,blog,interactive,podcast,physical,other',
-            'pricing' => 'required|in:free,subscription,one-time fee,freemium',
-            'hands_on' => 'required|boolean',
-            'tags' => 'sometimes|json'
+            'features' => 'required|array',
+            'features.*' => 'string', // Validates each item in the features array
+            'limitations' => 'required|array',
+            'limitations.*' => 'string', // Validates each item in the limitations array
+            'resource_url' => 'required|url',
+            'pricing' => 'required|string',
+            'topics' => 'sometimes|array',
+            'topics.*' => 'string', // Validates each item in the topics array
+            'difficulty' => 'required|in:beginner,industry,academic',
         ]);
     }
 }

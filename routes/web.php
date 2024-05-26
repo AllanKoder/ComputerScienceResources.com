@@ -20,6 +20,7 @@ Route::controller(ResourceController::class)->group(function () {
     Route::get('/', 'index');
     Route::get('/resources', 'index')->name('resources.index');
     Route::get('/resources/create/', 'create')->name('resources.create');
+    Route::post('/resources', 'store')->name('resources.store'); 
 });
 
 Route::get('/dashboard', function () {
