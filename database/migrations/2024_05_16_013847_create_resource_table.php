@@ -17,8 +17,9 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->text('description');
-            $table->json('features'); // Changed to JSON to store an array of features
-            $table->json('limitations'); // Changed to JSON to store an array of limitations
+            $table->string('image_url')->default('');
+            $table->json('features')->nullable(); // Changed to JSON to store an array of features
+            $table->json('limitations')->nullable(); // Changed to JSON to store an array of limitations
             $table->string('resource_url');
             $table->string('pricing');
             $table->json('topics')->nullable(); // Assuming topics is an array of strings

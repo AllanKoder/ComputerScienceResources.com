@@ -1,6 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        <!-- Header content goes here -->
+        @if(Session::has('message'))
+            <p class="alert alert-info">{{ Session::get('message') }}</p>
+        @endif
     </x-slot>
 
     <div class="flex justify-center mt-8">
@@ -17,6 +19,12 @@
             <div class="mb-4">
                 <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
                 <textarea name="description" id="description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></textarea>
+            </div>
+            
+            <!-- Image URL Input -->
+            <div class="mb-4">
+                <label for="image_url" class="block text-gray-700 text-sm font-bold mb-2">Image URL:</label>
+                <input type="url" name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
             </div>
             
             <!-- Features Input -->
@@ -40,10 +48,10 @@
             <!-- Pricing Input -->
             <div class="mb-4">
                 <label for="cost" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>
-                <select name="pricing" id="pricing" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight">
+                <select name="pricing" id="pricing" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
                     <option value="free">Free</option>
                     <option value="freemium">Freemium</option>
-                    <option value="service">Yearly Service</option>
+                    <option value="subscription">Subscription Service</option>
                     <option value="paid">One Time Payment</option>
                 </select>            
             </div>
@@ -56,7 +64,7 @@
             <!-- Difficulty Input -->
             <div class="mb-6">
                 <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
-                <select name="difficulty" id="difficulty" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight">
+                <select name="difficulty" id="difficulty" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
                     <option value="beginner">Beginner</option>
                     <option value="industry">Industry</option>
                     <option value="academic">Academic</option>
@@ -75,22 +83,22 @@
 
 <script>
 
-    // Flag to control the display of the confirmation message
-    var formSubmitted = false;
+    // // Flag to control the display of the confirmation message
+    // var formSubmitted = false;
 
-    // Function to handle the beforeunload event
-    function handleBeforeUnload(e) {
-        if (!formSubmitted) {
-            e.preventDefault();
-            e.returnValue = '';
-        }
-    }
+    // // Function to handle the beforeunload event
+    // function handleBeforeUnload(e) {
+    //     if (!formSubmitted) {
+    //         e.preventDefault();
+    //         e.returnValue = '';
+    //     }
+    // }
 
-    // Add the beforeunload event listener
-    window.addEventListener('beforeunload', handleBeforeUnload);
+    // // Add the beforeunload event listener
+    // window.addEventListener('beforeunload', handleBeforeUnload);
 
-    // Set the flag to true when the form is submitted
-    $('#resource-form').on('submit', function() {
-        formSubmitted = true;
-    });
+    // // Set the flag to true when the form is submitted
+    // $('#resource-form').on('submit', function() {
+    //     formSubmitted = true;
+    // });
 </script>

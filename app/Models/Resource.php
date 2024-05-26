@@ -20,6 +20,7 @@ class Resource extends Model
         'title',
         'description',
         'features',
+        'image_url',
         'limitations',
         'resource_url',
         'pricing',

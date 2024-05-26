@@ -25,11 +25,13 @@ class ResourceController extends Controller
     // Store a newly created resource in storage.
     public function store(Request $request)
     {
-        \Log::info("storing resource", $request->all());
+        \Log::info('storing resource: ' . json_encode($request->all()));
 
         $validator = $this->validateResource($request);
 
         if ($validator->fails()) {
+            \Log::warning('failed to save resource');
+            \Log::warning('issues: ' . $validator->errors());
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
@@ -67,7 +69,7 @@ class ResourceController extends Controller
         $resource->fill($request->all());
         $resource->save();
 
-        return redirect()->route('resources.show', $resource->id);
+        return redirect()->route('resources.home', $resource->id);
     }
 
     // Remove the specified resource from storage.
@@ -85,12 +87,13 @@ class ResourceController extends Controller
         return Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
-            'features' => 'required|array',
+            'image_url' => 'required|url',
+            'features' => 'sometimes|array',
             'features.*' => 'string', // Validates each item in the features array
-            'limitations' => 'required|array',
+            'limitations' => 'sometimes|array',
             'limitations.*' => 'string', // Validates each item in the limitations array
             'resource_url' => 'required|url',
-            'pricing' => 'required|string',
+            'pricing' => 'required|string|in:free,freemium,subscription,paid',
             'topics' => 'sometimes|array',
             'topics.*' => 'string', // Validates each item in the topics array
             'difficulty' => 'required|in:beginner,industry,academic',

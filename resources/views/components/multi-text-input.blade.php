@@ -2,38 +2,44 @@
 
 <!-- name Input -->
 <div class="dynamic-table">
-    <p>{{ $name }}</p>
-    <input type="text" oninput="updateInput(this)" name="{{ $name }}[0]" placeholder="{{ $placeholder}}" class="form-control" />
-    <button type="button" class="add btn btn-success">Add More</button>
+    <input type="text" oninput="updateInput(this)" name="{{ $name }}[0]" placeholder="{{ $placeholder }}" class="form-control w-10/12" />
+    <button type="button" class="add btn btn-success p-1 border-black border-2">Add More</button>
 </div>
 
 <script>
-    // Function to add a new row
-    function addNewRow(table, index, name, placeholder) {
-        var newRow = `
-        <tr>
-            <td>
-                <input type="text" name="${name}[${index}]" placeholder="${placeholder}" class="form-control" />
-            </td>
-            <td>
-                <button type="button" class="btn btn-danger remove-tr">Remove</button>
-            </td>
-        </tr>`;
-        table.append(newRow);
-    }
+    $(document).ready(function() {
+        // Function to add a new input field
+        function addNewInput(container, index, name, placeholder) {
+            var newInput = `
+                <div class="input-group">
+                    <input type="text" name="${name}[${index}]" placeholder="${placeholder}" class="form-control w-10/12" />
+                    <button type="button" class="remove btn btn-danger p-1 border-black border-2">Remove</button>
+                </div>
+            `;
+            container.append(newInput);
+        }
 
-    // Event delegation for add button click handler
-    $(document).off('click', '.add').on('click', '.add', function(){
-        var table = $(this).closest('.dynamic-table');
-        var name = table.find('input.form-control').attr('name').split('[')[0];
-        var placeholder = table.find('input.form-control').attr('placeholder').split('[')[0];
-        var index = table.find('tr').length; // Use the number of existing rows to determine the new index
-        addNewRow(table, index, name, placeholder);
-    });
+        // Event delegation for add button click handler
+        $(document).off('click', '.add').on('click', '.add', function(){
+            var container = $(this).closest('.dynamic-table');
+            var name = container.find('input.form-control').attr('name').split('[')[0];
+            var placeholder = container.find('input.form-control').attr('placeholder');
+            var index = container.find('.input-group').length; // Use the number of existing input groups to determine the new index
+            addNewInput(container, index, name, placeholder);
+        });
 
-    // Event delegation for remove button click handler
-    $(document).off('click', '.remove-tr').on('click', '.remove-tr', function(){  
-        $(this).closest('tr').remove();
+        // Event delegation for remove button click handler
+        $(document).off('click', '.remove').on('click', '.remove', function(){  
+            $(this).closest('.input-group').remove();
+        });
+
+        // Before form submission, remove the name attribute from any empty input fields
+        $('form').on('submit', function() {
+            $('.dynamic-table input[type="text"]').each(function() {
+                if ($(this).val() === '') {
+                    $(this).removeAttr('name');
+                }
+            });
+        });
     });
 </script>
-
