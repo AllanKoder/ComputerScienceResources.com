@@ -5,17 +5,35 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Resource;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Tags\Tag;
 
 class ResourceController extends Controller
 {
     
     // Display a listing of the resource.
-    public function index()
+    public function index(Request $request)
     {
-        $resources = Resource::all();
-        return view('resources.home', ['resources'=> $resources]);
+        $query = Resource::query();
+    
+        // Apply filters if they are present in the request
+        if ($request->filled('query')) {
+            // Use the input method to get the 'query' parameter
+            $searchQuery = $request->input('query');
+            $query->where('title', 'like', '%' . $searchQuery . '%')
+                  ->orWhere('description', 'like', '%' . $searchQuery . '%');
+        }
+    
+        if ($request->filled('category')) {
+            // Assuming 'category' is stored in 'topics' or a similar attribute
+            $category = $request->input('category');
+            $query->whereJsonContains('topics', $category);
+        }
+    
+        // Get the filtered resources
+        $resources = $query->get();
+        return view('resources.index', ['resources'=> $resources]);
     }
-
+    
     // Show the form for creating a new resource.
     public function create()
     {
@@ -30,13 +48,16 @@ class ResourceController extends Controller
         $validator = $this->validateResource($request);
 
         if ($validator->fails()) {
-            \Log::warning('failed to save resource');
-            \Log::warning('issues: ' . $validator->errors());
+            \Log::warning('failed to save resource: ' . $validator->errors());
             return redirect()->back()->withErrors($validator)->withInput();
         }
-
-        $resource = new Resource($request->all());
+        
+        // Create a new Resource instance with all request data except 'tags'
+        $resource = new Resource($request->except('tags'));
         $resource->save();
+
+        // Attach tags separately
+        $resource->attachTags($request->tags);
 
         return redirect()->route('resources.index');
     }
@@ -69,7 +90,7 @@ class ResourceController extends Controller
         $resource->fill($request->all());
         $resource->save();
 
-        return redirect()->route('resources.home', $resource->id);
+        return redirect()->route('resources.index', $resource->id);
     }
 
     // Remove the specified resource from storage.
@@ -84,10 +105,14 @@ class ResourceController extends Controller
     // Validate the request for a valid model
     protected function validateResource(Request $request)
     {
+        $availableFormats = array_keys(config('formats')); // Retrieve the formats from the configuration
+
         return Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'image_url' => 'required|url',
+            'formats' => 'required|array',
+            'formats.*' => 'string|in:' . implode(',', $availableFormats),
             'features' => 'sometimes|array',
             'features.*' => 'string', // Validates each item in the features array
             'limitations' => 'sometimes|array',

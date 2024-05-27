@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Tags\HasTags;
 
 class Resource extends Model
 {
     use HasFactory;
+    use HasTags;
 
     protected $table = 'resources';
 
@@ -19,8 +21,9 @@ class Resource extends Model
     protected $fillable = [
         'title',
         'description',
-        'features',
         'image_url',
+        'formats',
+        'features',
         'limitations',
         'resource_url',
         'pricing',
@@ -35,6 +38,7 @@ class Resource extends Model
      */
     protected $casts = [
         'features' => 'array',
+        'formats' => 'array',
         'limitations' => 'array',
         'topics' => 'array'
     ];

@@ -1,38 +1,58 @@
 <div>
-    <form action="{{ route('dashboard') }}" method="GET" class="flex items-center space-x-4">
+    <form action="{{ route('resources.index') }}" method="GET" class="flex items-center space-x-4">
         @method('get')
         
-        <!-- Search Bar -->
+        <!-- Search Bar, for name and description -->
         <input type="text" name="query" placeholder="Search..." class="outline-none" />
 
-        <!-- Dropdowns -->
-        <div>
-            <select name="category" class="py-2 px-3 rounded-md">
-                <option value="">Select Category</option>
-                <option value="books">Books</option>
-                <option value="electronics">Electronics</option>
-                <!-- Add more categories as needed -->
+        <!-- Resource Formats -->
+        <div class="mb-4">
+            <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
+            <x-multi-select-input name="formats">
+                @foreach(config("formats") as $key => $value)
+                <option value="{{ $key }}">{{ $value }}</option>
+            @endforeach
+            </x-multi-select-input>                
+        </div>
+
+        <!-- Pricing Input -->
+        <div class="mb-4">
+            <label for="cost" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>
+            <select name="pricing" id="pricing" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
+                <option value="free">Free</option>
+                <option value="freemium">Freemium</option>
+                <option value="subscription">Subscription Service</option>
+                <option value="paid">One Time Payment</option>
+            </select>            
+        </div>
+
+        <!-- Topics Input (Dynamic Array of Inputs) -->
+        <div class="mb-4">
+            <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
+            <x-multi-tag-input name="topics"></x-multi-text-input>
+        </div>
+          
+        <!-- Difficulty Input -->
+        <div class="mb-6">
+            <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
+            <select name="difficulty" id="difficulty" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
+                <option value="beginner">Beginner</option>
+                <option value="industry">Industry</option>
+                <option value="academic">Academic</option>
             </select>
         </div>
 
-        <div>
-            <select name="price_range" class="py-2 px-3 rounded-md">
-                <option value="">Select Price Range</option>
-                <option value="0-50">$0 - $50</option>
-                <option value="51-100">$51 - $100</option>
-                <!-- Add more price ranges as needed -->
-            </select>
+        <!-- Tags Input -->
+        <div class="mb-4 w-32">
+            <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
+            <x-multi-tag-input name="tags"></x-multi-text-input>
         </div>
 
-        <div>
-            <select name="rating" class="border-2 py-2 px-3 rounded-md">
-                <option value="">Select Rating</option>
-                <option value="5">★★★★★</option>
-                <option value="4">★★★★☆</option>
-                <option value="3">★★★☆☆</option>
-                <option value="2">★★☆☆☆</option>
-                <option value="1">★☆☆☆☆</option>
-            </select>
-        </div>
+                    <!-- Submit Button -->
+        <div class="flex items-center justify-between">
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                Filter
+            </button>
+        </div>          
     </form>
 </div>

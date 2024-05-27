@@ -1,7 +1,14 @@
 <x-app-layout>
     <x-slot name="header">
-        @if(Session::has('message'))
-            <p class="alert alert-info">{{ Session::get('message') }}</p>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    <!-- Loop through all errors and display them -->
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
         @endif
     </x-slot>
 
@@ -27,6 +34,16 @@
                 <input type="url" name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
             </div>
             
+            <!-- Resource Formats -->
+            <div class="mb-4">
+                <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
+                <x-multi-select-input name="formats">
+                    @foreach(config("formats") as $key => $value)
+                    <option value="{{ $key }}">{{ $value }}</option>
+                @endforeach
+                </x-multi-select-input>                
+            </div>
+
             <!-- Features Input -->
             <div class="mb-4">
                 <label for="features" class="block text-gray-700 text-sm font-bold mb-2">Features:</label>
@@ -58,6 +75,7 @@
 
             <!-- Topics Input (Dynamic Array of Inputs) -->
             <div class="mb-4">
+                <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
                 <x-multi-tag-input name="topics"></x-multi-text-input>
             </div>
               
@@ -71,12 +89,18 @@
                 </select>
             </div>
 
+            <!-- Tags Input -->
+            <div class="mb-4">
+                <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
+                <x-multi-tag-input name="tags"></x-multi-text-input>
+            </div>
+
             <!-- Submit Button -->
             <div class="flex items-center justify-between">
                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Submit
                 </button>
-            </div>
+            </div>                
         </form>
     </div>
 </x-app-layout>

@@ -18,8 +18,9 @@ use Illuminate\Support\Facades\Route;
 // Home Page
 Route::controller(ResourceController::class)->group(function () {
     Route::get('/', 'index');
+    Route::post('/resources/filtered', 'indexFiltered')->name('resources.filtered');
     Route::get('/resources', 'index')->name('resources.index');
-    Route::get('/resources/create/', 'create')->name('resources.create');
+    Route::get('/resources/create', 'create')->name('resources.create');
     Route::post('/resources', 'store')->name('resources.store'); 
 });
 

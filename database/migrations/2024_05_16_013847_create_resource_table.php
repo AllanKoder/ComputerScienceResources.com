@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('image_url')->default('');
+            $table->json('formats'); // Assuming topics is an array of strings
             $table->json('features')->nullable(); // Changed to JSON to store an array of features
             $table->json('limitations')->nullable(); // Changed to JSON to store an array of limitations
             $table->string('resource_url');
