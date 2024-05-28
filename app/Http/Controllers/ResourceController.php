@@ -28,9 +28,15 @@ class ResourceController extends Controller
             $category = $request->input('category');
             $query->whereJsonContains('topics', $category);
         }
-    
+        
         // Get the filtered resources
         $resources = $query->get();
+        
+        // Check if the request is coming from htmx
+        if ($request->header('HX-Request')) {
+            // If it is an htmx request, return only the resources table
+            return view('components.resources-table', ['resources'=> $resources]);
+        }         
         return view('resources.index', ['resources'=> $resources]);
     }
     
