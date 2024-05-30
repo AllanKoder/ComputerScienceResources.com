@@ -44,4 +44,15 @@
             </main>
         </div>
     </body>
+    <script>
+        // This function updates the URL displayed in the browser without affecting the history
+        function updateURLWithoutPushing(newURL) {
+            history.replaceState(history.state, '', newURL);
+        }
+
+        // Call this function after the htmx request completes successfully
+        document.body.addEventListener('htmx:afterSwap', function(event) {
+            updateURLWithoutPushing({{ url()->current() }});
+        });
+    </script>
 </html>

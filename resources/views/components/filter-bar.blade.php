@@ -1,8 +1,9 @@
 <div>
-    <form hx-get="{{ url()->current() }}" hx-target="#resources-results" hx-trigger="submit" hx-push-url="true" class="flex items-center space-x-4">        
+    <form hx-history="false" hx-get="{{ url()->current() }}" hx-target="#resources-results" hx-trigger="submit" hx-boost="true" hx-push-url="true" class="flex items-center space-x-4">        
         <!-- Search Bar, for name and description -->
         <input type="text" name="query" placeholder="Search..." class="outline-none" />
-
+        <meta name="htmx-config"
+        content='{"historyCacheSize": 0, "refreshOnHistoryMiss": false}'>
         <!-- Resource Formats -->
         <div class="mb-4">
             <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>

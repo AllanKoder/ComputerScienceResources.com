@@ -33,9 +33,14 @@ class ResourceController extends Controller
         $resources = $query->get();
         
         // Check if the request is coming from htmx
-        if ($request->header('HX-Request')) {
+        if ($request->header('hx-request')) {
             // If it is an htmx request, return only the resources table
-            return view('components.resources-table', ['resources'=> $resources]);
+            // Prepare the view content
+            $viewContent = view('components.resources-table', ['resources'=> $resources])->render();
+            
+            // Return a response with the Cache-Control header set
+            return response($viewContent)
+                ->header('Cache-Control', 'no-store, max-age=0');
         }         
         return view('resources.index', ['resources'=> $resources]);
     }
