@@ -1,5 +1,5 @@
 <div>
-    <form hx-history="false" hx-get="{{ url()->current() }}" hx-target="#resources-results" hx-trigger="submit" hx-boost="true" hx-push-url="true" class="flex items-center space-x-4">        
+    <form hx-history="false" hx-get="{{ url()->current() }}" hx-target="#resources-results" hx-trigger="submit" hx-push-url="true" class="flex items-center space-x-4">        
         <!-- Search Bar, for name and description -->
         <input type="text" name="query" placeholder="Search..." class="outline-none" />
         <meta name="htmx-config"

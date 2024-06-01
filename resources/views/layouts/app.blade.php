@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+        <meta name="htmx-config" content='{"refreshOnHistoryMiss":"true"}' />
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -22,6 +23,7 @@
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         <!-- htmx -->
         <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/restored.js"></script>
 
         
     </head> 
@@ -45,14 +47,8 @@
         </div>
     </body>
     <script>
-        // This function updates the URL displayed in the browser without affecting the history
-        function updateURLWithoutPushing(newURL) {
-            history.replaceState(history.state, '', newURL);
-        }
-
-        // Call this function after the htmx request completes successfully
-        document.body.addEventListener('htmx:afterSwap', function(event) {
-            updateURLWithoutPushing({{ url()->current() }});
-        });
-    </script>
+        document.body.addEventListener('htmx:pushedIntoHistory', (evt) => {
+          localStorage.removeItem('htmx-history-cache')
+        })
+    </script>    
 </html>
