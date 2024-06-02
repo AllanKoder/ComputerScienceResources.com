@@ -120,7 +120,10 @@ class ResourceController extends Controller
         $resource->save();
 
         // Attach tags separately
-        $resource->attachTags($request->tags);
+        if ($request->filled('tags'))
+        {
+            $resource->attachTags($request->tags);
+        }
 
         return redirect()->route('resources.index');
     }

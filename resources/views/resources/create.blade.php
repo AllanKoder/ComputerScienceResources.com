@@ -5,7 +5,7 @@
                 <ul>
                     <!-- Loop through all errors and display them -->
                     @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
+                        <li class="text-red-800">{{ $error }}</li>
                     @endforeach
                 </ul>
             </div>
@@ -13,7 +13,7 @@
     </x-slot>
 
     <div class="flex justify-center mt-8">
-        <form id="resource-form" method="POST" action="{{ route('resources.store') }}" class="w-full max-w-xl">
+        <form id="create-resource-form" method="POST" action="{{ route('resources.store') }}" class="w-full max-w-xl">
             @csrf <!-- CSRF token for security -->
             
             <!-- Title Input -->
@@ -37,7 +37,7 @@
             <!-- Resource Formats -->
             <div class="mb-4">
                 <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
-                <x-multi-select-input name="formats">
+                <x-multi-select-input name="formats" clear="true">
                     @foreach(config("formats") as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
                     @endforeach
@@ -125,4 +125,11 @@
     // $('#resource-form').on('submit', function() {
     //     formSubmitted = true;
     // });
+
+    $('#create-resource-form').on('submit', function(e) {
+        this.submit();
+        // Clear input fields
+        $(document).trigger('clearInputs');
+        return false;
+    });
 </script>

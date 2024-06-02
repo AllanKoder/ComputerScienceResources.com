@@ -51,10 +51,23 @@
         <x-multi-tag-input name="tags"></x-multi-text-input>
     </div>
 
-                <!-- Submit Button -->
+    <!-- Submit Button -->
     <div class="flex items-center justify-between">
-        <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2">
-            Filter
+        <button id="search-resources-button" type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2">
+            Search
         </button>
-    </div>          
+    </div>   
 </form>
+
+<div class="flex items-center justify-between">
+    <button id="reset-filter-button" class="bg-red-500 hover:bg-red-600 text-white font-bold mx-5 py-1 px-2">
+        Reset Filter
+    </button>
+</div>   
+
+<script>
+    $('#reset-filter-button').on('click', function() {
+    // Trigger the custom event and pass the name of the select to clear
+        $(document).trigger('clearInputs');
+    });
+</script>
