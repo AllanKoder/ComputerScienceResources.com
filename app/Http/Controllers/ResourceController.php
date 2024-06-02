@@ -11,6 +11,8 @@ class ResourceController extends Controller
 {
     private function filterResources(Request $request)
     {
+        \DB::enableQueryLog();
+
         $query = Resource::query();
     
         // Apply filters if they are present in the request
@@ -45,6 +47,18 @@ class ResourceController extends Controller
             });
         }
 
+        // Difficulty filter
+        if ($request->filled('difficulty')) {
+            $difficulties = $request->input('difficulty');
+            // Group the whereOR request
+            $query->where(function (Builder $query) use ($difficulties) {
+                // formats is an array of categories
+                foreach ($difficulties as $difficulty) {
+                    $query->orWhere('difficulty','=', $difficulty);
+                }
+            });
+        }
+
         // Topics filter
         if ($request->filled('topics')) {
             $topics = $request->input('topics');
@@ -63,7 +77,11 @@ class ResourceController extends Controller
             $query->withAnyTags($tags);
         }
 
-                
+        if (config('app.env') =='local')
+        {
+            \Log::debug('fetching resource: ' . json_encode($request->all()));
+            \Log::debug('raw request SQL: ' . $query->toSql());
+        }
         // Get the filtered resources
         $resources = $query->get();
 
@@ -88,12 +106,12 @@ class ResourceController extends Controller
     // Store a newly created resource in storage.
     public function store(Request $request)
     {
-        \Log::info('storing resource: ' . json_encode($request->all()));
+        \Log::debug('storing resource: ' . json_encode($request->all()));
 
         $validator = $this->validateResource($request);
 
         if ($validator->fails()) {
-            \Log::warning('failed to save resource: ' . $validator->errors());
+            \Log::info('failed to save resource: ' . $validator->errors());
             return redirect()->back()->withErrors($validator)->withInput();
         }
         

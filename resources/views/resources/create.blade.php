@@ -39,8 +39,8 @@
                 <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
                 <x-multi-select-input name="formats">
                     @foreach(config("formats") as $key => $value)
-                    <option value="{{ $key }}">{{ $value }}</option>
-                @endforeach
+                        <option value="{{ $key }}">{{ $value }}</option>
+                    @endforeach
                 </x-multi-select-input>                
             </div>
 
