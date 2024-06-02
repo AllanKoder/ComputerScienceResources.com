@@ -15,6 +15,22 @@
                 <p class="mb-4">{{ $resource->description }}</p>
             </div>
         </div>
+        
+        <!-- Pricing model -->
+        <div class="flex flex-wrap">
+            <p>Pricing Model: </p>
+            <span class="bg-gray-200 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300 mb-2">{{ $resource->pricing }}</span>
+        </div>
+
+        <!-- Content Formats -->
+        <div class="flex flex-wrap">
+            @if(is_array($resource->formats))
+                <p>Content Formats: </p>
+                @foreach ($resource->formats as $format)
+                    <span class="bg-gray-200 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300 mb-2">{{ $format }}</span>
+                @endforeach
+            @endif
+        </div>
                         
         <!-- Displaying features and limitations -->
         <div class="mb-4">
@@ -27,16 +43,6 @@
                 </ul>
             @else
                 <p>No features listed.</p>
-            @endif
-        </div>
-
-        <!-- Content Formats -->
-        <div class="flex flex-wrap">
-            @if(is_array($resource->formats))
-                <p>Content Formats: </p>
-                @foreach ($resource->formats as $format)
-                    <span class="bg-gray-200 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300 mb-2">{{ $format }}</span>
-                @endforeach
             @endif
         </div>
 
@@ -55,6 +61,7 @@
         <!-- 'topics' is an array of strings -->
         <div class="flex flex-wrap">
             @if(is_array($resource->topics))
+                <p>Topics:</p>
                 @foreach ($resource->topics as $topic)
                     <span class="bg-gray-200 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-gray-700 dark:text-gray-300 mb-2">{{ $topic }}</span>
                 @endforeach

@@ -45,10 +45,5 @@
                 {{ $slot }}
             </main>
         </div>
-    </body>
-    <script>
-        document.body.addEventListener('htmx:pushedIntoHistory', (evt) => {
-          localStorage.removeItem('htmx-history-cache')
-        })
-    </script>    
+    </body>  
 </html>

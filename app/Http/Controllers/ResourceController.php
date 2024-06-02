@@ -2,16 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Resource;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Tags\Tag;
 
 class ResourceController extends Controller
 {
-    
-    // Display a listing of the resource.
-    public function index(Request $request)
+    private function filterResources(Request $request)
     {
         $query = Resource::query();
     
@@ -23,25 +21,61 @@ class ResourceController extends Controller
                   ->orWhere('description', 'like', '%' . $searchQuery . '%');
         }
     
-        if ($request->filled('category')) {
-            // Assuming 'category' is stored in 'topics' or a similar attribute
-            $category = $request->input('category');
-            $query->whereJsonContains('topics', $category);
+        // Format filter
+        if ($request->filled('formats')) {
+            $categories = $request->input('formats');
+            // Group the whereOR request
+            $query->where(function (Builder $query) use ($categories) {
+                // formats is an array of categories
+                foreach ($categories as $category) {
+                    $query->orWhereJsonContains('formats', $category);
+                }
+            });
         }
         
+        // Pricing model filter
+        if ($request->filled('pricing')) {
+            $pricings = $request->input('pricing');
+            // Group the whereOR request
+            $query->where(function (Builder $query) use ($pricings) {
+                // formats is an array of categories
+                foreach ($pricings as $pricing) {
+                    $query->orWhere('pricing','=', $pricing);
+                }
+            });
+        }
+
+        // Topics filter
+        if ($request->filled('topics')) {
+            $topics = $request->input('topics');
+            // Group the whereOR request
+            $query->where(function (Builder $query) use ($topics) {
+                // formats is an array of categories
+                foreach ($topics as $topic) {
+                    $query->orWhereJsonContains('topics', $topic);
+                }
+            });
+        }
+
+        // Tags filter
+        if ($request->filled('tags')) {
+            $tags = $request->input('tags');
+            $query->withAnyTags($tags);
+        }
+
+                
         // Get the filtered resources
         $resources = $query->get();
-        
-        // Check if the request is coming from htmx
-        if ($request->header('hx-request')) {
-            // If it is an htmx request, return only the resources table
-            // Prepare the view content
-            $viewContent = view('components.resources-table', ['resources'=> $resources])->render();
-            
-            // Return a response with the Cache-Control header set
-            return response($viewContent)
-                ->header('Cache-Control', 'no-store, max-age=0');
-        }         
+
+        return $resources;
+    }
+    
+    // Display a listing of the resource.
+    public function index(Request $request)
+    {
+        $resources = $this->filterResources( $request );
+                
+        dump( $request->all());
         return view('resources.index', ['resources'=> $resources]);
     }
     
