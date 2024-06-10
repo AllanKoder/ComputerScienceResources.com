@@ -3,13 +3,13 @@
     hx-trigger="submit" hx-push-url="true" 
     class="flex flex-wrap items-center space-x-4">        
     <!-- Search Bar, for name and description -->
-    <div class="mb-4 w-1/2">
+    <div class="mb-4 w-1/3">
         <label for="query" class="block text-gray-700 text-sm font-bold mb-2 w-full">Resource Name or Description:</label>
-        <input type="text" name="query" placeholder="Search..." class="w-full h-8 rounded border-gray-400" />
+        <x-text-input-field type="text" name="query" placeholder="Search..." class="w-full h-8 rounded border-gray-400" />
     </div>
     
     <!-- Resource Formats -->
-    <div class="mb-4 min-w-36">
+    <div class="mb-4">
         <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
         <x-multi-select-input name="formats">
             @foreach(config("formats") as $key => $value)
@@ -18,7 +18,7 @@
         </x-multi-select-input>                
     </div>
 
-    <!-- Pricing Input -->
+    <!-- Pricing Model Input -->
     <div class="mb-4 min-w-36">
         <label for="pricing" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>
         <x-multi-select-input name="pricing">        
@@ -32,23 +32,23 @@
     <!-- Topics Input (Dynamic Array of Inputs) -->
     <div class="mb-4 min-w-36">
         <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
-        <x-multi-tag-input name="topics"></x-multi-text-input>
+        <x-multi-tag-input name="topics" class="w-full"></x-multi-text-input>
     </div>
         
     <!-- Difficulty Input -->
     <div class="mb-4 min-w-36">
         <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
-        <x-multi-tag-input name="difficulty" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>        
+        <x-multi-select-input name="difficulty" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight">        
             <option value="beginner">Beginner</option>
             <option value="industry">Industry</option>
             <option value="academic">Academic</option>
-        </x-multi-tag-input>
+        </x-multi-select-input>
     </div>
 
     <!-- Tags Input -->
     <div class="mb-4 min-w-36">
         <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
-        <x-multi-tag-input name="tags"></x-multi-text-input>
+        <x-multi-tag-input name="tags" class="w-full"></x-multi-text-input>
     </div>
 
     <!-- Submit Button -->

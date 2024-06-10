@@ -2,7 +2,7 @@
 
 <!-- name Input -->
 <div class="dynamic-table">
-    <input type="text" oninput="updateInput(this)" name="{{ $name }}[0]" placeholder="{{ $placeholder }}" class="form-control w-10/12" />
+    <input type="text" name="{{ $name }}[0]" placeholder="{{ $placeholder }}" class="form-control w-10/12" />
     <button type="button" class="add btn btn-success p-1 border-black border-2">Add More</button>
 </div>
 

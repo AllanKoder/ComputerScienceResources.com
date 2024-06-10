@@ -19,25 +19,25 @@
             <!-- Title Input -->
             <div class="mb-4">
                 <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Title:</label>
-                <input type="text" name="title" id="title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
+                <x-text-input-field type="text" name="title" id="title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-text-input-field>
             </div>
 
             <!-- Description Input -->
             <div class="mb-4">
                 <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-                <textarea name="description" id="description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></textarea>
+                <x-text-input-field type="textarea" name="description" id="description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-text-input-field>
             </div>
             
             <!-- Image URL Input -->
             <div class="mb-4">
                 <label for="image_url" class="block text-gray-700 text-sm font-bold mb-2">Image URL:</label>
-                <input type="url" name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
+                <x-text-input-field type="url" name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-text-input-field>
             </div>
             
             <!-- Resource Formats -->
             <div class="mb-4">
                 <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
-                <x-multi-select-input name="formats" clear="true">
+                <x-multi-select-input class="w-full" name="formats" clear="true">
                     @foreach(config("formats") as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
                     @endforeach
@@ -59,7 +59,7 @@
             <!-- Resource URL Input -->
             <div class="mb-4">
                 <label for="resource_url" class="block text-gray-700 text-sm font-bold mb-2">Resource URL:</label>
-                <input type="url" name="resource_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required>
+                <x-text-input-field type="url" name="resource_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-text-input-field>
             </div>
 
             <!-- Pricing Input -->
@@ -76,7 +76,7 @@
             <!-- Topics Input (Dynamic Array of Inputs) -->
             <div class="mb-4">
                 <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
-                <x-multi-tag-input name="topics"></x-multi-text-input>
+                <x-multi-tag-input class="w-full" name="topics"></x-multi-text-input>
             </div>
               
             <!-- Difficulty Input -->
@@ -92,12 +92,12 @@
             <!-- Tags Input -->
             <div class="mb-4">
                 <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
-                <x-multi-tag-input name="tags"></x-multi-text-input>
+                <x-multi-tag-input class="w-full" name="tags"></x-multi-text-input>
             </div>
 
             <!-- Submit Button -->
             <div class="flex items-center justify-between">
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Submit
                 </button>
             </div>                
@@ -127,8 +127,8 @@
     // });
 
     $('#create-resource-form').on('submit', function(e) {
+        e.preventDefault();
         this.submit();
-        // Clear input fields
         $(document).trigger('clearInputs');
         return false;
     });

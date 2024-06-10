@@ -1,6 +1,6 @@
-@props(['name'])
+@props(['name', 'attributes' => []])
 
-<select class="js-example-basic-multiple" name="{{$name}}[]" multiple="multiple" id="multi-select-{{$name}}">
+<select {{ $attributes->merge(['class' => 'form-control-multi-select']) }} name="{{$name}}[]" multiple="multiple" id="multi-select-{{$name}}">
     {{$slot}}
 </select>
 
@@ -34,7 +34,7 @@
 
     // Initialize all Select2 elements on the page
     $(document).ready(function() {
-        $('.js-example-basic-multiple').each(function() {
+        $('.form-control-multi-select').each(function() {
             initializeSelect2($(this));
         });
    
@@ -44,7 +44,7 @@
                 $(`#multi-select-${selectName}`).val(null).trigger('change');
             } else {
                 // Clear all selects if no specific name is provided
-                $('.js-example-basic-multiple').val(null).trigger('change');
+                $('.form-control-multi-select').val(null).trigger('change');
             }
         });
    });
