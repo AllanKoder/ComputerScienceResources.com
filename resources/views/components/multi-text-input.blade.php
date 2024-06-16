@@ -8,8 +8,11 @@
 </div>
 
 <script>
+    
     $(document).ready(function() {
         $('.dynamic-table').each(function(index, table) {
+            const MAX_ENTRIES = 10;
+            
             let selectName = $(table).attr('name'); // This should be unique for each component
             let id = `multi-text-input-${selectName}-${index}`; // Unique ID for localStorage key
             var savedInputs = JSON.parse(localStorage.getItem(id)) || [];
@@ -32,6 +35,7 @@
                     inputs.push($(this).val());
                 });
                 let id = `multi-text-input-${container.attr('name')}-${container.index('.dynamic-table')}`;
+                savedInputs = inputs;
                 localStorage.setItem(id, JSON.stringify(inputs));
             }
 
@@ -46,6 +50,11 @@
 
             // Event delegation for add button click handler
             $(document).off('click', '.add').on('click', '.add', function(){
+                if (savedInputs.length >= MAX_ENTRIES-1)
+                {
+                    alert(`Max ${MAX_ENTRIES} inputs for ${selectName}`)
+                    return;
+                }
                 let container = $(this).closest('.dynamic-table');
                 let name = selectName;
                 let placeholder = 'Placeholder'; // Replace with the actual placeholder value
@@ -69,6 +78,24 @@
                 let container = $(this).closest('.dynamic-table');
                 updateStorage(container);
             });
+
+            // Listen for a custom global event to clear the select
+            $(document).on('clearInputs', function(event, selectName) {
+                if (selectName) {
+                    // Clear inputs for a specific dynamic table
+                    let container = $(`.dynamic-table[name="${selectName}"]`);
+                    container.find('.input-group').remove();
+                    updateStorage(container);
+                } else {
+                    // Clear inputs for all dynamic tables
+                    $('.dynamic-table').each(function() {
+                        let container = $(this);
+                        container.find('.input-group').remove();
+                        updateStorage(container);
+                    });
+                }
+            });
+
         });
     });
 </script>
