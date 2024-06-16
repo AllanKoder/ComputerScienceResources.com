@@ -18,7 +18,7 @@
         }
 
         // Set the value of Select2 if there are stored selections
-        if (localStorage.getItem(id)) {
+        if (localStorage.getItem(id)) { 
             var selectedValues = JSON.parse(localStorage.getItem(id));
             selectElement.val(selectedValues).trigger('change');
         }

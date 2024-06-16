@@ -1,9 +1,9 @@
 @props(['type','name', 'attributes' => []])
 
 @if($type == "textarea")
-    <textarea {{ $attributes->merge(['class' => 'form-control']) }} type="text" name="{{ $name }}" id="text-input-{{ $name }}" /></textarea>
+    <textarea {{ $attributes->merge(['class' => 'form-control-text-input']) }} type="text" name="{{ $name }}" id="text-input-{{ $name }}" /></textarea>
 @else
-    <input {{ $attributes->merge(['class' => 'form-control']) }} type="{{ $type }}" name="{{ $name }}" id="text-input-{{ $name }}" />
+    <input {{ $attributes->merge(['class' => 'form-control-text-input']) }} type="{{ $type }}" name="{{ $name }}" id="text-input-{{ $name }}" />
 @endif
 <script>
     // Function to handle local storage for a text input
@@ -32,7 +32,7 @@
 
     // Initialize local storage handling for all text inputs on the page
     $(document).ready(function() {
-        $('.form-control').each(function() {
+        $('.form-control-text-input').each(function() {
             handleLocalStorageForInput($(this));
         });
 
@@ -42,7 +42,7 @@
                 $(`#text-input-${inputName}`).val('').trigger('input');
             } else {
                 // Clear all inputs if no specific name is provided
-                $('.form-control').val('').trigger('input');
+                $('.form-control-text-input').val('').trigger('input');
             }
         });
     });

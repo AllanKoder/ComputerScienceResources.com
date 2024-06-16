@@ -194,9 +194,9 @@ public function store(Request $request)
             'image_url' => 'required|url',
             'formats' => 'required|array',
             'formats.*' => 'string|in:' . implode(',', $availableFormats),
-            'features' => 'sometimes|array',
+            'features' => 'sometimes|array|max:10',
             'features.*' => 'string', // Validates each item in the features array
-            'limitations' => 'sometimes|array',
+            'limitations' => 'sometimes|array|max:10',
             'limitations.*' => 'string', // Validates each item in the limitations array
             'resource_url' => 'required|url',
             'pricing' => 'required|string|in:free,freemium,subscription,paid',
