@@ -93,7 +93,6 @@ class ResourceController extends Controller
     {
         $resources = $this->filterResources( $request );
                 
-        dump( $request->all());
         return view('resources.index', ['resources'=> $resources]);
     }
     

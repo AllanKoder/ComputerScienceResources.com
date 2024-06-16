@@ -37,7 +37,7 @@
             <!-- Resource Formats -->
             <div class="mb-4">
                 <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
-                <x-multi-select-input class="w-full" name="formats">
+                <x-multi-select-input class="w-full" name="formats" required>
                     @foreach(config("formats") as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
                     @endforeach
@@ -76,7 +76,7 @@
             <!-- Topics Input (Dynamic Array of Inputs) -->
             <div class="mb-4">
                 <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
-                <x-multi-tag-input class="w-full" name="topics"></x-multi-text-input>
+                <x-multi-tag-input class="w-full" name="topics" required></x-multi-text-input>
             </div>
               
             <!-- Difficulty Input -->
