@@ -11,11 +11,6 @@
         let baseUrl = @json($getURL());
         let id = `multi-tag-${selectName}-${baseUrl}`;
 
-        // Initialize Select2 with tags
-        selectElement.select2({
-            tags: true
-        });
-
         // Function to update local storage with the selected values
         function updateSelections() {
             var selectedValues = selectElement.val();
@@ -53,15 +48,18 @@
             initializeSelect2($(this));
         });
 
+        // Initialize Select2 with tags
+        $('.form-control-multi-tags').select2({
+            tags: true
+        });
+        
         // Listen for a custom global event to clear the select
         $(document).on('clearInputs', function(event, selectName) {
-            console.log("I was at least called here");
             if (selectName) {
                 $(`#multi-tags-${selectName}`).val(null).trigger('change');
             } else {
                 // Clear all selects if no specific name is provided
                 $('.form-control-multi-tags').val(null).trigger('change');
-                console.log("I was reached here");
             }
         });
     });

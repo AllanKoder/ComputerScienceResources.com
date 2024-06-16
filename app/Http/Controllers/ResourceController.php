@@ -102,31 +102,46 @@ class ResourceController extends Controller
     {
         return view('resources.create');
     }
-
+    
     // Store a newly created resource in storage.
-    public function store(Request $request)
-    {
-        \Log::debug('storing resource: ' . json_encode($request->all()));
+    // Store a newly created resource in storage.
+public function store(Request $request)
+{
+    \Log::debug('storing resource: ' . json_encode($request->all()));
 
-        $validator = $this->validateResource($request);
+    // Filter out null values from 'features' and 'limitations' arrays
+    $features = array_filter($request->input('features', []), function($value) {
+        return !is_null($value) && $value !== '';
+    });
+    $limitations = array_filter($request->input('limitations', []), function($value) {
+        return !is_null($value) && $value !== '';
+    });
 
-        if ($validator->fails()) {
-            \Log::info('failed to save resource: ' . $validator->errors());
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-        
-        // Create a new Resource instance with all request data except 'tags'
-        $resource = new Resource($request->except('tags'));
-        $resource->save();
+    // Update the request to only include the non-null values
+    $request->merge([
+        'features' => array_values($features),
+        'limitations' => array_values($limitations),
+    ]);
 
-        // Attach tags separately
-        if ($request->filled('tags'))
-        {
-            $resource->attachTags($request->tags);
-        }
+    $validator = $this->validateResource($request);
 
-        return redirect()->route('resources.index');
+    if ($validator->fails()) {
+        \Log::info('failed to save resource: ' . $validator->errors());
+        return redirect()->back()->withErrors($validator)->withInput();
     }
+    
+    // Create a new Resource instance with all request data except 'tags'
+    $resource = new Resource($request->except('tags'));
+    $resource->save();
+
+    // Attach tags separately
+    if ($request->filled('tags'))
+    {
+        $resource->attachTags($request->tags);
+    }
+
+    return redirect()->route('resources.index');
+}
 
     // Display the specified resource.
     public function show($id)

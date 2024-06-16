@@ -32,14 +32,5 @@
         $(document).off('click', '.remove').on('click', '.remove', function(){  
             $(this).closest('.input-group').remove();
         });
-
-        // Before form submission, remove the name attribute from any empty input fields
-        $('form').on('submit', function() {
-            $('.dynamic-table input[type="text"]').each(function() {
-                if ($(this).val() === '') {
-                    $(this).removeAttr('name');
-                }
-            });
-        });
     });
 </script>

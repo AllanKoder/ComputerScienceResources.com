@@ -10,9 +10,6 @@
         let selectName = selectElement.attr('name');
         let baseUrl = @json($getURL());
         let id = `multi-select-${selectName}-${baseUrl}`;
-        
-        // Initialize Select2
-        selectElement.select2();
 
         // Function to update local storage with the selected values
         function updateSelections() {
@@ -37,8 +34,10 @@
         $('.form-control-multi-select').each(function() {
             initializeSelect2($(this));
         });
-   
-         // Listen for a custom global event to clear the select
+        
+        $('.form-control-multi-select').select2();
+        
+        // Listen for a custom global event to clear the select
         $(document).on('clearInputs', function(event, selectName) {
             if (selectName) {
                 $(`#multi-select-${selectName}`).val(null).trigger('change');

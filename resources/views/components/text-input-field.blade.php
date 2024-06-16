@@ -3,7 +3,7 @@
 @if($type == "textarea")
     <textarea {{ $attributes->merge(['class' => 'form-control']) }} type="text" name="{{ $name }}" id="text-input-{{ $name }}" /></textarea>
 @else
-    <input {{ $attributes->merge(['class' => 'form-control']) }} type="text" name="{{ $name }}" id="text-input-{{ $name }}" />
+    <input {{ $attributes->merge(['class' => 'form-control']) }} type="{{ $type }}" name="{{ $name }}" id="text-input-{{ $name }}" />
 @endif
 <script>
     // Function to handle local storage for a text input
