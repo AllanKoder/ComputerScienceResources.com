@@ -77,11 +77,10 @@ class ResourceController extends Controller
             $query->withAnyTags($tags);
         }
 
-        if (config('app.env') =='local')
-        {
-            \Log::debug('fetching resource: ' . json_encode($request->all()));
-            \Log::debug('raw request SQL: ' . $query->toSql());
-        }
+
+        \Log::debug('fetching resource: ' . json_encode($request->all()));
+        \Log::debug('raw request SQL: ' . $query->toSql());
+
         // Get the filtered resources
         $resources = $query->get();
 
@@ -103,44 +102,43 @@ class ResourceController extends Controller
     }
     
     // Store a newly created resource in storage.
-    // Store a newly created resource in storage.
-public function store(Request $request)
-{
-    \Log::debug('storing resource: ' . json_encode($request->all()));
-
-    // Filter out null values from 'features' and 'limitations' arrays
-    $features = array_filter($request->input('features', []), function($value) {
-        return !is_null($value) && $value !== '';
-    });
-    $limitations = array_filter($request->input('limitations', []), function($value) {
-        return !is_null($value) && $value !== '';
-    });
-
-    // Update the request to only include the non-null values
-    $request->merge([
-        'features' => array_values($features),
-        'limitations' => array_values($limitations),
-    ]);
-
-    $validator = $this->validateResource($request);
-
-    if ($validator->fails()) {
-        \Log::info('failed to save resource: ' . $validator->errors());
-        return redirect()->back()->withErrors($validator)->withInput();
-    }
-    
-    // Create a new Resource instance with all request data except 'tags'
-    $resource = new Resource($request->except('tags'));
-    $resource->save();
-
-    // Attach tags separately
-    if ($request->filled('tags'))
+    public function store(Request $request)
     {
-        $resource->attachTags($request->tags);
-    }
+        \Log::debug('storing resource: ' . json_encode($request->all()));
 
-    return redirect()->route('resources.index');
-}
+        // Filter out null values from 'features' and 'limitations' arrays
+        $features = array_filter($request->input('features', []), function($value) {
+            return !is_null($value) && $value !== '';
+        });
+        $limitations = array_filter($request->input('limitations', []), function($value) {
+            return !is_null($value) && $value !== '';
+        });
+
+        // Update the request to only include the non-null values
+        $request->merge([
+            'features' => array_values($features),
+            'limitations' => array_values($limitations),
+        ]);
+
+        $validator = $this->validateResource($request);
+
+        if ($validator->fails()) {
+            \Log::info('failed to save resource: ' . $validator->errors());
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        
+        // Create a new Resource instance with all request data except 'tags'
+        $resource = new Resource($request->except('tags'));
+        $resource->save();
+
+        // Attach tags separately
+        if ($request->filled('tags'))
+        {
+            $resource->attachTags($request->tags);
+        }
+
+        return redirect()->route('resources.index');
+    }
 
     // Display the specified resource.
     public function show($id)

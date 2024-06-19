@@ -1,6 +1,5 @@
-@props(["resources"])
 
-@foreach ($resources as $resource)
+<x-app-layout>
     <div class="mb-8">
         <!-- Displaying title, description, and image -->
         <div class="flex grid-cols-2 gap-4">
@@ -12,7 +11,7 @@
             </div>
             <div class="w-10/12">    
                 <span class="flex align-middle">
-                    <a href="{{ route('resources.show', ['id' => $resource->id]) }}">
+                    <a href="{{ $resource->resource_url }}">
                         <h2 class="text-2xl font-bold">{{ $resource->title }}</h2>
                     </a>
                     <a href="{{ $resource->resource_url }}" target=”_blank”>
@@ -88,4 +87,4 @@
             <strong>Difficulty:</strong> {{ $resource->difficulty }}
         </div>
     </div>
-@endforeach
+</x-app-layout>

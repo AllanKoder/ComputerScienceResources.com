@@ -11,7 +11,9 @@
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+        
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/2134d661bb.js" crossorigin="anonymous"></script>        
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -45,5 +47,5 @@
                 {{ $slot }}
             </main>
         </div>
-    </body>  
+    </body>
 </html>
