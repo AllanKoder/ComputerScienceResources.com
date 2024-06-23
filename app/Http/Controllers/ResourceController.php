@@ -123,7 +123,7 @@ class ResourceController extends Controller
         $validator = $this->validateResource($request);
 
         if ($validator->fails()) {
-            \Log::info('failed to save resource: ' . $validator->errors());
+            \Log::warning('failed to save resource: ' . $validator->errors());
             return redirect()->back()->withErrors($validator)->withInput();
         }
         
@@ -144,7 +144,9 @@ class ResourceController extends Controller
     public function show($id)
     {
         $resource = Resource::findOrFail($id);
-        return view('resources.show', compact('resource'));
+        $comments = $resource->comments()->get();
+
+        return view('resources.show', compact('resource', 'comments'));
     }
 
     // Show the form for editing the specified resource.
@@ -160,6 +162,7 @@ class ResourceController extends Controller
         $validator = $this->validateResource($request);
 
         if ($validator->fails()) {
+            \Log::warning('failed to update resource: ' . $validator->errors());
             return redirect()->back()->withErrors($validator)->withInput();
         }
 

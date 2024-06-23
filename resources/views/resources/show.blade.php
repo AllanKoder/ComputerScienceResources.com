@@ -87,4 +87,6 @@
             <strong>Difficulty:</strong> {{ $resource->difficulty }}
         </div>
     </div>
+    @include('comments.index', array('resource'=>'resource', 'id'=>$resource->id))
+    @include('comments.create', array('resource'=>'resource', 'id'=>$resource->id))
 </x-app-layout>

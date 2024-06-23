@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Tags\HasTags;
 
 class Resource extends Model
@@ -28,7 +29,7 @@ class Resource extends Model
         'resource_url',
         'pricing',
         'topics',
-        'difficulty'
+        'difficulty',
     ];
 
     /**
@@ -42,4 +43,12 @@ class Resource extends Model
         'limitations' => 'array',
         'topics' => 'array'
     ];
+
+    /**
+     * Get the comments for the Resource post.
+     */
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
 }
