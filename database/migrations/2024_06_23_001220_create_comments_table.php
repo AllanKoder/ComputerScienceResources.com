@@ -14,10 +14,9 @@ public function up()
 {
     Schema::create('comments', function (Blueprint $table) {
     $table->id();
-    $table->string('title');
     $table->text('comment_text');
     $table->unsignedBigInteger('user_id');
-    $table->unsignedBigInteger('comment_head_id')->nullable();
+    $table->unsignedBigInteger('parent_id')->nullable();
     $table->unsignedBigInteger('commentable_id')->nullable(); // Polymorphic relation
     $table->string('commentable_type')->nullable(); // Polymorphic relation
     $table->unsignedInteger('reports')->default(0);
@@ -25,7 +24,7 @@ public function up()
     $table->timestamps();
 
     $table->foreign('user_id')->references('id')->on('users');
-    $table->foreign('comment_head_id')->references('id')->on('comments');
+    $table->foreign('parent_id')->references('id')->on('comments')->onDelete('cascade');
     // No need to add foreign keys for polymorphic relations
     });
 }

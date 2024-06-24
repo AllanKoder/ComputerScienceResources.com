@@ -62,7 +62,7 @@ class CommentController extends Controller
         $comment = new Comment($merged_request);
         $commentable->comments()->save($comment);
 
-        return back();
+        return redirect()->back();
     }
 
     /**
@@ -115,6 +115,31 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         $comment->delete();
+        return redirect()->back();
+    }
+
+    public function reply(Request $request, Comment $comment)
+    {   
+        \Log::info('replying to a comment request: : ' . json_encode($request->all()));
+        \Log::info('comment reply head comment: ' . json_encode($comment->all()));
+        if (is_null($comment->id))
+        {
+            \Log::warning('could not find parent comment');
+            return back();
+        }
+
+        $validator = $this->validateComment($request);
+
+        if ($validator->fails()) {
+            \Log::warning('failed to reply to a comment: ' . $validator->errors());
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        
+        $reply = new Comment($request->all());
+        $reply->user_id = auth()->id();
+        $reply->parent_id = $comment->id; // Set the parent comment ID
+        $reply->save();
+
         return back();
     }
 
@@ -132,7 +157,7 @@ class CommentController extends Controller
     protected function validateComment(Request $request)
     {
         return Validator::make($request->all(), [
-            'title' => 'required|max:255',
+            'title' => 'max:255',
             'comment_text' => 'required',
         ]);
     }

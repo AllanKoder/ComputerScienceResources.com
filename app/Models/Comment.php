@@ -14,7 +14,6 @@ class Comment extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title',
         'comment_text',
         'user_id',
         'comment_head_id',
@@ -44,15 +43,15 @@ class Comment extends Model
      */
     public function commentHead(): BelongsTo
     {
-        return $this->belongsTo(Comment::class, 'comment_head_id');
+        return $this->belongsTo(Comment::class, 'parent_id');
     }
 
     /**
      * Get the replies for the comment.
      */
-    public function commentChildren(): HasMany
+    public function replies(): HasMany
     {
-        return $this->hasMany(Comment::class, 'comment_head_id');
+        return $this->hasMany(Comment::class, 'parent_id');
     }
 
     public function votedByUsers()

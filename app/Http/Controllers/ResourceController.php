@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Validator;
 
 class ResourceController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth',  ['except' => ['index', 'show']]);
+    }
     private function filterResources(Request $request)
     {
         \DB::enableQueryLog();

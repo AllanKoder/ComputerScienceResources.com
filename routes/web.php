@@ -28,6 +28,7 @@ Route::controller(ResourceController::class)->group(function () {
 // Comments
 Route::controller(CommentController::class)->group(function () {
     Route::post('/{resource}/{id}/comment', 'store')->name('comment.resourceComment');
+    Route::post('/comment/{comment}/reply', 'reply')->name('comment.reply');
     Route::delete('/comment/{comment}', 'destroy')->name('comment.destroy');
 });
 
