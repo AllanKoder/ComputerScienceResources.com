@@ -115,8 +115,10 @@ class CommentController extends Controller
     public function destroy(Comment $comment)
     {
         $comment->delete();
-        return redirect()->back();
+        $comments = Comment::whereNull('parent_id')->with('replies')->get(); // Adjust based on your structure
+        return view('comments.index', compact('comments'))->render();
     }
+    
 
     public function reply(Request $request, Comment $comment)
     {   

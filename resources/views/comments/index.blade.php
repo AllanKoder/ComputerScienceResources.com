@@ -1,17 +1,14 @@
 {{-- resources/views/comments/index.blade.php --}}
 
-<div class="container">
-    <h1>Comments</h1>
+<div class="container" id="comments-container">
     @foreach ($comments as $comment)
         <div class="card mb-3 ml-10">
-            
             <div class="card-header">
                 {{ $comment->user->name }}
             </div>
             <div class="card-body">
                 <p class="card-text bg-fuchsia-400">{{ $comment->comment_text }}</p>
-                {{-- <a href="{{ route('comments.edit', $comment) }}" class="btn btn-secondary">Edit</a> --}}
-                <form action="{{ route('comment.destroy', $comment) }}" method="POST" style="display: inline-block;" class="bg-red-400">
+                <form action="{{ route('comment.destroy', $comment) }}" method="POST" hx-post="{{ route('comment.destroy', $comment) }}" hx-target="#comments-container" hx-swap="outerHTML" style="display: inline-block;" class="bg-red-400">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -20,15 +17,9 @@
             <div class="card-footer text-muted">
                 Posted {{ $comment->created_at->diffForHumans() }}
             </div>
-            @foreach($comments as $comment)
-                <div class="comment">
-                    <p>{{ $comment->body }}</p>
-                    @if($comment->replies)
-                        @include('comments.index', ['comments' => $comment->replies])
-                    @endif
-                </div>
-            @endforeach
-
+            @if($comment->replies->isNotEmpty())
+                @include('comments.index', ['comments' => $comment->replies])
+            @endif
             @include('comments.reply', array('parentComment'=>$comment))
         </div>
     @endforeach
