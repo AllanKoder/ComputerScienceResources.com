@@ -96,6 +96,11 @@ class CommentController extends Controller
      */
     public function update(Request $request, Comment $comment)
     {
+        // Check if the authenticated user is the owner of the comment
+        if ($comment->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $validatedData = $request->validate([
             'title' => 'required|max:255',
             'comment_text' => 'required',
@@ -114,6 +119,11 @@ class CommentController extends Controller
      */
     public function destroy(Comment $comment)
     {
+        // Check if the authenticated user is the owner of the comment
+        if ($comment->user_id !== auth()->id()) {
+            abort(403, 'Unauthorized action.');
+        }
+
         $comment->delete();
         $comments = Comment::whereNull('parent_id')->with('replies')->get(); // Adjust based on your structure
         return view('comments.index', compact('comments'))->render();

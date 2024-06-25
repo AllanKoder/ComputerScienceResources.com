@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Vote extends Model
 {
@@ -12,23 +12,16 @@ class Vote extends Model
 
     protected $fillable = [
         'user_id',
-        'comment_id',
         'vote_type', // 1 for upvote, -1 for downvote
     ];
 
-    /**
-     * Get the user that cast the vote.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the comment that was voted on.
-     */
-    public function comment(): BelongsTo
+    public function voteable(): MorphTo
     {
-        return $this->belongsTo(Comment::class);
+        return $this->morphTo();
     }
 }

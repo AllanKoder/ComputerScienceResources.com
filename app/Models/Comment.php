@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 use App\Models\User;
 
 class Comment extends Model
@@ -54,10 +56,11 @@ class Comment extends Model
         return $this->hasMany(Comment::class, 'parent_id');
     }
 
-    public function votedByUsers()
+    /**
+     * Get the votes for the comment.
+     */
+    public function votes(): MorphMany
     {
-        return $this->belongsToMany(User::class, 'votes')
-                    ->withPivot('vote_type')
-                    ->withTimestamps();
+        return $this->morphMany(Vote::class, 'voteable');
     }
 }
