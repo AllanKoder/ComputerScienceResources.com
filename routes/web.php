@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\VoteController;
 use App\Http\Controllers\ResourceController;
 use Illuminate\Support\Facades\Route;
 
@@ -30,6 +31,12 @@ Route::controller(CommentController::class)->group(function () {
     Route::post('/{resource}/{id}/comment', 'store')->name('comment.resourceComment');
     Route::post('/comment/{comment}/reply', 'reply')->name('comment.reply');
     Route::delete('/comment/{comment}', 'destroy')->name('comment.destroy');
+});
+
+// Votes
+Route::controller(VoteController::class)->group(function () {
+    Route::post('/upvote', 'vote')->name('votes.vote');
+    Route::get('votes/{voteableId}/{voteableType}', 'getTotalVotes')->name('votes.getTotalVotes');
 });
 
 Route::get('/dashboard', function () {

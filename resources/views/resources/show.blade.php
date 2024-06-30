@@ -86,6 +86,22 @@
         <div class="mb-4">
             <strong>Difficulty:</strong> {{ $resource->difficulty }}
         </div>
+
+
+        <!-- Upvote and Downvote buttons -->
+        <form action="{{ route('votes.vote') }}" method="POST">
+            @csrf
+            <input type="hidden" name="voteable_id" value="{{ $resource->id }}">
+            <input type="hidden" name="voteable_type" value="App\Models\Resource">
+            <button type="submit" name="vote_value" value="1" class="bg-blue-500 text-white px-4 py-2 rounded">Upvote</button>
+            <button type="submit" name="vote_value" value="-1" class="bg-red-500 text-white px-4 py-2 rounded">Downvote</button>
+        </form>
+
+        <!-- Display total votes -->
+        <div id="total-votes">
+            Total Votes: <span>{{ $totalUpvotes->total_votes ?? 0 }}</span>
+        </div>
+        
     </div>
     @include('comments.index', array('resource'=>'resource', 'id'=>$resource->id))
     @include('comments.create', array('resource'=>'resource', 'id'=>$resource->id))

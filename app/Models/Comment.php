@@ -19,8 +19,7 @@ class Comment extends Model
         'comment_text',
         'user_id',
         'comment_head_id',
-        'reports',
-        'upvotes'
+        'reports'
     ];
 
 

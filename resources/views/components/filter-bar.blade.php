@@ -1,6 +1,7 @@
 <form hx-get="{{ url()->current() }}" 
     hx-select="#resources-results" hx-target="#resources-results" hx-swap="outerHTML"
     hx-trigger="submit" hx-push-url="true" 
+    hx-indicator="#spinner"
     class="flex flex-wrap items-center space-x-4">        
     <!-- Search Bar, for name and description -->
     <div class="mb-4 w-1/3">

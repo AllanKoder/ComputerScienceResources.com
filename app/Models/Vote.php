@@ -12,7 +12,9 @@ class Vote extends Model
 
     protected $fillable = [
         'user_id',
-        'vote_type', // 1 for upvote, -1 for downvote
+        'vote_value', // 1 for upvote, -1 for downvote
+        'voteable_id', 
+        'voteable_type',
     ];
 
     public function user(): BelongsTo

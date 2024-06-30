@@ -5,6 +5,9 @@
 
     <div class="flex justify-center">
         <div class="w-3/4 p-4" id="resources-results">
+            <div class="flex">
+                <x-spinner class="mx-auto" id="spinner"></x-spinner>
+            </div>
             <x-resources-table :resources="$resources"></x-resources-table>
         </div>
 

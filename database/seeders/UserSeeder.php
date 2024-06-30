@@ -22,13 +22,13 @@ class UserSeeder extends Seeder
         User::factory()->create([
             'name' => 'Allan Kong',
             'email' => 'allankong176@gmail.com',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('Admin123!'),
         ]);
         
         User::factory()->create([
             'name' => 'Faker Kong',
             'email' => 'faker@faker.com',
-            'password' => Hash::make('password'),
+            'password' => Hash::make('Admin123!'),
         ]);
     }
 }
