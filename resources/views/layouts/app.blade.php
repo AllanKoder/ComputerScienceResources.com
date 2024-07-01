@@ -32,7 +32,16 @@
     <body class="font-sans antialiased">
         <div class="max-h-screen bg-gray-100 dark:bg-gray-900">
             @include('layouts.navigation')
-            
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             <!-- Page Heading -->
             @if (isset($header))
                 <header class="bg-white dark:bg-gray-800 shadow">

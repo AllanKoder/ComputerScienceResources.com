@@ -43,7 +43,7 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $resource, $id)
+    public function store(Request $request, $type, $id)
     {
         \Log::debug('storing comment: ' . json_encode($request->all()));
 
@@ -53,7 +53,7 @@ class CommentController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $commentableType = TypeHelper::getModelType($resource);
+        $commentableType = TypeHelper::getModelType($type);
         $commentable = $commentableType::findOrFail($id);
 
 

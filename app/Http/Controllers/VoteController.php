@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Vote;
 use App\Models\VoteTotal;
 use Illuminate\Http\Request;
+use App\Helpers\TypeHelper;
 
 class VoteController extends Controller
 {
@@ -13,13 +14,15 @@ class VoteController extends Controller
         $this->middleware('auth',  ['except' => ['getTotalVotes']]);
     }
 
-    public function vote(Request $request)
+    public function vote(Request $request, $type, $id)
     {
+        $votableType = TypeHelper::getModelType($type);
+
         $existingVote = Vote::where('user_id', $request->user()->id)
-                            ->where('voteable_id', $request->voteable_id)
-                            ->where('voteable_type', $request->voteable_type)
+                            ->where('voteable_id', $id)
+                            ->where('voteable_type', $votableType)
                             ->first();
-    
+
         if ($existingVote) {
             // If the existing vote has the same value, delete it (toggle off)
             if ($existingVote->vote_value == $request->vote_value) {
@@ -32,8 +35,8 @@ class VoteController extends Controller
             // Create a new vote
             Vote::create([
                 'user_id' => $request->user()->id,
-                'voteable_id' => $request->voteable_id,
-                'voteable_type' => $request->voteable_type,
+                'voteable_id' => $id,
+                'voteable_type' => $votableType,
                 'vote_value' => $request->vote_value,
             ]);
         }

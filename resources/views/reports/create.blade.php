@@ -2,7 +2,7 @@
 
 <div class="container">
     <h1>Create a Report</h1>
-    <form action="{{ route('reports.store', ['resource' => $resource, 'id' => $id]) }}" method="POST">
+    <form action="{{ route('reports.store', ['type' => $type, 'id' => $id]) }}" method="POST">
         @csrf
 
         <div class="form-group">
@@ -13,6 +13,6 @@
         <input type="hidden" name="reportable_id" value="{{ $id }}">
         <input type="hidden" name="reportable_type" value="{{ $resource }}">
 
-        <button type="submit" class="btn btn-primary">Submit bruh</button>
+        <button type="submit" class="btn btn-primary">Submit Report</button>
     </form>
 </div>

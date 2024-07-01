@@ -89,10 +89,8 @@
 
 
         <!-- Upvote and Downvote buttons -->
-        <form action="{{ route('votes.vote') }}" method="POST">
+        <form action="{{ route('votes.vote', ['type'=>'resource', 'id'=>$resource->id]) }}" method="POST">
             @csrf
-            <input type="hidden" name="voteable_id" value="{{ $resource->id }}">
-            <input type="hidden" name="voteable_type" value="App\Models\Resource">
             <button type="submit" name="vote_value" value="1" class="bg-blue-500 text-white px-4 py-2 rounded">Upvote</button>
             <button type="submit" name="vote_value" value="-1" class="bg-red-500 text-white px-4 py-2 rounded">Downvote</button>
         </form>
@@ -101,11 +99,14 @@
         <div id="total-votes">
             Total Votes: <span>{{ $totalUpvotes ?? 0 }}</span>
         </div>
-        @include('reports.create', array('resource'=>'resource', 'id'=>$resource->id))
+        @include('reports.create', array('type'=>'resource', 'id'=>$resource->id))
 
     </div>
+
+    @include('reviews.create', array('resource'=>$resource))
+
     <h1>Comments</h1>
-    @include('comments.index', array('resource'=>'resource', 'id'=>$resource->id))
-    @include('comments.create', array('resource'=>'resource', 'id'=>$resource->id))
+    @include('comments.index', array('type'=>'resource', 'id'=>$resource->id))
+    @include('comments.create', array('type'=>'resource', 'id'=>$resource->id))
 
 </x-app-layout>

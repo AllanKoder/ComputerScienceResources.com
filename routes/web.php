@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VoteController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourceController;
 use Illuminate\Support\Facades\Route;
@@ -29,20 +30,24 @@ Route::controller(ResourceController::class)->group(function () {
 
 // Comments
 Route::controller(CommentController::class)->group(function () {
-    Route::post('/{resource}/{id}/comment', 'store')->name('comment.comment');
+    Route::post('/{type}/{id}/comment', 'store')->name('comment.comment');
     Route::post('/comment/{comment}/reply', 'reply')->name('comment.reply');
     Route::delete('/comment/{comment}', 'destroy')->name('comment.destroy');
 });
 
 // Votes
 Route::controller(VoteController::class)->group(function () {
-    Route::post('/upvote', 'vote')->name('votes.vote');
+    Route::post('/{type}/{id}/upvote', 'vote')->name('votes.vote');
 });
 
+// Reviews
+Route::controller(ReviewController::class)->group(function () {
+    Route::post('/{resource}/review', 'store')->name('reviews.store');
+});
 
 // Reports
 Route::controller(ReportController::class)->group(function () {
-    Route::post('/{resource}/{id}/report', 'store')->name('reports.store');
+    Route::post('/{type}/{id}/report', 'store')->name('reports.store');
 });
 
 

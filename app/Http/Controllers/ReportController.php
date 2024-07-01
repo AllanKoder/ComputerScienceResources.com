@@ -42,11 +42,11 @@ class ReportController extends Controller
      * @param  \App\Http\Requests\StoreReportRequest  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreReportRequest $request, $resource, $id)
+    public function store(StoreReportRequest $request, $type, $id)
     {
         \Log::debug('storing report: ' . json_encode($request->validated()));
 
-        $reportableType = TypeHelper::getModelType($resource);
+        $reportableType = TypeHelper::getModelType($type);
         $reportable = $reportableType::findOrFail($id);
 
         $merged_request = array_merge($request->validated(),

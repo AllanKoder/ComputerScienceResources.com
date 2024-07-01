@@ -1,17 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    <!-- Loop through all errors and display them -->
-                    @foreach ($errors->all() as $error)
-                        <li class="text-red-800">{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-    </x-slot>
-
     <div class="flex justify-center mt-8">
         <form id="create-resource-form" method="POST" action="{{ route('resources.store') }}" class="w-full max-w-xl">
             @csrf <!-- CSRF token for security -->

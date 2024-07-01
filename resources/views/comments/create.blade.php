@@ -2,7 +2,7 @@
 
 <div class="container">
     <h1>Create a New Comment</h1>
-    <form action="{{ route('comment.comment', ['resource' => $resource, 'id' => $id]) }}" method="POST">
+    <form action="{{ route('comment.comment', ['type' => $type, 'id' => $id]) }}" method="POST">
         @csrf
 
         <div class="form-group">
