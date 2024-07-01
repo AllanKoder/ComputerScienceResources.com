@@ -1,6 +1,6 @@
 
 <x-app-layout>
-    <div class="mb-8">
+    <div class="mb-4">
         <!-- Displaying title, description, and image -->
         <div class="flex grid-cols-2 gap-4">
             <div class="flex items-center justify-center h-20 overflow-hidden border-2 border-gray p-1 rounded">
@@ -99,10 +99,13 @@
 
         <!-- Display total votes -->
         <div id="total-votes">
-            Total Votes: <span>{{ $totalUpvotes->total_votes ?? 0 }}</span>
+            Total Votes: <span>{{ $totalUpvotes ?? 0 }}</span>
         </div>
-        
+        @include('reports.create', array('resource'=>'resource', 'id'=>$resource->id))
+
     </div>
+    <h1>Comments</h1>
     @include('comments.index', array('resource'=>'resource', 'id'=>$resource->id))
     @include('comments.create', array('resource'=>'resource', 'id'=>$resource->id))
+
 </x-app-layout>

@@ -3,6 +3,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VoteController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourceController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,7 +29,7 @@ Route::controller(ResourceController::class)->group(function () {
 
 // Comments
 Route::controller(CommentController::class)->group(function () {
-    Route::post('/{resource}/{id}/comment', 'store')->name('comment.resourceComment');
+    Route::post('/{resource}/{id}/comment', 'store')->name('comment.comment');
     Route::post('/comment/{comment}/reply', 'reply')->name('comment.reply');
     Route::delete('/comment/{comment}', 'destroy')->name('comment.destroy');
 });
@@ -36,8 +37,14 @@ Route::controller(CommentController::class)->group(function () {
 // Votes
 Route::controller(VoteController::class)->group(function () {
     Route::post('/upvote', 'vote')->name('votes.vote');
-    Route::get('votes/{voteableId}/{voteableType}', 'getTotalVotes')->name('votes.getTotalVotes');
 });
+
+
+// Reports
+Route::controller(ReportController::class)->group(function () {
+    Route::post('/{resource}/{id}/report', 'store')->name('reports.store');
+});
+
 
 Route::get('/dashboard', function () {
     return view('dashboard');

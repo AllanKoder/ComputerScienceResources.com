@@ -18,8 +18,7 @@ class Comment extends Model
     protected $fillable = [
         'comment_text',
         'user_id',
-        'comment_head_id',
-        'reports'
+        'comment_head_id'
     ];
 
 
@@ -61,5 +60,25 @@ class Comment extends Model
     public function votes(): MorphMany
     {
         return $this->morphMany(Vote::class, 'voteable');
+    }
+
+    /**
+     * Get the reports for the comment.
+     */
+    public function reports(): MorphMany
+    {
+        return $this->morphMany(Vote::class, 'reportable');
+    }
+
+    public function addTotalVotesToComments($comments)
+    {
+        $voteTotalModel = new VoteTotal();
+        foreach ($comments as $comment) {
+            $comment->total_votes = $voteTotalModel->getTotalVotes($comment->id, Comment::class);
+            if ($comment->replies->isNotEmpty()) {
+                $comment->replies = $this->addTotalVotesToComments($comment->replies);
+            }
+        }
+        return $comments;
     }
 }

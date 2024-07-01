@@ -9,14 +9,32 @@
             </div>
             <div class="card-body">
                 <p class="card-text bg-fuchsia-400">{{ $comment->comment_text }}</p>
-                
+                <!-- Upvote and Downvote buttons -->
+                <form action="{{ route('votes.vote') }}" method="POST">
+                    @csrf
+                    <input type="hidden" name="voteable_id" value="{{ $comment->id }}">
+                    <input type="hidden" name="voteable_type" value="App\Models\Comment">
+                    <button type="submit" name="vote_value" value="1" class="bg-blue-500 text-white px-4 py-2 rounded">Upvote</button>
+                    <button type="submit" name="vote_value" value="-1" class="bg-red-500 text-white px-4 py-2 rounded">Downvote</button>
+                </form>
+
+                <!-- Display total votes -->
+                <div id="total-votes">
+                    Total Votes: <span>{{ $comment->total_votes ?? 0 }}</span>
+                </div
+
+
                 @if(auth()->id() == $comment->user_id)
-                    <form action="{{ route('comment.destroy', $comment) }}" method="POST" style="display: inline-block;" class="bg-red-400">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger">Delete</button>
-                    </form>
+                <form action="{{ route('comment.destroy', $comment) }}" method="POST" style="display: inline-block;" class="bg-red-400">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
                 @endif
+            </div>
+
+            <div class="">
+                @include('comments.reply', array('parentComment'=>$comment))
             </div>
             <div class="card-footer text-muted">
                 Posted {{ $comment->created_at->diffForHumans() }}
@@ -24,7 +42,6 @@
             @if($comment->replies->isNotEmpty())
                 @include('comments.index', ['comments' => $comment->replies])
             @endif
-            @include('comments.reply', array('parentComment'=>$comment))
         </div>
     @endforeach
 </div>

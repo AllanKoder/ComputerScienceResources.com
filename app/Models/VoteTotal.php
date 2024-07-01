@@ -14,6 +14,6 @@ class VoteTotal extends Model
         $totalVotes = VoteTotal::where('voteable_id', $voteableId)
                             ->where('voteable_type', $voteableType)
                             ->first();
-        return $totalVotes;
+        return $totalVotes ? $totalVotes->total_votes : 0; // Return 0 if no votes found
     }
 }

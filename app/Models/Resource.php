@@ -51,4 +51,12 @@ class Resource extends Model
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
+
+    /**
+     * Get the reports for the comment.
+     */
+    public function reports()
+    {
+        return $this->morphMany(Vote::class, 'reportable');
+    }
 }

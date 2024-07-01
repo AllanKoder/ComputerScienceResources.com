@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Resource;
 use App\Models\VoteTotal;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Validator;
 
 class ResourceController extends Controller
@@ -155,9 +156,13 @@ class ResourceController extends Controller
         // Retrieve total upvotes for the resource
         $voteTotalModel = new VoteTotal();
         $totalUpvotes = $voteTotalModel->getTotalVotes($id, Resource::class);
-        dump($totalUpvotes);
+
+        // Add total votes to each comment and its replies
+        $comments = (new Comment)->addTotalVotesToComments($comments);
+
         return view('resources.show', compact('resource', 'comments', 'totalUpvotes'));
     }
+
 
     // Show the form for editing the specified resource.
     public function edit($id)

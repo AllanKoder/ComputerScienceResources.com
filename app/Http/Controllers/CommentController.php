@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Helpers\TypeHelper;
 
 class CommentController extends Controller
 {
@@ -22,6 +23,7 @@ class CommentController extends Controller
     public function index()
     {
         $comments = Comment::with('user')->get();
+
         return view('comments.index', compact('comments'));
     }
 
@@ -51,7 +53,7 @@ class CommentController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $commentableType = $this->getCommentableType($resource);
+        $commentableType = TypeHelper::getModelType($resource);
         $commentable = $commentableType::findOrFail($id);
 
 
@@ -122,8 +124,10 @@ class CommentController extends Controller
         // Check if the authenticated user is the owner of the comment
         if ($comment->user_id !== auth()->id()) {
             abort(403, 'Unauthorized action.');
+            \Log::warning('not authorized to delete comment: ' . json_encode($comment->all()));
         }
-
+        \Log::info('deleting comment: ' . json_encode($comment->all()));
+        
         $comment->delete();
         $comments = Comment::whereNull('parent_id')->with('replies')->get(); // Adjust based on your structure
         return view('comments.index', compact('comments'))->render();
@@ -153,17 +157,6 @@ class CommentController extends Controller
         $reply->save();
 
         return back();
-    }
-
-    protected function getCommentableType($resource)
-    {
-    // Map resource types to their corresponding model classes
-    $types = [
-        'resource' => 'App\Models\Resource',
-        // other resource types
-    ];
-
-    return $types[$resource] ?? abort(404); 
     }
 
     protected function validateComment(Request $request)

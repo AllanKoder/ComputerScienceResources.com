@@ -40,15 +40,4 @@ class VoteController extends Controller
     
         return redirect()->back();
     }
-    
-    
-
-    public function getTotalVotes($voteableId, $voteableType)
-    {
-        $totalVotes = VoteTotal::where('voteable_id', $voteableId)
-                               ->where('voteable_type', $voteableType)
-                               ->first();
-
-        return redirect()->back();
-    }
 }
