@@ -19,7 +19,6 @@ public function up()
     $table->unsignedBigInteger('parent_id')->nullable();
     $table->unsignedBigInteger('commentable_id')->nullable(); // Polymorphic relation
     $table->string('commentable_type')->nullable(); // Polymorphic relation
-    $table->unsignedInteger('reports')->default(0);
     $table->timestamps();
 
     $table->foreign('user_id')->references('id')->on('users');

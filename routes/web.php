@@ -3,7 +3,7 @@
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VoteController;
-use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\ResourceReviewController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourceController;
 use Illuminate\Support\Facades\Route;
@@ -40,8 +40,8 @@ Route::controller(VoteController::class)->group(function () {
     Route::post('/{type}/{id}/upvote', 'vote')->name('votes.vote');
 });
 
-// Reviews
-Route::controller(ReviewController::class)->group(function () {
+// Reviews for Resources
+Route::controller(ResourceReviewController::class)->group(function () {
     Route::post('/{resource}/review', 'store')->name('reviews.store');
 });
 

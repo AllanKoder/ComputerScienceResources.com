@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Review extends Model
+class ResourceReview extends Model
 {
     use HasFactory;
 
@@ -17,5 +18,20 @@ class Review extends Model
         'user_friendliness',
         'updates_and_maintenance',
         'comment_id',
+        'user_id',
+        'resource_id',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Get the comment associated with the review.
+     */
+    public function comment()
+    {
+        return $this->hasOne(Comment::class, 'id', 'comment_id');
+    }
 }

@@ -103,10 +103,14 @@
 
     </div>
 
-    @include('reviews.create', array('resource'=>$resource))
+    @if(Auth::user())
+        @include('reviews.resources.create', array('resource'=>$resource))
+    @endif
 
     <h1>Comments</h1>
     @include('comments.index', array('type'=>'resource', 'id'=>$resource->id))
-    @include('comments.create', array('type'=>'resource', 'id'=>$resource->id))
 
+    @if(Auth::user())
+        @include('comments.create', array('type'=>'resource', 'id'=>$resource->id))
+    @endif
 </x-app-layout>
