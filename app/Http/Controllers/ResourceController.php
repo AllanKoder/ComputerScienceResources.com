@@ -151,7 +151,7 @@ class ResourceController extends Controller
     public function show($id)
     {
         $resource = Resource::findOrFail($id);
-        $comments = $resource->comments()->get();
+        $comments = $resource->comments()->whereNull('parent_id')->get();
 
         // Retrieve total upvotes for the resource
         $voteTotalModel = new VoteTotal();
@@ -159,7 +159,7 @@ class ResourceController extends Controller
 
         // Add total votes to each comment and its replies
         $comments = (new Comment)->addTotalVotesToComments($comments);
-
+        dump($comments);
         return view('resources.show', compact('resource', 'comments', 'totalUpvotes'));
     }
 
