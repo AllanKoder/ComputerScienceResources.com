@@ -202,6 +202,8 @@ class ResourceController extends Controller
     protected function validateResource(Request $request)
     {
         $availableFormats = array_keys(config('formats')); // Retrieve the formats from the configuration
+        $availablePricings = array_keys(config('pricings')); // Retrieve the pricing formats from the configuration
+        $availableDifficulty = array_keys(config('difficulties')); // Retrieve the difficulties from the configuration
 
         return Validator::make($request->all(), [
             'title' => 'required|string|max:255',
@@ -214,10 +216,10 @@ class ResourceController extends Controller
             'limitations' => 'sometimes|array|max:10',
             'limitations.*' => 'string', // Validates each item in the limitations array
             'resource_url' => 'required|url',
-            'pricing' => 'required|string|in:free,freemium,subscription,paid',
+            'pricing' => 'required|string|in:' . implode(',', $availablePricings),
             'topics' => 'sometimes|array',
             'topics.*' => 'string', // Validates each item in the topics array
-            'difficulty' => 'required|in:beginner,industry,academic',
+            'difficulty' => 'required|in:' . implode(',', $availableDifficulty),
         ]);
     }
 }
