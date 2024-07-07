@@ -32,6 +32,6 @@ class ResourceReview extends Model
      */
     public function comment()
     {
-        return $this->hasOne(Comment::class, 'id', 'comment_id');
+        return $this->morphOne(Comment::class, 'commentable');
     }
 }

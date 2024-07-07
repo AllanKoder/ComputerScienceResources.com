@@ -22,8 +22,8 @@ return new class extends Migration
             AFTER INSERT ON resource_reviews
             FOR EACH ROW
             BEGIN
-                IF (SELECT COUNT(*) FROM resources_reviews_summary WHERE resource_id = NEW.resource_id) = 0 THEN
-                    INSERT INTO resources_reviews_summary (
+                IF (SELECT COUNT(*) FROM resource_review_summaries WHERE resource_id = NEW.resource_id) = 0 THEN
+                    INSERT INTO resource_review_summaries (
                         resource_id, 
                         community_size_total, 
                         teaching_explanation_clarity_total, 
@@ -43,7 +43,7 @@ return new class extends Migration
                         1
                     );
                 ELSE
-                    UPDATE resources_reviews_summary
+                    UPDATE resource_review_summaries
                     SET 
                         community_size_total = community_size_total + NEW.community_size,
                         teaching_explanation_clarity_total = teaching_explanation_clarity_total + NEW.teaching_explanation_clarity,
@@ -64,8 +64,7 @@ return new class extends Migration
             AFTER UPDATE ON resource_reviews
             FOR EACH ROW
             BEGIN
-                INSERT INTO trigger_log (message) VALUES (\'after_review_insert fired\');
-                UPDATE resources_reviews_summary
+                UPDATE resource_review_summaries
                 SET 
                     community_size_total = community_size_total - OLD.community_size + NEW.community_size,
                     teaching_explanation_clarity_total = teaching_explanation_clarity_total - OLD.teaching_explanation_clarity + NEW.teaching_explanation_clarity,
@@ -83,7 +82,7 @@ return new class extends Migration
             AFTER DELETE ON resource_reviews
             FOR EACH ROW
             BEGIN
-                UPDATE resources_reviews_summary
+                UPDATE resource_review_summaries
                 SET 
                     community_size_total = community_size_total - OLD.community_size,
                     teaching_explanation_clarity_total = teaching_explanation_clarity_total - OLD.teaching_explanation_clarity,

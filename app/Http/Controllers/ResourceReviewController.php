@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\TypeHelper;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreResourceReviewRequest;
@@ -26,7 +27,8 @@ class ResourceReviewController extends Controller
     // Display a listing of the reviews.
     public function index(Request $request)
     {
-
+        $resourceReviews = ResourceReview::with(['comment', 'user'])->get();
+        return view('reviews.resources.index', compact('resourceReviews'));
     }
     
     // Show the form for creating a new review.
@@ -52,21 +54,27 @@ public function store(StoreResourceReviewRequest $request, Resource $resource)
             // Handle the case where a duplicate review exists
             return redirect()->back()->withErrors(['error' => 'You have already reviewed this resource.']);
         }
-
-        // Create a new comment
-        $comment = Comment::create([
-            'comment_text' => $request->input('comment_text'),
-            'user_id' => \Auth::id(),
-        ]);
-
-        // Create the review with the comment_id
+        // Create the review with null comment_id
         $review = ResourceReview::create(array_merge($validated, [
-            'comment_id' => $comment->id, 
             'user_id' => \Auth::id(),
             'resource_id' => $resource->id,
         ]));
 
-        dump($resource);
+
+        if ($request->has('comment_text'))
+        {
+            // Create a new comment
+            $comment = Comment::create([
+                'comment_text' => $request->input('comment_text'),
+                'user_id' => \Auth::id(),
+                'commentable_type' => ResourceReview::class,
+                'commentable_id' => $review->id,
+            ]);
+
+            $review->update([
+                'comment_id' => $comment->id, 
+            ]);
+        }
         return redirect()->back();
     }
 

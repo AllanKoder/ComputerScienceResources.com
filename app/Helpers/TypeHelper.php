@@ -10,7 +10,8 @@ class TypeHelper
         $types = [
             'resource' => 'App\Models\Resource',
             'comment' => 'App\Models\Comment',
-            'report' => 'App\Models\Report'
+            'report' => 'App\Models\Report',
+            'review' => 'App\Models\Review'
             // other resource types
         ];
 

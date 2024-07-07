@@ -21,9 +21,13 @@ return new class extends Migration
             $table->integer('technical_depth');
             $table->integer('user_friendliness');
             $table->integer('updates_and_maintenance');
-            $table->unsignedBigInteger('comment_id');
+            $table->unsignedBigInteger('comment_id')->nullable();
             $table->unsignedBigInteger('resource_id');
             $table->unsignedBigInteger('user_id');
+
+            $table->foreign('comment_id')->references('id')->on('comments');
+            $table->foreign('resource_id')->references('id')->on('resources');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

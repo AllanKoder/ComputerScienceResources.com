@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('resources_reviews_summary', function (Blueprint $table) {
+        Schema::create('resource_review_summaries', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('resource_id');
             $table->integer('community_size_total')->default(0);
@@ -37,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('resources_reviews_summary');
+        Schema::dropIfExists('resource_review_summaries');
     }
 };

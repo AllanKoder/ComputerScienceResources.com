@@ -19,7 +19,7 @@ class ResourceSeeder extends Seeder
         \DB::table('resources')->delete();
 
         // Create 3 new resources
-        Resource::create([
+        Resource::factory()->create([
             'title' => 'Learning Laravel',
             'description' => 'A comprehensive guide to web development with Laravel.',
             'image_url' => 'https://wallpapers.com/images/featured/funny-cats-pictures-uu9qufqc5zq8l7el.jpg',
@@ -32,7 +32,7 @@ class ResourceSeeder extends Seeder
             'difficulty' => 'beginner',
         ]);
 
-        Resource::create([
+        Resource::factory()->create([
             'title' => 'Advanced Eloquent Usage',
             'description' => 'Deep dive into the Eloquent ORM and its advanced features.',
             'image_url' => 'https://wallpapers.com/images/featured/funny-cats-pictures-uu9qufqc5zq8l7el.jpg',
@@ -45,7 +45,7 @@ class ResourceSeeder extends Seeder
             'difficulty' => 'industry',
         ]);
 
-        Resource::create([
+        Resource::factory()->create([
             'title' => 'The Art of API Design',
             'description' => 'Best practices for designing robust APIs with Laravel.',
             'image_url' => 'https://wallpapers.com/images/featured/funny-cats-pictures-uu9qufqc5zq8l7el.jpg',

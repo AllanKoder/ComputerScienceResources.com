@@ -22,7 +22,7 @@ public function up()
     $table->timestamps();
 
     $table->foreign('user_id')->references('id')->on('users');
-    $table->foreign('parent_id')->references('id')->on('comments')->onDelete('cascade');
+    $table->foreign('parent_id')->references('id')->on('comments');
     // No need to add foreign keys for polymorphic relations
     });
 }

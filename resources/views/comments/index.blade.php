@@ -2,7 +2,7 @@
 
 <div class="container" id="comments-container">
     @foreach ($comments as $comment)
-        <div class="card mb-3 ml-10">
+        <div class="card mb-3 {{ $comment->parent_id ? 'ml-10' : 'ml-0' }}">
             <p class="p-3 font-bold"> {{$comment->upvotes }} </p>
             <div class="card-header">
                 {{ $comment->user->name }}
@@ -19,8 +19,7 @@
                 <!-- Display total votes -->
                 <div id="total-votes">
                     Total Votes: <span>{{ $comment->total_votes ?? 0 }}</span>
-                </div
-
+                </div>
 
                 @if(auth()->id() == $comment->user_id)
                     <form action="{{ route('comment.destroy', $comment) }}" method="POST" style="display: inline-block;" class="bg-red-400">
@@ -42,7 +41,9 @@
                 Posted {{ $comment->created_at->diffForHumans() }}
             </div>
             @if($comment->replies->isNotEmpty())
-                @include('comments.index', ['comments' => $comment->replies])
+                <div class="ml-10">
+                    @include('comments.index', ['comments' => $comment->replies])
+                </div>
             @endif
         </div>
     @endforeach

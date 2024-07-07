@@ -21,7 +21,7 @@
                 <p class="mb-1">{{ $resource->description }}</p>
             </div>
         </div>
-        
+
         <!-- Pricing model -->
         <div class="flex flex-wrap">
             <p>Pricing Model: </p>
@@ -87,7 +87,6 @@
             <strong>Difficulty:</strong> {{ $resource->difficulty }}
         </div>
 
-
         <!-- Upvote and Downvote buttons -->
         <form action="{{ route('votes.vote', ['type'=>'resource', 'id'=>$resource->id]) }}" method="POST">
             @csrf
@@ -101,6 +100,7 @@
         </div>
         @include('reports.create', array('type'=>'resource', 'id'=>$resource->id))
 
+        @include('reviews.summary.show', array('reviewSummaryData'=>$reviewSummaryData))
     </div>
 
     @if(Auth::user())
@@ -113,4 +113,7 @@
     @if(Auth::user())
         @include('comments.create', array('type'=>'resource', 'id'=>$resource->id))
     @endif
+
+    @include('reviews.resources.index', array('resourceReviews'=>$resourceReviews))
+
 </x-app-layout>

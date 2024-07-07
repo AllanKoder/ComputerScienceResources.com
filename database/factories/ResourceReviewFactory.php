@@ -2,20 +2,20 @@
 
 namespace Database\Factories;
 
-use App\Models\Review;
+use App\Models\ResourceReview;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory\App\Models\Review
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory\App\Models\ResourceReview
  */
-class ReviewFactory extends Factory
+class ResourceReviewFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Review::class;
+    protected $model = ResourceReview::class;
 
     /**
      * Define the model's default state.
@@ -31,9 +31,9 @@ class ReviewFactory extends Factory
             'technical_depth' => fake()->numberBetween(0, 5),
             'user_friendliness' => fake()->numberBetween(0, 5),
             'updates_and_maintenance' => fake()->numberBetween(0, 5),
-            'comment_id' => fake()->numberBetween(1, 100),
-            'resource_id' => fake()->numberBetween(1, 100),
-            'user_id' => fake()->numberBetween(1, 50),
+            'comment_id' => null,
+            'resource_id' => fake()->numberBetween(1, 3),
+            'user_id' => fake()->numberBetween(1, 10),
         ];
     }
 }

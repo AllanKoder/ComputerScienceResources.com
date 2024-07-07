@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Resource;
 use App\Models\VoteTotal;
 use App\Models\Comment;
+use App\Models\ResourceReview;
+use App\Models\ResourceReviewSummary;
 use Illuminate\Support\Facades\Validator;
 
 class ResourceController extends Controller
@@ -159,8 +161,16 @@ class ResourceController extends Controller
 
         // Add total votes to each comment and its replies
         $comments = (new Comment)->addTotalVotesToComments($comments);
-        dump($comments);
-        return view('resources.show', compact('resource', 'comments', 'totalUpvotes'));
+
+        // Retrieve resource reviews
+        $resourceReviews = ResourceReview::where('resource_id', $id)->with('comment', 'user')->get();
+
+        // Retrieve review summary
+        $reviewSummary = ResourceReviewSummary::where('resource_id', $id)->first();
+        $reviewSummaryData = $reviewSummary ? $reviewSummary->getReviewSummary() : null;
+        
+        return view('resources.show', compact('resource', 'comments', 'totalUpvotes',
+        'resourceReviews', 'reviewSummaryData'));
     }
 
 
