@@ -99,8 +99,10 @@
             Total Votes: <span>{{ $totalUpvotes ?? 0 }}</span>
         </div>
         @include('reports.create', array('type'=>'resource', 'id'=>$resource->id))
-
-        @include('reviews.summary.show', array('reviewSummaryData'=>$reviewSummaryData))
+        
+        @if($reviewSummaryData)
+            @include('reviews.summary.show', array('reviewSummaryData'=>$reviewSummaryData))
+        @endif
     </div>
 
     @if(Auth::user())
