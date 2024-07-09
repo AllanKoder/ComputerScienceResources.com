@@ -14,6 +14,7 @@ class Report extends Model
     protected $fillable = [
         'report_text',
         'reportable_id', // TODO: remove and see results
+        'reportable_type', // TODO: remove and see results
         'user_id',
     ];
 

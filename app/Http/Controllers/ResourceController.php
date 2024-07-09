@@ -154,24 +154,32 @@ class ResourceController extends Controller
     {
         $resource = Resource::findOrFail($id);
         $comments = $resource->comments()->whereNull('parent_id')->get();
-
+    
         // Retrieve total upvotes for the resource
         $voteTotalModel = new VoteTotal();
         $totalUpvotes = $voteTotalModel->getTotalVotes($id, Resource::class);
-
+    
         // Add total votes to each comment and its replies
         $comments = (new Comment)->addTotalVotesToComments($comments);
-
+    
         // Retrieve resource reviews
         $resourceReviews = ResourceReview::where('resource_id', $id)->with('comment', 'user')->get();
-
+    
+        // Add total votes to each comment in the resource reviews
+        $resourceReviews->each(function ($review) {
+            if ($review->comment) {
+                $review->comments = (new Comment)->addTotalVotesToComments(collect([$review->comment]));
+            }
+        });
+    
         // Retrieve review summary
         $reviewSummary = ResourceReviewSummary::where('resource_id', $id)->first();
         $reviewSummaryData = $reviewSummary ? $reviewSummary->getReviewSummary() : null;
-        
-        return view('resources.show', compact('resource', 'comments', 'totalUpvotes',
-        'resourceReviews', 'reviewSummaryData'));
+    
+        return view('resources.show', compact('resource', 'comments', 'totalUpvotes', 'resourceReviews', 'reviewSummaryData'));
     }
+    
+    
 
 
     // Show the form for editing the specified resource.

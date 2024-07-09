@@ -17,8 +17,11 @@ class Comment extends Model
 
     protected $fillable = [
         'comment_text',
+        'comment_title',
         'user_id',
-        'parent_id'
+        'parent_id',
+        'commentable_id',
+        'commentable_type',
     ];
 
 
@@ -79,6 +82,6 @@ class Comment extends Model
                 $comment->replies = $this->addTotalVotesToComments($comment->replies);
             }
         }
-        return $comments;
+        return collect($comments); // Ensure it returns a collection
     }
 }

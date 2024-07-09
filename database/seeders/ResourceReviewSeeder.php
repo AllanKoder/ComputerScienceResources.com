@@ -18,24 +18,12 @@ class ResourceReviewSeeder extends Seeder
     {
         // Clear the existing resource reviews table
         \DB::table('resource_reviews')->delete();
-
-        // Create new resource reviews for resource 1 with no comments
-        ResourceReview::factory()->count(5)->create([
-            'resource_id' => 1,
-            'comment_id' => null,
-        ]);
-        
-        // Create new resource reviews for resource 2 with no comments
-        ResourceReview::factory()->count(5)->create([
-            'resource_id' => 2,
-            'comment_id' => null,
-        ]);
         
         // Create new resource reviews for resource 1
         $reviewsForResource1 = ResourceReview::factory()->count(5)->create([
             'resource_id' => 1,
         ]);
-
+    
         // Create new resource reviews for resource 2
         $reviewsForResource2 = ResourceReview::factory()->count(5)->create([
             'resource_id' => 2,
@@ -50,6 +38,8 @@ class ResourceReviewSeeder extends Seeder
                 'commentable_type' => ResourceReview::class,
             ]);
             $review->update(['comment_id' => $comment->id]);
+    
+            $review->comment()->save($comment);
         });
         
         $reviewsForResource2->each(function ($review) {
@@ -61,6 +51,21 @@ class ResourceReviewSeeder extends Seeder
                 'commentable_type' => ResourceReview::class,
             ]);
             $review->update(['comment_id' => $comment->id]);
+    
+            $review->comment()->save($comment);
         });        
+        
+        // Create new resource reviews for resource 1 with no comments
+        ResourceReview::factory()->count(3)->create([
+            'resource_id' => 1,
+            'comment_id' => null,
+        ]);
+        
+        // Create new resource reviews for resource 2 with no comments
+        ResourceReview::factory()->count(3)->create([
+            'resource_id' => 2,
+            'comment_id' => null,
+        ]);
+        
     }
 }

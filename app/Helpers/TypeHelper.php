@@ -11,7 +11,7 @@ class TypeHelper
             'resource' => 'App\Models\Resource',
             'comment' => 'App\Models\Comment',
             'report' => 'App\Models\Report',
-            'review' => 'App\Models\Review'
+            'review' => 'App\Models\ResourceReview'
             // other resource types
         ];
 

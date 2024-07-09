@@ -86,6 +86,10 @@
         <div class="mb-4">
             <strong>Difficulty:</strong> {{ $resource->difficulty }}
         </div>
+        
+        @if($reviewSummaryData)
+            @include('reviews.summary.show', array('reviewSummaryData'=>$reviewSummaryData))
+        @endif
 
         <!-- Upvote and Downvote buttons -->
         <form action="{{ route('votes.vote', ['type'=>'resource', 'id'=>$resource->id]) }}" method="POST">
@@ -100,9 +104,6 @@
         </div>
         @include('reports.create', array('type'=>'resource', 'id'=>$resource->id))
         
-        @if($reviewSummaryData)
-            @include('reviews.summary.show', array('reviewSummaryData'=>$reviewSummaryData))
-        @endif
     </div>
 
     @if(Auth::user())
@@ -110,7 +111,7 @@
     @endif
 
     <h1>Comments</h1>
-    @include('comments.index', array('type'=>'resource', 'id'=>$resource->id))
+    @include('comments.index', array('comments'=>$resource->comments))
 
     @if(Auth::user())
         @include('comments.create', array('type'=>'resource', 'id'=>$resource->id))

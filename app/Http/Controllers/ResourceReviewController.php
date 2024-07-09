@@ -38,8 +38,7 @@ class ResourceReviewController extends Controller
     }
     
     // Store a newly created review in storage.
-// Store a newly created review in storage.
-public function store(StoreResourceReviewRequest $request, Resource $resource)
+    public function store(StoreResourceReviewRequest $request, Resource $resource)
     {
         \Log::debug('storing review on resource: ' . json_encode($request->validated()) . $resource);
 
@@ -65,11 +64,12 @@ public function store(StoreResourceReviewRequest $request, Resource $resource)
         {
             // Create a new comment
             $comment = Comment::create([
+                'comment_title' => $request->input('comment_title'), 
                 'comment_text' => $request->input('comment_text'),
                 'user_id' => \Auth::id(),
-                'commentable_type' => ResourceReview::class,
-                'commentable_id' => $review->id,
             ]);
+            
+            $review->comment->save($comment);
 
             $review->update([
                 'comment_id' => $comment->id, 

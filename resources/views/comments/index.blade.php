@@ -1,16 +1,14 @@
-{{-- resources/views/comments/index.blade.php --}}
-
 <div class="container" id="comments-container">
     @foreach ($comments as $comment)
         <div class="card mb-3 {{ $comment->parent_id ? 'ml-10' : 'ml-0' }}">
-            <p class="p-3 font-bold"> {{$comment->upvotes }} </p>
+            <p class="p-3 font-bold">{{ $comment->total_votes ?? 0 }}</p>
             <div class="card-header">
                 {{ $comment->user->name }}
             </div>
             <div class="card-body">
                 <p class="card-text bg-fuchsia-400">{{ $comment->comment_text }}</p>
                 <!-- Upvote and Downvote buttons -->
-                <form action="{{ route('votes.vote', ['type'=>'comment', 'id'=>$comment->id]) }}" method="POST">
+                <form action="{{ route('votes.vote', ['type' => 'comment', 'id' => $comment->id]) }}" method="POST">
                     @csrf
                     <button type="submit" name="vote_value" value="1" class="bg-blue-500 text-white px-4 py-2 rounded">Upvote</button>
                     <button type="submit" name="vote_value" value="-1" class="bg-red-500 text-white px-4 py-2 rounded">Downvote</button>
@@ -31,11 +29,11 @@
             </div>
 
             <div class="">
-                @include('comments.reply', array('parentComment'=>$comment))
+                @include('comments.reply', ['parentComment' => $comment])
             </div>
 
             <div class="">
-                @include('reports.create', array('type'=>'comment', 'id'=>$comment->id))
+                @include('reports.create', ['type' => 'comment', 'id' => $comment->id])
             </div>
             <div class="card-footer text-muted">
                 Posted {{ $comment->created_at->diffForHumans() }}
