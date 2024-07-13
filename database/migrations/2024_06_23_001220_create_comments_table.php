@@ -17,14 +17,11 @@ public function up()
     $table->text('comment_text');
     $table->text('comment_title')->nullable();
     $table->unsignedBigInteger('user_id');
-    $table->unsignedBigInteger('parent_id')->nullable();
     $table->unsignedBigInteger('commentable_id')->nullable(); // Polymorphic relation
     $table->string('commentable_type')->nullable(); // Polymorphic relation
     $table->timestamps();
 
     $table->foreign('user_id')->references('id')->on('users');
-    $table->foreign('parent_id')->references('id')->on('comments');
-    // No need to add foreign keys for polymorphic relations
     });
 }
 

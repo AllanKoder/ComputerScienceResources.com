@@ -28,7 +28,6 @@ class CommentFactory extends Factory
             'comment_text' => fake()->text,
             'comment_title' => fake()->realTextBetween(1,50),
             'user_id' => fake()->numberBetween(1, 10),
-            'parent_id' => fake()->optional()->numberBetween(1, 5), // Optional parent comment
             'commentable_id' => fake()->numberBetween(1,10),
             'commentable_type' => 'App\Models\Resource',
         ];

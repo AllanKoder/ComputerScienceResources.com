@@ -33,7 +33,6 @@ class ResourceReviewSeeder extends Seeder
             $comment = Comment::factory()->create([
                 'comment_text' => 'This is a comment for the review.',
                 'user_id' => fake()->numberBetween(1, 10),
-                'parent_id' => null,
                 'commentable_id' => $review->id,
                 'commentable_type' => ResourceReview::class,
             ]);
@@ -46,7 +45,6 @@ class ResourceReviewSeeder extends Seeder
             $comment = Comment::factory()->create([
                 'comment_text' => 'This is a comment for the review.',
                 'user_id' => fake()->numberBetween(1, 10),
-                'parent_id' => null,
                 'commentable_id' => $review->id,
                 'commentable_type' => ResourceReview::class,
             ]);

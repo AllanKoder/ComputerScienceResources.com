@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 
 use App\Models\User;
 
@@ -19,11 +20,9 @@ class Comment extends Model
         'comment_text',
         'comment_title',
         'user_id',
-        'parent_id',
         'commentable_id',
         'commentable_type',
     ];
-
 
     /**
      * Get the commentable entity that the comment belongs to.
@@ -42,19 +41,11 @@ class Comment extends Model
     }
 
     /**
-     * Get the head comment if this is a reply.
-     */
-    public function commentHead(): BelongsTo
-    {
-        return $this->belongsTo(Comment::class, 'parent_id');
-    }
-
-    /**
      * Get the replies for the comment.
      */
-    public function replies(): HasMany
+    public function replies(): MorphMany
     {
-        return $this->hasMany(Comment::class, 'parent_id');
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     /**
@@ -70,18 +61,35 @@ class Comment extends Model
      */
     public function reports(): MorphMany
     {
-        return $this->morphMany(Vote::class, 'reportable');
+        return $this->morphMany(Report::class, 'reportable');
     }
 
-    public function addTotalVotesToComments($comments)
+    /**
+     * Get the upvotes for the comments.
+     */
+    public static function getUpvotes(Collection $comments): Collection
     {
-        $voteTotalModel = new VoteTotal();
-        foreach ($comments as $comment) {
-            $comment->total_votes = $voteTotalModel->getTotalVotes($comment->id, Comment::class);
-            if ($comment->replies->isNotEmpty()) {
-                $comment->replies = $this->addTotalVotesToComments($comment->replies);
-            }
+        // Ensure $comments is a collection
+        $comments = collect($comments);
+        
+        // Check if there are any comments
+        if ($comments->isEmpty()) {
+            return $comments;
         }
-        return collect($comments); // Ensure it returns a collection
-    }
+    
+        $commentIds = $comments->pluck('id')->toArray();
+    
+        // Check if there are any comment IDs
+        if (empty($commentIds)) {
+            return $comments;
+        }
+    
+        $voteTotals = VoteTotal::getTotalVotesForComments($commentIds);
+    
+        foreach ($comments as $comment) {
+            $comment->total_votes = $voteTotals->get($comment->id)->total_votes ?? 0;
+        }
+    
+        return $comments;
+    }    
 }

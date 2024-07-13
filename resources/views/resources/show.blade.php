@@ -1,3 +1,4 @@
+<!-- resources/views/resources/show.blade.php -->
 
 <x-app-layout>
     <div class="mb-4">
@@ -111,12 +112,16 @@
     @endif
 
     <h1>Comments</h1>
-    @include('comments.index', array('comments'=>$resource->comments))
-
-    @if(Auth::user())
-        @include('comments.create', array('type'=>'resource', 'id'=>$resource->id))
+    @if($commentTree->isNotEmpty())
+        @include('comments.partials.index', ['comments' => $commentTree])
+    @else
+        <p>No comments available.</p>
     @endif
 
-    @include('reviews.resources.index', array('resourceReviews'=>$resourceReviews))
+    @if(Auth::user())
+        @include('comments.partials.create', array('type'=>'resource', 'id'=>$resource->id))
+    @endif
+
+    {{-- @include('reviews.resources.index', array('resourceReviews'=>$resourceReviews)) --}}
 
 </x-app-layout>
