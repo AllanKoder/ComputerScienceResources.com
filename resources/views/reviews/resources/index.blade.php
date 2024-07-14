@@ -35,7 +35,7 @@
         class="bg-teal-300 p-2 mt-2">
         View Replies
     </button>
-    <div id="replies-{{ $review->id }}"></div>
+    <div style="display: none;" id="replies-{{ $review->id }}"></div>
 
 @endforeach
 
