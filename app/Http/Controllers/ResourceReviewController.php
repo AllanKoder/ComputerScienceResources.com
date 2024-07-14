@@ -59,22 +59,19 @@ class ResourceReviewController extends Controller
             'resource_id' => $resource->id,
         ]));
 
+        // Create a new comment
+        $comment = Comment::create([
+            'comment_title' => $request->input('comment_title', ""), 
+            'comment_text' => $request->input('comment_text', ""),
+            'user_id' => \Auth::id(),
+        ]);
+        
+        $review->comment->save($comment);
 
-        if ($request->has('comment_text'))
-        {
-            // Create a new comment
-            $comment = Comment::create([
-                'comment_title' => $request->input('comment_title'), 
-                'comment_text' => $request->input('comment_text'),
-                'user_id' => \Auth::id(),
-            ]);
-            
-            $review->comment->save($comment);
-
-            $review->update([
-                'comment_id' => $comment->id, 
-            ]);
-        }
+        $review->update([
+            'comment_id' => $comment->id, 
+        ]);
+    
         return redirect()->back();
     }
 

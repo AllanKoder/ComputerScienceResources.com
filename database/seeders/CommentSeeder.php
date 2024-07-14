@@ -23,42 +23,6 @@ class CommentSeeder extends Seeder
 
         // Seed comments for a specific resource
         $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(1);
     }
 
     /**
@@ -143,7 +107,7 @@ class CommentSeeder extends Seeder
 
         // Insert closure table entries
         foreach ($comments as $comment) {
-            $this->insertClosureTableEntries($comment);
+            $this::insertClosureTableEntries($comment);
         }
     }
 
@@ -153,7 +117,7 @@ class CommentSeeder extends Seeder
      * @param \App\Models\Comment $comment
      * @return void
      */
-    private function insertClosureTableEntries(Comment $comment)
+    public static function insertClosureTableEntries(Comment $comment)
     {
         // Make a new closure for the new comment on the commentable model.
         if ($comment->commentable_type != Comment::class)

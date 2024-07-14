@@ -10,7 +10,6 @@
                 <th>User Friendliness</th>
                 <th>Updates and Maintenance</th>
                 <th>User</th>
-                <th>Comment</th>
             </tr>
         </thead>
         <tbody>
@@ -26,8 +25,8 @@
             </tr>
         </tbody>
     </table>
-    @if ($review->comments)
-        @include('comments.index', ['comments' => $review->comments])
+    @if ($review->commentTree)
+        @include('comments.partials.index', array('comments'=>$review->commentTree))
     @endif
 @endforeach
 

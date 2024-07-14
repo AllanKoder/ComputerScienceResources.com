@@ -155,73 +155,28 @@ class ResourceController extends Controller
         // Fetch the resource
         $resource = Resource::with('comments')->findOrFail($id);
     
-        // Fetch all ancestor comments with their user and votes
-        $ancestorComments = Comment::where('commentable_id', $id)
-            ->where('commentable_type', Resource::class)
-            ->with(['user', 'votes'])
-            ->get();
+        // Get the comment tree for the resource
+        $commentTree = Comment::getCommentTree(Resource::class, $id);
     
-        // Fetch all replies for each comment using the CommentClosure model
-        $allComments = Comment::whereIn('id', function ($query) use ($ancestorComments) {
-            $query->select('comment_id')
-                ->from('comment_closures')
-                ->whereIn('ancestor', $ancestorComments->pluck('id'));
-        })->with(['user', 'votes'])
-          ->get();
-    
-        // Combine ancestor comments and all replies
-        $comments = $ancestorComments->merge($allComments);
-    
-        // Build the comment tree
-        $commentTree = $this->buildCommentTree($comments, $id);
-    
-        // Retrieve total upvotes for the resource
-        $voteTotalModel = new VoteTotal();
-        $totalUpvotes = $voteTotalModel->getTotalVotes($id, Resource::class);
-    
+        // Retrieve total upvotes for this resource
+        $totalUpvotes = VoteTotal::getTotalVotes($id, Resource::class);
+        
         // Retrieve resource reviews with comments and users
         $resourceReviews = ResourceReview::where('resource_id', $id)
             ->with(['comment', 'comment.votes', 'user'])
             ->get();
     
-        // Add total votes to each comment in the resource reviews
+        // Add total votes and comment tree to each review's comment
         $resourceReviews->each(function ($review) {
-            if ($review->comment) {
-                $review->comments = Comment::getUpvotes(collect([$review->comment]));
-            }
+            $review->commentTree = Comment::getCommentTree(ResourceReview::class, $review->id);            
         });
-    
+
         // Retrieve review summary
         $reviewSummary = ResourceReviewSummary::where('resource_id', $id)->first();
         $reviewSummaryData = $reviewSummary ? $reviewSummary->getReviewSummary() : null;
     
         return view('resources.show', compact('resource', 'commentTree', 'totalUpvotes', 'resourceReviews', 'reviewSummaryData'));
     }
-    
-        
-    /**
-     * Build a nested comment tree.
-     *
-     * @param \Illuminate\Support\Collection $comments
-     * @return \Illuminate\Support\Collection
-     */
-    private function buildCommentTree($comments, $resourceId)
-    {
-        $grouped = $comments->groupBy('commentable_id');
-    
-        foreach ($comments as $comment) {
-            // Ensure a comment is not its own child
-            if ($comment->id !== $comment->commentable_id) {
-                $comment->comments = $grouped->get($comment->id, collect());
-            } else {
-                $comment->comments = collect();
-            }
-        }
-    
-        // Top-level comments are those with `commentable_id` equal to the resource ID
-        return $grouped->get($resourceId, collect());
-    }
-    
     
     // Show the form for editing the specified resource.
     public function edit($id)

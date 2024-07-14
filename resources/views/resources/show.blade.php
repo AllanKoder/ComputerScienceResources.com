@@ -122,6 +122,7 @@
         @include('comments.partials.create', array('type'=>'resource', 'id'=>$resource->id))
     @endif
 
-    {{-- @include('reviews.resources.index', array('resourceReviews'=>$resourceReviews)) --}}
+    <h1>Resource Reviews</h1>
+    @include('reviews.resources.index', array('resourceReviews'=>$resourceReviews))
 
 </x-app-layout>

@@ -91,5 +91,54 @@ class Comment extends Model
         }
     
         return $comments;
-    }    
+    }
+
+    // Get the comment tree with the user and the votes
+    public static function getCommentTree($commentableType, $commentableId)
+    {
+        // Fetch all ancestor comments with their user and votes
+        $ancestorComments = self::where('commentable_id', $commentableId)
+            ->where('commentable_type', $commentableType)
+            ->get();
+
+        // Fetch all replies for each comment using the CommentClosure model
+        $allComments = self::whereIn('id', function ($query) use ($ancestorComments) {
+            $query->select('comment_id')
+                ->from('comment_closures')
+                ->whereIn('ancestor', $ancestorComments->pluck('id'));
+        })->with(['user', 'votes'])
+          ->get();
+
+        // Combine ancestor comments and all replies
+        $comments = $ancestorComments->merge($allComments);
+
+        // Fetch total votes for all comments
+        $commentIds = $comments->pluck('id');
+        $voteTotals = VoteTotal::getTotalVotesForComments($commentIds);
+
+        // Assign total votes to each comment
+        foreach ($comments as $comment) {
+            $comment->total_votes = $voteTotals->get($comment->id)->total_votes ?? 0;
+        }
+
+        // Build the comment tree
+        return self::buildCommentTree($comments, $commentableId);
+    }
+
+    private static function buildCommentTree($comments, $resourceId)
+    {
+        $grouped = $comments->groupBy('commentable_id');
+
+        foreach ($comments as $comment) {
+            // Ensure a comment is not its own child
+            if ($comment->id !== $comment->commentable_id) {
+                $comment->comments = $grouped->get($comment->id, collect());
+            } else {
+                $comment->comments = collect();
+            }
+        }
+
+        // Top-level comments are those with `commentable_id` equal to the resource ID
+        return $grouped->get($resourceId, collect());
+    }
 }
