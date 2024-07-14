@@ -31,6 +31,7 @@ Route::controller(ResourceController::class)->group(function () {
 // Comments
 Route::controller(CommentController::class)->group(function () {
     Route::post('/{type}/{id}/comment', 'store')->name('comment.comment');
+    Route::get('/{type}/{id}/comment', 'comments')->name('comment.comments');
     Route::post('/comment/{comment}/reply', 'reply')->name('comment.reply');
     Route::delete('/comment/{comment}', 'destroy')->name('comment.destroy');
 });
@@ -42,7 +43,9 @@ Route::controller(VoteController::class)->group(function () {
 
 // Reviews for Resources
 Route::controller(ResourceReviewController::class)->group(function () {
-    Route::post('/{resource}/review', 'store')->name('reviews.store');
+    Route::post('/review/{resource}', 'store')->name('reviews.store');
+    Route::get('/review/{resource}', 'show')->name('reviews.show');
+    Route::get('/review/replies/{id}', 'replies')->name('reviews.replies');
 });
 
 // Reports

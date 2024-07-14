@@ -13,7 +13,7 @@ class CommentController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => ['comments']]);
     }
 
     /**
@@ -44,7 +44,7 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $type, $id)
+    public function store(Request $request, string $type, int $id)
     {
         $commentableType = TypeHelper::getModelType($type);
         if ($commentableType == Comment::class)
@@ -86,6 +86,21 @@ class CommentController extends Controller
     {
         return view('comments.show', compact('comment'));
     }
+
+    /**
+     * Display the specified comment.
+     *
+     * @param  \App\Models\Comment  $comment
+     * @return \Illuminate\Http\Response
+     */
+    public function comments(string $type, int $id)
+    {
+        $commentableType = TypeHelper::getModelType($type);
+        $commentTree = Comment::getCommentTree($commentableType, $id);
+        
+        return view('comments.partials.index', ['comments' => $commentTree]);
+    }
+
 
     /**
      * Show the form for editing the specified comment.
@@ -167,9 +182,9 @@ class CommentController extends Controller
 
         // Find the ancestor ID of the commentable item
         $ancestorID = CommentClosure::where('comment_id', $comment->id)->first()->ancestor;
-        \Log::info('Creating closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
-
+        
         // Create a new closure entry with the found ancestor ID
+        \Log::info('Creating closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
         CommentClosure::create([
             'ancestor' => $ancestorID,
             'comment_id' => $reply->id,

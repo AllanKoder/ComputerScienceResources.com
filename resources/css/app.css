@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.htmx-request #spinner {
+    display: block;
+}
+.htmx-request-complete #spinner {
+    display: none;
+}

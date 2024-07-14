@@ -1,4 +1,5 @@
 <h1>Resource Reviews</h1>
+
 @foreach($resourceReviews as $review)
     <table class="table">
         <thead>
@@ -25,8 +26,10 @@
             </tr>
         </tbody>
     </table>
-    @if ($review->commentTree)
-        @include('comments.partials.index', array('comments'=>$review->commentTree))
-    @endif
+    @include('comments.partials.reply', array('comment'=>$review->comment))
+    
+    <x-spinner class="mx-auto" id="spinner-{{ $review->id }}"></x-spinner>
+    <button hx-get="{{ route('reviews.replies', ['id' => $review->id]) }}" hx-target="#replies-{{ $review->id }}" hx-indicator="#spinner-{{ $review->id }}" class="bg-teal-300 p-2 mt-2">View Replies</button>
+    <div id="replies-{{ $review->id }}"></div>
 @endforeach
 

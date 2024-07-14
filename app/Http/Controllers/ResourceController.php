@@ -160,22 +160,12 @@ class ResourceController extends Controller
     
         // Retrieve total upvotes for this resource
         $totalUpvotes = VoteTotal::getTotalVotes($id, Resource::class);
-        
-        // Retrieve resource reviews with comments and users
-        $resourceReviews = ResourceReview::where('resource_id', $id)
-            ->with(['comment', 'comment.votes', 'user'])
-            ->get();
-    
-        // Add total votes and comment tree to each review's comment
-        $resourceReviews->each(function ($review) {
-            $review->commentTree = Comment::getCommentTree(ResourceReview::class, $review->id);            
-        });
 
         // Retrieve review summary
         $reviewSummary = ResourceReviewSummary::where('resource_id', $id)->first();
         $reviewSummaryData = $reviewSummary ? $reviewSummary->getReviewSummary() : null;
     
-        return view('resources.show', compact('resource', 'commentTree', 'totalUpvotes', 'resourceReviews', 'reviewSummaryData'));
+        return view('resources.show', compact('resource', 'commentTree', 'totalUpvotes', 'reviewSummaryData'));
     }
     
     // Show the form for editing the specified resource.

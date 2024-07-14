@@ -109,20 +109,22 @@
 
     @if(Auth::user())
         @include('reviews.resources.create', array('resource'=>$resource))
-    @endif
-
-    <h1>Comments</h1>
-    @if($commentTree->isNotEmpty())
-        @include('comments.partials.index', ['comments' => $commentTree])
-    @else
-        <p>No comments available.</p>
-    @endif
-
-    @if(Auth::user())
         @include('comments.partials.create', array('type'=>'resource', 'id'=>$resource->id))
     @endif
 
-    <h1>Resource Reviews</h1>
-    @include('reviews.resources.index', array('resourceReviews'=>$resourceReviews))
-
+    
+    <div class="tab-list" role="tablist">
+        <button hx-get="{{ route('reviews.show', ['resource' => $resource->id]) }}" hx-target="#tab-content" hx-indicator="#spinner" class="selected bg-teal-300 p-4" role="tab" aria-selected="true" aria-controls="tab-content">Reviews</button>
+        <button hx-get="{{ route('comment.comments', ['type' => 'resource', 'id' => $resource->id]) }}" hx-target="#tab-content" hx-indicator="#spinner" class="bg-teal-300 p-4" role="tab" aria-selected="false" aria-controls="tab-content">Comments</button>
+    </div>
+    
+    <!-- Loading bar -->
+    <x-spinner class="mx-auto" id="spinner"></x-spinner>
+    <div id="tab-content" role="tabpanel" class="tab-content">
+        @if($commentTree->isNotEmpty())
+            @include('comments.partials.index', ['comments' => $commentTree])
+        @else
+            <p>No comments available.</p>
+        @endif   
+    </div>
 </x-app-layout>

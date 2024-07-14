@@ -29,9 +29,9 @@
             </form> --}}
         @endif
     </div>
-
+    {{$comment->id}}
     <div class="">
-        @include('comments.partials.reply', ['parentComment' => $comment])
+        @include('comments.partials.reply', ['comment' => $comment])
     </div>
 
     <div class="">

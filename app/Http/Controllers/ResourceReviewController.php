@@ -76,12 +76,30 @@ class ResourceReviewController extends Controller
     }
 
 
-    // Display the specified review.
+    // Display the reviews for a specific resource.
     public function show($id)
     {
-      
+        // Retrieve resource reviews with comments and users
+        $resourceReviews = ResourceReview::where('resource_id', $id)
+            ->with(['comment', 'comment.votes', 'user'])
+            ->get();
+
+        return view('reviews.resources.index', compact('resourceReviews'));
     }
 
+    // Get the replies for a resource review
+    public function replies(int $id)
+    {
+        \Log::debug('getting replies for resource review');
+
+
+        // Ignore the first comment, the one by the reviewer, so that we can see the replies to their post
+        $comments = Comment::getCommentTree(ResourceReview::class, $id)->first()->comments;
+        \Log::debug('getting comments ' . json_encode($comments));
+
+
+        return view('comments.partials.index', compact('comments'));
+    }
 
     // Show the form for editing the specified review.
     public function edit($id)
