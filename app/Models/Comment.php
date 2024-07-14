@@ -102,11 +102,12 @@ class Comment extends Model
             ->get();
 
         // Fetch all replies for each comment using the CommentClosure model
-        $allComments = self::whereIn('id', function ($query) use ($ancestorComments) {
+        $ancestorIds = $ancestorComments->pluck('id');
+        $allComments = self::whereIn('id', function ($query) use ($ancestorIds) {
             $query->select('comment_id')
                 ->from('comment_closures')
-                ->whereIn('ancestor', $ancestorComments->pluck('id'));
-        })->with(['user', 'votes'])
+                ->whereIn('ancestor', $ancestorIds);
+        })->with(['user'])
           ->get();
 
         // Combine ancestor comments and all replies

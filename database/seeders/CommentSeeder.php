@@ -23,6 +23,7 @@ class CommentSeeder extends Seeder
 
         // Seed comments for a specific resource
         $this->seedCommentsForResource(1);
+
     }
 
     /**
