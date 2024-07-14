@@ -26,7 +26,8 @@
         <!-- htmx -->
         <script src="https://unpkg.com/htmx.org@1.9.12" integrity="sha384-ujb1lZYygJmzgSwoxRggbCHcjc0rB2XoQrxeTUQyRjrOnlCoYta87iKBWq3EsdM2" crossorigin="anonymous"></script>
         <script src="https://unpkg.com/htmx.org@1.9.12/dist/ext/restored.js"></script>
-
+        <!-- hyperscript -->
+        <script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
         
     </head> 
     <body class="font-sans antialiased">

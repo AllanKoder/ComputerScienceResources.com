@@ -92,7 +92,6 @@ class ResourceReviewController extends Controller
     {
         \Log::debug('getting replies for resource review');
 
-
         // Ignore the first comment, the one by the reviewer, so that we can see the replies to their post
         $comments = Comment::getCommentTree(ResourceReview::class, $id)->first()->comments;
         \Log::debug('getting comments ' . json_encode($comments));
