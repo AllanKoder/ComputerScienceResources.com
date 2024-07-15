@@ -28,15 +28,18 @@
     </table>
     @include('comments.partials.reply', array('comment'=>$review->comment))
     
-    <x-spinner class="mx-auto" id="spinner-{{ $review->id }}"></x-spinner>
     <div x-data="{ open: false }">
         <button x-on:click="open = ! open" 
-            hx-get="{{ route('reviews.replies', ['id' => $review->id]) }}" hx-target="#replies-{{ $review->id }}"
-            hx-indicator="#spinner-{{ $review->id }}"
-            class="bg-teal-300 p-2 mt-2">
-            View Replies
+        hx-get="{{ route('reviews.replies', ['id' => $review->id]) }}" hx-target="#replies-{{ $review->id }}"
+        hx-indicator="#spinner-{{ $review->id }}"
+        class="bg-teal-300 p-2 mt-2">
+        View Replies
         </button>
-        <div x-show="open" id="replies-{{ $review->id }}"></div>
+        
+        <div x-show="open" id="replies-{{ $review->id }}">  
+            <x-spinner class="mx-auto" id="spinner-{{ $review->id }}"></x-spinner>
+        </div>
+    </div>
 
 @endforeach
 
