@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Comment;
-use App\Models\CommentClosure;
+use App\Models\CommentHierarchy;
 use App\Models\Resource;
 use Illuminate\Support\Facades\DB;
 
@@ -15,11 +15,11 @@ class CommentSeeder extends Seeder
      *
      * @return void
      */
-    public function run()
+    public function run()   
     {
         // Clear the existing comments and closure table
         \DB::table('comments')->delete();
-        \DB::table('comment_closures')->delete();
+        \DB::table('comment_hierarchies')->delete();
 
         // Seed comments for a specific resource
         $this->seedCommentsForResource(1);
@@ -123,7 +123,7 @@ class CommentSeeder extends Seeder
         // Make a new closure for the new comment on the commentable model.
         if ($comment->commentable_type != Comment::class)
         {
-            CommentClosure::create([
+            CommentHierarchy::create([
                 'ancestor' => $comment->id,
                 'comment_id' => $comment->id,
             ]);
@@ -131,10 +131,10 @@ class CommentSeeder extends Seeder
         }
 
         // Find the ancestor ID of the commentable item
-        $ancestorID = CommentClosure::where('comment_id', $comment->commentable_id)->first()->ancestor;
+        $ancestorID = CommentHierarchy::where('comment_id', $comment->commentable_id)->first()->ancestor;
 
         // Create a new closure entry with the found ancestor ID
-        CommentClosure::create([
+        CommentHierarchy::create([
             'ancestor' => $ancestorID,
             'comment_id' => $comment->id,
         ]);

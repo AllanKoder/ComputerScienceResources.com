@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('resource_review_summaries', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('resource_id');
-            $table->integer('community_size_total')->default(0);
-            $table->integer('teaching_explanation_clarity_total')->default(0);
-            $table->integer('technical_depth_total')->default(0);
-            $table->integer('practicality_to_industry_total')->default(0);
-            $table->integer('user_friendliness_total')->default(0);
-            $table->integer('updates_and_maintenance_total')->default(0);
-            $table->integer('total_reviews')->default(0);
+            $table->unsignedBigInteger('resource_id')->nullable(false);
+            $table->integer('community_size_total')->default(1);
+            $table->integer('teaching_explanation_clarity_total')->default(1);
+            $table->integer('technical_depth_total')->default(1);
+            $table->integer('practicality_to_industry_total')->default(1);
+            $table->integer('user_friendliness_total')->default(1);
+            $table->integer('updates_and_maintenance_total')->default(1);
+            $table->integer('total_reviews')->default(1);
             $table->timestamps();
 
             // foreign key constraint

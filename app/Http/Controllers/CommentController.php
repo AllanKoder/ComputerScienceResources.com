@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Builder;
 use App\Models\Comment;
-use App\Models\CommentClosure;
+use App\Models\CommentHierarchy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\TypeHelper;
@@ -67,7 +67,7 @@ class CommentController extends Controller
         $commentable->comments()->save($comment);
     
         // Make a new closure for the new comment on the commentable model.
-        CommentClosure::create([
+        CommentHierarchy::create([
             'ancestor' => $comment->id,
             'comment_id' => $comment->id,
         ]);
@@ -181,11 +181,11 @@ class CommentController extends Controller
         $reply->save();
 
         // Find the ancestor ID of the commentable item
-        $ancestorID = CommentClosure::where('comment_id', $comment->id)->first()->ancestor;
+        $ancestorID = CommentHierarchy::where('comment_id', $comment->id)->first()->ancestor;
         
         // Create a new closure entry with the found ancestor ID
         \Log::info('Creating closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
-        CommentClosure::create([
+        CommentHierarchy::create([
             'ancestor' => $ancestorID,
             'comment_id' => $reply->id,
         ]);

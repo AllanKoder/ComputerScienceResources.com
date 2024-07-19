@@ -101,11 +101,11 @@ class Comment extends Model
             ->where('commentable_type', $commentableType)
             ->get();
 
-        // Fetch all replies for each comment using the CommentClosure model
+        // Fetch all replies for each comment using the CommentHierarchy model
         $ancestorIds = $ancestorComments->pluck('id');
         $allComments = self::whereIn('id', function ($query) use ($ancestorIds) {
             $query->select('comment_id')
-                ->from('comment_closures')
+                ->from('comment_hierarchies')
                 ->whereIn('ancestor', $ancestorIds);
         })->with(['user'])
           ->get();
