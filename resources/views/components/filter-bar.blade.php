@@ -39,18 +39,15 @@
     <!-- Difficulty Input -->
     <div class="mb-4 min-w-36">
         <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
-        <x-multi-select-input name="difficulty" class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight">        
-            <option value="beginner">Beginner</option>
-            <option value="industry">Industry</option>
-            <option value="academic">Academic</option>
-        </x-multi-select-input>
-        <x-test name="difficulty" :options="[
+        <x-multi-select-input :options="[
             ['value' => 'beginner', 'label' => 'Beginner'],
             ['value' => 'industry', 'label' => 'Industry'],
             ['value' => 'academic', 'label' => 'Academic'],
-        ]" 
+        ]"
         :saveToStorage=true
-        id="TagInput"/>
+        name="difficulty"
+        id="TagInput">        
+        </x-multi-select-input>
     </div>
 
     <!-- Tags Input -->

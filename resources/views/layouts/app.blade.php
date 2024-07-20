@@ -53,5 +53,11 @@
             </main>
         </div>
     </body>
-    
+    <script>
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('getURL', () => {
+                return window.location.href.split('?')[0];
+            });
+        });
+    </script>
 </html>
