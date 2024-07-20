@@ -15,6 +15,9 @@
             this.selectedOptions = {{ json_encode($selectedOptions) }};
         }
     },
+    resetInputs() {
+        this.selectedOptions = [];
+    },
     isSelected(option) {
         return this.selectedOptions.includes(option);
     },
@@ -56,10 +59,14 @@
             )
         }
     },
-}" class="w-full max-w-xs flex flex-col gap-1" x-on:keydown="highlightFirstMatchingOption($event.key)" x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false">
-<div class="relative"
+}" class="w-full max-w-xs flex flex-col gap-1" 
+x-on:keydown="highlightFirstMatchingOption($event.key)" 
+x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false"
 x-init="initalize()"
-x-effect='setLocalData()'>
+x-effect='setLocalData()'
+@clear-inputs-event.window="resetInputs()">
+<div class="relative">
+    
     <!-- trigger button  -->
     <button type="button" role="combobox" class="inline-flex w-full items-center justify-between gap-2 whitespace-nowrap border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium capitalize tracking-wide text-slate-700 transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:focus-visible:outline-blue-600 border rounded-xl" aria-haspopup="listbox" aria-controls="skillsList" 
     x-on:click="isOpen = ! isOpen" 
@@ -92,9 +99,12 @@ x-effect='setLocalData()'>
                         <input type="checkbox" class="combobox-option before:content[''] peer relative size-4 cursor-pointer appearance-none overflow-hidden border border-slate-300 bg-slate-100 before:absolute before:inset-0 checked:border-blue-700 checked:before:bg-blue-700 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-800 checked:focus:outline-blue-700 active:outline-offset-0 disabled:cursor-not-allowed dark:border-slate-700 rounded dark:bg-slate-800 dark:checked:border-blue-600 dark:checked:before:bg-blue-600 dark:focus:outline-slate-300 dark:checked:focus:outline-blue-600" 
                         x-on:change="handleOptionToggle($el)" 
                         x-on:keydown.enter.prevent="$el.checked = ! $el.checked; handleOptionToggle($el)" 
-                        x-bind:value="item.value" 
-                        x-bind:id="'checkboxOption' + index" 
-                        x-init="$el.checked = isSelected($el.value)"/>
+                        :value="item.value" 
+                        :id="'checkboxOption' + index" 
+                        x-init="
+                        $el.checked = isSelected($el.value);
+                        $watch('selectedOptions', _ => $el.checked = isSelected($el.value));
+                        "/>
                         <!-- Checkmark  -->
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="4" class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 text-slate-100 peer-checked:visible dark:text-slate-100" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>

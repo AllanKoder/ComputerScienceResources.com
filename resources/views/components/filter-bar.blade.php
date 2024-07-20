@@ -72,10 +72,12 @@
         Reset Filter
     </button>
 </div>   
-
+<div x-data>
+    <button @click="$dispatch('clear-inputs-event')">.sadsaasdsa asas.</button>
+</div>
 <script>
     $('#reset-filter-button').on('click', function() {
-    // Trigger the custom event and pass the name of the select to clear
+        // Trigger the custom event and pass the name of the select to clear
         $(document).trigger('clearInputs');
     });
 </script>
