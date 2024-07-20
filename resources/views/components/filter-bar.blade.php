@@ -44,6 +44,13 @@
             <option value="industry">Industry</option>
             <option value="academic">Academic</option>
         </x-multi-select-input>
+        <x-test name="difficulty" :options="[
+            ['value' => 'beginner', 'label' => 'Beginner'],
+            ['value' => 'industry', 'label' => 'Industry'],
+            ['value' => 'academic', 'label' => 'Academic'],
+        ]" 
+        :saveToStorage=true
+        id="TagInput"/>
     </div>
 
     <!-- Tags Input -->

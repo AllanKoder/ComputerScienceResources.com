@@ -100,7 +100,7 @@ class ResourceController extends Controller
     public function index(Request $request)
     {
         $resources = $this->filterResources( $request );
-                
+        
         return view('resources.index', ['resources'=> $resources]);
     }
     
