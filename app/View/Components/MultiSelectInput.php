@@ -11,15 +11,7 @@ class MultiSelectInput extends Component
      *
      * @return void
      */
-    public function __construct(
-        public string $name,
-    ) {
-        $this->name = $name;
-    }
-
-    public function getURL(): string
-    {
-        return url()->current();
+    public function __construct() {
     }
 
     /**

@@ -12,22 +12,37 @@
     <!-- Resource Formats -->
     <div class="mb-4">
         <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
+        @php
+            $formatOptions = collect(config("formats"))->map(function ($value, $key) {
+                return ['value' => $key, 'label' => $value];
+            })->values()->toArray();
+        @endphp
         <x-multi-select-input name="formats">
             @foreach(config("formats") as $key => $value)
                 <option value="{{ $key }}" id="{{$key}}">{{ $value }}</option>
             @endforeach
-        </x-multi-select-input>                
+        </x-multi-select-input>             
+        <x-multi-select-input 
+        :options="$formatOptions"
+        :saveToStorage=true
+        name="formatOptions"
+        />           
     </div>
 
     <!-- Pricing Model Input -->
     <div class="mb-4 min-w-36">
         <label for="pricing" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>
-        <x-multi-select-input name="pricing">        
-            <option value="free">Free</option>
-            <option value="freemium">Freemium</option>
-            <option value="subscription">Subscription Service</option>
-            <option value="paid">One Time Payment</option>
-        </x-multi-select-input>            
+        @php
+            $pricingOptions = collect(config('pricings'))->map(function ($value, $key) {
+                return ['value' => $key, 'label' => $value];
+            })->values()->toArray();
+        @endphp
+        <x-multi-select-input 
+        :options="$pricingOptions"
+        :saveToStorage=true
+        name="pricing"
+        />        
+        {{ json_encode($pricingOptions) }}
     </div>
 
     <!-- Topics Input (Dynamic Array of Inputs) -->
@@ -39,14 +54,15 @@
     <!-- Difficulty Input -->
     <div class="mb-4 min-w-36">
         <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
-        <x-multi-select-input :options="[
+        
+        <x-multi-select-input 
+        :options="[
             ['value' => 'beginner', 'label' => 'Beginner'],
             ['value' => 'industry', 'label' => 'Industry'],
             ['value' => 'academic', 'label' => 'Academic'],
         ]"
         :saveToStorage=true
-        name="difficulty"
-        id="TagInput">        
+        name="difficulty">        
         </x-multi-select-input>
     </div>
 
