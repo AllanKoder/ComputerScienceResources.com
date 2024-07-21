@@ -9,3 +9,5 @@
 .htmx-request-complete #spinner {
     display: none;
 }
+
+[x-cloak] { display: none !important; }

@@ -97,13 +97,13 @@
     // // Flag to control the display of the confirmation message
     // var formSubmitted = false;
 
-    // // Function to handle the beforeunload event
-    // function handleBeforeUnload(e) {
-    //     if (!formSubmitted) {
-    //         e.preventDefault();
-    //         e.returnValue = '';
-    //     }
-    // }
+    // Function to handle the beforeunload event
+    function handleBeforeUnload(e) {
+        if (!formSubmitted) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    }
 
     // Add the beforeunload event listener
     window.addEventListener('beforeunload', handleBeforeUnload);
