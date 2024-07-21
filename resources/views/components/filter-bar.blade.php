@@ -16,16 +16,11 @@
             $formatOptions = collect(config("formats"))->map(function ($value, $key) {
                 return ['value' => $key, 'label' => $value];
             })->values()->toArray();
-        @endphp
-        <x-multi-select-input name="formats">
-            @foreach(config("formats") as $key => $value)
-                <option value="{{ $key }}" id="{{$key}}">{{ $value }}</option>
-            @endforeach
-        </x-multi-select-input>             
+        @endphp        
         <x-multi-select-input 
         :options="$formatOptions"
         :saveToStorage=true
-        name="formatOptions"
+        name="formats"
         />           
     </div>
 
@@ -42,7 +37,6 @@
         :saveToStorage=true
         name="pricing"
         />        
-        {{ json_encode($pricingOptions) }}
     </div>
 
     <!-- Topics Input (Dynamic Array of Inputs) -->

@@ -76,7 +76,8 @@ x-effect='setLocalData()'
     x-on:keydown.space.prevent="openedWithKeyboard = true" 
     x-bind:aria-label="setLabelText()" 
     x-bind:aria-expanded="isOpen || openedWithKeyboard">
-        <span class="text-sm w-full font-normal text-start overflow-hidden text-ellipsis  whitespace-nowrap"  x-text="setLabelText()"></span>
+        <span class="text-sm w-full font-normal text-start overflow-hidden text-ellipsis  whitespace-nowrap"  
+        x-text="setLabelText()"></span>
         <!-- Chevron  -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="size-5">
             <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/>
@@ -95,7 +96,8 @@ x-effect='setLocalData()'
         <template x-for="(item, index) in options" x-bind:key=`${item.value}-${'{{$name}}'}`>
             <!-- option  -->
             <li role="option">
-                <label class="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-900/5 has-[:focus]:bg-slate-900/5 dark:text-slate-300 dark:hover:bg-white/5 dark:has-[:focus]:bg-white/5 [&:has(input:checked)]:text-black dark:[&:has(input:checked)]:text-white [&:has(input:disabled)]:cursor-not-allowed [&:has(input:disabled)]:opacity-75" x-bind:for="'checkboxOption' + index + '{{$name}}'">
+                <label class="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-900/5 has-[:focus]:bg-slate-900/5 dark:text-slate-300 dark:hover:bg-white/5 dark:has-[:focus]:bg-white/5 [&:has(input:checked)]:text-black dark:[&:has(input:checked)]:text-white [&:has(input:disabled)]:cursor-not-allowed [&:has(input:disabled)]:opacity-75" 
+                x-bind:for="'checkboxOption' + index + '{{$name}}'">
                     <div class="relative flex items-center">
                         <input type="checkbox" class="combobox-option before:content[''] peer relative size-4 cursor-pointer appearance-none overflow-hidden border border-slate-300 bg-slate-100 before:absolute before:inset-0 checked:border-blue-700 checked:before:bg-blue-700 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-800 checked:focus:outline-blue-700 active:outline-offset-0 disabled:cursor-not-allowed dark:border-slate-700 rounded dark:bg-slate-800 dark:checked:border-blue-600 dark:checked:before:bg-blue-600 dark:focus:outline-slate-300 dark:checked:focus:outline-blue-600" 
                         x-on:change="handleOptionToggle($el)" 
