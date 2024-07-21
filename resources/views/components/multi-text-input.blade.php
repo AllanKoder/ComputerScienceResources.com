@@ -37,10 +37,18 @@
                 this.updateStorage();
             },
             removeInput(index) {
-                if (confirm('Are you sure you want to remove this item?')) {
+                successCallback = () => {
                     this.inputs.splice(index, 1);
                     this.updateStorage();
                 }
+                window.dispatchEvent(new CustomEvent('open-confirm-modal', {
+                    detail: {
+                        title: 'Confirm Deletion',
+                        description: 'This will be deleted and unrecoverable',
+                        onSuccess: () => { successCallback(); },
+                        onFailure: () => { console.log('Failure!'); }
+                    }
+                }));
             },
             updateStorage() {
                 localStorage.setItem(this.storageID, JSON.stringify(this.inputs));

@@ -53,6 +53,10 @@
             </main>
         </div>
     </body>
+
+    <!-- Global Shared Code -->
+    <x-confirm-modal/>
+
     <script>
         document.addEventListener('alpine:init', () => {
             Alpine.store('getURL', () => {
