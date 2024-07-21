@@ -2,7 +2,12 @@
     hx-select="#resources-results" hx-target="#resources-results" hx-swap="outerHTML"
     hx-trigger="submit" hx-push-url="true" 
     hx-indicator="#spinner"
-    class="flex flex-wrap items-center space-x-4">        
+    class="flex flex-wrap items-center space-x-4">
+    @php
+        $pricingOptions = \App\Helpers\ConfigHelper::getConfigOptions("pricings");
+        $formatOptions = \App\Helpers\ConfigHelper::getConfigOptions("formats");
+        $difficultyOptions = \App\Helpers\ConfigHelper::getConfigOptions("difficulties");
+        @endphp        
     <!-- Search Bar, for name and description -->
     <div class="mb-4 w-1/3">
         <label for="query" class="block text-gray-700 text-sm font-bold mb-2 w-full">Resource Name or Description:</label>
@@ -12,11 +17,6 @@
     <!-- Resource Formats -->
     <div class="mb-4">
         <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
-        @php
-            $formatOptions = collect(config("formats"))->map(function ($value, $key) {
-                return ['value' => $key, 'label' => strtolower($value)];
-            })->values()->toArray();
-        @endphp        
         <x-multi-select-input 
         :options="$formatOptions"
         :saveToStorage=true
@@ -27,14 +27,8 @@
     <!-- Pricing Model Input -->
     <div class="mb-4 min-w-36">
         <label for="pricing" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>
-        @php
-            $pricingOptions = collect(config('pricings'))->map(function ($value, $key) {
-                return ['value' => $key, 'label' => strtolower($value)];
-            })->values()->toArray();
-        @endphp
         <x-multi-select-input 
         :options="$pricingOptions"
-        :selectedOptions="['free']"
         :saveToStorage=true
         name="pricing"
         />        
@@ -43,16 +37,9 @@
     <!-- Topics Input (Dynamic Array of Inputs) -->
     <div class="mb-4 min-w-36">
         <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
-        <x-multi-tag-input name="topics" class="w-full"></x-multi-text-input>
-        <x-test :options="[
-            ['value' => 'beginner', 'label' => 'beginner'],
-            ['value' => 'industry', 'label' => 'industry'],
-            ['value' => 'academic', 'label' => 'academic'],
-        ]"
-        :selectedOptions="['saasdasdasdasda', 'sad', 'saa']"
+        <x-multi-tag-input 
         :saveToStorage=true
-        name="topics"
-        ></x-test>
+        name="topics"/>
     </div>
         
     <!-- Difficulty Input -->
@@ -60,11 +47,7 @@
         <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
         
         <x-multi-select-input 
-        :options="[
-            ['value' => 'a', 'label' => 'a'],
-            ['value' => 'b', 'label' => 'b'],
-            ['value' => 'c', 'label' => 'c'],
-        ]"
+        :options="$difficultyOptions"
         :saveToStorage=true
         name="difficulty">        
         </x-multi-select-input>
