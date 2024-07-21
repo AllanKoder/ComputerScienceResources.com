@@ -43,6 +43,11 @@
     <div class="mb-4 min-w-36">
         <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
         <x-multi-tag-input name="topics" class="w-full"></x-multi-text-input>
+        <x-test :options="[
+            ['value' => 'beginner', 'label' => 'Beginner'],
+            ['value' => 'industry', 'label' => 'Industry'],
+            ['value' => 'academic', 'label' => 'Academic'],
+        ]"></x-test>
     </div>
         
     <!-- Difficulty Input -->

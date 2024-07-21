@@ -1,18 +1,17 @@
 @props(['options' => [], 'name'=>'', 'selectedOptions'=>[], 'saveToStorage'=>false, 'attributes' => []])
 <div {{$attributes}} x-data="{
     options: {{ json_encode($options) }},
+    filteredOptions: {{ json_encode($options) }},
     isOpen: false,
     openedWithKeyboard: false,
     selectedOptions: [],
+    searchQuery: '',
     get storageID() { return `${$store.getURL()}-stored-{{$name}}` },
-    initalize(){
+    initialize(){
         console.log(this.options);
         if ({{ $saveToStorage ? 'true' : 'false' }}) {
-            // data is from local storage
             this.selectedOptions = JSON.parse(localStorage.getItem(this.storageID)) ?? [];
-                    
         } else {
-            // data is from initial selected options
             this.selectedOptions = {{ json_encode($selectedOptions) }};
         }
     },
@@ -27,47 +26,43 @@
     },
     setLabelText() {
         const count = this.selectedOptions.length;
-
-        // if there are no selected options
         if (count === 0) return 'Please Select';
-
-        // join the selected options with a comma
         return this.selectedOptions.join(', ');
     },
     highlightFirstMatchingOption(pressedKey) {
-        // if Enter pressed, do nothing
-        if (pressedKey === 'Enter') return
-
-        // find and focus the option that starts with the pressed key
-        const option = this.options.find((item) =>
+        if (pressedKey === 'Enter') return;
+        const option = this.filteredOptions.find((item) =>
             item.label.toLowerCase().startsWith(pressedKey.toLowerCase()),
-        )
+        );
         if (option) {
-            const index = this.options.indexOf(option)
-            const allOptions = document.querySelectorAll('.combobox-option')
+            const index = this.filteredOptions.indexOf(option);
+            const allOptions = document.querySelectorAll('.combobox-option');
             if (allOptions[index]) {
-                allOptions[index].focus()
+                allOptions[index].focus();
             }
         }
     },
     handleOptionToggle(option) {
         if (option.checked) {
-            this.selectedOptions.push(option.value)
+            this.selectedOptions.push(option.value);
         } else {
-            // remove the unchecked option from the selectedOptions array
             this.selectedOptions = this.selectedOptions.filter(
                 (opt) => opt !== option.value,
-            )
+            );
         }
+    },
+    filterOptions() {
+        this.filteredOptions = this.options.filter(option =>
+            option.label.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
     },
 }" class="w-full max-w-xs flex flex-col gap-1 min-w-40" 
 x-on:keydown="highlightFirstMatchingOption($event.key)" 
 x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false"
-x-init="initalize()"
+x-init="initialize()"
 x-effect='setLocalData()'
 @clear-inputs-event.window="resetInputs()">
 <div class="relative">
-    
     <!-- trigger button  -->
     <button type="button" role="combobox" class="inline-flex w-full items-center justify-between gap-2 whitespace-nowrap border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium capitalize tracking-wide text-slate-700 transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:focus-visible:outline-blue-600 border rounded-xl" aria-haspopup="listbox" aria-controls="skillsList" 
     x-on:click="isOpen = ! isOpen" 
@@ -93,7 +88,17 @@ x-effect='setLocalData()'
     x-on:keydown.down.prevent="$focus.wrap().next()" 
     x-on:keydown.up.prevent="$focus.wrap().previous()" 
     x-transition x-trap="openedWithKeyboard">
-        <template x-for="(item, index) in options" x-bind:key=`${item.value}-${'{{$name}}'}`>
+        <!-- Search bar inside the dropdown -->
+        <div class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" class="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-neutral-600/50 dark:text-neutral-300/50" aria-hidden="true" >
+                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+            </svg>
+            <input type="text" class="w-full outline-none borderneutral-300 border-none bg-neutral-50 py-2.5 pl-11 pr-4 text-sm text-neutral-600" 
+            name="searchField" aria-label="Search" 
+            x-model="searchQuery" x-on:input="filterOptions()"
+            placeholder="Search" />
+        </div>
+        <template x-for="(item, index) in filteredOptions" x-bind:key=`${item.value}-${'{{$name}}'}`>
             <!-- option  -->
             <li role="option">
                 <label class="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-900/5 has-[:focus]:bg-slate-900/5 dark:text-slate-300 dark:hover:bg-white/5 dark:has-[:focus]:bg-white/5 [&:has(input:checked)]:text-black dark:[&:has(input:checked)]:text-white [&:has(input:disabled)]:cursor-not-allowed [&:has(input:disabled)]:opacity-75" 
