@@ -14,7 +14,7 @@
         <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
         @php
             $formatOptions = collect(config("formats"))->map(function ($value, $key) {
-                return ['value' => $key, 'label' => $value];
+                return ['value' => $key, 'label' => strtolower($value)];
             })->values()->toArray();
         @endphp        
         <x-multi-select-input 
@@ -29,11 +29,12 @@
         <label for="pricing" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>
         @php
             $pricingOptions = collect(config('pricings'))->map(function ($value, $key) {
-                return ['value' => $key, 'label' => $value];
+                return ['value' => $key, 'label' => strtolower($value)];
             })->values()->toArray();
         @endphp
         <x-multi-select-input 
         :options="$pricingOptions"
+        :selectedOptions="['free']"
         :saveToStorage=true
         name="pricing"
         />        
@@ -44,10 +45,14 @@
         <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
         <x-multi-tag-input name="topics" class="w-full"></x-multi-text-input>
         <x-test :options="[
-            ['value' => 'beginner', 'label' => 'Beginner'],
-            ['value' => 'industry', 'label' => 'Industry'],
-            ['value' => 'academic', 'label' => 'Academic'],
-        ]"></x-test>
+            ['value' => 'beginner', 'label' => 'beginner'],
+            ['value' => 'industry', 'label' => 'industry'],
+            ['value' => 'academic', 'label' => 'academic'],
+        ]"
+        :selectedOptions="['saasdasdasdasda', 'sad', 'saa']"
+        :saveToStorage=true
+        name="topics"
+        ></x-test>
     </div>
         
     <!-- Difficulty Input -->
@@ -56,9 +61,9 @@
         
         <x-multi-select-input 
         :options="[
-            ['value' => 'beginner', 'label' => 'Beginner'],
-            ['value' => 'industry', 'label' => 'Industry'],
-            ['value' => 'academic', 'label' => 'Academic'],
+            ['value' => 'a', 'label' => 'a'],
+            ['value' => 'b', 'label' => 'b'],
+            ['value' => 'c', 'label' => 'c'],
         ]"
         :saveToStorage=true
         name="difficulty">        

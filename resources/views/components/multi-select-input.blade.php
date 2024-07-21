@@ -5,16 +5,15 @@
     openedWithKeyboard: false,
     selectedOptions: [],
     get storageID() { return `${$store.getURL()}-stored-{{$name}}` },
-    initalize(){
-        console.log(this.options);
-        if ({{ $saveToStorage ? 'true' : 'false' }}) {
-            // data is from local storage
-            this.selectedOptions = JSON.parse(localStorage.getItem(this.storageID)) ?? [];
-                    
-        } else {
-            // data is from initial selected options
-            this.selectedOptions = {{ json_encode($selectedOptions) }};
-        }
+    initialize(){
+        // data from local storage
+        let storedOptions = JSON.parse(localStorage.getItem(this.storageID)) ?? [];
+        
+        // data from initial selected options
+        let initialOptions = {{ json_encode($selectedOptions) }};
+        
+        // merge the two, ensuring no duplicates
+        this.selectedOptions = [...new Set([...storedOptions, ...initialOptions])];
     },
     resetInputs() {
         this.selectedOptions = [];
@@ -23,7 +22,10 @@
         return this.selectedOptions.includes(option);
     },
     setLocalData() {
-        localStorage.setItem(this.storageID, JSON.stringify(this.selectedOptions)); 
+        if ({{ $saveToStorage ? 'true' : 'false' }})
+        {
+            localStorage.setItem(this.storageID, JSON.stringify(this.selectedOptions)); 
+        }
     },
     setLabelText() {
         const count = this.selectedOptions.length;
@@ -63,13 +65,13 @@
 }" class="w-full max-w-xs flex flex-col gap-1 min-w-40" 
 x-on:keydown="highlightFirstMatchingOption($event.key)" 
 x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false"
-x-init="initalize()"
+x-init="initialize()"
 x-effect='setLocalData()'
 @clear-inputs-event.window="resetInputs()">
 <div class="relative">
     
     <!-- trigger button  -->
-    <button type="button" role="combobox" class="inline-flex w-full items-center justify-between gap-2 whitespace-nowrap border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium capitalize tracking-wide text-slate-700 transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:focus-visible:outline-blue-600 border rounded-xl" aria-haspopup="listbox" aria-controls="skillsList" 
+    <button type="button" role="combobox" class="inline-flex w-full items-center justify-between gap-2 whitespace-nowrap border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium tracking-wide text-slate-700 transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:focus-visible:outline-blue-600 border rounded-xl" aria-haspopup="listbox" aria-controls="skillsList" 
     x-on:click="isOpen = ! isOpen" 
     x-on:keydown.down.prevent="openedWithKeyboard = true" 
     x-on:keydown.enter.prevent="openedWithKeyboard = true" 
