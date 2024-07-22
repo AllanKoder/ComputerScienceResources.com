@@ -38,7 +38,6 @@
                 name="formats" 
                 :options="$formatOptions"
                 :saveToStorage=true
-                :hasSearch=true
                 required/>                
             </div>
 
@@ -91,6 +90,7 @@
                 name="difficulty" 
                 :options="$difficultyOptions"
                 :saveToStorage=true
+                :hasSearch=true
                 required/>
             </div>
 

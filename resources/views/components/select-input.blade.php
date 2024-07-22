@@ -7,7 +7,7 @@
     <div class="relative">
         <!-- Trigger button -->
         <button type="button" role="combobox" class="inline-flex w-full items-center justify-between gap-2 whitespace-nowrap border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium tracking-wide text-slate-700 transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:focus-visible:outline-blue-600 border rounded-xl" aria-haspopup="listbox" aria-controls="optionsList" 
-        x-on:click="isOpen = !isOpen" 
+        x-on:click="toggleDropdown" 
         x-on:keydown="handleKeydownOnOptions($event)"
         x-on:keydown.down.prevent="openedWithKeyboard = true" 
         x-on:keydown.enter.prevent="openedWithKeyboard = true" 
@@ -25,7 +25,7 @@
         <input type="hidden" name="{{$name}}" x-bind:value="selectedOption">
         <ul x-cloak x-show="isOpen || openedWithKeyboard" id="optionsList" class="absolute z-10 left-0 top-11 flex max-h-44 w-full flex-col overflow-hidden overflow-y-auto border-slate-300 bg-slate-100 py-1.5 dark:border-slate-700 dark:bg-slate-800 border rounded-xl" 
         role="listbox" 
-        x-on:click.outside="isOpen = false, openedWithKeyboard = false" 
+        x-on:click.outside="closeDropdown" 
         x-on:keydown.down.prevent="$focus.wrap().next()" 
         x-on:keydown.up.prevent="$focus.wrap().previous()" 
         x-transition x-trap="openedWithKeyboard">
@@ -43,17 +43,17 @@
                     placeholder="Search/Add" />
                 </div>
             </template>
-            <template x-for="(item, index) in filteredOptions" x-bind:key="`${item.value}-${name}`">
+            <template x-for="(item, index) in filteredOptions" x-bind:key="`${item.value}-${'{{$name}}'}`">
                 <!-- Option -->
                 <li role="option">
                     <label class="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-900/5 has-[:focus]:bg-slate-900/5 dark:text-slate-300 dark:hover:bg-white/5 dark:has-[:focus]:bg-white/5 [&:has(input:checked)]:text-black dark:[&:has(input:checked)]:text-white [&:has(input:disabled)]:cursor-not-allowed [&:has(input:disabled)]:opacity-75" 
-                    x-bind:for="'radioOption' + index + name">
+                    x-bind:for="'radioOption' + index + '{{$name}}'">
                         <div class="relative flex items-center">
                             <input type="radio" 
                             x-on:change="handleOptionSelect($el)" 
                             x-on:keydown.enter.prevent="$el.checked = true; handleOptionSelect($el)" 
                             :value="item.value" 
-                            :id="'radioOption' + index + name" 
+                            :id="'radioOption' + index + '{{$name}}'" 
                             x-init="
                             $el.checked = isSelected($el.value);
                             $watch('selectedOption', _ => $el.checked = isSelected($el.value));
@@ -93,7 +93,7 @@
                     }
                 }
             },
-            get storageID() { return `${name}-selected-option`; },
+            get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             isSelected(option) {
                 return this.selectedOption === option;
             },
@@ -131,6 +131,13 @@
                         localStorage.setItem(this.storageID, this.selectedOption);
                     }
                 }
+            },
+            toggleDropdown() {
+                this.isOpen = !this.isOpen;
+            },
+            closeDropdown() {
+                this.isOpen = false;
+                this.openedWithKeyboard = false;
             }
         };
     }
