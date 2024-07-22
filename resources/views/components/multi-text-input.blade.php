@@ -30,7 +30,12 @@
             },
             addInput() {
                 if (this.inputs.length >= this.maxSize) {
-                    alert(`Max ${this.maxSize} inputs for ${this.name}`);
+                    window.dispatchEvent(new CustomEvent('open-warning-modal', {
+                        detail: {
+                            title: 'Too many Inputs',
+                            description: `Max ${this.maxSize} inputs for ${this.name}`,
+                        }
+                    }));
                     return;
                 }
                 this.inputs.push('');
