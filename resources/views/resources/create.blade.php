@@ -1,6 +1,6 @@
 <x-app-layout>
-    <div class="flex justify-center mt-8">
-        <form id="create-resource-form" method="POST" action="{{ route('resources.store') }}" class="w-full max-w-xl">
+    <div class="flex justify-center">
+        <form id="create-resource-form" method="POST" action="{{ route('resources.store') }}" class="w-full max-w-xl my-14">
             @csrf <!-- CSRF token for security -->
             @php
                 $pricingOptions = \App\Helpers\ConfigHelper::getConfigOptions("pricings");
@@ -35,7 +35,7 @@
             <!-- Resource Formats -->
             <div class="mb-4">
                 <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
-                <x-select-input 
+                <x-multi-select-input 
                 name="formats"
                 :options="$formatOptions"
                 :saveToStorage=true
