@@ -9,9 +9,10 @@ class TypeHelper
         // Map resource types to their corresponding model classes
         $types = [
             'resource' => 'App\Models\Resource',
+            'resourceEdit' => 'App\Models\ResourceEdit',
             'comment' => 'App\Models\Comment',
             'report' => 'App\Models\Report',
-            'review' => 'App\Models\ResourceReview'
+            'review' => 'App\Models\ResourceReview',
             // other resource types
         ];
 

@@ -15,6 +15,9 @@ return new class extends Migration
     {
         Schema::create('resource_edits', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('resource_id')->constrained('resources')->onDelete('cascade');
+            $table->string('title');
+            $table->text('description');
             $table->timestamps();
         });
     }

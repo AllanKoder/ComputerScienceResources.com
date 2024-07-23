@@ -6,6 +6,7 @@ use App\Http\Controllers\VoteController;
 use App\Http\Controllers\ResourceReviewController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourceController;
+use App\Http\Controllers\ResourceEditController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +47,13 @@ Route::controller(ResourceReviewController::class)->group(function () {
     Route::post('/review/{resource}', 'store')->name('reviews.store');
     Route::get('/review/{resource}', 'show')->name('reviews.show');
     Route::get('/review/replies/{id}', 'replies')->name('reviews.replies');
+});
+
+// Resource Edits
+Route::controller(ResourceEditController::class)->group(function () {
+    Route::post('/resource_edit/{resource}', 'store')->name('resource_edits.store');
+    Route::get('/resource_edit/{resource}', 'index')->name('resource_edits.index');
+    Route::get('/resource_edit/{resource}/create', 'create')->name('resource_edits.create');
 });
 
 // Reports
