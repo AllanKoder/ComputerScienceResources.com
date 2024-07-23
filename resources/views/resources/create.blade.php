@@ -27,7 +27,8 @@
             <div class="mb-4">
                 <label for="image_url" class="block text-gray-700 text-sm font-bold mb-2">Image URL:</label>
                 <x-text-input-field type="url" 
-                :saveToStorage=true
+                :saveToStorage=false
+                :inputText="'test'"
                 name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-text-input-field>
             </div>
             
@@ -35,7 +36,7 @@
             <div class="mb-4">
                 <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
                 <x-select-input 
-                name="formats" 
+                name="formats"
                 :options="$formatOptions"
                 :saveToStorage=true
                 required/>                
@@ -81,7 +82,7 @@
                 <x-multi-tag-input class="w-full" 
                 :saveToStorage=true
                 :selectedOptions="['asd','blahg']"
-                name="topics" required></x-multi-text-input>
+                name="topics" required/>
             </div>
               
             <!-- Difficulty Input -->
@@ -100,7 +101,7 @@
                 <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
                 <x-multi-tag-input class="w-full" 
                 :saveToStorage=true
-                name="tags"></x-multi-text-input>
+                name="tags"/>
             </div>
 
             <!-- Submit Button -->

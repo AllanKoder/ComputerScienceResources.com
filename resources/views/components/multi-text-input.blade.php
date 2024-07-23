@@ -1,10 +1,9 @@
-@props(['name', 'placeholder', 'maxSize'=>10])
+@props(['name', 'placeholder', 'maxSize'=>10, 'inputTexts'=>[], 'saveToStorage'=>false])
 
 <!-- name Input -->
-<div x-data="dynamicTableComponent('{{ $name }}', '{{ $placeholder }}', {{ $maxSize }})" 
+<div x-data="dynamicTableComponent('{{ $name }}', '{{ $placeholder }}', {{ $maxSize }}, {{ json_encode($inputTexts) }}, {{ $saveToStorage ? 'true' : 'false' }})" 
     x-init="initialize"
     class="dynamic-table border-width: 0">
-    <x-text-input-field type="text" name="{{ $name }}[0]" placeholder="{{ $placeholder }}" class="form-control w-10/12"></x-text-input-field>
     <button type="button" class="add btn btn-success p-1 border-black border-2" @click="addInput">Add More</button>
     <div class="inputs-container">
         <template x-for="(input, index) in inputs" :key="index">
@@ -17,16 +16,20 @@
 </div>
 
 <script>
-    function dynamicTableComponent(name, placeholder, maxSize) {
+    function dynamicTableComponent(name, placeholder, maxSize, inputTexts, saveToStorage) {
         return {
-            inputs: [],
+            inputs: inputTexts.length ? inputTexts : [''],
             name: name,
             placeholder: placeholder,
             maxSize: maxSize,
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
                 const savedInputs = JSON.parse(localStorage.getItem(this.storageID)) || [];
-                this.inputs = savedInputs;
+                if (saveToStorage && savedInputs.length) {
+                    this.inputs = savedInputs;
+                } else {
+                    this.inputs = inputTexts.length ? inputTexts : [''];
+                }
             },
             addInput() {
                 if (this.inputs.length >= this.maxSize) {
@@ -56,7 +59,9 @@
                 }));
             },
             updateStorage() {
-                localStorage.setItem(this.storageID, JSON.stringify(this.inputs));
+                if (saveToStorage) {
+                    localStorage.setItem(this.storageID, JSON.stringify(this.inputs));
+                }
             },
             clearInputs() {
                 this.inputs = [];

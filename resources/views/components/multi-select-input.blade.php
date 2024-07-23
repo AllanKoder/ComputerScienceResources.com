@@ -27,7 +27,7 @@
             <input type="hidden" name="{{$name}}[]" x-bind:value="selected">
         </template>
         <ul x-cloak x-show="isOpen || openedWithKeyboard" id="skillsList" class="absolute z-10 left-0 top-11 flex max-h-44 w-full flex-col overflow-hidden overflow-y-auto border-slate-300 bg-slate-100 py-1.5 dark:border-slate-700 dark:bg-slate-800 border rounded-xl" 
-        role="listbox" 
+        role="listbox" -
         x-on:click.outside="isOpen = false, openedWithKeyboard = false" 
         x-on:keydown.down.prevent="$focus.wrap().next()" 
         x-on:keydown.up.prevent="$focus.wrap().previous()" 
