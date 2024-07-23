@@ -86,8 +86,13 @@
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
                 // Merge the two
-                const localStorageOptions = JSON.parse(localStorage.getItem(this.storageID)) ?? [];
-                const initialSelectedOptions = selectedOptions;
+                let localStorageOptions = JSON.parse(localStorage.getItem(this.storageID));
+                let initialSelectedOptions = [];
+                // no data saved or will not save to storage
+                if (!localStorageOptions || !saveToStorage) {
+                    localStorageOptions = [];
+                    initialSelectedOptions = selectedOptions;
+                }
                 
                 // Combine both arrays and remove duplicates
                 this.selectedOptions = [...new Set([...localStorageOptions, ...initialSelectedOptions])];

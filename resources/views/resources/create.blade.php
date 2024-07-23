@@ -80,6 +80,7 @@
                 <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
                 <x-multi-tag-input class="w-full" 
                 :saveToStorage=true
+                :selectedOptions="['asd','blahg']"
                 name="topics" required></x-multi-text-input>
             </div>
               

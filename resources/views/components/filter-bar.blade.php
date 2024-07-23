@@ -19,6 +19,7 @@
         <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
         <x-multi-select-input 
         :options="$formatOptions"
+        :selectedOptions="['website']"
         :saveToStorage=true
         name="formats"
         />           
@@ -55,7 +56,11 @@
     <!-- Tags Input -->
     <div class="mb-4 min-w-36">
         <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
-        <x-multi-tag-input name="tags" class="w-full"></x-multi-text-input>
+        <x-multi-tag-input 
+        name="tags"
+        :selectedOptions="['tasd']"
+        :saveToStorage=true
+        class="w-full"/>
     </div>
 
     <!-- Submit Button -->
@@ -75,8 +80,5 @@
     <button @click="$dispatch('clear-inputs-event')">.sadsaasdsa asas.</button>
 </div>
 <script>
-    $('#reset-filter-button').on('click', function() {
-        // Trigger the custom event and pass the name of the select to clear
-        $(document).trigger('clearInputs');
-    });
+
 </script>

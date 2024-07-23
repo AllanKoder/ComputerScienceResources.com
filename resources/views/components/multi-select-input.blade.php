@@ -70,13 +70,14 @@
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
                 // data from local storage
-                let storedOptions = JSON.parse(localStorage.getItem(this.storageID)) ?? [];
-                
-                // data from initial selected options
-                let initialOptions = selectedOptions;
-                
-                // merge the two, ensuring no duplicates
-                this.selectedOptions = [...new Set([...storedOptions, ...initialOptions])];
+                let storedOptions = JSON.parse(localStorage.getItem(this.storageID));
+
+                // if there are stored options, use them; otherwise, use the initial selected options
+                if (storedOptions && saveToStorage) {
+                    this.selectedOptions = storedOptions;
+                } else {
+                    this.selectedOptions = selectedOptions;
+                }
             },
             resetInputs() {
                 this.selectedOptions = [];
