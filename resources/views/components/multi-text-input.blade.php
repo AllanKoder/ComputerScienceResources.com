@@ -3,7 +3,8 @@
 <!-- name Input -->
 <div x-data="dynamicTableComponent('{{ $name }}', '{{ $placeholder }}', {{ $maxSize }}, {{ json_encode($inputTexts) }}, {{ $saveToStorage ? 'true' : 'false' }})" 
     x-init="initialize"
-    class="dynamic-table border-width: 0">
+    class="dynamic-table border-width: 0"
+    @clear-inputs-event.window="resetInputs()">
     <button type="button" class="add btn btn-success p-1 border-black border-2" @click="addInput">Add More</button>
     <div class="inputs-container">
         <template x-for="(input, index) in inputs" :key="index">
@@ -63,9 +64,9 @@
                     localStorage.setItem(this.storageID, JSON.stringify(this.inputs));
                 }
             },
-            clearInputs() {
+            resetInputs() {
                 this.inputs = [];
-                this.updateStorage();
+                localStorage.removeItem(this.storageID);
             },
         };
     }

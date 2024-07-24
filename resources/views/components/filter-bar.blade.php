@@ -59,6 +59,7 @@
         <x-multi-tag-input 
         name="tags"
         :selectedOptions="['tasd']"
+        :options="['esd', 'test']"
         :saveToStorage=true
         class="w-full"/>
     </div>

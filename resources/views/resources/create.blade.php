@@ -88,6 +88,8 @@
             <!-- Difficulty Input -->
             <div class="mb-6">
                 <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
+                {{json_encode($difficultyOptions)}}
+
                 <x-select-input 
                 name="difficulty" 
                 :options="$difficultyOptions"

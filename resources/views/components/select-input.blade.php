@@ -3,7 +3,8 @@
 <div {{$attributes}} x-data="singleSelectComponent('{{ $name }}', {{ json_encode($options) }}, '{{ $selectedOption }}', {{ $hasSearch ? 'true' : 'false' }}, {{ $saveToStorage ? 'true' : 'false' }})" 
     class="w-full max-w-xs flex flex-col gap-1 min-w-40" 
     x-on:keydown.esc.window="isOpen = false"
-    x-init="initialize()">
+    x-init="initialize()"
+    @clear-inputs-event.window="resetInputs()">
     <div class="relative">
         <!-- Trigger button -->
         <button type="button" role="combobox" class="inline-flex w-full items-center justify-between gap-2 whitespace-nowrap border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium tracking-wide text-slate-700 transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:focus-visible:outline-blue-600 border rounded-xl" aria-haspopup="listbox" aria-controls="optionsList" 
@@ -43,7 +44,7 @@
                     placeholder="Search/Add" />
                 </div>
             </template>
-            <template x-for="(item, index) in filteredOptions" x-bind:key="`${item.value}-${'{{$name}}'}`">
+            <template x-for="(item, index) in filteredOptions" x-bind:key="`${item}-${'{{$name}}'}`">
                 <!-- Option -->
                 <li role="option">
                     <label class="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-900/5 has-[:focus]:bg-slate-900/5 dark:text-slate-300 dark:hover:bg-white/5 dark:has-[:focus]:bg-white/5 [&:has(input:checked)]:text-black dark:[&:has(input:checked)]:text-white [&:has(input:disabled)]:cursor-not-allowed [&:has(input:disabled)]:opacity-75" 
@@ -52,7 +53,7 @@
                             <input type="radio" 
                             x-on:change="handleOptionSelect($el)" 
                             x-on:keydown.enter.prevent="$el.checked = true; handleOptionSelect($el)" 
-                            :value="item.value" 
+                            :value="item" 
                             :id="'radioOption' + index + '{{$name}}'" 
                             x-init="
                             $el.checked = isSelected($el.value);
@@ -65,7 +66,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                             </svg>
                         </div>
-                        <span x-text="item.label"></span>
+                        <span x-text="item"></span>
                     </label>
                 </li>
             </template>
@@ -84,6 +85,7 @@
             searchQuery: '',
             hasSearch: hasSearch,
             saveToStorage: saveToStorage,
+            get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
                 this.filteredOptions = this.options;
                 if (this.saveToStorage) {
@@ -93,21 +95,27 @@
                     }
                 }
             },
-            get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
+            resetInputs() {
+                this.selectedOptions = [];
+                localStorage.removeItem(this.storageID);
+            },
             isSelected(option) {
                 return this.selectedOption === option;
+            },
+            updateStorage() {
+                if (this.saveToStorage) {
+                    localStorage.setItem(this.storageID, this.selectedOption);
+                }
             },
             handleOptionSelect(el) {
                 this.selectedOption = el.value;
                 this.isOpen = false;
                 this.openedWithKeyboard = false;
-                if (this.saveToStorage) {
-                    localStorage.setItem(this.storageID, this.selectedOption);
-                }
+                this.updateStorage();
             },
             handleSearchEnter() {
                 if (this.filteredOptions.length === 1) {
-                    this.selectedOption = this.filteredOptions[0].value;
+                    this.selectedOption = this.filteredOptions[0];
                     this.isOpen = false;
                     this.openedWithKeyboard = false;
                     if (this.saveToStorage) {
@@ -116,20 +124,23 @@
                 }
             },
             filterOptions() {
-                this.filteredOptions = this.options.filter(option => option.label.toLowerCase().includes(this.searchQuery.toLowerCase()));
+                this.filteredOptions = this.options.filter(option => option.toLowerCase().includes(this.searchQuery.toLowerCase()));
             },
             setLabelText() {
-                const selected = this.options.find(option => option.value === this.selectedOption);
-                return selected ? selected.label : 'Select an option';
+                const selected = this.options.find(option => option === this.selectedOption);
+                return selected ? selected : 'Select an option';
             },
             handleKeydownOnOptions(event) {
                 if (event.key === 'Enter' && this.filteredOptions.length === 1) {
-                    this.selectedOption = this.filteredOptions[0].value;
+                    this.selectedOption = this.filteredOptions[0];
                     this.isOpen = false;
                     this.openedWithKeyboard = false;
                     if (this.saveToStorage) {
                         localStorage.setItem(this.storageID, this.selectedOption);
                     }
+                }
+                else if((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 8) {
+                    this.$refs.searchField.focus();
                 }
             },
             toggleDropdown() {

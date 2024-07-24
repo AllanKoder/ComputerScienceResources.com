@@ -4,7 +4,7 @@
     x-on:keydown="highlightFirstMatchingOption($event.key)" 
     x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false"
     x-init="initialize()"
-    x-effect='setLocalData()'
+    x-effect='updateStorage()'
     @clear-inputs-event.window="resetInputs()">
     <div class="relative">
         <!-- trigger button  -->
@@ -32,7 +32,7 @@
         x-on:keydown.down.prevent="$focus.wrap().next()" 
         x-on:keydown.up.prevent="$focus.wrap().previous()" 
         x-transition x-trap="openedWithKeyboard">
-            <template x-for="(item, index) in options" x-bind:key="`${item.value}-${'{{$name}}'}`">
+            <template x-for="(item, index) in options" x-bind:key="`${item}-${'{{$name}}'}`">
                 <!-- option  -->
                 <li role="option">
                     <label class="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-900/5 has-[:focus]:bg-slate-900/5 dark:text-slate-300 dark:hover:bg-white/5 dark:has-[:focus]:bg-white/5 [&:has(input:checked)]:text-black dark:[&:has(input:checked)]:text-white [&:has(input:disabled)]:cursor-not-allowed [&:has(input:disabled)]:opacity-75" 
@@ -41,7 +41,7 @@
                             <input type="checkbox" class="combobox-option before:content[''] peer relative size-4 cursor-pointer appearance-none overflow-hidden border border-slate-300 bg-slate-100 before:absolute before:inset-0 checked:border-blue-700 checked:before:bg-blue-700 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-800 checked:focus:outline-blue-700 active:outline-offset-0 disabled:cursor-not-allowed dark:border-slate-700 rounded dark:bg-slate-800 dark:checked:border-blue-600 dark:checked:before:bg-blue-600 dark:focus:outline-slate-300 dark:checked:focus:outline-blue-600" 
                             x-on:change="handleOptionToggle($el)" 
                             x-on:keydown.enter.prevent="$el.checked = ! $el.checked; handleOptionToggle($el)" 
-                            :value="item.value" 
+                            :value="item" 
                             :id="'checkboxOption' + index + '{{$name}}'" 
                             x-init="
                             $el.checked = isSelected($el.value);
@@ -52,7 +52,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                             </svg>
                         </div>
-                        <span x-text="item.label"></span>
+                        <span x-text="item"></span>
                     </label>
                 </li>
             </template>
@@ -66,7 +66,7 @@
             options: options,
             isOpen: false,
             openedWithKeyboard: false,
-            selectedOptions: [],
+            selectedOptions: selectedOptions.map(option => option.toLowerCase()),
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
                 // data from local storage
@@ -77,15 +77,21 @@
                     this.selectedOptions = storedOptions;
                 } else {
                     this.selectedOptions = selectedOptions;
+                    this.selectedOptions.forEach((option) => {
+                        if (!this.options.includes(option)) {
+                            this.options.push(option);
+                        }
+                    })
                 }
             },
             resetInputs() {
                 this.selectedOptions = [];
+                localStorage.removeItem(this.storageID);
             },
             isSelected(option) {
                 return this.selectedOptions.includes(option);
             },
-            setLocalData() {
+            updateStorage() {
                 if (saveToStorage) {
                     localStorage.setItem(this.storageID, JSON.stringify(this.selectedOptions)); 
                 }
@@ -105,7 +111,7 @@
 
                 // find and focus the option that starts with the pressed key
                 const option = this.options.find((item) =>
-                    item.label.toLowerCase().startsWith(pressedKey.toLowerCase()),
+                    item.toLowerCase().startsWith(pressedKey.toLowerCase()),
                 )
                 if (option) {
                     const index = this.options.indexOf(option)
