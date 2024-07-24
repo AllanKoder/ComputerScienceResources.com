@@ -1,5 +1,8 @@
 <x-app-layout>
-    <div class="flex justify-center">
+    <div class="flex flex-col items-center justify-center">
+        <div x-data>
+            <button @click="$dispatch('clear-inputs-event')">Clear Input</button>
+        </div>
         <form id="create-resource-form" method="POST" action="{{ route('resources.store') }}" class="w-full max-w-xl my-14">
             @csrf <!-- CSRF token for security -->
             @php
@@ -88,7 +91,6 @@
             <!-- Difficulty Input -->
             <div class="mb-6">
                 <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
-                {{json_encode($difficultyOptions)}}
 
                 <x-select-input 
                 name="difficulty" 
@@ -111,7 +113,7 @@
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
                     Submit
                 </button>
-            </div>                
+            </div>            
         </form>
     </div>
 </x-app-layout>

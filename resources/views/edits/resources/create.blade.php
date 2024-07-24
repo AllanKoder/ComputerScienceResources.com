@@ -102,5 +102,8 @@
             
             <button type="submit">Create</button>
         </form>
+        <div x-data>
+            <button @click="$dispatch('clear-inputs-event')">Clear Input</button>
+        </div>
     </div>
 </x-app-layout>

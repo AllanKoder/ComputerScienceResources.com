@@ -87,6 +87,7 @@
             resetInputs() {
                 this.selectedOptions = [];
                 localStorage.removeItem(this.storageID);
+                this.initialize();
             },
             isSelected(option) {
                 return this.selectedOptions.includes(option);

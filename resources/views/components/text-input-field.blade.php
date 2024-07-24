@@ -2,10 +2,12 @@
 
 @if($type == "textarea")
     <textarea {{ $attributes->merge(['class' => 'form-control-text-input']) }} type="text" name="{{ $name }}" id="text-input-{{ $name }}" 
-        x-data="textInputComponent('{{ $name }}', '{{ $saveToStorage  ? 'true' : 'false' }}', '{{ $inputText }}')" x-init="initialize()" x-model="inputValue" @clear-inputs-event.window="clearInput"></textarea>
+        x-data="textInputComponent('{{ $name }}', '{{ $saveToStorage  ? 'true' : 'false' }}', '{{ $inputText }}')" x-init="initialize()" x-model="inputValue" 
+        @clear-inputs-event.window="resetInputs()"></textarea>
 @else
     <input {{ $attributes->merge(['class' => 'form-control-text-input']) }} type="{{ $type }}" name="{{ $name }}" id="text-input-{{ $name }}" 
-    x-data="textInputComponent('{{ $name }}', '{{ $saveToStorage ? 'true' : 'false'}}', '{{ $inputText }}')" x-init="initialize()" x-model="inputValue" @clear-inputs-event.window="clearInput" />
+    x-data="textInputComponent('{{ $name }}', '{{ $saveToStorage ? 'true' : 'false'}}', '{{ $inputText }}')" x-init="initialize()" x-model="inputValue" 
+    @clear-inputs-event.window="resetInputs()" />
 @endif
 
 <script>
@@ -32,9 +34,11 @@
                     });
                 }
             },
-            clearInput(event) {
+            resetInputs() {
                 this.inputValue = '';
-            }
+                localStorage.removeItem(this.storageID);
+                this.initialize();
+            },
         }
     }
 </script>

@@ -78,7 +78,7 @@
     </button>
 </div>   
 <div x-data>
-    <button @click="$dispatch('clear-inputs-event')">.sadsaasdsa asas.</button>
+    <button @click="$dispatch('clear-inputs-event')">Clear Input</button>
 </div>
 <script>
 

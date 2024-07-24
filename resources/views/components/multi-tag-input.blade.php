@@ -103,6 +103,7 @@
             resetInputs() {
                 this.selectedOptions = [];
                 localStorage.removeItem(this.storageID);
+                this.initialize();
             },
             addOption(option) {
                 if (!this.options.includes(option)) {
