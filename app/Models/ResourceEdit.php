@@ -13,8 +13,9 @@ class ResourceEdit extends Model
 
     protected $fillable = [
         'resource_id',
-        'title',
-        'description',
+        'edit_title',
+        'edit_description',
+        'user_id',
     ];
 
     /**
@@ -47,5 +48,10 @@ class ResourceEdit extends Model
     public function reports(): MorphMany
     {
         return $this->morphMany(Report::class, 'reportable');
+    }
+
+    public function proposedEdits()
+    {
+        return $this->hasMany(ProposedEdit::class);
     }
 }

@@ -1,3 +1,7 @@
+@if(Auth::user())
+    @include('comments.partials.create', array('type'=>'resource', 'id'=>$id))
+@endif
+
 <div class="container" id="comments-container">
     @if(count($comments) > 0)
         @foreach ($comments as $comment)

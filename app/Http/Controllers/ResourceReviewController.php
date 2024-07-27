@@ -24,11 +24,16 @@ class ResourceReviewController extends Controller
 
     }
     
-    // Display a listing of the reviews.
-    public function index(Request $request)
+    // Display a listing of the reviews for a specific resource
+    public function index($id)
     {
-        $resourceReviews = ResourceReview::with(['comment', 'user'])->get();
-        return view('reviews.resources.index', compact('resourceReviews'));
+        // Retrieve resource reviews with comments and users
+        $resourceReviews = ResourceReview::where('resource_id', $id)
+            ->with(['comment', 'comment.votes', 'user'])
+            ->get();
+
+        return view('reviews.resources.index', ['resourceReviews' => $resourceReviews, 'resource'=>$id]);
+
     }
     
     // Show the form for creating a new review.
@@ -79,12 +84,7 @@ class ResourceReviewController extends Controller
     // Display the reviews for a specific resource.
     public function show($id)
     {
-        // Retrieve resource reviews with comments and users
-        $resourceReviews = ResourceReview::where('resource_id', $id)
-            ->with(['comment', 'comment.votes', 'user'])
-            ->get();
 
-        return view('reviews.resources.index', compact('resourceReviews'));
     }
 
     // Get the replies for a resource review

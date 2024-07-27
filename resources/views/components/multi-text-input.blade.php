@@ -67,6 +67,7 @@
             resetInputs() {
                 this.inputs = [];
                 localStorage.removeItem(this.storageID);
+                this.initialize();
             },
         };
     }

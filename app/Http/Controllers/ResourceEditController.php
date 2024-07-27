@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreResourceEditRequest;
 use App\Models\ResourceEdit;
+use App\Models\ProposedEdit;
 use Illuminate\Http\Request;
 
 class ResourceEditController extends Controller
@@ -31,16 +33,27 @@ class ResourceEditController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $resource)
+    public function store(StoreResourceEditRequest $request, $resource)
     {
-        $validatedData = $request->validate([
-            'resource_id' => 'required|exists:resources,id',
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-        ]);
+        \Log::debug('storing proposed resource edit: ' . json_encode($request->all()));
+
+        $validatedData = $request->validated();
+        $validatedData['resource_id'] = $resource;
+        $validatedData['user_id'] = auth()->id();
 
         $resourceEdit = ResourceEdit::create($validatedData);
-        return response()->json($resourceEdit, 201);
+
+        foreach ($validatedData as $field => $value) {
+            if (!in_array($field, ['edit_title', 'edit_description', 'user_id', 'resource_id'])) {
+                \Log::debug('creating proposed edit for a field: ' . $field . ' to value: ' . json_encode($value));
+                ProposedEdit::create([
+                    'resource_edit_id' => $resourceEdit->id,
+                    'field_name' => $field,
+                    'new_value' => json_encode($value),
+                ]); 
+            }
+        }
+        return redirect()->route('resource_edits.index', $resource)->with('success', 'Resource Edit created successfully and is pending approval');
     }
 
     /**

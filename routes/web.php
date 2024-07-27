@@ -44,8 +44,8 @@ Route::controller(VoteController::class)->group(function () {
 
 // Reviews for Resources
 Route::controller(ResourceReviewController::class)->group(function () {
+    Route::get('/review/{resource}', 'index')->name('reviews.index');
     Route::post('/review/{resource}', 'store')->name('reviews.store');
-    Route::get('/review/{resource}', 'show')->name('reviews.show');
     Route::get('/review/replies/{id}', 'replies')->name('reviews.replies');
 });
 

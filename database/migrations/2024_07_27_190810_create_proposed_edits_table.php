@@ -13,15 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('resource_edits', function (Blueprint $table) {
+        Schema::create('proposed_edits', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('resource_edit_id')->constrained('resource_edits')->onDelete('cascade');
+            $table->string('field_name');
+            $table->text('new_value');
             $table->timestamps();
-            $table->foreignId('resource_id')->constrained('resources')->onDelete('cascade');
-            $table->string('edit_title');
-            $table->text('edit_description');
-            $table->unsignedBigInteger('user_id');
-
-            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 
@@ -32,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('resource_edits');
+        Schema::dropIfExists('proposed_edits');
     }
 };

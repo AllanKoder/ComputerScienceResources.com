@@ -9,12 +9,16 @@
                 $difficultyOptions = \App\Helpers\ConfigHelper::getConfigOptions("difficulties");
             @endphp
             <div>
-                <label for="title">Title:</label>
-                <input type="text" id="title" name="title" required>
+                <label for="edit_title">Title:</label>
+                <x-text-input-field 
+                :saveToStorage=true
+                type="text" id="edit_title" name="edit_title" required/>
             </div>
             <div>
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" required></textarea>
+                <label for="edit_description">Description:</label>
+                <x-text-input-field
+                :saveToStorage=true
+                type="textarea" id="edit_description" name="edit_description" required/>
             </div>
 
             <!-- Image URL Input -->

@@ -1,5 +1,9 @@
 <h1>Resource Reviews</h1>
 
+@if(Auth::user())
+    @include('reviews.resources.create', array('resource'=>$resource))
+@endif
+
 @foreach($resourceReviews as $review)
     <table class="table">
         <thead>

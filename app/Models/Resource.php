@@ -14,11 +14,6 @@ class Resource extends Model
 
     protected $table = 'resources';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = [
         'title',
         'description',
@@ -32,29 +27,42 @@ class Resource extends Model
         'difficulty',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array
-     */
     protected $casts = [
         'features' => 'array',
         'formats' => 'array',
         'limitations' => 'array',
-        'topics' => 'array'
+        'topics' => 'array',
     ];
 
-    /**
-     * Get the comments for the Resource post.
-     */
+    public static function createFiltered($request)
+    {
+        $features = array_filter($request->input('features', []), function ($value) {
+            return !is_null($value) && $value !== '';
+        });
+        $limitations = array_filter($request->input('limitations', []), function ($value) {
+            return !is_null($value) && $value !== '';
+        });
+
+        $request->merge([
+            'features' => array_values($features),
+            'limitations' => array_values($limitations),
+        ]);
+
+        $resource = new self($request->except('tags'));
+        $resource->save();
+
+        if ($request->filled('tags')) {
+            $resource->attachTags($request->tags);
+        }
+
+        return $resource;
+    }
+
     public function comments()
     {
         return $this->morphMany(Comment::class, 'commentable');
     }
 
-    /**
-     * Get the reports for the comment.
-     */
     public function reports()
     {
         return $this->morphMany(Vote::class, 'reportable');

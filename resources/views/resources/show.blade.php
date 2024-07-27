@@ -106,15 +106,9 @@
         @include('reports.create', array('type'=>'resource', 'id'=>$resource->id))
         
     </div>
-
-    @if(Auth::user())
-        @include('reviews.resources.create', array('resource'=>$resource))
-        @include('comments.partials.create', array('type'=>'resource', 'id'=>$resource->id))
-    @endif
-
     
     <div class="tab-list" role="tablist">
-        <button hx-get="{{ route('reviews.show', ['resource' => $resource->id]) }}" hx-target="#tab-content" hx-indicator="#spinner" class="selected bg-teal-300 p-4" role="tab" aria-selected="true" aria-controls="tab-content">Reviews</button>
+        <button hx-get="{{ route('reviews.index', ['resource' => $resource->id]) }}" hx-target="#tab-content" hx-indicator="#spinner" class="selected bg-teal-300 p-4" role="tab" aria-selected="true" aria-controls="tab-content">Reviews</button>
         <button hx-get="{{ route('comment.comments', ['type' => 'resource', 'id' => $resource->id]) }}" hx-target="#tab-content" hx-indicator="#spinner" class="bg-teal-300 p-4" role="tab" aria-selected="false" aria-controls="tab-content">Comments</button>
         <button hx-get="{{ route('resource_edits.index', ['resource' => $resource->id]) }}" hx-target="#tab-content" hx-indicator="#spinner" class="bg-teal-300 p-4" role="tab" aria-selected="false" aria-controls="tab-content">Propose Edits</button>
     </div>
@@ -123,7 +117,7 @@
     <x-spinner class="mx-auto" id="spinner"></x-spinner>
     <div id="tab-content" role="tabpanel" class="tab-content">
         @if($commentTree->isNotEmpty())
-            @include('comments.partials.index', ['comments' => $commentTree])
+            @include('comments.partials.index', ['comments' => $commentTree, 'id'=> $resource->id])
         @else
             <p>No comments available.</p>
         @endif   

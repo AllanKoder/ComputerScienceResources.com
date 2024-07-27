@@ -29,6 +29,7 @@ class ResourceFactory extends Factory
         $availableDifficulties = array_keys(config('difficulties'));
 
         return [
+            'user_id' => fake()->numberBetween(0, 10),
             'title' => fake()->sentence,
             'description' => fake()->paragraph,
             'image_url' => fake()->imageUrl,

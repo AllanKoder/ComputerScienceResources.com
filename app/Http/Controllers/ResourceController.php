@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreResourceRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Resource;
@@ -23,7 +24,6 @@ class ResourceController extends Controller
         \DB::enableQueryLog();
 
         $query = Resource::query()->with("tags");
-    
         // Apply filters if they are present in the request
         if ($request->filled('query')) {
             // Use the input method to get the 'query' parameter
@@ -111,40 +111,11 @@ class ResourceController extends Controller
     }
     
     // Store a newly created resource in storage.
-    public function store(Request $request)
+    public function store(StoreResourceRequest $request)
     {
         \Log::debug('storing resource: ' . json_encode($request->all()));
 
-        // Filter out null values from 'features' and 'limitations' arrays
-        $features = array_filter($request->input('features', []), function($value) {
-            return !is_null($value) && $value !== '';
-        });
-        $limitations = array_filter($request->input('limitations', []), function($value) {
-            return !is_null($value) && $value !== '';
-        });
-
-        // Update the request to only include the non-null values
-        $request->merge([
-            'features' => array_values($features),
-            'limitations' => array_values($limitations),
-        ]);
-
-        $validator = $this->validateResource($request);
-
-        if ($validator->fails()) {
-            \Log::warning('failed to save resource: ' . $validator->errors());
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-        
-        // Create a new Resource instance with all request data except 'tags'
-        $resource = new Resource($request->except('tags'));
-        $resource->save();
-
-        // Attach tags separately
-        if ($request->filled('tags'))
-        {
-            $resource->attachTags($request->tags);
-        }
+        Resource::createFiltered($request);
 
         return redirect()->route('resources.index');
     }
@@ -200,30 +171,5 @@ class ResourceController extends Controller
         $resource->delete();
 
         return redirect()->route('resources.index');
-    }
-
-    // Validate the request for a valid model
-    protected function validateResource(Request $request)
-    {
-        $availableFormats = array_keys(config('formats')); // Retrieve the formats from the configuration
-        $availablePricings = array_keys(config('pricings')); // Retrieve the pricing formats from the configuration
-        $availableDifficulty = array_keys(config('difficulties')); // Retrieve the difficulties from the configuration
-
-        return Validator::make($request->all(), [
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image_url' => 'required|url',
-            'formats' => 'required|array',
-            'formats.*' => 'string|in:' . implode(',', $availableFormats),
-            'features' => 'sometimes|array|max:10',
-            'features.*' => 'string', // Validates each item in the features array
-            'limitations' => 'sometimes|array|max:10',
-            'limitations.*' => 'string', // Validates each item in the limitations array
-            'resource_url' => 'required|url',
-            'pricing' => 'required|string|in:' . implode(',', $availablePricings),
-            'topics' => 'sometimes|array',
-            'topics.*' => 'string', // Validates each item in the topics array
-            'difficulty' => 'required|in:' . implode(',', $availableDifficulty),
-        ]);
     }
 }

@@ -25,6 +25,10 @@ return new class extends Migration
             $table->string('pricing');
             $table->json('topics')->nullable(); // Assuming topics is an array of strings
             $table->string('difficulty'); // Changed to string to store the difficulty level
+
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
+        
             $table->timestamps();
         });
     }

@@ -98,7 +98,7 @@ class CommentController extends Controller
         $commentableType = TypeHelper::getModelType($type);
         $commentTree = Comment::getCommentTree($commentableType, $id);
         
-        return view('comments.partials.index', ['comments' => $commentTree]);
+        return view('comments.partials.index', ['comments' => $commentTree, 'id'=>$id]);
     }
 
 
@@ -150,7 +150,7 @@ class CommentController extends Controller
             abort(403, 'Unauthorized action.');
             \Log::warning('not authorized to delete comment: ' . json_encode($comment->all()));
         }
-        \Log::info('deleting comment: ' . json_encode($comment->all()));
+        \Log::debug('deleting comment: ' . json_encode($comment->all()));
         
         $comment->delete();
 
@@ -159,8 +159,8 @@ class CommentController extends Controller
     
     public function reply(Request $request, Comment $comment)
     {   
-        \Log::info('replying to a comment request: ' . json_encode($request->all()));
-        \Log::info('comment reply head comment: ' . json_encode($comment->toArray()));
+        \Log::debug('replying to a comment request: ' . json_encode($request->all()));
+        \Log::debug('comment reply head comment: ' . json_encode($comment->toArray()));
         
         if (is_null($comment->id)) {
             \Log::warning('could not find parent comment');
@@ -184,7 +184,7 @@ class CommentController extends Controller
         $ancestorID = CommentHierarchy::where('comment_id', $comment->id)->first()->ancestor;
         
         // Create a new closure entry with the found ancestor ID
-        \Log::info('Creating closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
+        \Log::debug('Creating closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
         CommentHierarchy::create([
             'ancestor' => $ancestorID,
             'comment_id' => $reply->id,
