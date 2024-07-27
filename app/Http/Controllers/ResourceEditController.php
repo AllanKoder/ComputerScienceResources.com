@@ -17,7 +17,7 @@ class ResourceEditController extends Controller
     public function index($resource)
     {
         // Show all edits for a specific resource id
-        $resourceEdits = ResourceEdit::where('resource_id', $resource)->get();
+        $resourceEdits = ResourceEdit::where('resource_id', $resource)->with('user')->get();
         return view('edits.resources.index', compact('resourceEdits', 'resource'));
     }
     
@@ -53,7 +53,7 @@ class ResourceEditController extends Controller
                 ]); 
             }
         }
-        return redirect()->route('resource_edits.index', $resource)->with('success', 'Resource Edit created successfully and is pending approval');
+        return redirect()->back()->with('success', 'Resource Edit created successfully and is pending approval');
     }
 
     /**
@@ -64,7 +64,22 @@ class ResourceEditController extends Controller
      */
     public function show(ResourceEdit $resourceEdit)
     {
-        return response()->json($resourceEdit);
+        \Log::debug('Original Resource: ' . json_encode($resourceEdit->resource));
+
+        $proposedEdits = $resourceEdit->proposedEdits->pluck('new_value', 'field_name')->toArray();
+        \Log::debug('Proposed Edits: ' . json_encode($proposedEdits));
+
+        // Decode JSON values
+        foreach ($proposedEdits as $field => $value) {
+            $decodedValue = json_decode($value, true);
+            $proposedEdits[$field] = $decodedValue !== null ? $decodedValue : $value;
+        }
+
+        // Create a new resource-like object with the proposed edits
+        $editedResource = (object) array_merge($resourceEdit->resource->toArray(), $proposedEdits);
+        \Log::debug('Edited Resource: ' . json_encode($editedResource));
+
+        return view('edits.resources.show', compact('resourceEdit', 'editedResource'));
     }
 
     /**

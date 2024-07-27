@@ -53,6 +53,7 @@ Route::controller(ResourceReviewController::class)->group(function () {
 Route::controller(ResourceEditController::class)->group(function () {
     Route::post('/resource_edit/{resource}', 'store')->name('resource_edits.store');
     Route::get('/resource_edit/{resource}', 'index')->name('resource_edits.index');
+    Route::get('/resource_edit/show/{resource_edit}', 'show')->name('resource_edits.show');
     Route::get('/resource_edit/{resource}/create', 'create')->name('resource_edits.create');
 });
 

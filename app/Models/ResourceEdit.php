@@ -18,6 +18,11 @@ class ResourceEdit extends Model
         'user_id',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     /**
      * Get the resource that this edit belongs to.
      */
