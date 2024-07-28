@@ -35,6 +35,7 @@ class StoreResourceEditRequest extends FormRequest
             'topics' => 'sometimes|array',
             'topics.*' => 'string',
             'difficulty' => 'sometimes|in:' . implode(',', $availableDifficulty),
+            'tags' => 'sometimes|array',
         ];
     }
 }

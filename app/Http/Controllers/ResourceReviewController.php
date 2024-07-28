@@ -96,8 +96,7 @@ class ResourceReviewController extends Controller
         $comments = Comment::getCommentTree(ResourceReview::class, $id)->first()->comments;
         \Log::debug('getting comments ' . json_encode($comments));
 
-
-        return view('comments.partials.index', compact('comments'));
+        return view('comments.partials.index', compact('comments', 'id'));
     }
 
     // Show the form for editing the specified review.

@@ -65,20 +65,21 @@ class ResourceEditController extends Controller
     public function show(ResourceEdit $resourceEdit)
     {
         \Log::debug('Original Resource: ' . json_encode($resourceEdit->resource));
-
+    
         $proposedEdits = $resourceEdit->proposedEdits->pluck('new_value', 'field_name')->toArray();
         \Log::debug('Proposed Edits: ' . json_encode($proposedEdits));
-
+    
         // Decode JSON values
         foreach ($proposedEdits as $field => $value) {
             $decodedValue = json_decode($value, true);
             $proposedEdits[$field] = $decodedValue !== null ? $decodedValue : $value;
         }
-
+    
         // Create a new resource-like object with the proposed edits
         $editedResource = (object) array_merge($resourceEdit->resource->toArray(), $proposedEdits);
+    
         \Log::debug('Edited Resource: ' . json_encode($editedResource));
-
+    
         return view('edits.resources.show', compact('resourceEdit', 'editedResource'));
     }
 

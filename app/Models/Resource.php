@@ -25,6 +25,7 @@ class Resource extends Model
         'pricing',
         'topics',
         'difficulty',
+        'user_id'
     ];
 
     protected $casts = [
@@ -46,6 +47,7 @@ class Resource extends Model
         $request->merge([
             'features' => array_values($features),
             'limitations' => array_values($limitations),
+            'user_id' => \Auth::id(),
         ]);
 
         $resource = new self($request->except('tags'));

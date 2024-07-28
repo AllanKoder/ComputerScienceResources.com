@@ -32,6 +32,7 @@ class StoreResourceRequest extends FormRequest
             'topics' => 'sometimes|array',
             'topics.*' => 'string',
             'difficulty' => 'required|in:' . implode(',', $availableDifficulty),
+            'tags' => 'sometimes|array',
         ];
     }
 }
