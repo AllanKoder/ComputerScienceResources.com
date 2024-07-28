@@ -12,7 +12,6 @@
 
 <script>
     function textInputComponent(name, saveToStorage, inputText) {
-        console.log(saveToStorage);
         return {
             inputValue: '',
             get storageID() { return `${Alpine.store('getURL')()}-text-input-${name}` },
