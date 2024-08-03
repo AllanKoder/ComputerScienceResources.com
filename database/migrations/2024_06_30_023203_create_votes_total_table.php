@@ -17,6 +17,8 @@ return new class extends Migration
             $table->unsignedBigInteger('voteable_id');
             $table->string('voteable_type');
             $table->integer('total_votes')->default(0);
+            $table->integer('up_votes')->default(0);
+            $table->integer('down_votes')->default(0);
             $table->primary(['voteable_id', 'voteable_type']);
         });
     }

@@ -54,7 +54,7 @@ Route::controller(ResourceEditController::class)->group(function () {
     Route::post('/resource_edit/{resource}', 'store')->name('resource_edits.store');
     Route::get('/resource_edit/{resource}', 'index')->name('resource_edits.index');
     Route::get('/resource_edit/show/{resource_edit}', 'show')->name('resource_edits.show');
-    Route::get('/resource_edit/edits/{resource_edit}', 'edits')->name('resource_edits.edits');
+    Route::get('/resource_edit/original/{resource_edit}', 'original')->name('resource_edits.original');
     Route::get('/resource_edit/diff/{resource_edit}', 'diff')->name('resource_edits.diff');
     Route::get('/resource_edit/{resource}/create', 'create')->name('resource_edits.create');
 });

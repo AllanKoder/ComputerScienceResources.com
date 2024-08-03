@@ -15,6 +15,7 @@ class ResourceEditController extends Controller
         protected DiffService $diffService,
     ){
         $this->middleware('auth',  ['except' => ['index', 'show', 'edits', 'diff']]);
+        $this-> middleware('cache.headers:private;max_age=180');
     }
 
     /**
@@ -85,25 +86,20 @@ class ResourceEditController extends Controller
      */
     public function show(ResourceEdit $resourceEdit)
     {
-        \Log::debug('Original Resource: ' . json_encode($resourceEdit->resource));
-
         $editedResource = $this->getNewResourceFromEdits($resourceEdit);
     
         return view('edits.resources.show', compact('resourceEdit', 'editedResource'));
     }
 
     /**
-     * Show the edits partial
+     * Show the original resource partial
      */
 
-     public function edits(ResourceEdit $resourceEdit)
+     public function original(ResourceEdit $resourceEdit)
      {
-         \Log::debug('Original Resource: ' . json_encode($resourceEdit->resource));
+         \Log::debug('Returning original resource: ' . json_encode($resourceEdit->resource));
      
-         // Create a new resource-like object with the proposed edits
-         $editedResource = $this->getNewResourceFromEdits($resourceEdit);
-     
-         return view('components.resource-details', ['resource'=>$editedResource]);
+         return view('components.resource-details', ['resource'=>$resourceEdit->resource]);
      }
 
      

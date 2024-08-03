@@ -6,7 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 
 class VoteTotal extends Model
 {
-    protected $fillable = ['voteable_id', 'voteable_type', 'total_votes'];
+    protected $fillable = [
+        'voteable_id', 
+        'voteable_type', 
+        'total_votes', 
+        'up_votes',
+        'down_votes', 
+    ];
+
     public $timestamps = false;
 
     public static function getTotalVotes($voteableId, $voteableType)
