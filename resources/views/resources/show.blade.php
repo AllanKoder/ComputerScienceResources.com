@@ -20,7 +20,7 @@
         <div id="total-votes">
             Total Votes: <span>{{ $totalUpvotes ?? 0 }}</span>
         </div>
-        @include('reports.create', array('type'=>'resource', 'id'=>$resource->id))
+        @include('reports.partials.create', array('type'=>'resource', 'id'=>$resource->id))
         
     </div>
     

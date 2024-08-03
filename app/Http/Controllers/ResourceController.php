@@ -131,7 +131,7 @@ class ResourceController extends Controller
     
         // Retrieve total upvotes for this resource
         $totalUpvotes = VoteTotal::getTotalVotes($id, Resource::class);
-
+        
         // Retrieve review summary
         $reviewSummary = ResourceReviewSummary::where('resource_id', $id)->first();
         $reviewSummaryData = $reviewSummary ? $reviewSummary->getReviewSummary() : null;

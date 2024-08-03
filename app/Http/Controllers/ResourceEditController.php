@@ -4,11 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreResourceEditRequest;
 use App\Models\ResourceEdit;
+use App\Models\Resource;
 use App\Models\ProposedEdit;
 use Illuminate\Http\Request;
-
+use App\Services\DiffService;
 class ResourceEditController extends Controller
 {
+
+    public function __construct(
+        protected DiffService $diffService,
+    ){
+        $this->middleware('auth',  ['except' => ['index', 'show', 'edits', 'diff']]);
+    }
+
     /**
      * Display a listing of the resource edits.
      *
@@ -18,7 +26,7 @@ class ResourceEditController extends Controller
     {
         // Show all edits for a specific resource id
         $resourceEdits = ResourceEdit::where('resource_id', $resource)->with('user')->get();
-        return view('edits.resources.index', compact('resourceEdits', 'resource'));
+        return view('edits.resources.partials.index', compact('resourceEdits', 'resource'));
     }
     
 
@@ -42,9 +50,8 @@ class ResourceEditController extends Controller
         $validatedData['user_id'] = auth()->id();
 
         $resourceEdit = ResourceEdit::create($validatedData);
-
         foreach ($validatedData as $field => $value) {
-            if (!in_array($field, ['edit_title', 'edit_description', 'user_id', 'resource_id'])) {
+            if (in_array($field, (new Resource)->getFillable())) {
                 \Log::debug('creating proposed edit for a field: ' . $field . ' to value: ' . json_encode($value));
                 ProposedEdit::create([
                     'resource_edit_id' => $resourceEdit->id,
@@ -54,6 +61,20 @@ class ResourceEditController extends Controller
             }
         }
         return redirect()->back()->with('success', 'Resource Edit created successfully and is pending approval');
+    }
+    
+    private function getNewResourceFromEdits(ResourceEdit $resourceEdit) {
+        $proposedEdits = $resourceEdit->proposedEdits->pluck('new_value', 'field_name')->toArray();
+        \Log::debug('Proposed Edits: ' . json_encode($proposedEdits));
+
+        // Decode JSON values
+        foreach ($proposedEdits as $field => $value) {
+            $decodedValue = json_decode($value, true);
+            $proposedEdits[$field] = $decodedValue !== null ? $decodedValue : $value;
+        }
+
+        // Create a new resource-like object with the proposed edits
+        return (object) array_merge($resourceEdit->resource->toArray(), $proposedEdits);
     }
 
     /**
@@ -65,22 +86,56 @@ class ResourceEditController extends Controller
     public function show(ResourceEdit $resourceEdit)
     {
         \Log::debug('Original Resource: ' . json_encode($resourceEdit->resource));
-    
-        $proposedEdits = $resourceEdit->proposedEdits->pluck('new_value', 'field_name')->toArray();
-        \Log::debug('Proposed Edits: ' . json_encode($proposedEdits));
-    
-        // Decode JSON values
-        foreach ($proposedEdits as $field => $value) {
-            $decodedValue = json_decode($value, true);
-            $proposedEdits[$field] = $decodedValue !== null ? $decodedValue : $value;
-        }
-    
-        // Create a new resource-like object with the proposed edits
-        $editedResource = (object) array_merge($resourceEdit->resource->toArray(), $proposedEdits);
-    
-        \Log::debug('Edited Resource: ' . json_encode($editedResource));
+
+        $editedResource = $this->getNewResourceFromEdits($resourceEdit);
     
         return view('edits.resources.show', compact('resourceEdit', 'editedResource'));
+    }
+
+    /**
+     * Show the edits partial
+     */
+
+     public function edits(ResourceEdit $resourceEdit)
+     {
+         \Log::debug('Original Resource: ' . json_encode($resourceEdit->resource));
+     
+         // Create a new resource-like object with the proposed edits
+         $editedResource = $this->getNewResourceFromEdits($resourceEdit);
+     
+         return view('components.resource-details', ['resource'=>$editedResource]);
+     }
+
+     
+    /**
+     * Show the diff partial
+     */
+    public function diff(ResourceEdit $resourceEdit)
+    {
+        \Log::debug('Original Resource: ' . json_encode($resourceEdit->resource));
+    
+        // Create a new resource-like object with the proposed edits
+        $editedResource = $this->getNewResourceFromEdits($resourceEdit);
+    
+        // Get the fillable attributes
+        $fillable = (new Resource)->getFillable();
+    
+        $diffs = [];
+    
+        foreach ($fillable as $attribute) {
+            $originalValue = $resourceEdit->resource->$attribute;
+            $editedValue = $editedResource->$attribute;
+    
+            if (is_array($originalValue) && is_array($editedValue)) {
+                // Get the array diff
+                $diffs[$attribute] = $this->diffService->set_diff($originalValue, $editedValue);
+            } elseif (is_string($originalValue) && is_string($editedValue)) {
+                // Get the text diff
+                $diffs[$attribute] = $this->diffService->text_diff_strings($originalValue, $editedValue);
+            }
+        }
+        
+        return view('edits.resources.display.diff', compact('diffs', 'editedResource'));
     }
 
     /**

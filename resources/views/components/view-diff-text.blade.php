@@ -1,27 +1,28 @@
-@props(['textDiff'])
-<div x-data="viewTextDiff({{ json_encode($textDiff) }})">
-    <template x-for="diff in textDiffArray" :key="diff.text">
-        <span :class="{
-            'bg-green-200': diff.type === 'insertion',
-            'bg-red-200': diff.type === 'deletion'
-        }">
-            <template x-if="diff.type === 'insertion'">
-                <span>+<span x-text="diff.text"></span></span>
-            </template>
-            <template x-if="diff.type === 'deletion'">
-                <span>-<span x-text="diff.text"></span></span>
-            </template>
-            <template x-if="diff.type === 'normal'">
-                <span x-text="diff.text"></span>
-            </template>
-        </span>
-    </template>
-</div>
+<!-- resources/views/components/view-diff-text.blade.php -->
+@props(['diff'])
 
-<script>
-function viewTextDiff(textDiff) {
-    return {
-        textDiffArray: textDiff,
-    }
-}
-</script>
+@php
+    $diffArray = json_decode($diff, true);
+@endphp
+
+@foreach ($diffArray as $diffItem)
+    @if (isset($diffItem['d']))
+        <span class="bg-red-200">-    
+            @foreach ($diffItem['d'] as $deletedText)
+                {{ $deletedText }}
+            @endforeach
+        </span>
+    @endif
+    
+    @if (isset($diffItem['i']))
+        <span class="bg-green-200">+    
+            @foreach ($diffItem['i'] as $insertedText)
+                {{ $insertedText }}
+            @endforeach
+        </span>
+    @endif
+    
+    @if (is_string($diffItem))
+        <span>{{ $diffItem }}</span>
+    @endif
+@endforeach

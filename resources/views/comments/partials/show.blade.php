@@ -35,7 +35,7 @@
     </div>
 
     <div class="">
-        {{-- @include('reports.create', ['type' => 'comment', 'id' => $comment->id]) --}}
+        {{-- @include('reports.partials.create', ['type' => 'comment', 'id' => $comment->id]) --}}
     </div>
     <div class="card-footer text-muted">
         Posted {{ $comment->created_at->diffForHumans() }}
