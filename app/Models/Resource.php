@@ -53,7 +53,7 @@ class Resource extends Model
         return $this->morphMany(Vote::class, 'reportable');
     }
 
-    public static function getFillableAttributes() {
+    public static function getResourceAttributes() {
         return array_merge((new Resource)->getFillable(), ['tags']);
     }
 

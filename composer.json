@@ -16,6 +16,7 @@
     },
     "require-dev": {
         "beyondcode/laravel-query-detector": "^1.8",
+        "brianium/paratest": "^6.11",
         "fakerphp/faker": "^1.9.1",
         "laravel/breeze": "^1.19",
         "laravel/pint": "^1.0",

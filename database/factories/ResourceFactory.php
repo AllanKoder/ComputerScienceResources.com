@@ -38,7 +38,7 @@ class ResourceFactory extends Factory
             'limitations' => fake()->randomElements(['Limitation 1', 'Limitation 2'], 2),
             'resource_url' => fake()->url,
             'pricing' => fake()->randomElement($availablePricings),
-            'topics' => fake()->randomElements(['Topic 1', 'Topic 2', 'Topic 3'], 2),
+            'topics' => fake()->randomElements(['topic 1', 'topic 2', 'topic 3'], 2),
             'difficulty' => fake()->randomElement($availableDifficulties),
         ];
     }

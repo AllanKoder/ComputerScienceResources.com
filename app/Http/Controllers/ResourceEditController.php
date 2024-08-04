@@ -54,7 +54,7 @@ class ResourceEditController extends Controller
 
         $resourceEdit = ResourceEdit::create($validatedData);
         foreach ($validatedData as $field => $value) {
-            if (in_array($field, Resource::getFillableAttributes())) {
+            if (in_array($field, Resource::getResourceAttributes())) {
                 \Log::debug('creating proposed edit for a field: ' . $field . ' to value: ' . json_encode($value));
                 ProposedEdit::create([
                     'resource_edit_id' => $resourceEdit->id,
@@ -121,7 +121,7 @@ class ResourceEditController extends Controller
         $editedResource = $this->getNewResourceFromEdits($resourceEdit);
     
         // Get the fillable attributes
-        $fillable = Resource::getFillableAttributes();
+        $fillable = Resource::getResourceAttributes();
     
         $diffs = [];
         foreach ($fillable as $attribute) {

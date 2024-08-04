@@ -10,7 +10,7 @@ class DiffService {
     private function removing_same_prefix_suffix($old, $new) {
         $traverse_length = min(count($old), count($new));
         $same_prefix = 0;
-        for ($i = 0; $i < $traverse_length; $i++) {
+        for ($i = 0; $i < floor($traverse_length/2); $i++) {
             if ($old[$i] != $new[$i]) {
                 break;
             }
@@ -18,7 +18,7 @@ class DiffService {
         }
     
         $same_suffix = 0;
-        for ($i = 0; $i < $traverse_length; $i++) {
+        for ($i = 0; $i < floor($traverse_length/2); $i++) {
             if ($old[count($old) - $i - 1] != $new[count($new) - $i - 1]) {
                 break;
             }

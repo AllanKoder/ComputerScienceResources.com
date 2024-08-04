@@ -27,7 +27,7 @@ class ResourceSeeder extends Seeder
             'features' => ['Comprehensive', 'Beginner-friendly'],
             'limitations' => ['Requires basic PHP knowledge'],
             'resource_url' => 'https://leetcode.com',
-            'topics' => ['Laravel', 'Web Development'],
+            'topics' => ['laravel', 'web development'],
             'difficulty' => 'beginner',
         ]);
 
@@ -42,7 +42,7 @@ class ResourceSeeder extends Seeder
             'features' => ['In-depth', 'Expert instructors'],
             'limitations' => ['Advanced level'],
             'resource_url' => 'https://leetcode.com',
-            'topics' => ['Eloquent', 'ORM'],
+            'topics' => ['eloquent', 'orm'],
             'difficulty' => 'industry',
         ]);
 
@@ -54,7 +54,7 @@ class ResourceSeeder extends Seeder
             'features' => ['Best Practices', 'Case Studies'],
             'limitations' => ['High-level concepts'],
             'resource_url' => 'https://leetcode.com',
-            'topics' => ['API Design', 'Laravel'],
+            'topics' => ['api design', 'laravel'],
             'difficulty' => 'academic',
         ]);
     }
