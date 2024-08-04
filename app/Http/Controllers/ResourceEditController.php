@@ -15,7 +15,7 @@ class ResourceEditController extends Controller
         protected DiffService $diffService,
     ){
         $this->middleware('auth',  ['except' => ['index', 'show', 'edits', 'diff', 'original']]);
-        $this->middleware('cache.headers:private;max_age=180');
+        // $this->middleware('cache.headers:private;max_age=180');
     }
 
     /**
@@ -33,7 +33,9 @@ class ResourceEditController extends Controller
 
     public function create($resource)
     {
-        return view('edits.resources.create', ['resource' => $resource]);
+        $resourceAttributes = Resource::where('id', $resource)->first();
+
+        return view('edits.resources.create', ['resourceID' => $resource, 'resource' => $resourceAttributes]);
     }
 
     /**
@@ -52,7 +54,7 @@ class ResourceEditController extends Controller
 
         $resourceEdit = ResourceEdit::create($validatedData);
         foreach ($validatedData as $field => $value) {
-            if (in_array($field, (new Resource)->getFillable())) {
+            if (in_array($field, Resource::getFillableAttributes())) {
                 \Log::debug('creating proposed edit for a field: ' . $field . ' to value: ' . json_encode($value));
                 ProposedEdit::create([
                     'resource_edit_id' => $resourceEdit->id,
@@ -75,7 +77,12 @@ class ResourceEditController extends Controller
         }
 
         // Create a new resource-like object with the proposed edits
-        return (object) array_merge($resourceEdit->resource->toArray(), $proposedEdits);
+        $newResource = (object) array_merge($resourceEdit->resource->toArray(), $proposedEdits);
+
+        // Manually add the tag_names attribute
+        $newResource->tag_names = $proposedEdits['tags'];
+
+        return $newResource;
     }
 
     /**
@@ -114,14 +121,18 @@ class ResourceEditController extends Controller
         $editedResource = $this->getNewResourceFromEdits($resourceEdit);
     
         // Get the fillable attributes
-        $fillable = (new Resource)->getFillable();
+        $fillable = Resource::getFillableAttributes();
     
         $diffs = [];
-    
         foreach ($fillable as $attribute) {
-            $originalValue = $resourceEdit->resource->$attribute;
-            $editedValue = $editedResource->$attribute;
-    
+            if ($attribute === 'tags') {
+                $originalValue = $resourceEdit->resource->tag_names;
+                $editedValue = $editedResource->tag_names;
+            } else {
+                $originalValue = $resourceEdit->resource->$attribute;
+                $editedValue = $editedResource->$attribute;
+            }
+        
             if (is_array($originalValue) && is_array($editedValue)) {
                 // Get the array diff
                 $diffs[$attribute] = $this->diffService->set_diff($originalValue, $editedValue);

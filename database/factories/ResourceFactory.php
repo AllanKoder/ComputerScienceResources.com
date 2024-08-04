@@ -24,12 +24,12 @@ class ResourceFactory extends Factory
      */
     public function definition()
     {
-        $availableFormats = array_keys(config('formats'));
-        $availablePricings = array_keys(config('pricings'));
-        $availableDifficulties = array_keys(config('difficulties'));
+        $availableFormats = array_values(config('formats'));
+        $availablePricings = array_values(config('pricings'));
+        $availableDifficulties = array_values(config('difficulties'));
 
         return [
-            'user_id' => fake()->numberBetween(0, 10),
+            'user_id' => fake()->numberBetween(1, 10),
             'title' => fake()->sentence,
             'description' => fake()->paragraph,
             'image_url' => fake()->imageUrl,
@@ -38,7 +38,7 @@ class ResourceFactory extends Factory
             'limitations' => fake()->randomElements(['Limitation 1', 'Limitation 2'], 2),
             'resource_url' => fake()->url,
             'pricing' => fake()->randomElement($availablePricings),
-            'topics' => fake()->randomElements(['ASD AS A', 'Topic 2', 'Topic 3'], 2),
+            'topics' => fake()->randomElements(['Topic 1', 'Topic 2', 'Topic 3'], 2),
             'difficulty' => fake()->randomElement($availableDifficulties),
         ];
     }

@@ -28,12 +28,34 @@ class Resource extends Model
         'user_id'
     ];
 
+    protected $appends = ['tag_names'];
+
     protected $casts = [
         'features' => 'array',
         'formats' => 'array',
         'limitations' => 'array',
         'topics' => 'array',
     ];
+
+    // Define the accessor for 'tag_names'
+    public function getTagNamesAttribute(): array
+    {
+        return $this->tags->pluck('name')->toArray();
+    }
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
+    }
+    
+    public function reports()
+    {
+        return $this->morphMany(Vote::class, 'reportable');
+    }
+
+    public static function getFillableAttributes() {
+        return array_merge((new Resource)->getFillable(), ['tags']);
+    }
 
     public static function createFiltered($request)
     {
@@ -58,15 +80,5 @@ class Resource extends Model
         }
 
         return $resource;
-    }
-
-    public function comments()
-    {
-        return $this->morphMany(Comment::class, 'commentable');
-    }
-
-    public function reports()
-    {
-        return $this->morphMany(Vote::class, 'reportable');
     }
 }

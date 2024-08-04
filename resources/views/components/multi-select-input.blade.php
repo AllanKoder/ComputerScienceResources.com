@@ -38,7 +38,7 @@
                     <label class="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-900/5 has-[:focus]:bg-slate-900/5 dark:text-slate-300 dark:hover:bg-white/5 dark:has-[:focus]:bg-white/5 [&:has(input:checked)]:text-black dark:[&:has(input:checked)]:text-white [&:has(input:disabled)]:cursor-not-allowed [&:has(input:disabled)]:opacity-75" 
                     x-bind:for="'checkboxOption' + index + '{{$name}}'">
                         <div class="relative flex items-center">
-                            <input type="checkbox" class="combobox-option before:content[''] peer relative size-4 cursor-pointer appearance-none overflow-hidden border border-slate-300 bg-slate-100 before:absolute before:inset-0 checked:border-blue-700 checked:before:bg-blue-700 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-800 checked:focus:outline-blue-700 active:outline-offset-0 disabled:cursor-not-allowed dark:border-slate-700 rounded dark:bg-slate-800 dark:checked:border-blue-600 dark:checked:before:bg-blue-600 dark:focus:outline-slate-300 dark:checked:focus:outline-blue-600" 
+                            <input type="checkbox" class="combobox-option-{{$name}} before:content[''] peer relative size-4 cursor-pointer appearance-none overflow-hidden border border-slate-300 bg-slate-100 before:absolute before:inset-0 checked:border-blue-700 checked:before:bg-blue-700 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-800 checked:focus:outline-blue-700 active:outline-offset-0 disabled:cursor-not-allowed dark:border-slate-700 rounded dark:bg-slate-800 dark:checked:border-blue-600 dark:checked:before:bg-blue-600 dark:focus:outline-slate-300 dark:checked:focus:outline-blue-600" 
                             x-on:change="handleOptionToggle($el)" 
                             x-on:keydown.enter.prevent="$el.checked = ! $el.checked; handleOptionToggle($el)" 
                             :value="item" 
@@ -116,7 +116,7 @@
                 )
                 if (option) {
                     const index = this.options.indexOf(option)
-                    const allOptions = document.querySelectorAll('.combobox-option')
+                    const allOptions = document.querySelectorAll(`.combobox-option-${name}`)
                     if (allOptions[index]) {
                         allOptions[index].focus()
                     }

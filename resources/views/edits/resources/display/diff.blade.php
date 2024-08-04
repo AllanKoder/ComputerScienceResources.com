@@ -59,7 +59,7 @@
 
 <div class="mb-2">
     <p class="font-bold">Tags: </p>
-    @if(isset($diffs['tags']) && is_array($resource->tags))
+    @if(isset($diffs['tags']))
         <x-view-diff-set :diff="$diffs['tags']" />
     @endif
 </div>

@@ -19,18 +19,19 @@
 <script>
     function dynamicTableComponent(name, placeholder, maxSize, inputTexts, saveToStorage) {
         return {
-            inputs: inputTexts.length ? inputTexts : [''],
+            inputs: [''],
             name: name,
             placeholder: placeholder,
             maxSize: maxSize,
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
-                const savedInputs = JSON.parse(localStorage.getItem(this.storageID)) || [];
-                if (saveToStorage && savedInputs.length) {
+                const savedInputs = JSON.parse(localStorage.getItem(this.storageID));
+                if (saveToStorage && savedInputs) {
                     this.inputs = savedInputs;
                 } else {
-                    this.inputs = inputTexts.length ? inputTexts : [''];
+                    this.inputs = inputTexts.slice();
                 }
+                this.updateStorage()
             },
             addInput() {
                 if (this.inputs.length >= this.maxSize) {

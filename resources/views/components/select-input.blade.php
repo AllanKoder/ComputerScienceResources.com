@@ -4,12 +4,12 @@
     class="w-full max-w-xs flex flex-col gap-1 min-w-40" 
     x-on:keydown.esc.window="isOpen = false"
     x-init="initialize()"
+    x-on:keydown="handleKeydownOnOptions($event)"
     @clear-inputs-event.window="resetInputs()">
     <div class="relative">
         <!-- Trigger button -->
         <button type="button" role="combobox" class="inline-flex w-full items-center justify-between gap-2 whitespace-nowrap border-slate-300 bg-slate-100 px-4 py-2 text-sm font-medium tracking-wide text-slate-700 transition hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700 dark:border-slate-700 dark:bg-slate-800/50 dark:text-slate-300 dark:focus-visible:outline-blue-600 border rounded-xl" aria-haspopup="listbox" aria-controls="optionsList" 
         x-on:click="toggleDropdown" 
-        x-on:keydown="handleKeydownOnOptions($event)"
         x-on:keydown.down.prevent="openedWithKeyboard = true" 
         x-on:keydown.enter.prevent="openedWithKeyboard = true" 
         x-on:keydown.space.prevent="openedWithKeyboard = true" 
@@ -59,7 +59,7 @@
                             $el.checked = isSelected($el.value);
                             $watch('selectedOption', _ => $el.checked = isSelected($el.value));
                             "
-                            class="combobox-option before:content[''] peer relative size-4 cursor-pointer appearance-none overflow-hidden border border-slate-300 bg-slate-100 before:absolute before:inset-0 checked:border-blue-700 checked:before:bg-blue-700 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-800 checked:focus:outline-blue-700 active:outline-offset-0 disabled:cursor-not-allowed dark:border-slate-700 rounded-full dark:bg-slate-800 dark:checked:border-blue-600 dark:checked:before:bg-blue-600 dark:focus:outline-slate-300 dark:checked:focus:outline-blue-600" 
+                            class="combobox-option-{{$name}} before:content[''] peer relative size-4 cursor-pointer appearance-none overflow-hidden border border-slate-300 bg-slate-100 before:absolute before:inset-0 checked:border-blue-700 checked:before:bg-blue-700 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-800 checked:focus:outline-blue-700 active:outline-offset-0 disabled:cursor-not-allowed dark:border-slate-700 rounded-full dark:bg-slate-800 dark:checked:border-blue-600 dark:checked:before:bg-blue-600 dark:focus:outline-slate-300 dark:checked:focus:outline-blue-600" 
                             />
                             <!-- Checkmark -->
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="4" class="pointer-events-none invisible absolute left-1/2 top-1/2 size-3 -translate-x-1/2 -translate-y-1/2 text-slate-100 peer-checked:visible dark:text-slate-100" aria-hidden="true">
@@ -88,11 +88,12 @@
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
                 this.filteredOptions = this.options;
-                if (this.saveToStorage) {
-                    const storedOption = localStorage.getItem(this.storageID);
-                    if (storedOption) {
-                        this.selectedOption = storedOption;
-                    }
+                const storedOption = localStorage.getItem(this.storageID);
+                if (saveToStorage && storedOption) {
+                    this.selectedOption = storedOption;
+                }
+                else {
+                    this.selectedOption = selectedOption;
                 }
             },
             resetInputs() {
@@ -141,7 +142,28 @@
                     }
                 }
                 else if((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 8) {
-                    this.$refs.searchField.focus();
+                    if (this.hasSearch) {
+                        this.$refs.searchField.focus();
+                    }
+                    else {
+                        this.highlightFirstMatchingOption(event.key);
+                    }
+                }
+            },
+            highlightFirstMatchingOption(pressedKey) {
+                // if Enter pressed, do nothing
+                if (pressedKey === 'Enter') return
+
+                // find and focus the option that starts with the pressed key
+                const option = this.options.find((item) =>
+                    item.toLowerCase().startsWith(pressedKey.toLowerCase()),
+                )
+                if (option) {
+                    const index = this.options.indexOf(option)
+                    const allOptions = document.querySelectorAll(`.combobox-option-${name}`)
+                    if (allOptions[index]) {
+                        allOptions[index].focus()
+                    }
                 }
             },
             toggleDropdown() {

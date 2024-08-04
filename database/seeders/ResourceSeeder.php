@@ -19,7 +19,7 @@ class ResourceSeeder extends Seeder
         \DB::table('resources')->delete();
 
         // Create 3 new resources
-        Resource::factory()->create([
+        $resource1 = Resource::factory()->create([
             'title' => 'Learning Laravel',
             'description' => 'A comprehensive guide to web development with Laravel.',
             'image_url' => 'https://wallpapers.com/images/featured/funny-cats-pictures-uu9qufqc5zq8l7el.jpg',
@@ -27,10 +27,12 @@ class ResourceSeeder extends Seeder
             'features' => ['Comprehensive', 'Beginner-friendly'],
             'limitations' => ['Requires basic PHP knowledge'],
             'resource_url' => 'https://leetcode.com',
-            'pricing' => 'freemium',
             'topics' => ['Laravel', 'Web Development'],
             'difficulty' => 'beginner',
         ]);
+
+        $resource1->attachTags(["tag1", "php", "laravel"]);
+
 
         Resource::factory()->create([
             'title' => 'Advanced Eloquent Usage',
@@ -40,7 +42,6 @@ class ResourceSeeder extends Seeder
             'features' => ['In-depth', 'Expert instructors'],
             'limitations' => ['Advanced level'],
             'resource_url' => 'https://leetcode.com',
-            'pricing' => 'subscription',
             'topics' => ['Eloquent', 'ORM'],
             'difficulty' => 'industry',
         ]);
@@ -53,7 +54,6 @@ class ResourceSeeder extends Seeder
             'features' => ['Best Practices', 'Case Studies'],
             'limitations' => ['High-level concepts'],
             'resource_url' => 'https://leetcode.com',
-            'pricing' => 'paid',
             'topics' => ['API Design', 'Laravel'],
             'difficulty' => 'academic',
         ]);

@@ -17,5 +17,5 @@ return [
     'webinar',
     'video',
     'research paper',
-    'ezine',
+    'e-zine',
 ];
