@@ -13,9 +13,9 @@ class StoreResourceEditRequest extends FormRequest
 
     public function rules()
     {
-        $availableFormats = array_keys(config('formats'));
-        $availablePricings = array_keys(config('pricings'));
-        $availableDifficulty = array_keys(config('difficulties'));
+        $availableFormats = array_values(config('formats'));
+        $availablePricings = array_values(config('pricings'));
+        $availableDifficulty = array_values(config('difficulties'));
 
         return [
             'edit_description' => 'required|string|max:255',

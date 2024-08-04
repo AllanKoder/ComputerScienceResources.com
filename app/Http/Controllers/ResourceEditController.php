@@ -14,8 +14,8 @@ class ResourceEditController extends Controller
     public function __construct(
         protected DiffService $diffService,
     ){
-        $this->middleware('auth',  ['except' => ['index', 'show', 'edits', 'diff']]);
-        $this-> middleware('cache.headers:private;max_age=180');
+        $this->middleware('auth',  ['except' => ['index', 'show', 'edits', 'diff', 'original']]);
+        $this->middleware('cache.headers:private;max_age=180');
     }
 
     /**

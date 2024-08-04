@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'beginner' => 'beginner',
-    'industry' => 'industry',
-    'academic' => 'academic',
+    'beginner',
+    'industry',
+    'academic',
 ];

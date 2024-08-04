@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'free' => 'Free',
-    'freemium' => 'Freemium',
-    'subscription' => 'Subscription',
-    'paid' => 'One Time Payment',
+    'free',
+    'freemium',
+    'subscription',
+    'one time payment',
 ];
