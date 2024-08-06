@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Tags\HasTags;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Resource extends Model
 {
@@ -30,6 +31,23 @@ class Resource extends Model
 
     protected $appends = ['tag_names'];
 
+    public static function getResourceAttributes(): array
+    {
+        return [
+            'title',
+            'description',
+            'image_url',
+            'formats',
+            'features',
+            'limitations',
+            'resource_url',
+            'pricing',
+            'topics',
+            'difficulty',
+            'tag_names',
+        ];
+    }
+    
     protected $casts = [
         'features' => 'array',
         'formats' => 'array',
@@ -37,11 +55,15 @@ class Resource extends Model
         'topics' => 'array',
     ];
 
-    // Define the accessor for 'tag_names'
-    public function getTagNamesAttribute(): array
+    // Define the accessor and mutator for 'tag_names'
+    protected function tagNames(): Attribute
     {
-        return $this->tags->pluck('name')->toArray();
+        return Attribute::make(
+            get: fn () => $this->tags->pluck('name')->toArray(),
+            set: fn (array $tagNames) => $this->attachTags($tagNames),
+        );
     }
+
 
     public function comments()
     {
@@ -51,10 +73,6 @@ class Resource extends Model
     public function reports()
     {
         return $this->morphMany(Vote::class, 'reportable');
-    }
-
-    public static function getResourceAttributes() {
-        return array_merge((new Resource)->getFillable(), ['tags']);
     }
 
     public static function createFiltered($request)

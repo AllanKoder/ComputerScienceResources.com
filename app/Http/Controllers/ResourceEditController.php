@@ -52,9 +52,12 @@ class ResourceEditController extends Controller
         $validatedData['resource_id'] = $resource;
         $validatedData['user_id'] = auth()->id();
 
+        $originalResource = Resource::where('id', $resource)->with('tags')->first();
+
         $resourceEdit = ResourceEdit::create($validatedData);
         foreach ($validatedData as $field => $value) {
-            if (in_array($field, Resource::getResourceAttributes())) {
+            if (in_array($field, Resource::getResourceAttributes()) 
+            && $originalResource->$field != $value) {
                 \Log::debug('creating proposed edit for a field: ' . $field . ' to value: ' . json_encode($value));
                 ProposedEdit::create([
                     'resource_edit_id' => $resourceEdit->id,
@@ -67,20 +70,10 @@ class ResourceEditController extends Controller
     }
     
     private function getNewResourceFromEdits(ResourceEdit $resourceEdit) {
-        $proposedEdits = $resourceEdit->proposedEdits->pluck('new_value', 'field_name')->toArray();
-        \Log::debug('Proposed Edits: ' . json_encode($proposedEdits));
-
-        // Decode JSON values
-        foreach ($proposedEdits as $field => $value) {
-            $decodedValue = json_decode($value, true);
-            $proposedEdits[$field] = $decodedValue !== null ? $decodedValue : $value;
-        }
+        $proposedEditsArray = $resourceEdit->getProposedEditsArray();
 
         // Create a new resource-like object with the proposed edits
-        $newResource = (object) array_merge($resourceEdit->resource->toArray(), $proposedEdits);
-
-        // Manually add the tag_names attribute
-        $newResource->tag_names = $proposedEdits['tags'];
+        $newResource = (object) array_merge($resourceEdit->resource->toArray(), $proposedEditsArray);
 
         return $newResource;
     }
@@ -116,22 +109,14 @@ class ResourceEditController extends Controller
     public function diff(ResourceEdit $resourceEdit)
     {
         \Log::debug('Original Resource: ' . json_encode($resourceEdit->resource));
-    
-        // Create a new resource-like object with the proposed edits
-        $editedResource = $this->getNewResourceFromEdits($resourceEdit);
-    
+        
         // Get the fillable attributes
-        $fillable = Resource::getResourceAttributes();
-    
+        $proposedEditsArray = $resourceEdit->getProposedEditsArray();
+        $originalResource = $resourceEdit->resource;
+
         $diffs = [];
-        foreach ($fillable as $attribute) {
-            if ($attribute === 'tags') {
-                $originalValue = $resourceEdit->resource->tag_names;
-                $editedValue = $editedResource->tag_names;
-            } else {
-                $originalValue = $resourceEdit->resource->$attribute;
-                $editedValue = $editedResource->$attribute;
-            }
+        foreach ($proposedEditsArray as $attribute => $editedValue) {
+            $originalValue = $originalResource->$attribute;
         
             if (is_array($originalValue) && is_array($editedValue)) {
                 // Get the array diff
@@ -142,7 +127,7 @@ class ResourceEditController extends Controller
             }
         }
         
-        return view('edits.resources.display.diff', compact('diffs', 'editedResource'));
+        return view('edits.resources.display.diff', compact('diffs'));
     }
 
     /**

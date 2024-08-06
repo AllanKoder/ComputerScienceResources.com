@@ -106,11 +106,11 @@
 
             <!-- Tags Input -->
             <div class="mb-4">
-                <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
+                <label for="tag_names" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
                 <x-multi-tag-input class="w-full" 
                 :selectedOptions="@($resource->tag_names)"
                 :saveToStorage=true
-                name="tags"/>
+                name="tag_names"/>
             </div>
             
             <div class=" border-blue-400 border-2 p-5"> 

@@ -59,4 +59,17 @@ class ResourceEdit extends Model
     {
         return $this->hasMany(ProposedEdit::class);
     }
+
+    public function getProposedEditsArray(): array
+    {
+        $proposedEdits = $this->proposedEdits->pluck('new_value', 'field_name')->toArray();
+
+        // Decode JSON values
+        foreach ($proposedEdits as $field => $value) {
+            $decodedValue = json_decode($value, true);
+            $proposedEdits[$field] = $decodedValue !== null ? $decodedValue : $value;
+        }
+        
+        return $proposedEdits;
+    }
 }
