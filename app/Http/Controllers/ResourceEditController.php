@@ -47,28 +47,38 @@ class ResourceEditController extends Controller
     public function store(StoreResourceEditRequest $request, $resource)
     {
         \Log::debug('storing proposed resource edit: ' . json_encode($request->all()));
-
+    
         $validatedData = $request->validated();
         $validatedData['resource_id'] = $resource;
         $validatedData['user_id'] = auth()->id();
-
+    
         $originalResource = Resource::where('id', $resource)->with('tags')->first();
-
+    
         $resourceEdit = ResourceEdit::create($validatedData);
+        $changesDetected = false;
+    
         foreach ($validatedData as $field => $value) {
             if (in_array($field, Resource::getResourceAttributes()) 
-            && $originalResource->$field != $value) {
+                && $originalResource->$field != $value) {
                 \Log::debug('creating proposed edit for a field: ' . $field . ' to value: ' . json_encode($value));
                 ProposedEdit::create([
                     'resource_edit_id' => $resourceEdit->id,
                     'field_name' => $field,
                     'new_value' => json_encode($value),
-                ]); 
+                ]);
+                $changesDetected = true;
             }
         }
+    
+        if (!$changesDetected) {
+            // If no changes were detected, delete the created ResourceEdit and return an error message
+            $resourceEdit->delete();
+            return redirect()->back()->with('error', 'No changes detected. Resource Edit was not created.');
+        }
+    
         return redirect()->back()->with('success', 'Resource Edit created successfully and is pending approval');
     }
-    
+        
     private function getNewResourceFromEdits(ResourceEdit $resourceEdit) {
         $proposedEditsArray = $resourceEdit->getProposedEditsArray();
 

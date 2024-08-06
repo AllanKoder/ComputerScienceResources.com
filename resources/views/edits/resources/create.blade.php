@@ -51,7 +51,7 @@
                 <x-multi-text-input 
                 :inputTexts="@($resource->features)"
                 :saveToStorage=true
-                name="features" placeholder="a Feature of the Resource"></x-multi-text-input>
+                name="features" placeholder="a feature of the Resource"></x-multi-text-input>
             </div>
 
             <!-- Limitations Input -->
@@ -60,7 +60,7 @@
                 <x-multi-text-input 
                 :inputTexts="@($resource->limitations)"
                 :saveToStorage=true
-                name="limitations" placeholder="A Limitation of the Resource"></x-multi-text-input>
+                name="limitations" placeholder="A limitation of the Resource"></x-multi-text-input>
             </div>
 
             <!-- Resource URL Input -->

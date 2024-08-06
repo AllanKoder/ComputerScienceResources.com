@@ -5,7 +5,7 @@
     x-init="initialize"
     class="dynamic-table border-width: 0"
     @clear-inputs-event.window="resetInputs()">
-    <button type="button" class="add btn btn-success p-1 border-black border-2" @click="addInput">Add More</button>
+    <button type="button" class="add btn btn-success p-1 border-black border-2" @click="addInput">Add Input</button>
     <div class="inputs-container">
         <template x-for="(input, index) in inputs" :key="index">
             <div class="input-group">
@@ -19,7 +19,7 @@
 <script>
     function dynamicTableComponent(name, placeholder, maxSize, inputTexts, saveToStorage) {
         return {
-            inputs: [''],
+            inputs: [],
             name: name,
             placeholder: placeholder,
             maxSize: maxSize,
