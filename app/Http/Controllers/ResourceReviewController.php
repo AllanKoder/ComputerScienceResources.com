@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Validator;
 
 class ResourceReviewController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth',  ['except' => ['index', 'show', 'replies']]);

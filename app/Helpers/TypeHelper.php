@@ -2,17 +2,23 @@
 
 namespace App\Helpers;
 
+use App\Models\Resource;
+use App\Models\ResourceEdit;
+use App\Models\Comment;
+use App\Models\Report;
+use App\Models\ResourceReview;
+
 class TypeHelper
 {
     public static function getModelType($resource)
     {
         // Map resource types to their corresponding model classes
         $types = [
-            'resource' => 'App\Models\Resource',
-            'resourceEdit' => 'App\Models\ResourceEdit',
-            'comment' => 'App\Models\Comment',
-            'report' => 'App\Models\Report',
-            'review' => 'App\Models\ResourceReview',
+            'resource' => Resource::class,
+            'resourceEdit' => ResourceEdit::class,
+            'comment' => Comment::class,
+            'report' => Report::class,
+            'resourceReview' => ResourceReview::class,
             // other resource types
         ];
 

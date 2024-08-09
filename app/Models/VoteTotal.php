@@ -24,6 +24,14 @@ class VoteTotal extends Model
         return $totalVotes ? $totalVotes->total_votes : 0; // Return 0 if no votes found
     }
 
+    public static function getVotesTotalModel($voteableId, $voteableType)
+    {
+        $totalVotes = VoteTotal::where('voteable_id', $voteableId)
+                            ->where('voteable_type', $voteableType)
+                            ->first();
+        return $totalVotes;
+    }
+
     public static function getTotalVotesForComments($commentIds)
     {
         return VoteTotal::whereIn('voteable_id', $commentIds)

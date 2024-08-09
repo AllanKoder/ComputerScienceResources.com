@@ -8,6 +8,8 @@ use App\Models\Resource;
 use App\Models\ProposedEdit;
 use Illuminate\Http\Request;
 use App\Services\DiffService;
+use App\Models\VoteTotal;
+
 class ResourceEditController extends Controller
 {
 
@@ -97,8 +99,62 @@ class ResourceEditController extends Controller
     public function show(ResourceEdit $resourceEdit)
     {
         $editedResource = $this->getNewResourceFromEdits($resourceEdit);
-    
-        return view('edits.resources.show', compact('resourceEdit', 'editedResource'));
+        $totalUpvotes = VoteTotal::getVotesTotalModel($resourceEdit->id, ResourceEdit::class);
+
+        $approvals = $totalUpvotes?->up_votes ?? 0;
+        $disapprovals = $totalUpvotes?->down_votes ?? 0;
+        $totalVotes = $totalUpvotes?->total_votes ?? 0;
+
+        return view('edits.resources.show', compact('resourceEdit', 
+        'editedResource', 'approvals', 'disapprovals', 'totalVotes'));
+    }
+
+    public function merge(ResourceEdit $resourceEdit)
+    {   
+        // total votes of the resource
+        $totalUpvotesResource = VoteTotal::getVotesTotalModel($resourceEdit->resource->id, Resource::class);
+        $totalVotesResource = $totalUpvotesResource?->total_votes ?? 0;
+
+        // total votes of the edit
+        $totalUpvotesEdit = VoteTotal::getVotesTotalModel($resourceEdit->id, ResourceEdit::class);
+        $totalVotesEdit = $totalUpvotesEdit?->total_votes ?? 0;
+
+        // if the total votes of the edit is high enough, 
+        $requiredApprovals = config("approvalscores");
+
+        $canMerge = false;
+        foreach (array_reverse($requiredApprovals, true) as $resourceUpvotes => $requiredEditUpvotes) {
+            if ($totalVotesResource >= $resourceUpvotes) {
+                if ($totalVotesEdit >= $requiredEditUpvotes) {
+                    $canMerge = true;
+                }
+                break;
+            }
+        }
+        if ($canMerge == false)
+        {
+            return redirect()->back()->withErrors("Not enough approvals for edit");
+        }
+        
+        $editAge = now()->diffInHours($resourceEdit->created_at);
+
+        # must wait 24 hours
+        if ($editAge < 24){
+            return redirect()->back()->withErrors("Must wait at least 24 hours before merging edits");
+        }
+        
+        //Approve merging the resource
+        $proposedEditsArray = $resourceEdit->getProposedEditsArray();
+        $resource = $resourceEdit->resource;
+        foreach ($proposedEditsArray as $attribute => $editedValue) {
+            $resource->$attribute = $editedValue;
+        }
+
+        $resource->save();
+        
+        $resourceEdit->delete();
+
+        return redirect()->route('resources.show', ['id' => $resource->id]);
     }
 
     /**

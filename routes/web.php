@@ -56,6 +56,7 @@ Route::controller(ResourceEditController::class)->group(function () {
     Route::get('/resource_edit/show/{resource_edit}', 'show')->name('resource_edits.show');
     Route::get('/resource_edit/original/{resource_edit}', 'original')->name('resource_edits.original');
     Route::get('/resource_edit/diff/{resource_edit}', 'diff')->name('resource_edits.diff');
+    Route::post('/resource_edit/merge/{resource_edit}', 'merge')->name('resource_edits.merge');    
     Route::get('/resource_edit/{resource}/create', 'create')->name('resource_edits.create');
 });
 

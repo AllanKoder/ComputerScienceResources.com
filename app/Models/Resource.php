@@ -72,7 +72,7 @@ class Resource extends Model
     
     public function reports()
     {
-        return $this->morphMany(Vote::class, 'reportable');
+        return $this->morphMany(Report::class, 'reportable');
     }
 
     public static function createFiltered($request)
