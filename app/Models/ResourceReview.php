@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class ResourceReview extends Model
 {
@@ -17,7 +17,8 @@ class ResourceReview extends Model
         'practicality_to_industry',
         'user_friendliness',
         'updates_and_maintenance',
-        'comment_id',
+        'review_title',
+        'review_description',
         'user_id',
         'resource_id',
     ];
@@ -28,10 +29,10 @@ class ResourceReview extends Model
     }
 
     /**
-     * Get the comment associated with the review.
+     * Get the comments for the resource review.
      */
-    public function comment()
+    public function comments(): MorphMany
     {
-        return $this->morphOne(Comment::class, 'commentable');
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }

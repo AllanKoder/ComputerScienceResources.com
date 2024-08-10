@@ -31,7 +31,8 @@ class ResourceReviewFactory extends Factory
             'technical_depth' => fake()->numberBetween(0, 5),
             'user_friendliness' => fake()->numberBetween(0, 5),
             'updates_and_maintenance' => fake()->numberBetween(0, 5),
-            'comment_id' => null,
+            'review_title'=>fake()->sentence,
+            'review_description'=>fake()->paragraph,
             'resource_id' => fake()->numberBetween(1, 3),
             'user_id' => fake()->numberBetween(1, 10),
         ];

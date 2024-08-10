@@ -9,7 +9,6 @@ use App\Http\Requests\StoreResourceReviewRequest;
 use App\Models\ResourceReview;
 use App\Models\Resource;
 use App\Models\VoteTotal;
-use App\Models\Comment;
 use Illuminate\Support\Facades\Validator;
 
 class ResourceReviewController extends Controller
@@ -18,6 +17,7 @@ class ResourceReviewController extends Controller
     {
         $this->middleware('auth',  ['except' => ['index', 'show', 'replies']]);
     }
+
     private function filterResources(Request $request)
     {
 
@@ -26,9 +26,9 @@ class ResourceReviewController extends Controller
     // Display a listing of the reviews for a specific resource
     public function index($id)
     {
-        // Retrieve resource reviews with comments and users
+        // Retrieve resource reviews with users
         $resourceReviews = ResourceReview::where('resource_id', $id)
-            ->with(['comment', 'comment.votes', 'user'])
+            ->with(['user'])
             ->get();
 
         return view('reviews.resources.index', ['resourceReviews' => $resourceReviews, 'resource'=>$id]);
@@ -57,24 +57,12 @@ class ResourceReviewController extends Controller
             // Handle the case where a duplicate review exists
             return redirect()->back()->withErrors(['error' => 'You have already reviewed this resource.']);
         }
-        // Create the review with null comment_id
-        $review = ResourceReview::create(array_merge($validated, [
+
+        // Create the review
+        ResourceReview::create(array_merge($validated, [
             'user_id' => \Auth::id(),
             'resource_id' => $resource->id,
         ]));
-
-        // Create a new comment
-        $comment = Comment::create([
-            'comment_title' => $request->input('comment_title', ""), 
-            'comment_text' => $request->input('comment_text', ""),
-            'user_id' => \Auth::id(),
-        ]);
-        
-        $review->comment->save($comment);
-
-        $review->update([
-            'comment_id' => $comment->id, 
-        ]);
     
         return redirect()->back();
     }
@@ -84,18 +72,6 @@ class ResourceReviewController extends Controller
     public function show($id)
     {
 
-    }
-
-    // Get the replies for a resource review
-    public function replies(int $id)
-    {
-        \Log::debug('getting replies for resource review');
-
-        // Ignore the first comment, the one by the reviewer, so that we can see the replies to their post
-        $comments = Comment::getCommentTree(ResourceReview::class, $id)->first()->comments;
-        \Log::debug('getting comments ' . json_encode($comments));
-
-        return view('comments.partials.index', ['comments'=>$comments, 'id'=>$id, 'type'=>'resourceReview']);
     }
 
     // Show the form for editing the specified review.

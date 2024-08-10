@@ -29,51 +29,9 @@ class ResourceReviewSeeder extends Seeder
             'resource_id' => 2,
         ]);
         
-        $reviewsForResource1->each(function ($review) {
-            $comment = Comment::factory()->create([
-                'comment_text' => 'This is a comment for the review.',
-                'user_id' => fake()->numberBetween(1, 10),
-                'commentable_id' => $review->id,
-                'commentable_type' => ResourceReview::class,
-            ]);
-            $review->update(['comment_id' => $comment->id]);
-    
-            $review->comment()->save($comment);
-            CommentSeeder::insertClosureTableEntries($comment);
-        });
-        
-        $reviewsForResource2->each(function ($review) {
-            $comment = Comment::factory()->create([
-                'comment_text' => 'This is a comment for the review.',
-                'user_id' => fake()->numberBetween(1, 10),
-                'commentable_id' => $review->id,
-                'commentable_type' => ResourceReview::class,
-            ]);
-            $review->update(['comment_id' => $comment->id]);
-    
-            $review->comment()->save($comment);
-            CommentSeeder::insertClosureTableEntries($comment);
-        });        
-        
         // Create new resource reviews for resource 1 with no comments
         $emptyCommentsReviewsForResource1 = ResourceReview::factory()->count(3)->create([
             'resource_id' => 1,
-        ]);
-    
-        $emptyCommentsReviewsForResource1->each(function ($review) {
-            $comment = Comment::factory()->create([
-                'comment_text' => '',
-                'comment_title' => '',
-                'user_id' => fake()->numberBetween(1, 10),
-                'commentable_id' => $review->id,
-                'commentable_type' => ResourceReview::class,
-            ]);
-            $review->update(['comment_id' => $comment->id]);
-    
-            $review->comment()->save($comment);
-
-            // Insert closure table entries
-            CommentSeeder::insertClosureTableEntries($comment);
-        });    
+        ]);  
     }
 }

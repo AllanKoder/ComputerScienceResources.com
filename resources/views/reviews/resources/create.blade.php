@@ -1,5 +1,5 @@
 <h1>Create a Review</h1>
-<form action="{{ route('reviews.store', array('resource'=>$resource)) }}" method="POST">
+<form action="{{ route('resource_reviews.store', array('resource'=>$resource)) }}" method="POST">
     @csrf
     <div class="form-group">
         <label for="community_size">Community Size</label>
@@ -32,13 +32,13 @@
     </div>
 
     <div class="form-group">
-        <label for="comment_title">Title</label>
-        <input type="text" id="comment_title" name="comment_title" required></input>
+        <label for="review_title">Title</label>
+        <input type="text" id="review_title" name="review_title" required></input>
     </div>
     
     <div class="form-group">
-        <label for="comment_text">Description</label>
-        <textarea class="form-control" id="comment_text" name="comment_text" rows="3" required></textarea>
+        <label for="review_description">Description</label>
+        <textarea class="form-control" id="review_description" name="review_description" rows="3" required></textarea>
     </div>
 
     

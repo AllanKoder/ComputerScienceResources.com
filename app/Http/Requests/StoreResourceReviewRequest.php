@@ -30,6 +30,8 @@ class StoreResourceReviewRequest extends FormRequest
             'technical_depth' => 'required|integer|min:0|max:5',
             'user_friendliness' => 'required|integer|min:0|max:5',
             'updates_and_maintenance' => 'required|integer|min:0|max:5',
+            'review_title' => 'required|string|max:255',
+            'review_description' => 'required|string||max:2000',
         ];
     }
 }

@@ -15,6 +15,8 @@
                 <th>User Friendliness</th>
                 <th>Updates and Maintenance</th>
                 <th>User</th>
+                <th>Title</th>
+                <th>Description</th>
             </tr>
         </thead>
         <tbody>
@@ -26,24 +28,12 @@
                 <td>{{ $review->user_friendliness }}</td>
                 <td>{{ $review->updates_and_maintenance }}</td>
                 <td>{{ $review->user ? $review->user->name : 'Anonymous' }}</td>
-                <td>{{ $review->comment ? $review->comment->comment_text : 'No comment' }}</td>
+                <td>{{ $review->review_title ? $review->review_title : 'No title' }}</td>
+                <td>{{ $review->review_description ? $review->review_description : 'No description' }}</td>
             </tr>
         </tbody>
-    </table>
-    @include('comments.partials.reply', array('comment'=>$review->comment))
-    
-    <div x-data="{ open: false }">
-        <button x-on:click="open = ! open" 
-        hx-get="{{ route('reviews.replies', ['id' => $review->id]) }}" hx-target="#replies-{{ $review->id }}"
-        hx-indicator="#spinner-{{ $review->id }}"
-        class="bg-teal-300 p-2 mt-2">
-        View Replies
-        </button>
-        
-        <div x-show="open" id="replies-{{ $review->id }}">  
-            <x-spinner class="mx-auto" id="spinner-{{ $review->id }}"></x-spinner>
-        </div>
-    </div>
+    </table>    
+    <x-show-comments :id="$review->id" type='resourceReview'></x-show-comments>
 
 @endforeach
 
