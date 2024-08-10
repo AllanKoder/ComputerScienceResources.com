@@ -29,8 +29,6 @@ class Resource extends Model
         'user_id'
     ];
 
-    protected $appends = ['tag_names'];
-
     public static function getResourceAttributes(): array
     {
         return [
@@ -60,7 +58,9 @@ class Resource extends Model
     {
         return Attribute::make(
             get: fn () => $this->tags->pluck('name')->toArray(),
-            set: fn (array $tagNames) => $this->attachTags($tagNames),
+            set: function (array $tagNames) {
+                $this->syncTags($tagNames);
+            },
         );
     }
 

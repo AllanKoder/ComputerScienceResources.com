@@ -96,10 +96,8 @@ class CommentController extends Controller
     public function comments(string $type, int $id)
     {
         $commentableType = TypeHelper::getModelType($type);
-        dump($commentableType);
         $commentTree = Comment::getCommentTree($commentableType, $id);
 
-        dump($commentTree);
         return view('comments.partials.index', ['comments' => $commentTree, 'id'=>$id, 'type'=>$type]);
     }
 

@@ -71,11 +71,13 @@
 </div>
 
 <div class="flex flex-wrap">
-    @foreach ($resource->tag_names as $tag)
-        <span class="bg-green-200 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-700 dark:text-gray-300 mb-2">
-            {{ $tag }}
-        </span>
-    @endforeach
+    @if(isset($resource->tag_names))
+        @foreach ($resource->tag_names as $tag)
+            <span class="bg-green-200 text-gray-700 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded dark:bg-green-700 dark:text-gray-300 mb-2">
+                {{ $tag }}
+            </span>
+        @endforeach
+    @endif
 </div>
 
 

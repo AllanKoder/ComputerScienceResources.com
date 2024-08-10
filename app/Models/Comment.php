@@ -103,7 +103,7 @@ class Comment extends Model
 
         // Fetch all replies for each comment using the CommentHierarchy model
         $ancestorIds = $ancestorComments->pluck('id');
-        dump($ancestorIds);
+
         $allComments = self::whereIn('id', function ($query) use ($ancestorIds) {
             $query->select('comment_id')
                 ->from('comment_hierarchies')
@@ -113,7 +113,6 @@ class Comment extends Model
         
           // Combine ancestor comments and all replies
           $comments = $ancestorComments->merge($allComments);
-          dump($comments);
 
         // Fetch total votes for all comments
         $commentIds = $comments->pluck('id');

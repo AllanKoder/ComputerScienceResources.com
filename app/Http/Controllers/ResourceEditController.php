@@ -60,6 +60,7 @@ class ResourceEditController extends Controller
         $changesDetected = false;
     
         foreach ($validatedData as $field => $value) {
+            // is attribute amnd not same
             if (in_array($field, Resource::getResourceAttributes()) 
                 && $originalResource->$field != $value) {
                 \Log::debug('creating proposed edit for a field: ' . $field . ' to value: ' . json_encode($value));
@@ -78,7 +79,7 @@ class ResourceEditController extends Controller
             return redirect()->back()->with('error', 'No changes detected. Resource Edit was not created.');
         }
     
-        return redirect()->back()->with('success', 'Resource Edit created successfully and is pending approval');
+        return redirect()->route('resource_edits.show', ["resource_edit"=>$resourceEdit->id])->with('success', 'Resource Edit created successfully and is pending approval');
     }
         
     private function getNewResourceFromEdits(ResourceEdit $resourceEdit) {
@@ -146,12 +147,28 @@ class ResourceEditController extends Controller
         //Approve merging the resource
         $proposedEditsArray = $resourceEdit->getProposedEditsArray();
         $resource = $resourceEdit->resource;
+
+        // Get the fillable attributes
+        $fillableAttributes = $resource->getFillable();
+        $mutatorAttributes = [];
+
+        // set the fillable attributes
         foreach ($proposedEditsArray as $attribute => $editedValue) {
+            if (in_array($attribute, $fillableAttributes)) {
+                $resource->$attribute = $editedValue;
+            } else {
+                $mutatorAttributes[$attribute] = $editedValue;
+            }
+        }
+        // Save the resource without mutators (UPDATE sql)
+        $resource->save();
+
+        // Handle mutator attributes separately to trigger the mutators
+        foreach ($mutatorAttributes as $attribute => $editedValue) {
+            \Log::debug("mutator " . json_encode($attribute) . " to new value " . json_encode($editedValue));
             $resource->$attribute = $editedValue;
         }
 
-        $resource->save();
-        
         $resourceEdit->delete();
 
         return redirect()->route('resources.show', ['id' => $resource->id])->with('success', "Your edits have been approved!");
