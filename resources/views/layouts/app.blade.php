@@ -26,6 +26,11 @@
                     </ul>
                 </div>
             @endif
+            @if(session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
 
             <!-- Page Heading -->
             @if (isset($header))

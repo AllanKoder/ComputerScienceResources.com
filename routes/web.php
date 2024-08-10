@@ -31,8 +31,8 @@ Route::controller(ResourceController::class)->group(function () {
 
 // Comments
 Route::controller(CommentController::class)->group(function () {
-    Route::post('/{type}/{id}/comment', 'store')->name('comment.comment');
-    Route::get('/{type}/{id}/comment', 'comments')->name('comment.comments');
+    Route::post('/{type}/{id}/comment', 'store')->name('comment.store');
+    Route::get('/{type}/{id}/comments', 'comments')->name('comment.comments');
     Route::post('/comment/{comment}/reply', 'reply')->name('comment.reply');
     Route::delete('/comment/{comment}', 'destroy')->name('comment.destroy');
 });
@@ -64,7 +64,6 @@ Route::controller(ResourceEditController::class)->group(function () {
 Route::controller(ReportController::class)->group(function () {
     Route::post('/{type}/{id}/report', 'store')->name('reports.store');
 });
-
 
 Route::get('/dashboard', function () {
     return view('dashboard');

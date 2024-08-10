@@ -1,5 +1,5 @@
 @if(Auth::user())
-    @include('comments.partials.create', array('type'=>'resource', 'id'=>$id))
+    @include('comments.partials.create', array('type'=>$type, 'id'=>$id))
 @endif
 
 <div class="container" id="comments-container">

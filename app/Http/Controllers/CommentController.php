@@ -96,9 +96,11 @@ class CommentController extends Controller
     public function comments(string $type, int $id)
     {
         $commentableType = TypeHelper::getModelType($type);
+        dump($commentableType);
         $commentTree = Comment::getCommentTree($commentableType, $id);
-        
-        return view('comments.partials.index', ['comments' => $commentTree, 'id'=>$id]);
+
+        dump($commentTree);
+        return view('comments.partials.index', ['comments' => $commentTree, 'id'=>$id, 'type'=>$type]);
     }
 
 
@@ -184,12 +186,12 @@ class CommentController extends Controller
         $ancestorID = CommentHierarchy::where('comment_id', $comment->id)->first()->ancestor;
         
         // Create a new closure entry with the found ancestor ID
-        \Log::debug('Creating closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
         CommentHierarchy::create([
             'ancestor' => $ancestorID,
             'comment_id' => $reply->id,
         ]);
         
+        \Log::debug('Created closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
         return back();
     }        
 

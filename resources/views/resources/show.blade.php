@@ -34,7 +34,7 @@
     <x-spinner class="mx-auto" id="spinner"></x-spinner>
     <div id="tab-content" role="tabpanel" class="tab-content">
         @if($commentTree->isNotEmpty())
-            @include('comments.partials.index', ['comments' => $commentTree, 'id'=> $resource->id])
+            @include('comments.partials.index', ['comments' => $commentTree, 'id'=> $resource->id, 'type'=>'resource'])
         @else
             <p>No comments available.</p>
         @endif   

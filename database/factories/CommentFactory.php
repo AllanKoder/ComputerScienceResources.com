@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Comment;
+use App\Models\Resource;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -29,7 +30,7 @@ class CommentFactory extends Factory
             'comment_title' => fake()->realTextBetween(1,50),
             'user_id' => fake()->numberBetween(1, 10),
             'commentable_id' => fake()->numberBetween(1,10),
-            'commentable_type' => 'App\Models\Resource',
+            'commentable_type' => Resource::class,
         ];
     }
 }

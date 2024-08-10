@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreResourceEditRequest;
 use App\Models\ResourceEdit;
 use App\Models\Resource;
+use App\Models\Comment;
 use App\Models\ProposedEdit;
 use Illuminate\Http\Request;
 use App\Services\DiffService;
@@ -12,7 +13,6 @@ use App\Models\VoteTotal;
 
 class ResourceEditController extends Controller
 {
-
     public function __construct(
         protected DiffService $diffService,
     ){
@@ -136,10 +136,10 @@ class ResourceEditController extends Controller
             return redirect()->back()->withErrors("Not enough approvals for edit");
         }
         
-        $editAge = now()->diffInHours($resourceEdit->created_at);
+        $editAgeHours = now()->diffInHours($resourceEdit->created_at);
 
         # must wait 24 hours
-        if ($editAge < 24){
+        if ($editAgeHours < 24){
             return redirect()->back()->withErrors("Must wait at least 24 hours before merging edits");
         }
         
@@ -154,7 +154,7 @@ class ResourceEditController extends Controller
         
         $resourceEdit->delete();
 
-        return redirect()->route('resources.show', ['id' => $resource->id]);
+        return redirect()->route('resources.show', ['id' => $resource->id])->with('success', "Your edits have been approved!");
     }
 
     /**
@@ -167,7 +167,6 @@ class ResourceEditController extends Controller
      
          return view('components.resource-details', ['resource'=>$resourceEdit->resource]);
      }
-
      
     /**
      * Show the diff partial

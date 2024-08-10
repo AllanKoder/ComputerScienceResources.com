@@ -103,15 +103,17 @@ class Comment extends Model
 
         // Fetch all replies for each comment using the CommentHierarchy model
         $ancestorIds = $ancestorComments->pluck('id');
+        dump($ancestorIds);
         $allComments = self::whereIn('id', function ($query) use ($ancestorIds) {
             $query->select('comment_id')
                 ->from('comment_hierarchies')
                 ->whereIn('ancestor', $ancestorIds);
         })->with(['user'])
           ->get();
-
-        // Combine ancestor comments and all replies
-        $comments = $ancestorComments->merge($allComments);
+        
+          // Combine ancestor comments and all replies
+          $comments = $ancestorComments->merge($allComments);
+          dump($comments);
 
         // Fetch total votes for all comments
         $commentIds = $comments->pluck('id');
@@ -123,23 +125,28 @@ class Comment extends Model
         }
 
         // Build the comment tree
-        return self::buildCommentTree($comments, $commentableId);
+        return self::buildCommentTree($comments, $commentableId, $commentableType);
     }
 
-    private static function buildCommentTree($comments, $resourceId)
+    private static function buildCommentTree($comments, $commentableId, $commentableType)
     {
-        $grouped = $comments->groupBy('commentable_id');
-
+        // Group comments by a composite key of commentable_id and commentable_type (what is being commented)
+        $grouped = $comments->groupBy(function ($comment) {
+            return $comment->commentable_id . '-' . $comment->commentable_type;
+        });
+        
+        // Only comments here
         foreach ($comments as $comment) {
-            // Ensure a comment is not its own child
-            if ($comment->id !== $comment->commentable_id) {
-                $comment->comments = $grouped->get($comment->id, collect());
-            } else {
-                $comment->comments = collect();
-            }
+            // get the comments, which is (what is being commented on) being this comment
+            // I hope this is not confusing:
+            // the comments are found by searching for the comments that commented on this specific comment. Yes
+            $compositeKey = $comment->id . '-' . Comment::class;
+            $comment->comments = $grouped->get($compositeKey, collect());
         }
 
-        // Top-level comments are those with `commentable_id` equal to the resource ID
-        return $grouped->get($resourceId, collect());
+        // get the top comments
+        $topLevelKey = $commentableId . '-' . $commentableType;
+        return $grouped->get($topLevelKey, collect());
     }
+    
 }
