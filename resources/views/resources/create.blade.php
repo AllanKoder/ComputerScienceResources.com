@@ -13,32 +13,32 @@
             <!-- Title Input -->
             <div class="mb-4">
                 <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Title:</label>
-                <x-text-input-field type="text" 
+                <x-smart-inputs.text-input type="text" 
                 :saveToStorage=true
-                name="title" id="title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-text-input-field>
+                name="title" id="title" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-smart-inputs.text-input>
             </div>
 
             <!-- Description Input -->
             <div class="mb-4">
                 <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description:</label>
-                <x-text-input-field type="textarea" 
+                <x-smart-inputs.text-input type="textarea" 
                 :saveToStorage=true
-                name="description" id="description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-text-input-field>
+                name="description" id="description" rows="3" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-smart-inputs.text-input>
             </div>
             
             <!-- Image URL Input -->
             <div class="mb-4">
                 <label for="image_url" class="block text-gray-700 text-sm font-bold mb-2">Image URL:</label>
-                <x-text-input-field type="url" 
+                <x-smart-inputs.text-input type="url" 
                 :saveToStorage=false
                 :inputText="'test'"
-                name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-text-input-field>
+                name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-smart-inputs.text-input>
             </div>
             
             <!-- Resource Formats -->
             <div class="mb-4">
                 <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
-                <x-multi-select-input 
+                <x-smart-inputs.multi-select-input 
                 name="formats"
                 :options="$formatOptions"
                 :saveToStorage=true
@@ -48,31 +48,31 @@
             <!-- Features Input -->
             <div class="mb-4">
                 <label for="features" class="block text-gray-700 text-sm font-bold mb-2">Features:</label>
-                <x-multi-text-input 
+                <x-smart-inputs.multi-text-input 
                 :saveToStorage=true
-                name="features" placeholder="a Feature of the Resource"></x-multi-text-input>
+                name="features" placeholder="a Feature of the Resource"></x-smart-inputs.multi-text-input>
             </div>
 
             <!-- Limitations Input -->
             <div class="mb-4">
                 <label for="limitations" class="block text-gray-700 text-sm font-bold mb-2">Limitations:</label>
-                <x-multi-text-input 
+                <x-smart-inputs.multi-text-input 
                 :saveToStorage=true
-                name="limitations" placeholder="A Limitation of the Resource"></x-multi-text-input>
+                name="limitations" placeholder="A Limitation of the Resource"></x-smart-inputs.multi-text-input>
             </div>
 
             <!-- Resource URL Input -->
             <div class="mb-4">
                 <label for="resource_url" class="block text-gray-700 text-sm font-bold mb-2">Resource URL:</label>
-                <x-text-input-field type="url" 
+                <x-smart-inputs.text-input type="url" 
                 :saveToStorage=true
-                name="resource_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-text-input-field>
+                name="resource_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-smart-inputs.text-input>
             </div>
 
             <!-- Pricing Input -->
             <div class="mb-4">
                 <label for="cost" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>    
-                <x-select-input 
+                <x-smart-inputs.select-input 
                 name="pricing" 
                 :options="$pricingOptions"
                 :saveToStorage=true
@@ -82,7 +82,7 @@
             <!-- Topics Input (Dynamic Array of Inputs) -->
             <div class="mb-4">
                 <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
-                <x-multi-tag-input class="w-full" 
+                <x-smart-inputs.multi-tag-input class="w-full" 
                 :saveToStorage=true
                 :selectedOptions="['asd','blahg']"
                 name="topics" required/>
@@ -92,7 +92,7 @@
             <div class="mb-6">
                 <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
 
-                <x-select-input 
+                <x-smart-inputs.select-input 
                 name="difficulty" 
                 :options="$difficultyOptions"
                 :saveToStorage=true
@@ -103,7 +103,7 @@
             <!-- Tags Input -->
             <div class="mb-4">
                 <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
-                <x-multi-tag-input class="w-full" 
+                <x-smart-inputs.multi-tag-input class="w-full" 
                 :saveToStorage=true
                 name="tags"/>
             </div>

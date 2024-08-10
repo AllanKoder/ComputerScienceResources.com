@@ -55,18 +55,5 @@
             </div>
         </div>
     </div>
-    <div>    
-        <div x-data="{ open: false }">
-            <button x-on:click="open = ! open" 
-            hx-get="{{ route('comment.comments', ['id' => $editedResource->id, 'type' =>'resourceEdit']) }}" hx-target="#editedResourceComments"
-            hx-indicator="#spinner"
-            class="bg-teal-300 p-2 mt-2">
-            View Comments
-            </button>
-            
-            <div x-show="open" id="editedResourceComments">  
-                <x-spinner class="mx-auto" id="spinner}"></x-spinner>
-            </div>
-        </div>
-    </div>
+    <x-comments.show-comments :id="$editedResource->id" type='resourceEdit'></x-comments.show-comments>
 </x-app-layout>

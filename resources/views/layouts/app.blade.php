@@ -49,8 +49,8 @@
     </body>
 
     <!-- Global Shared Code -->
-    <x-confirm-modal/>
-    <x-warning-modal/>
+    <x-modals.confirm-modal/>
+    <x-modals.warning-modal/>
 
     <script>
         document.addEventListener('alpine:init', () => {

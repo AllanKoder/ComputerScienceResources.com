@@ -1,4 +1,4 @@
-<!-- resources/views/components/view-diff-text.blade.php -->
+<!-- resources/views/components/x-diff.view-diff-text.blade.php -->
 @props(['diff'])
 
 @php

@@ -33,7 +33,7 @@
             </tr>
         </tbody>
     </table>    
-    <x-show-comments :id="$review->id" type='resourceReview'></x-show-comments>
+    <x-comments.show-comments :id="$review->id" type='resourceReview'></x-comments.show-comments>
 
 @endforeach
 

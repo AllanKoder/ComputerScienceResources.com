@@ -29,6 +29,6 @@ class TextInputField extends Component
      */
     public function render()
     {
-        return view('components.text-input-field');
+        return view('components.text-input');
     }
 }

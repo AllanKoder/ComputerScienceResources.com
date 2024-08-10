@@ -14,7 +14,7 @@
         <span class="flex align-middle">
             <a href="{{ $diffs['resource_url'] }}">
                 <h2 class="text-2xl font-bold">
-                    <x-view-diff-text :diff="$diffs['title']" />
+                    <x-diff.view-diff-text :diff="$diffs['title']" />
                 </h2>
             </a>
             <a href="{{ $diffs['resource_url'] }}" target="_blank">
@@ -26,21 +26,21 @@
         @if(isset($diffs['description']))
         <p class="mb-1">
             <p class="font-bold">Description:</p>
-            <x-view-diff-text :diff="$diffs['description']" />
+            <x-diff.view-diff-text :diff="$diffs['description']" />
         </p>
         @endif
 
         @if(isset($diffs['image_url']))
         <p class="mb-1">
             <p class="font-bold">Image URL:</p>
-            <x-view-diff-text :diff="$diffs['image_url']" />
+            <x-diff.view-diff-text :diff="$diffs['image_url']" />
         </p>
         @endif
 
         @if(isset($diffs['resource_url']))
         <p class="mb-1">
             <p class="font-bold">Resource URL:</p>
-            <x-view-diff-text :diff="$diffs['resource_url']" />
+            <x-diff.view-diff-text :diff="$diffs['resource_url']" />
         </p>
         @endif
     </div>
@@ -49,48 +49,48 @@
 @if(isset($diffs['pricing']))
 <div class="mb-2">
     <p class="font-bold">Pricing Model: </p>
-    <x-view-diff-text :diff="$diffs['pricing']" />
+    <x-diff.view-diff-text :diff="$diffs['pricing']" />
 </div>
 @endif
 
 @if(isset($diffs['formats']))
 <div class="mb-2">
     <p class="font-bold">Content Formats: </p>
-    <x-view-diff-set :diff="$diffs['formats']" />
+    <x-diff.view-diff-set :diff="$diffs['formats']" />
 </div>
 @endif
 
 @if(isset($diffs['features']))
 <div class="mb-2">
     <p class="font-bold">Feature: </p>
-    <x-view-diff-set :diff="$diffs['features']" />
+    <x-diff.view-diff-set :diff="$diffs['features']" />
 </div>
 @endif
 
 @if(isset($diffs['limitations']))
 <div class="mb-2">
     <p class="font-bold">Limitations: </p>
-    <x-view-diff-set :diff="$diffs['limitations']" />
+    <x-diff.view-diff-set :diff="$diffs['limitations']" />
 </div>
 @endif
 
 @if(isset($diffs['topics']))
 <div class="mb-2">
     <p class="font-bold">Topics: </p>
-    <x-view-diff-set :diff="$diffs['topics']" />
+    <x-diff.view-diff-set :diff="$diffs['topics']" />
 </div>
 @endif
 
 @if(isset($diffs['tags']))
 <div class="mb-2">
     <p class="font-bold">Tags: </p>
-    <x-view-diff-set :diff="$diffs['tags']" />
+    <x-diff.view-diff-set :diff="$diffs['tags']" />
 </div>
 @endif
 
 @if(isset($diffs['difficulty']))
 <div class="mb-2">
     <p class="font-bold">Difficulty: </p>
-    <x-view-diff-text :diff="$diffs['difficulty']" />
+    <x-diff.view-diff-text :diff="$diffs['difficulty']" />
 </div>
 @endif
