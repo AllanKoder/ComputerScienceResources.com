@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\Comment;
 use App\Models\CommentHierarchy;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use App\Helpers\TypeHelper;
+use App\Http\Requests\Comment\StoreCommentRequest;
+use App\Http\Requests\Comment\UpdateCommentRequest;
+use App\Http\Requests\Comment\StoreReplyRequest;
 
 class CommentController extends Controller
 {
@@ -44,22 +44,15 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, string $type, int $id)
+    public function store(StoreCommentRequest $request, string $type, int $id)
     {
         $commentableType = TypeHelper::getModelType($type);
         if ($commentableType == Comment::class)
         {
-            return redirect()->withErrors(["must be a comment, not a reply"])->back();
+            return redirect()->back()->withErrors(["use reply instead"]);
         }
 
         \Log::debug('storing comment: ' . json_encode($request->all()));
-    
-        $validator = $this->validateComment($request);
-        if ($validator->fails()) {
-            \Log::warning('failed to save comment: ' . $validator->errors());
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-    
         $commentable = $commentableType::findOrFail($id);
     
         $merged_request = array_merge($request->all(), ['user_id' => \Auth::id()]);
@@ -74,7 +67,36 @@ class CommentController extends Controller
     
         return redirect()->back();    
     }
-    
+
+    // TODO: add limit to comments
+    public function reply(StoreReplyRequest $request, Comment $comment)
+    {   
+        \Log::debug('replying to a comment request: ' . json_encode($request->all()));
+        \Log::debug('comment reply head comment: ' . json_encode($comment->toArray()));
+        
+        if (is_null($comment->id)) {
+            \Log::warning('could not find parent comment');
+            return back()->withErrors(["comment to reply to was not found"]);
+        }
+        
+        $reply = new Comment($request->all());
+        $reply->user_id = auth()->id();
+        $reply->commentable_id = $comment->id; // Set the parent comment ID
+        $reply->commentable_type = Comment::class; // Set the parent comment type
+        $reply->save();
+
+        // Find the ancestor ID of the commentable item
+        $ancestorID = CommentHierarchy::where('comment_id', $comment->id)->first()->ancestor;
+        
+        // Create a new closure entry with the found ancestor ID
+        CommentHierarchy::create([
+            'ancestor' => $ancestorID,
+            'comment_id' => $reply->id,
+        ]);
+        
+        \Log::debug('Created closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
+        return back();
+    }
 
     /**
      * Display the specified comment.
@@ -101,7 +123,6 @@ class CommentController extends Controller
         return view('comments.partials.index', ['comments' => $commentTree, 'id'=>$id, 'type'=>$type]);
     }
 
-
     /**
      * Show the form for editing the specified comment.
      *
@@ -113,6 +134,7 @@ class CommentController extends Controller
         return view('comments.edit', compact('comment'));
     }
 
+    // TODO: add updating as a feature
     /**
      * Update the specified comment in storage.
      *
@@ -120,20 +142,10 @@ class CommentController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Comment $comment)
+    public function update(UpdateCommentRequest $request, Comment $comment)
     {
-        // Check if the authenticated user is the owner of the comment
-        if ($comment->user_id !== auth()->id()) {
-            abort(403, 'Unauthorized action.');
-        }
 
-        $validatedData = $request->validate([
-            'title' => 'required|max:255',
-            'comment_text' => 'required',
-            // Add other fields as necessary
-        ]);
-
-        $comment->update($validatedData);
+        $comment->update($request->all());
         return redirect()->route('comments.show', $comment);
     }
 
@@ -155,49 +167,5 @@ class CommentController extends Controller
         $comment->delete();
 
         return redirect()->back();
-    }
-    
-    public function reply(Request $request, Comment $comment)
-    {   
-        \Log::debug('replying to a comment request: ' . json_encode($request->all()));
-        \Log::debug('comment reply head comment: ' . json_encode($comment->toArray()));
-        
-        if (is_null($comment->id)) {
-            \Log::warning('could not find parent comment');
-            return back();
-        }
-    
-        $validator = $this->validateComment($request);
-    
-        if ($validator->fails()) {
-            \Log::warning('failed to reply to a comment: ' . $validator->errors());
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
-        
-        $reply = new Comment($request->all());
-        $reply->user_id = auth()->id();
-        $reply->commentable_id = $comment->id; // Set the parent comment ID
-        $reply->commentable_type = Comment::class; // Set the parent comment type
-        $reply->save();
-
-        // Find the ancestor ID of the commentable item
-        $ancestorID = CommentHierarchy::where('comment_id', $comment->id)->first()->ancestor;
-        
-        // Create a new closure entry with the found ancestor ID
-        CommentHierarchy::create([
-            'ancestor' => $ancestorID,
-            'comment_id' => $reply->id,
-        ]);
-        
-        \Log::debug('Created closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
-        return back();
-    }        
-
-    protected function validateComment(Request $request)
-    {
-        return Validator::make($request->all(), [
-            'title' => 'max:255',
-            'comment_text' => 'required',
-        ]);
     }
 }

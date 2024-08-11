@@ -15,7 +15,6 @@ public function up()
     Schema::create('comments', function (Blueprint $table) {
     $table->id();
     $table->text('comment_text');
-    $table->text('comment_title')->nullable();
     $table->unsignedBigInteger('user_id');
     $table->unsignedBigInteger('commentable_id')->nullable(); // Polymorphic relation
     $table->string('commentable_type')->nullable(); // Polymorphic relation

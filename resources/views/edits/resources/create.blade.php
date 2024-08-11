@@ -72,10 +72,10 @@
                 name="resource_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-smart-inputs.text-input>
             </div>
 
+            // TODO: make pricing a list, not a single value
             <!-- Pricing Input -->
             <div class="mb-4">
                 <label for="cost" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>    
-                {{ $resource->pricing }}
                 <x-smart-inputs.select-input 
                 name="pricing" 
                 :selectedOption="@($resource->pricing)"

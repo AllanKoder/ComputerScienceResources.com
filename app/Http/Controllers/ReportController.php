@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Report;
-use App\Http\Requests\StoreReportRequest;
-use App\Http\Requests\UpdateReportRequest;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Report\StoreReportRequest;
+use App\Http\Requests\Report\UpdateReportRequest;
 use App\Helpers\TypeHelper;
 
 class ReportController extends Controller

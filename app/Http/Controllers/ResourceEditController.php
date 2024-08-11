@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreResourceEditRequest;
+use App\Http\Requests\ResourceEdit\StoreResourceEditRequest;
 use App\Models\ResourceEdit;
 use App\Models\Resource;
-use App\Models\Comment;
-use App\Models\ProposedEdit;
 use Illuminate\Http\Request;
 use App\Services\DiffService;
 use App\Services\ResourceEditService;

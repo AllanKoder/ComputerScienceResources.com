@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreResourceRequest;
+use App\Http\Requests\Resource\StoreResourceRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Resource;
 use App\Models\VoteTotal;
 use App\Models\Comment;
-use App\Models\ResourceReview;
 use App\Models\ResourceReviewSummary;
-use Illuminate\Support\Facades\Validator;
 
 class ResourceController extends Controller
 {

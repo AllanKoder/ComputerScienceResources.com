@@ -1,11 +1,13 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Comment;
 
 use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\Comment\CommentValidationRules;
 
-class UpdateReportRequest extends FormRequest
+class StoreCommentRequest extends FormRequest
 {
+    use CommentValidationRules;
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -13,7 +15,7 @@ class UpdateReportRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return auth()->check();
     }
 
     /**
@@ -23,8 +25,6 @@ class UpdateReportRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
-        ];
+        return $this->commentRules();
     }
 }

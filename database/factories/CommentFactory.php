@@ -27,7 +27,6 @@ class CommentFactory extends Factory
     {
         return [
             'comment_text' => fake()->text,
-            'comment_title' => fake()->realTextBetween(1,50),
             'user_id' => fake()->numberBetween(1, 10),
             'commentable_id' => fake()->numberBetween(1,10),
             'commentable_type' => Resource::class,

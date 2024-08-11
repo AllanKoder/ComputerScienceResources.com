@@ -3,13 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\TypeHelper;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use App\Http\Requests\StoreResourceReviewRequest;
+use App\Http\Requests\ResourceReview\StoreResourceReviewRequest;
 use App\Models\ResourceReview;
 use App\Models\Resource;
-use App\Models\VoteTotal;
-use Illuminate\Support\Facades\Validator;
 
 class ResourceReviewController extends Controller
 {

@@ -34,6 +34,7 @@ Route::controller(CommentController::class)->group(function () {
     Route::post('/{type}/{id}/comment', 'store')->name('comment.store');
     Route::get('/{type}/{id}/comments', 'comments')->name('comment.comments');
     Route::post('/comment/{comment}/reply', 'reply')->name('comment.reply');
+    Route::post('/comment/{comment}/update', 'update')->name('comment.update');
     Route::delete('/comment/{comment}', 'destroy')->name('comment.destroy');
 });
 

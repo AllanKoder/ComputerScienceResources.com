@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vote;
-use App\Models\VoteTotal;
 use Illuminate\Http\Request;
 use App\Helpers\TypeHelper;
 
