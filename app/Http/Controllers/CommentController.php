@@ -8,10 +8,13 @@ use App\Helpers\TypeHelper;
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Requests\Comment\UpdateCommentRequest;
 use App\Http\Requests\Comment\StoreReplyRequest;
+use App\Services\CommentService;
 
 class CommentController extends Controller
 {
-    public function __construct()
+    public function __construct(
+        protected CommentService $commentService
+    )
     {
         $this->middleware('auth', ['except' => ['comments']]);
     }
@@ -46,27 +49,18 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request, string $type, int $id)
     {
+        // cannot be a comment to a comment, that would be a reply
         $commentableType = TypeHelper::getModelType($type);
-        if ($commentableType == Comment::class)
-        {
-            return redirect()->back()->withErrors(["use reply instead"]);
+        if ($commentableType == Comment::class) {
+            return redirect()->back()->withErrors(["could not create comment"]);
         }
 
         \Log::debug('storing comment: ' . json_encode($request->all()));
-        $commentable = $commentableType::findOrFail($id);
-    
-        $merged_request = array_merge($request->all(), ['user_id' => \Auth::id()]);
-        $comment = new Comment($merged_request);
-        $commentable->comments()->save($comment);
-    
-        // Make a new closure for the new comment on the commentable model.
-        CommentHierarchy::create([
-            'ancestor' => $comment->id,
-            'comment_id' => $comment->id,
-        ]);
-    
-        return redirect()->back();    
+        $comment = $this->commentService->createCommentHead($request->all(), $commentableType, $id);
+
+        return redirect()->back();
     }
+    
 
     // TODO: add limit to comments
     public function reply(StoreReplyRequest $request, Comment $comment)
@@ -78,24 +72,10 @@ class CommentController extends Controller
             \Log::warning('could not find parent comment');
             return back()->withErrors(["comment to reply to was not found"]);
         }
-        
-        $reply = new Comment($request->all());
-        $reply->user_id = auth()->id();
-        $reply->commentable_id = $comment->id; // Set the parent comment ID
-        $reply->commentable_type = Comment::class; // Set the parent comment type
-        $reply->save();
 
-        // Find the ancestor ID of the commentable item
-        $ancestorID = CommentHierarchy::where('comment_id', $comment->id)->first()->ancestor;
-        
-        // Create a new closure entry with the found ancestor ID
-        CommentHierarchy::create([
-            'ancestor' => $ancestorID,
-            'comment_id' => $reply->id,
-        ]);
-        
-        \Log::debug('Created closure with ancestor: ' . $ancestorID . ' id: ' . $reply->id);
-        return back();
+        $comment = $this->commentService->createReply($request->all(), $comment->id);
+
+        return back()->with(["success", "successfully made comment"]);
     }
 
     /**
@@ -149,6 +129,7 @@ class CommentController extends Controller
         return redirect()->route('comments.show', $comment);
     }
 
+    //TODO: add comment deletion
     /**
      * Remove the specified comment from storage.
      *

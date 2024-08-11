@@ -89,7 +89,7 @@ class Resource extends Model
         $request->merge([
             'features' => array_values($features),
             'limitations' => array_values($limitations),
-            'user_id' => \Auth::id(),
+            'user_id' => auth()->id(),
         ]);
 
         $resource = new self($request->except('tags'));

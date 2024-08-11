@@ -9,95 +9,22 @@ use App\Models\Resource;
 use App\Models\VoteTotal;
 use App\Models\Comment;
 use App\Models\ResourceReviewSummary;
+use App\Services\ResourceService;
 
 class ResourceController extends Controller
 {
 
-    public function __construct()
+    public function __construct(        
+        protected ResourceService $resourceService,
+    )
     {
         $this->middleware('auth',  ['except' => ['index', 'show']]);
     }
-    private function filterResources(Request $request)
-    {
-        \DB::enableQueryLog();
 
-        $query = Resource::query()->with("tags");
-        // Apply filters if they are present in the request
-        if ($request->filled('query')) {
-            // Use the input method to get the 'query' parameter
-            $searchQuery = $request->input('query');
-            $query->where('title', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('description', 'like', '%' . $searchQuery . '%');
-        }
-    
-        // Format filter
-        if ($request->filled('formats')) {
-            $categories = $request->input('formats');
-            // Group the whereOR request
-            $query->where(function (Builder $query) use ($categories) {
-                // formats is an array of categories
-                foreach ($categories as $category) {
-                    $query->orWhereJsonContains('formats', $category);
-                }
-            });
-        }
-        
-        // Pricing model filter
-        if ($request->filled('pricing')) {
-            $pricings = $request->input('pricing');
-            // Group the whereOR request
-            $query->where(function (Builder $query) use ($pricings) {
-                // formats is an array of categories
-                foreach ($pricings as $pricing) {
-                    $query->orWhere('pricing','=', $pricing);
-                }
-            });
-        }
-
-        // Difficulty filter
-        if ($request->filled('difficulty')) {
-            $difficulties = $request->input('difficulty');
-            // Group the whereOR request
-            $query->where(function (Builder $query) use ($difficulties) {
-                // formats is an array of categories
-                foreach ($difficulties as $difficulty) {
-                    $query->orWhere('difficulty','=', $difficulty);
-                }
-            });
-        }
-
-        // Topics filter
-        if ($request->filled('topics')) {
-            $topics = $request->input('topics');
-            // Group the whereOR request
-            $query->where(function (Builder $query) use ($topics) {
-                // formats is an array of categories
-                foreach ($topics as $topic) {
-                    $query->orWhereJsonContains('topics', $topic);
-                }
-            });
-        }
-
-        // Tags filter
-        if ($request->filled('tags')) {
-            $tags = $request->input('tags');
-            $query->withAnyTags($tags);
-        }
-
-
-        \Log::debug('fetching resource: ' . json_encode($request->all()));
-        \Log::debug('raw request SQL: ' . $query->toSql());
-
-        // Get the filtered resources
-        $resources = $query->get();
-
-        return $resources;
-    }
-    
     // Display a listing of the resource.
     public function index(Request $request)
     {
-        $resources = $this->filterResources( $request );
+        $resources = $this->resourceService->filterResources( $request );
         
         return view('resources.index', ['resources'=> $resources]);
     }

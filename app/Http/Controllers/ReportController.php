@@ -48,7 +48,7 @@ class ReportController extends Controller
         $reportable = $reportableType::findOrFail($id);
 
         $merged_request = array_merge($request->validated(),
-        ['user_id' => \Auth::id()]
+        ['user_id' => auth()->id()]
        );
 
         $report = new Report($merged_request);

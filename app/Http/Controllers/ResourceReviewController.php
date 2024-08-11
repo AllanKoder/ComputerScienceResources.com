@@ -46,7 +46,7 @@ class ResourceReviewController extends Controller
         $validated = $request->validated();
 
         // Check if a review by the same user for the same resource already exists
-        $existingReview = ResourceReview::where('user_id', \Auth::id())
+        $existingReview = ResourceReview::where('user_id', auth()->id())
                                         ->where('resource_id', $resource->id)
                                         ->first();
 
@@ -57,7 +57,7 @@ class ResourceReviewController extends Controller
 
         // Create the review
         ResourceReview::create(array_merge($validated, [
-            'user_id' => \Auth::id(),
+            'user_id' => auth()->id(),
             'resource_id' => $resource->id,
         ]));
     

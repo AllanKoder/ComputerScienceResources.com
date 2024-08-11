@@ -12,7 +12,7 @@ class UpdateCommentRequest extends FormRequest
     {
         // person made the comment
         $comment = $this->route('comment');
-        return $comment->user_id = \Auth()->id();
+        return $comment->user_id = auth()->id();
     }
 
     /**
