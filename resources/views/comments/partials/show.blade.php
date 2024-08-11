@@ -21,7 +21,7 @@
             Total Votes: <span>{{ $comment->total_votes ?? 0 }}</span>
         </div>
 
-        @if(\Auth::id() == $comment->user_id)
+        @if(auth()->id() == $comment->user_id)
             {{-- <form action="{{ route('comments.partials.destroy', $comment) }}" method="POST" style="display: inline-block;" class="bg-red-400">
                 @csrf
                 @method('DELETE')

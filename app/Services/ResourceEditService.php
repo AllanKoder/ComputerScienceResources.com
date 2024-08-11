@@ -13,7 +13,7 @@ class ResourceEditService
     public function createResourceEdit($validatedData, $resourceId)
     {
         $validatedData['resource_id'] = $resourceId;
-        $validatedData['user_id'] = \Auth::id();
+        $validatedData['user_id'] = auth()->id();
 
         $originalResource = Resource::where('id', $resourceId)->with('tags')->first();
         $resourceEdit = ResourceEdit::create($validatedData);

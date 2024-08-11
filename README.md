@@ -1,1 +1,1 @@
-use snake case
+[use camel case](https://webdevetc.com/blog/laravel-naming-conventions/)
