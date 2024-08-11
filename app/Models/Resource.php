@@ -29,6 +29,8 @@ class Resource extends Model
         'user_id'
     ];
 
+    protected $appends = ['tag_names'];
+
     public static function getResourceAttributes(): array
     {
         return [

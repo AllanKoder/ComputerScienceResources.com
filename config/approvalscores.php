@@ -1,5 +1,6 @@
 <?php
 
+// TODO: fix and finalize
 # upvotes on resource => required upvotes on edit
 return [
     0=>0,

@@ -9,12 +9,14 @@ use App\Models\Comment;
 use App\Models\ProposedEdit;
 use Illuminate\Http\Request;
 use App\Services\DiffService;
+use App\Services\ResourceEditService;
 use App\Models\VoteTotal;
 
 class ResourceEditController extends Controller
 {
     public function __construct(
         protected DiffService $diffService,
+        protected ResourceEditService $resourceEditService,
     ){
         $this->middleware('auth',  ['except' => ['index', 'show', 'edits', 'diff', 'original']]);
         // $this->middleware('cache.headers:private;max_age=180');
@@ -51,45 +53,16 @@ class ResourceEditController extends Controller
         \Log::debug('storing proposed resource edit: ' . json_encode($request->all()));
     
         $validatedData = $request->validated();
-        $validatedData['resource_id'] = $resource;
-        $validatedData['user_id'] = auth()->id();
-    
-        $originalResource = Resource::where('id', $resource)->with('tags')->first();
-    
-        $resourceEdit = ResourceEdit::create($validatedData);
-        $changesDetected = false;
-    
-        foreach ($validatedData as $field => $value) {
-            // is attribute amnd not same
-            if (in_array($field, Resource::getResourceAttributes()) 
-                && $originalResource->$field != $value) {
-                \Log::debug('creating proposed edit for a field: ' . $field . ' to value: ' . json_encode($value));
-                ProposedEdit::create([
-                    'resource_edit_id' => $resourceEdit->id,
-                    'field_name' => $field,
-                    'new_value' => json_encode($value),
-                ]);
-                $changesDetected = true;
-            }
-        }
-    
-        if (!$changesDetected) {
-            // If no changes were detected, delete the created ResourceEdit and return an error message
-            $resourceEdit->delete();
-            return redirect()->back()->with('error', 'No changes detected. Resource Edit was not created.');
+
+        $resourceEdit = $this->resourceEditService->createResourceEdit($validatedData, $resource);
+        if (!$resourceEdit) {
+            // If no changes were detected, return an error message
+            return redirect()->back()->withErrors(['No changes detected. Resource Edit was not created.']);
         }
     
         return redirect()->route('resource_edits.show', ["resource_edit"=>$resourceEdit->id])->with('success', 'Resource Edit created successfully and is pending approval');
     }
         
-    private function getNewResourceFromEdits(ResourceEdit $resourceEdit) {
-        $proposedEditsArray = $resourceEdit->getProposedEditsArray();
-
-        // Create a new resource-like object with the proposed edits
-        $newResource = (object) array_merge($resourceEdit->resource->toArray(), $proposedEditsArray);
-
-        return $newResource;
-    }
 
     /**
      * Display the specified resource edit.
@@ -99,7 +72,7 @@ class ResourceEditController extends Controller
      */
     public function show(ResourceEdit $resourceEdit)
     {
-        $editedResource = $this->getNewResourceFromEdits($resourceEdit);
+        $editedResource = $this->resourceEditService->getNewResourceFromEdits($resourceEdit);
         $totalUpvotes = VoteTotal::getVotesTotalModel($resourceEdit->id, ResourceEdit::class);
 
         $approvals = $totalUpvotes?->up_votes ?? 0;
@@ -112,66 +85,27 @@ class ResourceEditController extends Controller
 
     public function merge(ResourceEdit $resourceEdit)
     {   
-        // total votes of the resource
-        $totalUpvotesResource = VoteTotal::getVotesTotalModel($resourceEdit->resource->id, Resource::class);
-        $totalVotesResource = $totalUpvotesResource?->total_votes ?? 0;
-
-        // total votes of the edit
-        $totalUpvotesEdit = VoteTotal::getVotesTotalModel($resourceEdit->id, ResourceEdit::class);
-        $totalVotesEdit = $totalUpvotesEdit?->total_votes ?? 0;
-
-        // if the total votes of the edit is high enough, 
-        $requiredApprovals = config("approvalscores");
-
-        $canMerge = false;
-        foreach (array_reverse($requiredApprovals, true) as $resourceUpvotes => $requiredEditUpvotes) {
-            if ($totalVotesResource >= $resourceUpvotes) {
-                if ($totalVotesEdit >= $requiredEditUpvotes) {
-                    $canMerge = true;
-                }
-                break;
-            }
-        }
-        if ($canMerge == false)
+        if (env('APP_DEBUG') == false)
         {
-            return redirect()->back()->withErrors("Not enough approvals for edit");
-        }
-        
-        $editAgeHours = now()->diffInHours($resourceEdit->created_at);
-
-        # must wait 24 hours
-        if ($editAgeHours < 24){
-            return redirect()->back()->withErrors("Must wait at least 24 hours before merging edits");
-        }
-        
-        //Approve merging the resource
-        $proposedEditsArray = $resourceEdit->getProposedEditsArray();
-        $resource = $resourceEdit->resource;
-
-        // Get the fillable attributes
-        $fillableAttributes = $resource->getFillable();
-        $mutatorAttributes = [];
-
-        // set the fillable attributes
-        foreach ($proposedEditsArray as $attribute => $editedValue) {
-            if (in_array($attribute, $fillableAttributes)) {
-                $resource->$attribute = $editedValue;
-            } else {
-                $mutatorAttributes[$attribute] = $editedValue;
-            }
-        }
-        // Save the resource without mutators (UPDATE sql)
-        $resource->save();
-
-        // Handle mutator attributes separately to trigger the mutators
-        foreach ($mutatorAttributes as $attribute => $editedValue) {
-            \Log::debug("mutator " . json_encode($attribute) . " to new value " . json_encode($editedValue));
-            $resource->$attribute = $editedValue;
+            $canMergeApprovals = $this->resourceEditService->canMergeApprovals($resourceEdit);
+            if (!$canMergeApprovals) {
+                return redirect()->back()->withErrors(["does not have enough approvals"]);
+            } 
+            $canMergeTime = $this->resourceEditService->canMergeTime($resourceEdit);
+            if (!$canMergeTime) {
+                return redirect()->back()->withErrors(["must wait at least 24 hours before merging changes"]);
+            } 
         }
 
-        $resourceEdit->delete();
+        // Merging the resource
+        $hasMerged = $this->resourceEditService->mergeResourceEdit($resourceEdit);
 
-        return redirect()->route('resources.show', ['id' => $resource->id])->with('success', "Your edits have been approved!");
+        $resourceID = $resourceEdit->resource_id;
+        if (!$hasMerged){
+            return redirect()->route('resources.show', ['id' => $resourceID])->with('success', "Your edits have been approved!");
+        }
+
+        return redirect()->route('resources.show', ['id' => $resourceID])->with('success', "Your edits have been approved!");
     }
 
     /**
@@ -191,24 +125,10 @@ class ResourceEditController extends Controller
     public function diff(ResourceEdit $resourceEdit)
     {
         \Log::debug('Original Resource: ' . json_encode($resourceEdit->resource));
-        
-        // Get the fillable attributes
         $proposedEditsArray = $resourceEdit->getProposedEditsArray();
         $originalResource = $resourceEdit->resource;
 
-        $diffs = [];
-        foreach ($proposedEditsArray as $attribute => $editedValue) {
-            $originalValue = $originalResource->$attribute;
-        
-            if (is_array($originalValue) && is_array($editedValue)) {
-                // Get the array diff
-                $diffs[$attribute] = $this->diffService->set_diff($originalValue, $editedValue);
-            } elseif (is_string($originalValue) && is_string($editedValue)) {
-                // Get the text diff
-                $diffs[$attribute] = $this->diffService->text_diff_strings($originalValue, $editedValue);
-            }
-        }
-        
+        $diffs = $this->diffService->getModelDiff($originalResource, $proposedEditsArray);
         return view('edits.resources.display.diff', compact('diffs'));
     }
 

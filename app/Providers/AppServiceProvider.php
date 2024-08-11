@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Services\DiffService;
+use App\Services\ResourceEditService;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Contracts\Foundation\Application;
@@ -27,6 +28,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public $singletons = [
         DiffService::class => DiffService::class,
+        ResourceEditService::class => ResourceEditService::class,
     ];
 
 

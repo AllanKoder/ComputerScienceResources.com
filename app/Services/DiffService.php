@@ -82,14 +82,14 @@ class DiffService {
         );
     }
 
-    function text_diff_strings($old_str, $new_str) {
+    public function text_diff_strings($old_str, $new_str) {
         $old = explode(' ', $old_str);
         $new = explode(' ', $new_str);
         $diff = $this->text_diff($old, $new);
         return json_encode($diff);
     }
     
-    function set_diff($old, $new) {
+    public function set_diff($old, $new) {
         $old_set = array_flip($old);
         $new_set = array_flip($new);
     
@@ -103,5 +103,21 @@ class DiffService {
             'd' => array_keys($deletions)
         ]);
     }
-    
+
+    public function getModelDiff(object $originalModel, array $edits) {
+        $diffs = [];
+        foreach ($edits as $attribute => $editedValue) {
+            $originalValue = $originalModel->$attribute;
+        
+            if (is_array($originalValue) && is_array($editedValue)) {
+                // Get the array diff
+                $diffs[$attribute] = $this->set_diff($originalValue, $editedValue);
+            } elseif (is_string($originalValue) && is_string($editedValue)) {
+                // Get the text diff
+                $diffs[$attribute] = $this->text_diff_strings($originalValue, $editedValue);
+            }
+        }
+        
+        return $diffs;
+    }
 }
