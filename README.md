@@ -9,3 +9,4 @@ create table compsci-resources
 
 create table compsci-resources-testing
 
+`php artisan test`

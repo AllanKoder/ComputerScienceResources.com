@@ -31,8 +31,8 @@ Route::controller(ResourceController::class)->group(function () {
 
 // Comments
 Route::controller(CommentController::class)->group(function () {
-    Route::post('/{type}/{id}/comment', 'store')->name('comment.store');
-    Route::get('/{type}/{id}/comments', 'comments')->name('comment.comments');
+    Route::post('/comment/{type}/{id}/', 'store')->name('comment.store');
+    Route::get('/comments/{type}/{id}/', 'comments')->name('comment.comments');
     Route::post('/comment/{comment}/reply', 'reply')->name('comment.reply');
     Route::post('/comment/{comment}/update', 'update')->name('comment.update');
     Route::delete('/comment/{comment}', 'destroy')->name('comment.destroy');
@@ -40,7 +40,7 @@ Route::controller(CommentController::class)->group(function () {
 
 // Votes
 Route::controller(VoteController::class)->group(function () {
-    Route::post('/{type}/{id}/upvote', 'vote')->name('votes.vote');
+    Route::post('upvote/{type}/{id}/', 'vote')->name('votes.vote');
 });
 
 // Reviews for Resources
@@ -62,7 +62,7 @@ Route::controller(ResourceEditController::class)->group(function () {
 
 // Reports
 Route::controller(ReportController::class)->group(function () {
-    Route::post('/{type}/{id}/report', 'store')->name('reports.store');
+    Route::post('/report/{type}/{id}', 'store')->name('reports.store');
 });
 
 Route::get('/dashboard', function () {
