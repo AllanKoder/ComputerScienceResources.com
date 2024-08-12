@@ -5,6 +5,7 @@ namespace Database\Factories;
 use App\Models\Comment;
 use App\Models\Resource;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
@@ -25,10 +26,13 @@ class CommentFactory extends Factory
      */
     public function definition()
     {
+        $user = User::inRandomOrder()->first();
+        $resource = Resource::inRandomOrder()->first();
+
         return [
             'comment_text' => fake()->text,
-            'user_id' => fake()->numberBetween(1, 10),
-            'commentable_id' => fake()->numberBetween(1,10),
+            'user_id' =>  $user->id,
+            'commentable_id' => $resource->id,
             'commentable_type' => Resource::class,
         ];
     }

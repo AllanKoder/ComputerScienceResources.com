@@ -30,6 +30,8 @@ return new class extends Migration
 
             $table->foreign('resource_id')->references('id')->on('resources');
             $table->foreign('user_id')->references('id')->on('users');
+
+            $table->unique(['user_id', 'resource_id']);
             $table->timestamps();
         });
     }

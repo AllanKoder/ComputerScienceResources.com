@@ -5,7 +5,8 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\ResourceReview;
-use App\Models\Comment;
+use App\Models\Resource;
+use App\Models\User;
 
 class ResourceReviewSeeder extends Seeder
 {
@@ -16,22 +17,20 @@ class ResourceReviewSeeder extends Seeder
      */
     public function run()
     {
-        // Clear the existing resource reviews table
-        \DB::table('resource_reviews')->delete();
-        
         // Create new resource reviews for resource 1
-        $reviewsForResource1 = ResourceReview::factory()->count(5)->create([
-            'resource_id' => 1,
-        ]);
+        $resources = Resource::all();
+        $users = User::all();
     
-        // Create new resource reviews for resource 2
-        $reviewsForResource2 = ResourceReview::factory()->count(5)->create([
-            'resource_id' => 2,
-        ]);
-        
-        // Create new resource reviews for resource 1 with no comments
-        $emptyCommentsReviewsForResource1 = ResourceReview::factory()->count(3)->create([
-            'resource_id' => 1,
-        ]);  
+        foreach ($resources as $resource) {
+            foreach ($users as $user) {
+                // Check if the user has already reviewed the resource
+                if (!$user->resourceReviews()->where('resource_id', $resource->id)->exists()) {
+                    ResourceReview::factory()->create([
+                        'resource_id' => $resource->id,
+                        'user_id' => $user->id,
+                    ]);
+                }
+            }
+        }
     }
 }

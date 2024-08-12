@@ -37,13 +37,6 @@
                 <x-diff.view-diff-text :diff="$diffs['image_url']" />
             </p>
         @endif
-
-        @if(isset($diffs['resource_url']))
-            <p class="mb-1">
-                <p class="font-bold">Resource URL:</p>
-                <x-diff.view-diff-text :diff="$diffs['resource_url']" />
-            </p>
-        @endif
     </div>
 </div>
 

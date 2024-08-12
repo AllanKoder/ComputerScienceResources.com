@@ -49,4 +49,8 @@ class User extends Authenticatable
                     ->withTimestamps();
     }
 
+    public function resourceReviews()
+    {
+        return $this->hasMany(ResourceReview::class);
+    }
 }

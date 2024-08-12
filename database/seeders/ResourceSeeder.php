@@ -15,9 +15,6 @@ class ResourceSeeder extends Seeder
      */
     public function run()
     {
-        // Clear the existing resources table
-        \DB::table('resources')->delete();
-
         // Create 3 new resources
         $resource1 = Resource::factory()->create([
             'title' => 'Learning Laravel',
@@ -32,7 +29,6 @@ class ResourceSeeder extends Seeder
         ]);
 
         $resource1->attachTags(["tag1", "php", "laravel"]);
-
 
         Resource::factory()->create([
             'title' => 'Advanced Eloquent Usage',
@@ -57,5 +53,7 @@ class ResourceSeeder extends Seeder
             'topics' => ['api design', 'laravel'],
             'difficulty' => 'academic',
         ]);
+
+        Resource::factory(7)->create();
     }
 }

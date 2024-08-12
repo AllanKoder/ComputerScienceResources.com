@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Resource;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -27,9 +28,10 @@ class ResourceFactory extends Factory
         $availableFormats = array_values(config('formats'));
         $availablePricings = array_values(config('pricings'));
         $availableDifficulties = array_values(config('difficulties'));
+        $user = User::inRandomOrder()->first();
 
         return [
-            'user_id' => fake()->numberBetween(1, 10),
+            'user_id' => $user->id,
             'title' => fake()->sentence,
             'description' => fake()->paragraph,
             'image_url' => fake()->imageUrl,
