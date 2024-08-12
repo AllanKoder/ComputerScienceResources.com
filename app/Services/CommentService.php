@@ -8,9 +8,9 @@ use App\Models\CommentHierarchy;
 
 class CommentService
 {
-    public function createCommentHead(array $data, $commentable_type, int $commentable_id)
+    public function createCommentHead(array $data, $commentableType, int $commentableId)
     {
-        $commentable = $commentable_type::findOrFail($commentable_id);
+        $commentable = $commentableType::findOrFail($commentableId);
         $comment = new Comment($data);
         $comment->user_id = auth()->id();
         $commentable->comments()->save($comment);
@@ -23,16 +23,16 @@ class CommentService
         return $comment;
     }
 
-    public function createReply(array $data, $comment_id)
+    public function createReply(array $data, $commentId)
     {
         $reply = new Comment( $data);
         $reply->user_id = auth()->id();
-        $reply->commentable_id = $comment_id; // Set the parent comment ID
+        $reply->commentable_id = $commentId; // Set the parent comment ID
         $reply->commentable_type = Comment::class; // Set the parent comment type
         $reply->save();
 
         // Find the ancestor ID of the commentable item
-        $ancestorID = CommentHierarchy::where('comment_id', $comment_id)->first()->ancestor;
+        $ancestorID = CommentHierarchy::where('comment_id', $commentId)->first()->ancestor;
         
         // Create a new closure entry with the found ancestor ID
         CommentHierarchy::create([

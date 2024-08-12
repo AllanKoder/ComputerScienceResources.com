@@ -47,11 +47,9 @@ class ReportController extends Controller
         $reportableType = TypeHelper::getModelType($type);
         $reportable = $reportableType::findOrFail($id);
 
-        $merged_request = array_merge($request->validated(),
-        ['user_id' => auth()->id()]
-       );
-
-        $report = new Report($merged_request);
+        $report = new Report($request->validated());
+        $report->user_id = auth()->id();
+        
         $reportable->reports()->save($report);
         
         return redirect()->back();
