@@ -26,8 +26,8 @@ class CommentFactory extends Factory
      */
     public function definition()
     {
-        $user = User::inRandomOrder()->first();
-        $resource = Resource::inRandomOrder()->first();
+        $user = User::inRandomOrder()->first() ?? User::factory()->create();
+        $resource = Resource::inRandomOrder()->first() ?? Resource::factory()->create();
 
         return [
             'comment_text' => fake()->text,

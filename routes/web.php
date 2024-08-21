@@ -31,11 +31,11 @@ Route::controller(ResourceController::class)->group(function () {
 
 // Comments
 Route::controller(CommentController::class)->group(function () {
-    Route::post('/comment/{type}/{id}/', 'store')->name('comment.store');
-    Route::get('/comments/{type}/{id}/', 'comments')->name('comment.comments');
-    Route::post('/comment/{comment}/reply', 'reply')->name('comment.reply');
-    Route::post('/comment/{comment}/update', 'update')->name('comment.update');
-    Route::delete('/comment/{comment}', 'destroy')->name('comment.destroy');
+    Route::post('/comment/create/{type}/{id}/', 'store')->name('comment.store');
+    Route::get('/comments/get/{type}/{id}/', 'comments')->name('comment.comments');
+    Route::post('/comment/reply/{comment}', 'reply')->name('comment.reply');
+    Route::post('/comment/update/{comment}', 'update')->name('comment.update');
+    Route::delete('/comment/destroy/{comment}', 'destroy')->name('comment.destroy');
 });
 
 // Votes

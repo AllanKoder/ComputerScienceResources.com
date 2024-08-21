@@ -13,14 +13,14 @@ return new class extends Migration
 public function up()
 {
     Schema::create('comments', function (Blueprint $table) {
-    $table->id();
-    $table->text('comment_text');
-    $table->unsignedBigInteger('user_id');
-    $table->unsignedBigInteger('commentable_id')->nullable(); // Polymorphic relation
-    $table->string('commentable_type')->nullable(); // Polymorphic relation
-    $table->timestamps();
+        $table->id();
+        $table->text('comment_text');
+        $table->unsignedBigInteger('user_id');
+        $table->unsignedBigInteger('commentable_id'); // Polymorphic relation
+        $table->string('commentable_type'); // Polymorphic relation
+        $table->timestamps();
 
-    $table->foreign('user_id')->references('id')->on('users');
+        $table->foreign('user_id')->references('id')->on('users');
     });
 }
 

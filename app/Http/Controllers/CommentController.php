@@ -52,11 +52,11 @@ class CommentController extends Controller
         // cannot be a comment to a comment, that would be a reply
         $commentableType = TypeHelper::getModelType($type);
         if ($commentableType == Comment::class) {
-            return redirect()->back()->withErrors(["could not create comment"]);
+            return redirect()->back()->withErrors(["could not create comment on a comment, use reply endpoint instead"]);
         }
 
-        \Log::debug('storing comment: ' . json_encode($request->all()));
-        $comment = $this->commentService->createCommentHead($request->all(), $commentableType, $id);
+        \Log::debug('storing comment: ' . json_encode($request->validated()));
+        $comment = $this->commentService->createCommentHead($request->validated(), $commentableType, $id);
 
         return redirect()->back();
     }
@@ -65,7 +65,7 @@ class CommentController extends Controller
     // TODO: add limit to comments
     public function reply(StoreReplyRequest $request, Comment $comment)
     {   
-        \Log::debug('replying to a comment request: ' . json_encode($request->all()));
+        \Log::debug('replying to a comment request: ' . json_encode($request->validated()));
         \Log::debug('comment reply head comment: ' . json_encode($comment->toArray()));
         
         if (is_null($comment->id)) {
@@ -73,7 +73,26 @@ class CommentController extends Controller
             return back()->withErrors(["comment to reply to was not found"]);
         }
 
-        $comment = $this->commentService->createReply($request->all(), $comment->id);
+        $comment = $this->commentService->createReply($request->validated(), $comment->id);
+        
+        \Log::debug('Reply created', ['comment' => $comment]);
+
+        return back()->with(["success", "successfully made comment"]);
+    }
+
+    public function replyTest(StoreReplyRequest $request, $id)
+    {   
+        \Log::debug('replying to a comment request: ' . json_encode($request->validated()));
+        
+        if (is_null($id)) {
+            \Log::warning('could not find parent comment');
+            return back()->withErrors(["comment to reply to was not found"]);
+        }
+
+        //FIXME: Implicit Binding not working
+        $comment = $this->commentService->createReply($request->validated(), $id);
+        
+        \Log::debug('Reply created', ['comment' => $comment]);
 
         return back()->with(["success", "successfully made comment"]);
     }
@@ -98,10 +117,21 @@ class CommentController extends Controller
     public function comments(string $type, int $id)
     {
         $commentableType = TypeHelper::getModelType($type);
+    
+        if ($commentableType === Comment::class) {
+            // 403 Forbidden
+            return response()->json([
+                'forbidden' => 'You should view comments on the original post, not on individual comments.'
+            ], 403);
+        }
+    
         $commentTree = Comment::getCommentTree($commentableType, $id);
 
-        return view('comments.partials.index', ['comments' => $commentTree, 'id'=>$id, 'type'=>$type]);
+        \Log::debug("Comment tree created successfully: " . json_encode($commentTree));
+        
+        return view('comments.partials.index', ['comments' => $commentTree, 'id' => $id, 'type' => $type]);
     }
+    
 
     /**
      * Show the form for editing the specified comment.
@@ -125,14 +155,14 @@ class CommentController extends Controller
     public function update(UpdateCommentRequest $request, Comment $comment)
     {
 
-        $comment->update($request->all());
+        $comment->update($request->validated());
         return redirect()->route('comments.show', $comment);
     }
 
     //TODO: add comment deletion
     /**
      * Remove the specified comment from storage.
-     *
+     *  
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */

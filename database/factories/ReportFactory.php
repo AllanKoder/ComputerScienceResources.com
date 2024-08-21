@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Report;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -24,11 +25,13 @@ class ReportFactory extends Factory
      */
     public function definition()
     {
+        $user = User::inRandomOrder()->first() ?? User::factory()->create();
+
         return [
             'report_text' => fake()->text,
             'reportable_id' => fake()->numberBetween(1, 100),
             'reportable_type' => fake()->randomElement(['App\Models\Post', 'App\Models\Comment']),
-            'user_id' => fake()->numberBetween(1, 50),
+            'user_id' => $user->id,
         ];
     }
 }

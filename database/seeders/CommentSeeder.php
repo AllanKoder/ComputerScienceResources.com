@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\ResourceEdit;
+use App\Models\ResourceReview;
 use Illuminate\Database\Seeder;
 use App\Models\Comment;
 use App\Models\CommentHierarchy;
@@ -17,32 +19,38 @@ class CommentSeeder extends Seeder
      */
     public function run()   
     {
-        // Seed comments for a specific resource
-        $this->seedCommentsForResource(1);
-        $this->seedCommentsForResource(2);
+        // Seed comments for resources
+        $this->seedCommentsForPost(1, Resource::class);
+        $this->seedCommentsForPost(2, Resource::class);
 
+        // Resource Edit
+        $this->seedCommentsForPost(1, ResourceEdit::class);
+        
+        // Resource Review
+        $this->seedCommentsForPost(1, ResourceReview::class);
+        $this->seedCommentsForPost(2, ResourceReview::class);
     }
 
     /**
      * Seed comments for a specific resource.
      *
-     * @param int $resourceId
+     * @param int $commentableId
      * @return void
      */
-    private function seedCommentsForResource(int $resourceId)
+    private function seedCommentsForPost(int $commentableId, string $commentableType)
     {
         $comments = [];
 
         $comments[] = Comment::factory()->create([
-            'comment_text' => 'This is a great resource!',
-            'commentable_id' => $resourceId, // resource comment
-            'commentable_type' => Resource::class,
+            'comment_text' => 'This is a great post!',
+            'commentable_id' => $commentableId, // resource comment
+            'commentable_type' => $commentableType,
         ]);
 
         $comments[] = Comment::factory()->create([
             'comment_text' => 'Can you provide more details?',
-            'commentable_id' => $resourceId, // Another resource comment
-            'commentable_type' => Resource::class,
+            'commentable_id' => $commentableId, // Another resource comment
+            'commentable_type' => $commentableType,
         ]);
 
         $comments[] = Comment::factory()->create([

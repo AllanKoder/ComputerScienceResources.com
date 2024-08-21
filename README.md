@@ -1,6 +1,6 @@
 # Conventions
 
-[use camel case](https://webdevetc.com/blog/laravel-naming-conventions/)
+[Coding Conventions](https://webdevetc.com/blog/laravel-naming-conventions/)
 
 # Database
 create table compsci-resources

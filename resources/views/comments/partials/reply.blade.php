@@ -1,7 +1,7 @@
 {{-- resources/views/comments/reply.blade.php --}}
 
 {{-- Reply form --}}
-<form action="{{ route('comment.reply', ['comment' => $comment]) }}" method="POST">
+<form action="{{ route('comment.reply', ['comment' => $comment->id]) }}" method="POST">
     @csrf
     <div class="form-group">
         <label for="reply_text">Your Reply</label>

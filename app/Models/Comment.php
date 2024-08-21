@@ -103,15 +103,24 @@ class Comment extends Model
         // Fetch all replies for each comment using the CommentHierarchy model
         $ancestorIds = $ancestorComments->pluck('id');
 
-        $allComments = self::whereIn('id', function ($query) use ($ancestorIds) {
+        $replyComments = self::whereIn('id', function ($query) use ($ancestorIds) {
             $query->select('comment_id')
                 ->from('comment_hierarchies')
                 ->whereIn('ancestor', $ancestorIds);
-        })->with(['user'])
-          ->get();
+        })->get();
         
-          // Combine ancestor comments and all replies
-          $comments = $ancestorComments->merge($allComments);
+        // Combine ancestor comments and all replies
+        $comments = $ancestorComments->merge($replyComments);
+
+        // Loading all the users to stop a N+1 query problem
+        $userIds = $comments->pluck('user_id')->unique();
+
+        $users = User::whereIn('id', $userIds)->get()->keyBy('id');
+
+        // Attach users to their respective comments
+        foreach ($comments as $comment) {
+            $comment->user = $users->get($comment->user_id);
+        }
 
         // Fetch total votes for all comments
         $commentIds = $comments->pluck('id');
@@ -137,7 +146,7 @@ class Comment extends Model
         foreach ($comments as $comment) {
             // get the comments, which is (what is being commented on) being this comment
             // I hope this is not confusing:
-            // the comments are found by searching for the comments that commented on this specific comment. Yes
+            // the replies are found by searching for the comments that commented on this specific comment.
             $compositeKey = $comment->id . '-' . Comment::class;
             $comment->comments = $grouped->get($compositeKey, collect());
         }

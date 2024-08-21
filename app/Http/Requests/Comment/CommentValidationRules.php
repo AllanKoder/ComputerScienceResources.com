@@ -7,7 +7,7 @@ trait CommentValidationRules
     public function commentRules()
     {
         return [
-            'comment_text' => 'required|max:1000',
+            'comment_text' => 'required|string|max:755',
         ];
     }
 }

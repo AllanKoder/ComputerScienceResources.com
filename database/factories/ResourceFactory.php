@@ -28,7 +28,7 @@ class ResourceFactory extends Factory
         $availableFormats = array_values(config('formats'));
         $availablePricings = array_values(config('pricings'));
         $availableDifficulties = array_values(config('difficulties'));
-        $user = User::inRandomOrder()->first();
+        $user = User::inRandomOrder()->first() ?? User::factory()->create();
 
         return [
             'user_id' => $user->id,
