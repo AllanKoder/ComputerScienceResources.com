@@ -1,5 +1,5 @@
 @php
-    $maxDepth = 10; // Set the maximum depth for recursion
+    $maxDepth = config('comments')["maximum_depth"]; // Set the maximum depth for recursion
 @endphp
 
 <div class="card mb-3 {{ $comment->commentable_id ? 'ml-10' : 'ml-0' }}">

@@ -13,7 +13,7 @@ use Database\Seeders\ResourceSeeder;
 
 class CommentControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
 
     public function test_can_see_comment_for_all_types_of_posts()
     {
@@ -186,62 +186,90 @@ class CommentControllerTest extends TestCase
     public function test_returns_correct_comment_tree() {
         $this->seed(ResourceSeeder::class);
         
-        // create a chain of comments
+        // Create a chain of comments
         $resource = Resource::first();
-
-        $user1 = User::factory([
-            'name'=> 'super epic user'
-        ])->create();
-
-        $user2 = User::factory([
-            'name'=> 'super epic user'
-        ])->create();
-
-        // the original comment
-        $comment1 = "parent: None, comment 1";
+    
+        $user1 = User::factory(['name' => 'super epic user 1'])->create();
+        $user2 = User::factory(['name' => 'super epic user 2'])->create();
+    
+        // Define comment texts
+        $commentText1 = "parent: None, comment 1";
+        $commentText2 = "parent: 1, comment 2";
+        $commentText3 = "parent: 1, comment 3";
+        $commentText4 = "parent: 2, comment 4";
+        $commentText5 = "Final comment";
+    
+        // Post the original comment
         $this->actingAs($user1)->post(route('comment.store', ['type' => 'resource', 'id' => $resource->id]), [
-            'comment_text' => $comment1,
+            'comment_text' => $commentText1,
         ]);
-        
-        // find the original comment, for id
-        $originalComment = Comment::where('comment_text', $comment1)->first();
-
-        // reply to the original, save comment for future use
-        $comment2 = "parent: 1, comment 2";
+        $this->assertDatabaseHas('comments', [
+            'comment_text' => $commentText1,
+            'user_id' => $user1->id,
+            'commentable_id' => $resource->id,
+            'commentable_type' => Resource::class,
+        ]);
+    
+        // Find the original comment
+        $originalComment = Comment::where('comment_text', $commentText1)->first();
+    
+        // Post replies to the original comment
         $this->actingAs($user2)->post(route('comment.reply', ['comment' => $originalComment->id]), [
-            'comment_text' => $comment2,
+            'comment_text' => $commentText2,
         ]);
-
-        // reply to the original, this will never be replied to
+        $this->assertDatabaseHas('comments', [
+            'comment_text' => $commentText2,
+            'user_id' => $user2->id,
+            'commentable_id' => $originalComment->id,
+            'commentable_type' => Comment::class,
+        ]);
+    
         $this->actingAs($user2)->post(route('comment.reply', ['comment' => $originalComment->id]), [
-            'comment_text' => "parent: 1, comment 3",
+            'comment_text' => $commentText3,
         ]);
-
-        // get second comment
-        $secondComment = Comment::where('comment_text', $comment2)->first();
-        // set fourth comment text
-        $comment4 = "parent: 2, comment 4";
+        $this->assertDatabaseHas('comments', [
+            'comment_text' => $commentText3,
+            'user_id' => $user2->id,
+            'commentable_id' => $originalComment->id,
+            'commentable_type' => Comment::class,
+        ]);
+    
+        // Find the second comment
+        $secondComment = Comment::where('comment_text', $commentText2)->first();
+    
+        // Post a reply to the second comment
         $this->actingAs($user1)->post(route('comment.reply', ['comment' => $secondComment->id]), [
-            'comment_text' => $comment4,
+            'comment_text' => $commentText4,
         ]);
-
-        $fourthComment = Comment::where('comment_text', $comment2)->first();
+        $this->assertDatabaseHas('comments', [
+            'comment_text' => $commentText4,
+            'user_id' => $user1->id,
+            'commentable_id' => $secondComment->id,
+            'commentable_type' => Comment::class,
+        ]);
+    
+        // Find the fourth comment
+        $fourthComment = Comment::where('comment_text', $commentText4)->first();
+    
+        // Post a reply to the fourth comment
         $this->actingAs($user2)->post(route('comment.reply', ['comment' => $fourthComment->id]), [
-            'comment_text' => "Final comment",
+            'comment_text' => $commentText5,
         ]);
-
-        // should look like this:
+        $this->assertDatabaseHas('comments', [
+            'comment_text' => $commentText5,
+            'user_id' => $user2->id,
+            'commentable_id' => $fourthComment->id,
+            'commentable_type' => Comment::class,
+        ]);
+    
+        // Expected comment tree structure:
         // A 
         // | B
         //   | D
         //     | E
         // | C
-
-        $response = $this->get(route('comment.comments', ['type' => 'resource', 'id' => $resource->id]));
-        \Log::debug("what the hecl");
-        \Log::debug(json_encode($response->getContent()));
     }
-
+    
     public function test_is_limit_to_comments_depth() {
         
     }

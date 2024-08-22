@@ -121,17 +121,19 @@ class CommentSeeder extends Seeder
             CommentHierarchy::create([
                 'ancestor' => $comment->id,
                 'comment_id' => $comment->id,
+                'depth' => 1,
             ]);
             return;
         }
 
-        // Find the ancestor ID of the commentable item
-        $ancestorID = CommentHierarchy::where('comment_id', $comment->commentable_id)->first()->ancestor;
+        // Find the commentable item
+        $parentComment = CommentHierarchy::where('comment_id', $comment->commentable_id)->first();
 
         // Create a new closure entry with the found ancestor ID
         CommentHierarchy::create([
-            'ancestor' => $ancestorID,
+            'ancestor' => $parentComment->ancestor,
             'comment_id' => $comment->id,
+            'depth' => $parentComment->depth+1,
         ]);
     }
 }

@@ -14,7 +14,7 @@ return new class extends Migration
             
             $table->unsignedBigInteger('ancestor')->nullable(false);
             $table->unsignedBigInteger('comment_id')->nullable(false);
-            $table->smallInteger('depth')->default(0)->nullable(false);
+            $table->smallInteger('depth')->nullable(false);
     
             $table->foreign('ancestor')->references('id')->on('comments')->onDelete('cascade');
             $table->foreign('comment_id')->references('id')->on('comments')->onDelete('cascade');

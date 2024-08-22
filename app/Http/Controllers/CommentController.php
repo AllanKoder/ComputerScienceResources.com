@@ -74,24 +74,12 @@ class CommentController extends Controller
         }
 
         $comment = $this->commentService->createReply($request->validated(), $comment->id);
-        
-        \Log::debug('Reply created', ['comment' => $comment]);
-
-        return back()->with(["success", "successfully made comment"]);
-    }
-
-    public function replyTest(StoreReplyRequest $request, $id)
-    {   
-        \Log::debug('replying to a comment request: ' . json_encode($request->validated()));
-        
-        if (is_null($id)) {
-            \Log::warning('could not find parent comment');
-            return back()->withErrors(["comment to reply to was not found"]);
+        if (!$comment)
+        {
+            \Log::debug("cannot exceed max depth for comment tree, denied comment reply request");
+            return redirect()->back()->withErrors(["cannot create the reply, maximum depth has been reached"]);
         }
 
-        //FIXME: Implicit Binding not working
-        $comment = $this->commentService->createReply($request->validated(), $id);
-        
         \Log::debug('Reply created', ['comment' => $comment]);
 
         return back()->with(["success", "successfully made comment"]);
