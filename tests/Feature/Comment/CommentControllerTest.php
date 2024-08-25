@@ -13,10 +13,9 @@ use Database\Seeders\ResourceSeeder;
 
 class CommentControllerTest extends TestCase
 {
-    // use RefreshDatabase;
+    use RefreshDatabase;
 
-    public function test_can_see_comment_for_all_types_of_posts()
-    {
+    public function test_can_see_comment_for_all_types_of_posts() {
         $this->seed();
 
         $resource = Resource::first();
@@ -271,6 +270,43 @@ class CommentControllerTest extends TestCase
     }
     
     public function test_is_limit_to_comments_depth() {
+        $this->seed([ResourceSeeder::class]);
         
+        $user1 = User::factory(['name' => 'super epic user 1'])->create();
+        
+        $resource = Resource::first();
+        // get the max comment depth and repeatedly create new comments until you hit the limit
+        // expect failure as a result 
+        
+        $commentText = "comment number 0";
+    
+        // Post the original comment
+        $this->actingAs($user1)->post(route('comment.store', ['type' => 'resource', 'id' => $resource->id]), [
+            'comment_text' => $commentText,
+        ]);
+       
+        $commentDepth = config("comments")['maximum_depth'];
+        $replyTo = Comment::where('comment_text', $commentText)->first();
+   
+        for ($i = 0; $i < $commentDepth; $i++)
+        {
+            $this->assertDatabaseHas('comments', [
+                'comment_text' => $commentText,
+            ]);
+ 
+            $commentText = 'comment number ' . ($i+1);
+            $response = $this->actingAs($user1)->post(route('comment.reply', ['comment'=>$replyTo->id]), [
+                'comment_text' => $commentText,
+            ]);
+            // get the next comment
+            $replyTo = Comment::where("comment_text", $commentText)->first();
+        }
+
+        // The final comment should not be found, but the other ones should be found
+        $this->assertDatabaseMissing('comments', [
+            'comment_text' => $commentText,
+        ]);
+
+        $response->assertSessionHasErrors();
     }
 }
