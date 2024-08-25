@@ -29,6 +29,14 @@ class GetResourcesRequest extends FormRequest
             'difficulty.*' => Rule::in($availableDifficulty),
             'topics' => 'nullable|array',
             'tags' => 'nullable|array',
+     
+            // Rating inputs
+            'community_size' => 'nullable|integer|between:1,5',
+            'teaching_clarity' => 'nullable|integer|between:1,5',
+            'technical_depth' => 'nullable|integer|between:1,5',
+            'practicality_to_industry' => 'nullable|integer|between:1,5',
+            'user_friendliness' => 'nullable|integer|between:1,5',
+            'updates_and_maintenance' => 'nullable|integer|between:1,5',
         ];
     }
 }

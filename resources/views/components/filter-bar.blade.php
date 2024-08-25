@@ -3,6 +3,9 @@
     hx-trigger="submit" hx-push-url="true" 
     hx-indicator="#spinner"
     class="flex flex-wrap items-center space-x-4">
+
+    <!-- TODO: make the initial value from the url -->
+
     @php
         $pricingOptions = \App\Helpers\ConfigHelper::getConfigOptions("pricings");
         $formatOptions = \App\Helpers\ConfigHelper::getConfigOptions("formats");
@@ -75,8 +78,46 @@
     <!-- Review Ratings -->
     <div class="mb-4 min-w-36">
         <label for="community_size" class="block text-gray-700 text-sm font-bold mb-2">Community Size</label>
-        <x-smart-inputs.rating-input/>
+        <x-smart-inputs.rating-filter
+        name="community_size"
+        />
     </div>
+
+    <div class="mb-4 min-w-36">
+        <label for="teaching_clarity" class="block text-gray-700 text-sm font-bold mb-2">Teaching Clarity</label>
+        <x-smart-inputs.rating-filter
+        name="teaching_clarity"
+        />
+    </div>
+
+    <div class="mb-4 min-w-36">
+        <label for="technical_dept" class="block text-gray-700 text-sm font-bold mb-2">Technical Depth</label>
+        <x-smart-inputs.rating-filter
+        name="technical_depth"
+        />
+    </div>
+
+    <div class="mb-4 min-w-36">
+        <label for="practicality_to_industry" class="block text-gray-700 text-sm font-bold mb-2">Practicality to Industry</label>
+        <x-smart-inputs.rating-filter
+        name="practicality_to_industry"
+        />
+    </div>
+
+    <div class="mb-4 min-w-36">
+        <label for="user_friendliness" class="block text-gray-700 text-sm font-bold mb-2">User Friendliness</label>
+        <x-smart-inputs.rating-filter
+        name="user_friendliness"
+        />
+    </div>
+
+    <div class="mb-4 min-w-36">
+        <label for="updates_and_maintenance" class="block text-gray-700 text-sm font-bold mb-2">Updates and Maintenance </label>
+        <x-smart-inputs.rating-filter
+        name="updates_and_maintenance"
+        />
+    </div>
+
 
     <!-- Submit Batton -->
     <div class="flex items-center justify-between">
@@ -94,6 +135,5 @@
 <div x-data>
     <button @click="$dispatch('clear-inputs-event')">Clear Input</button>
 </div>
-<script>
 
-</script>
+<!-- TODO: add a sort by dropdown -->

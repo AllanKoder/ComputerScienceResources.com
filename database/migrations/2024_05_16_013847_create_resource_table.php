@@ -27,12 +27,12 @@ return new class extends Migration
             $table->string('difficulty')->index(); 
 
             // resource review summaries
-            $table->integer('community_size_total')->default(1)->index();
-            $table->integer('teaching_explanation_clarity_total')->default(1)->index();
-            $table->integer('technical_depth_total')->default(1)->index();
-            $table->integer('practicality_to_industry_total')->default(1)->index();
-            $table->integer('user_friendliness_total')->default(1)->index();
-            $table->integer('updates_and_maintenance_total')->default(1)->index();
+            $table->integer('community_size_total')->default(0)->index();
+            $table->integer('teaching_explanation_clarity_total')->default(0)->index();
+            $table->integer('technical_depth_total')->default(0)->index();
+            $table->integer('practicality_to_industry_total')->default(0)->index();
+            $table->integer('user_friendliness_total')->default(0)->index();
+            $table->integer('updates_and_maintenance_total')->default(0)->index();
             $table->integer('total_reviews')->default(0);
 
             $table->unsignedBigInteger('user_id')->index();

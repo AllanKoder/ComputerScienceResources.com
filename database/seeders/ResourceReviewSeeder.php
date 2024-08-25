@@ -18,8 +18,8 @@ class ResourceReviewSeeder extends Seeder
     public function run()
     {
         // Create new resource reviews for resource 1
-        $resources = Resource::take(15)->get();
-        $users = User::limit(4)->get(); // Limit to the first 2 users
+        $resources = Resource::take(5)->get();
+        $users = User::limit(3)->get(); // Limit to the first 2 users
 
         foreach ($resources as $resource) {
             foreach ($users as $user) {

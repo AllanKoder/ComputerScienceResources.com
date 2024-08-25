@@ -60,6 +60,35 @@ class ResourceService
                 }
             });
         }
+        if ($request->filled('community_size')) {
+            $community_size = (int) $request->input('community_size');
+            $query->WhereRaw('community_size_total >= ? * total_reviews', [$community_size]);
+        }
+
+        if ($request->filled('teaching_clarity')) {
+            $teaching_clarity = (int) $request->input('teaching_clarity');
+            $query->WhereRaw('teaching_explanation_clarity_total >= ? * total_reviews', [$teaching_clarity]);
+        }
+
+        if ($request->filled('technical_depth')) {
+            $technical_depth = (int) $request->input('technical_depth');
+            $query->WhereRaw('technical_depth_total >= ? * total_reviews', [$technical_depth]);
+        }
+
+        if ($request->filled('practicality_to_industry')) {
+            $practicality_to_industry = (int) $request->input('practicality_to_industry');
+            $query->WhereRaw('practicality_to_industry_total >= ? * total_reviews', [$practicality_to_industry]);
+        }
+
+        if ($request->filled('user_friendliness')) {
+            $user_friendliness = (int) $request->input('user_friendliness');
+            $query->WhereRaw('user_friendliness_total >= ? * total_reviews', [$user_friendliness]);
+        }
+
+        if ($request->filled('updates_and_maintenance')) {
+            $updates_and_maintenance = (int) $request->input('updates_and_maintenance');
+            $query->WhereRaw('updates_and_maintenance_total >= ? * total_reviews', [$updates_and_maintenance]);
+        }
 
         if ($request->filled('tags')) {
             $tags = $request->input('tags');
