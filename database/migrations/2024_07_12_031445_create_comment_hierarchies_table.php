@@ -13,7 +13,7 @@ return new class extends Migration
             $table->timestamps();
             
             $table->unsignedBigInteger('ancestor')->nullable(false);
-            $table->unsignedBigInteger('comment_id')->nullable(false);
+            $table->unsignedBigInteger('comment_id')->nullable(false)->index();
             $table->smallInteger('depth')->nullable(false);
     
             $table->foreign('ancestor')->references('id')->on('comments')->onDelete('cascade');

@@ -21,8 +21,7 @@ return new class extends Migration
             $table->integer('technical_depth');
             $table->integer('user_friendliness');
             $table->integer('updates_and_maintenance');
-            $table->unsignedBigInteger('comment_id')->nullable();
-            $table->unsignedBigInteger('resource_id');
+            $table->unsignedBigInteger('resource_id')->index();
             $table->unsignedBigInteger('user_id');
 
             $table->string('review_title');

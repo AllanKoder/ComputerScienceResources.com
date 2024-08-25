@@ -16,8 +16,7 @@ class ResourceEditSeeder extends Seeder
      */
     public function run()
     {
-        // Loop through all resources and create a resource edit for each one
-        Resource::all()->each(function ($resource) {
+        Resource::take(5)->get()->each(function ($resource) {
             $resourceEdit = ResourceEdit::factory()->create(['resource_id' => $resource->id]);
 
             // Create a proposed edit for each field in the resource model

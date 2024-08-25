@@ -10,16 +10,21 @@
     @endphp
     <!-- Search Bar, for name and description -->
     <div class="mb-4 w-1/3">
-        <label for="query" class="block text-gray-700 text-sm font-bold mb-2 w-full">Resource Name or Description:</label>
-        <x-smart-inputs.text-input type="text" name="query" placeholder="Search..." class="w-full h-8 rounded border-gray-400" />
+        <label for="title" class="block text-gray-700 text-sm font-bold mb-2 w-full">Resource Name:</label>
+        <x-smart-inputs.text-input type="text" name="title" placeholder="Search..." class="w-full h-8 rounded border-gray-400" />
     </div>
     
+    <div class="mb-4 w-1/3">
+        <label for="description" class="block text-gray-700 text-sm font-bold mb-2 w-full">Resource Description:</label>
+        <x-smart-inputs.text-input type="text" name="description" placeholder="Search..." class="w-full h-8 rounded border-gray-400" />
+    </div>
+   
     <!-- Resource Formats -->
     <div class="mb-4">
         <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
         <x-smart-inputs.multi-select-input 
         :options="$formatOptions"
-        :selectedOptions="['website']"
+        :selectedOptions="[]"
         :saveToStorage=true
         name="formats"
         />           
@@ -31,6 +36,7 @@
         <x-smart-inputs.multi-select-input 
         :options="$pricingOptions"
         :saveToStorage=true
+        :selectedOptions="[]"
         name="pricing"
         />        
     </div>
@@ -40,6 +46,7 @@
         <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
         <x-smart-inputs.multi-tag-input 
         :saveToStorage=true
+        :selectedOptions="[]"
         name="topics"/>
     </div>
         
@@ -49,6 +56,7 @@
         <x-smart-inputs.multi-select-input 
         :options="$difficultyOptions"
         :saveToStorage=true
+        :selectedOptions="[]"
         name="difficulty">        
         </x-smart-inputs.multi-select-input>
     </div>
@@ -58,13 +66,19 @@
         <label for="tags" class="block text-gray-700 text-sm font-bold mb-2">Tags</label>
         <x-smart-inputs.multi-tag-input 
         name="tags"
-        :selectedOptions="['tasd']"
+        :selectedOptions="[]"
         :options="['esd', 'test']"
         :saveToStorage=true
         class="w-full"/>
     </div>
 
-    <!-- Submit Button -->
+    <!-- Review Ratings -->
+    <div class="mb-4 min-w-36">
+        <label for="community_size" class="block text-gray-700 text-sm font-bold mb-2">Community Size</label>
+        <x-smart-inputs.rating-input/>
+    </div>
+
+    <!-- Submit Batton -->
     <div class="flex items-center justify-between">
         <button id="search-resources-button" type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2">
             Search

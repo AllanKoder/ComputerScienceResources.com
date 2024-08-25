@@ -14,17 +14,15 @@ return new class extends Migration
      */
     public function up()
     {
-        // triggers
-
-        // if it is the first entry, create the review summary, otherwise, add to the sum of the fields
+        // Trigger for inserting a new review
         DB::unprepared('
             CREATE TRIGGER after_review_insert
             AFTER INSERT ON resource_reviews
             FOR EACH ROW
             BEGIN
-                IF (SELECT COUNT(*) FROM resource_review_summaries WHERE resource_id = NEW.resource_id) = 0 THEN
-                    INSERT INTO resource_review_summaries (
-                        resource_id, 
+                IF (SELECT COUNT(*) FROM resources WHERE id = NEW.resource_id) = 0 THEN
+                    INSERT INTO resources (
+                        id, 
                         community_size_total, 
                         teaching_explanation_clarity_total, 
                         technical_depth_total, 
@@ -43,7 +41,7 @@ return new class extends Migration
                         1
                     );
                 ELSE
-                    UPDATE resource_review_summaries
+                    UPDATE resources
                     SET 
                         community_size_total = community_size_total + NEW.community_size,
                         teaching_explanation_clarity_total = teaching_explanation_clarity_total + NEW.teaching_explanation_clarity,
@@ -52,19 +50,18 @@ return new class extends Migration
                         user_friendliness_total = user_friendliness_total + NEW.user_friendliness,
                         updates_and_maintenance_total = updates_and_maintenance_total + NEW.updates_and_maintenance,
                         total_reviews = total_reviews + 1
-                    WHERE resource_id = NEW.resource_id;
+                    WHERE id = NEW.resource_id;
                 END IF;
             END
         ');
-        
 
-        // update the field sums
+        // Trigger for updating a review
         DB::unprepared('
             CREATE TRIGGER after_review_update
             AFTER UPDATE ON resource_reviews
             FOR EACH ROW
             BEGIN
-                UPDATE resource_review_summaries
+                UPDATE resources
                 SET 
                     community_size_total = community_size_total - OLD.community_size + NEW.community_size,
                     teaching_explanation_clarity_total = teaching_explanation_clarity_total - OLD.teaching_explanation_clarity + NEW.teaching_explanation_clarity,
@@ -72,17 +69,17 @@ return new class extends Migration
                     practicality_to_industry_total = practicality_to_industry_total - OLD.practicality_to_industry + NEW.practicality_to_industry,
                     user_friendliness_total = user_friendliness_total - OLD.user_friendliness + NEW.user_friendliness,
                     updates_and_maintenance_total = updates_and_maintenance_total - OLD.updates_and_maintenance + NEW.updates_and_maintenance
-                WHERE resource_id = NEW.resource_id;
+                WHERE id = NEW.resource_id;
             END
         ');
 
-        // remove the field sums
+        // Trigger for deleting a review
         DB::unprepared('
             CREATE TRIGGER after_review_delete
             AFTER DELETE ON resource_reviews
             FOR EACH ROW
             BEGIN
-                UPDATE resource_review_summaries
+                UPDATE resources
                 SET 
                     community_size_total = community_size_total - OLD.community_size,
                     teaching_explanation_clarity_total = teaching_explanation_clarity_total - OLD.teaching_explanation_clarity,
@@ -91,7 +88,7 @@ return new class extends Migration
                     user_friendliness_total = user_friendliness_total - OLD.user_friendliness,
                     updates_and_maintenance_total = updates_and_maintenance_total - OLD.updates_and_maintenance,
                     total_reviews = total_reviews - 1
-                WHERE resource_id = OLD.resource_id;
+                WHERE id = OLD.resource_id;
             END
         ');
     }
@@ -109,4 +106,3 @@ return new class extends Migration
         DB::unprepared('DROP TRIGGER IF EXISTS after_review_delete');
     }
 };
- 

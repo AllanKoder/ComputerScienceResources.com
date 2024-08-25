@@ -16,10 +16,10 @@ return new class extends Migration
         Schema::create('resource_edits', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('resource_id')->constrained('resources')->onDelete('cascade');
+            $table->foreignId('resource_id')->constrained('resources')->onDelete('cascade')->index();
             $table->string('edit_title');
             $table->text('edit_description');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->index();
 
             $table->foreign('user_id')->references('id')->on('users');
         });

@@ -7,20 +7,24 @@ use Illuminate\Http\Request;
 use App\Models\Resource;
 use App\Models\VoteTotal;
 use App\Models\Comment;
-use App\Models\ResourceReviewSummary;
+use App\Http\Requests\Resource\GetResourcesRequest;
 
 class ResourceService
 {
-    public function filterResources(Request $request)
+    public function filterResources(GetResourcesRequest $request)
     {
         $query = Resource::query()->with("tags");
 
-        if ($request->filled('query')) {
-            $searchQuery = $request->input('query');
-            $query->where('title', 'like', '%' . $searchQuery . '%')
-                  ->orWhere('description', 'like', '%' . $searchQuery . '%');
+        if ($request->filled('title')) {
+            $searchQuery = $request->input('title');
+            $query->whereFullText('title', $searchQuery, ['mode'=> 'boolean']);
         }
 
+        if ($request->filled('description')) {
+            $searchDescription = $request->input('description');
+            $query->whereFullText('description', $searchDescription);
+        }
+        
         if ($request->filled('formats')) {
             $categories = $request->input('formats');
             $query->where(function (Builder $query) use ($categories) {

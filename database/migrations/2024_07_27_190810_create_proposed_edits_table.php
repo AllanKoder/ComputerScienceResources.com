@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('field_name');
             $table->text('new_value');
             $table->timestamps();
+
+            $table->index(['resource_edit_id']);
         });
     }
 

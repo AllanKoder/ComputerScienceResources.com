@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Resource\StoreResourceRequest;
+use App\Http\Requests\Resource\GetResourcesRequest;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Resource;
@@ -22,7 +23,7 @@ class ResourceController extends Controller
     }
 
     // Display a listing of the resource.
-    public function index(Request $request)
+    public function index(GetResourcesRequest $request)
     {
         $resources = $this->resourceService->filterResources( $request );
         
@@ -58,8 +59,7 @@ class ResourceController extends Controller
         $totalUpvotes = VoteTotal::getTotalVotes($id, Resource::class);
         
         // Retrieve review summary
-        $reviewSummary = ResourceReviewSummary::where('resource_id', $id)->first();
-        $reviewSummaryData = $reviewSummary ? $reviewSummary->getReviewSummary() : null;
+        $reviewSummaryData = $resource->getReviewSummary();
     
         return view('resources.show', compact('resource', 'commentTree', 'totalUpvotes', 'reviewSummaryData'));
     }
