@@ -125,7 +125,9 @@
                 return this.selectedOptions.join(', ');
             },
             handleSearchEnter() {
-                const newTag = this.searchQuery.toLowerCase().replace(/\s+/g, '');
+                const newTag = this.searchQuery.toLowerCase().replace(/\s+/g, ' ');
+                if (newTag.trim() === '') return;
+
                 if (!this.options.includes(newTag)) {
                     this.options.push(newTag);
                     this.filteredOptions.push(newTag);
