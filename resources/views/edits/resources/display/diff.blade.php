@@ -4,7 +4,7 @@
         <div class="flex items-center justify-center h-20 overflow-hidden border-2 border-gray p-1 rounded">
             <!-- Container with a set height and max-width to control the image size -->
             <div class="h-full max-w-full">
-                <img src="{{ $diffs['image_url'] }}" class="h-full w-auto object-contain" alt="{{ $diffs['image_url'] }}"/>
+                <img src="{{ $diffs['image_url'] }}" class="h-full w-auto object-contain" alt="Failed to load url"/>
             </div>
         </div>
     @endif

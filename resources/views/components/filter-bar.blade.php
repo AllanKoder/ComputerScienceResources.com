@@ -1,8 +1,10 @@
+<!-- TODO: make the initial value from the url -->
 <form hx-get="{{ url()->current() }}" 
     hx-select="#resources-results" hx-target="#resources-results" hx-swap="outerHTML"
     hx-trigger="submit" hx-push-url="true" 
     hx-indicator="#spinner"
-    class="flex flex-wrap items-center space-x-4">
+    class="flex flex-wrap items-center space-x-4"
+    >
 
     <!-- TODO: make the initial value from the url -->
 
@@ -14,12 +16,12 @@
     <!-- Search Bar, for name and description -->
     <div class="mb-4 w-1/3">
         <label for="title" class="block text-gray-700 text-sm font-bold mb-2 w-full">Resource Name:</label>
-        <x-smart-inputs.text-input type="text" name="title" placeholder="Search..." class="w-full h-8 rounded border-gray-400" />
+        <x-smart-inputs.text-input type="text" name="title" placeholder="Search..." class="w-full h-8 rounded border-gray-400"/>
     </div>
     
     <div class="mb-4 w-1/3">
         <label for="description" class="block text-gray-700 text-sm font-bold mb-2 w-full">Resource Description:</label>
-        <x-smart-inputs.text-input type="text" name="description" placeholder="Search..." class="w-full h-8 rounded border-gray-400" />
+        <x-smart-inputs.text-input type="text" name="description" placeholder="Search..." class="w-full h-8 rounded border-gray-400"/>
     </div>
    
     <!-- Resource Formats -->
@@ -118,8 +120,14 @@
         />
     </div>
 
-
-    <!-- Submit Batton -->
+    <div class="mb-4 min-w-36">
+        <label for="average_score" class="block text-gray-700 text-sm font-bold mb-2">Average Score</label>
+        <x-smart-inputs.rating-filter
+        name="average_score"
+        />
+    </div>
+    
+    <!-- Submit Button -->
     <div class="flex items-center justify-between">
         <button id="search-resources-button" type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2">
             Search

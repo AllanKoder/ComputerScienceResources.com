@@ -25,7 +25,7 @@ class ResourceController extends Controller
     // Display a listing of the resource.
     public function index(GetResourcesRequest $request)
     {
-        $resources = $this->resourceService->filterResources( $request );
+        $resources = $this->resourceService->filterResources($request);
         
         return view('resources.index', ['resources'=> $resources]);
     }

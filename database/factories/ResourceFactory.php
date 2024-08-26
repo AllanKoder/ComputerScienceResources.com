@@ -34,7 +34,7 @@ class ResourceFactory extends Factory
             'user_id' => $user->id,
             'title' => fake()->sentence,
             'description' => fake()->paragraph,
-            'image_url' => fake()->imageUrl,
+            'image_url' => 'https://wallpapers.com/images/featured/funny-cats-pictures-uu9qufqc5zq8l7el.jpg',
             'formats' => fake()->randomElements($availableFormats, 2),
             'features' => fake()->randomElements(['Feature 1', 'Feature 2', 'Feature 3'], 2),
             'limitations' => fake()->randomElements(['Limitation 1', 'Limitation 2'], 2),

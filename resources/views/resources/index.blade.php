@@ -2,14 +2,14 @@
     <x-slot name="header">
         <x-filter-bar></x-filter-bar>
     </x-slot>
-
+    
     <div class="flex justify-center">
-        <div class="w-3/4 p-4" id="resources-results">
+        <div class="w-full p-4" id="resources-results">
             <div class="flex">
                 <x-spinner class="mx-auto" id="spinner"></x-spinner>
             </div>
             <x-resources-table :resources="$resources"></x-resources-table>
-        </div>
+       </div>
 
         <div class="w-1/4 p-4 border-l-2 border-gray-300">
             <form action="{{ route('resources.create') }}" method="GET">

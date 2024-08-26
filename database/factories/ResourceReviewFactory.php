@@ -40,12 +40,12 @@ class ResourceReviewFactory extends Factory
         }
 
         return [
-            'community_size' => fake()->numberBetween(0, 5),
-            'teaching_explanation_clarity' => fake()->numberBetween(0, 5),
-            'practicality_to_industry' => fake()->numberBetween(0, 5),
-            'technical_depth' => fake()->numberBetween(0, 5),
-            'user_friendliness' => fake()->numberBetween(0, 5),
-            'updates_and_maintenance' => fake()->numberBetween(0, 5),
+            'community_size' => fake()->numberBetween(1, 5),
+            'teaching_explanation_clarity' => fake()->numberBetween(1, 5),
+            'practicality_to_industry' => fake()->numberBetween(1, 5),
+            'technical_depth' => fake()->numberBetween(1, 5),
+            'user_friendliness' => fake()->numberBetween(1, 5),
+            'updates_and_maintenance' => fake()->numberBetween(1, 5),
             'review_title' => fake()->sentence,
             'review_description' => fake()->paragraph,
             'resource_id' => $resource->id,

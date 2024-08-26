@@ -1,4 +1,4 @@
-@props(["resources"])
+@props(['resources'])
 
 @foreach ($resources as $resource)
     <div class="mb-8">
@@ -15,7 +15,7 @@
                     <a href="{{ route('resources.show', ['id' => $resource->id]) }}">
                         <h2 class="text-2xl font-bold">{{ $resource->title }}</h2>
                     </a>
-                    <a href="{{ $resource->resource_url }}" target=”_blank”>
+                    <a href="{{ $resource->resource_url }}" target="_blank">
                         <i class="p-2 fa-solid fa-arrow-up-right-from-square"></i>
                     </a>
                 </span>
@@ -89,3 +89,6 @@
         </div>
     </div>
 @endforeach
+
+<!-- retain query parameters -->
+{{ $resources->appends(request()->query())->links() }}

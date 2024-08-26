@@ -33,7 +33,7 @@ return new class extends Migration
             $table->integer('practicality_to_industry_total')->default(0)->index();
             $table->integer('user_friendliness_total')->default(0)->index();
             $table->integer('updates_and_maintenance_total')->default(0)->index();
-            $table->integer('total_reviews')->default(0);
+            $table->integer('total_reviews')->default(0); 
 
             $table->unsignedBigInteger('user_id')->index();
             $table->foreign('user_id')->references('id')->on('users');

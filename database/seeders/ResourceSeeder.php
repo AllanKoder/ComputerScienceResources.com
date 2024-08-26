@@ -54,6 +54,6 @@ class ResourceSeeder extends Seeder
             'difficulty' => 'academic',
         ]);
 
-        Resource::factory(60)->create();
+        Resource::factory(204)->create();
     }
 }

@@ -62,7 +62,6 @@ class CommentController extends Controller
     }
     
 
-    // TODO: add limit to comments
     public function reply(StoreReplyRequest $request, Comment $comment)
     {   
         \Log::debug('replying to a comment request: ' . json_encode($request->validated()));

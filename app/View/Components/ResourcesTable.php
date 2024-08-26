@@ -3,24 +3,17 @@
 namespace App\View\Components;
 
 use Illuminate\View\Component;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ResourcesTable extends Component
 {
-    /**
-     * Create a new component instance.
-     *
-     * @return void
-     */
-    public function __construct()
+    public $resources;
+
+    public function __construct(LengthAwarePaginator $resources)
     {
-        //
+        $this->resources = $resources;
     }
 
-    /**
-     * Get the view / contents that represent the component.
-     *
-     * @return \Illuminate\Contracts\View\View|\Closure|string
-     */
     public function render()
     {
         return view('components.resources-table');
