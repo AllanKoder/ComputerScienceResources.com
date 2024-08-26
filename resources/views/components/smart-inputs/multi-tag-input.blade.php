@@ -1,7 +1,6 @@
 @props(['options' => [], 'name'=>'', 'selectedOptions'=>[], 'saveToStorage'=>false, 'attributes' => []])
 <div {{$attributes}} x-data="multiSelectWithSearchComponent('{{ $name }}', {{ json_encode($options) }}, {{ json_encode($selectedOptions) }}, {{ $saveToStorage ? 'true' : 'false' }})" 
     class="w-full max-w-xs flex flex-col gap-1 min-w-40" 
-    x-on:keydown="highlightFirstMatchingOption($event.key)" 
     x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false"
     x-init="initialize()"
     x-effect='updateStorage()'
@@ -89,7 +88,6 @@
                 const savedOptions = JSON.parse(localStorage.getItem(this.storageID));
                 if (saveToStorage && savedOptions) {
                     this.selectedOptions = savedOptions;
-                    // Merge saved options into the main options list
                 } else {
                     this.selectedOptions = selectedOptions.map(option => option.toLowerCase());
                 }
@@ -97,19 +95,13 @@
                     if (!this.options.includes(option)) {
                         this.options.push(option);
                     }
-                });     
+                });
                 this.updateFilteredOptions();
             },
             resetInputs() {
                 this.selectedOptions = [];
                 localStorage.removeItem(this.storageID);
                 this.initialize();
-            },
-            addOption(option) {
-                if (!this.options.includes(option)) {
-                    this.options.push(option);
-                    this.updateFilteredOptions();
-                }
             },
             handleOptionToggle(option) {
                 if (option.checked) {
@@ -132,32 +124,14 @@
                 if (count === 0) return 'Please Select';
                 return this.selectedOptions.join(', ');
             },
-            highlightFirstMatchingOption(pressedKey) {
-                if (pressedKey === 'Enter') return;
-                const option = this.filteredOptions.find(item =>
-                    item.startsWith(pressedKey.toLowerCase())
-                );
-                if (option) {
-                    const index = this.filteredOptions.indexOf(option);
-                    const allOptions = document.querySelectorAll('.combobox-option');
-                    if (allOptions[index]) {
-                        allOptions[index].focus();
-                    }
-                }
-            },
             handleSearchEnter() {
-                if (this.filteredOptions.length >= 1) {
-                    const topOption = this.filteredOptions[0];
-                    if (!this.isSelected(topOption)) {
-                        this.selectedOptions.push(topOption);
-                    } else {
-                        this.selectedOptions = this.selectedOptions.filter(opt => opt !== topOption);
-                    }
-                } else {
-                    const newTag = this.searchQuery.toLowerCase().replace(/\s+/g, ' ');
+                const newTag = this.searchQuery.toLowerCase().replace(/\s+/g, '');
+                if (!this.options.includes(newTag)) {
                     this.options.push(newTag);
-                    this.selectedOptions.push(newTag);
                     this.filteredOptions.push(newTag);
+                }
+                if (!this.isSelected(newTag)) {
+                    this.selectedOptions.push(newTag);
                 }
                 this.updateStorage();
             },
@@ -165,6 +139,9 @@
                 this.filteredOptions = this.options.filter(option =>
                     option.includes(this.searchQuery.toLowerCase())
                 );
+                if (this.searchQuery.trim() !== '' && !this.filteredOptions.includes(this.searchQuery.toLowerCase())) {
+                    this.filteredOptions.unshift(this.searchQuery.toLowerCase());
+                }
             },
             handleKeydownOnOptions(event) {
                 if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 48 && event.keyCode <= 57) || event.keyCode === 8) {
