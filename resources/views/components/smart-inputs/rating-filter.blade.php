@@ -47,6 +47,8 @@ class="flex items-center gap-1">
                 if (useQueryParameters == true) 
                 {
                     this.currentVal = Alpine.store('getQueryParameter')(name) ?? 1;
+                    if (this.currentVal < 1) this.currentVal = 1;
+                    else if (this.currentVal > 5) this.currentVal = 5;
                 }
                 else
                 {

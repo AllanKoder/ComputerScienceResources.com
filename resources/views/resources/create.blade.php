@@ -30,7 +30,7 @@
             <div class="mb-4">
                 <label for="image_url" class="block text-gray-700 text-sm font-bold mb-2">Image URL:</label>
                 <x-smart-inputs.text-input type="url" 
-                :saveToStorage=false
+                :saveToStorage=true
                 :inputText="'test'"
                 name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-smart-inputs.text-input>
             </div>

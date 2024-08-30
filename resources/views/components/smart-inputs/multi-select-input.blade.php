@@ -70,13 +70,13 @@
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
                 // data from local storage
-                let storedOptions = localStorage.getItem(this.storageID) ?? [];
+                let storedOptions = localStorage.getItem(this.storageID);
 
                 if (useQueryParameters == true) {
                     this.selectedOptions = Alpine.store('getQueryParameter')(name) ?? [];
                 }
                 else if (storedOptions && saveToStorage == true) {
-                    this.selectedOptions = storedOptions;
+                    this.selectedOptions = JSON.parse(storedOptions);
                 } else {
                     this.selectedOptions = selectedOptions;
                     this.selectedOptions.forEach((option) => {

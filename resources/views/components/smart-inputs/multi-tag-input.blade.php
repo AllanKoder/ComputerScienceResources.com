@@ -85,13 +85,13 @@
             searchQuery: '',
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
-                const savedOptions = localStorage.getItem(this.storageID) ?? [];
+                const savedOptions = localStorage.getItem(this.storageID);
                 if (useQueryParameters == true)
                 {
                     this.selectedOptions = Alpine.store('getQueryParameter')(name) ?? [];
                 }
                 else if (saveToStorage && savedOptions) {
-                    this.selectedOptions = savedOptions;
+                    this.selectedOptions = JSON.parse(savedOptions);
                 } else {
                     this.selectedOptions = selectedOptions.map(option => option.toLowerCase());
                 }

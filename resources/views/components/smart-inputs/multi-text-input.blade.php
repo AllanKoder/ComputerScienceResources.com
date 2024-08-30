@@ -25,9 +25,9 @@
             maxSize: maxSize,
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
-                const savedInputs = JSON.parse(localStorage.getItem(this.storageID));
+                const savedInputs = localStorage.getItem(this.storageID);
                 if (saveToStorage == true && savedInputs) {
-                    this.inputs = savedInputs;
+                    this.inputs = JSON.parse(savedInputs);
                 } else {
                     this.inputs = inputTexts.slice();
                 }
