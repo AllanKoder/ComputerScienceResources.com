@@ -57,6 +57,14 @@
             Alpine.store('getURL', () => {
                 return window.location.href.split('?')[0];
             });
+
+            Alpine.store('getQueryParameter', (name) => {
+                const queryString = window.location.search;
+                const urlParams = new URLSearchParams(queryString);
+                const queryValue = urlParams.get(name);
+
+                return queryValue;
+            });
         });
     </script>
 </html>

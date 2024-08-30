@@ -16,12 +16,18 @@
     <!-- Search Bar, for name and description -->
     <div class="mb-4 w-1/3">
         <label for="title" class="block text-gray-700 text-sm font-bold mb-2 w-full">Resource Name:</label>
-        <x-smart-inputs.text-input type="text" name="title" placeholder="Search..." class="w-full h-8 rounded border-gray-400"/>
+        <x-smart-inputs.text-input type="text" name="title" 
+        inputText="" 
+        :useQueryParameters=true
+        placeholder="Search..." class="w-full h-8 rounded border-gray-400"/>
     </div>
     
     <div class="mb-4 w-1/3">
         <label for="description" class="block text-gray-700 text-sm font-bold mb-2 w-full">Resource Description:</label>
-        <x-smart-inputs.text-input type="text" name="description" placeholder="Search..." class="w-full h-8 rounded border-gray-400"/>
+        <x-smart-inputs.text-input type="text" name="description"
+        placeholder="Search..."
+        :useQueryParameters=true
+        class="w-full h-8 rounded border-gray-400"/>
     </div>
    
     <!-- Resource Formats -->

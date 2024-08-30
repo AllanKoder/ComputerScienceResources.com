@@ -106,9 +106,14 @@
             handleOptionToggle(option) {
                 if (option.checked) {
                     this.selectedOptions.push(option.value);
+                    if (!options.includes(option.value)) 
+                    {
+                        this.options.push(option.value);
+                    }       
                 } else {
                     this.selectedOptions = this.selectedOptions.filter(opt => opt !== option.value);
                 }
+
                 this.updateStorage();
             },
             updateStorage() {
@@ -135,14 +140,18 @@
                 if (!this.isSelected(newTag)) {
                     this.selectedOptions.push(newTag);
                 }
+
+                this.searchQuery = '';
+                this.filterOptions();
                 this.updateStorage();
             },
             filterOptions() {
+                let newOption = this.searchQuery.toLowerCase();
                 this.filteredOptions = this.options.filter(option =>
-                    option.includes(this.searchQuery.toLowerCase())
+                    option.includes(newOption)
                 );
                 if (this.searchQuery.trim() !== '' && !this.filteredOptions.includes(this.searchQuery.toLowerCase())) {
-                    this.filteredOptions.unshift(this.searchQuery.toLowerCase());
+                    this.filteredOptions.unshift(newOption);
                 }
             },
             handleKeydownOnOptions(event) {

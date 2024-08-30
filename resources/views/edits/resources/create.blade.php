@@ -30,7 +30,7 @@
                 <label for="image_url" class="block text-gray-700 text-sm font-bold mb-2">Image URL:</label>
                 <x-smart-inputs.text-input type="url" 
                 :inputText="@($resource->image_url)"
-                :saveToStorage=false
+                :saveToStorage=true
                 name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-smart-inputs.text-input>
             </div>
             
@@ -72,7 +72,6 @@
                 name="resource_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-smart-inputs.text-input>
             </div>
 
-            // TODO: make pricing a list, not a single value
             <!-- Pricing Input -->
             <div class="mb-4">
                 <label for="cost" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>    

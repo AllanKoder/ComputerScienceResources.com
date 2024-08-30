@@ -72,7 +72,7 @@
             <!-- Pricing Input -->
             <div class="mb-4">
                 <label for="cost" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>    
-                <x-smart-inputs.select-input 
+                <x-smart-inputs.multi-select-input 
                 name="pricing" 
                 :options="$pricingOptions"
                 :saveToStorage=true

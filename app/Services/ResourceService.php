@@ -23,7 +23,7 @@ class ResourceService
 
         if ($request->filled('description')) {
             $searchDescription = $request->input('description');
-            $query->whereFullText('description', $searchDescription);
+            $query->whereFullText('description', $searchDescription, ['mode'=> 'boolean']);
         }
         
         if ($request->filled('formats')) {
