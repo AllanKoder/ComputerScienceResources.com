@@ -36,7 +36,7 @@
         <x-smart-inputs.multi-select-input 
         :options="$formatOptions"
         :selectedOptions="[]"
-        :saveToStorage=true
+        :useQueryParameters=true
         name="formats"
         />           
     </div>
@@ -46,8 +46,8 @@
         <label for="pricing" class="block text-gray-700 text-sm font-bold mb-2">Pricing Model:</label>
         <x-smart-inputs.multi-select-input 
         :options="$pricingOptions"
-        :saveToStorage=true
         :selectedOptions="[]"
+        :useQueryParameters=true
         name="pricing"
         />        
     </div>
@@ -56,8 +56,8 @@
     <div class="mb-4 min-w-36">
         <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
         <x-smart-inputs.multi-tag-input 
-        :saveToStorage=true
         :selectedOptions="[]"
+        :useQueryParameters=true
         name="topics"/>
     </div>
         
@@ -66,8 +66,8 @@
         <label for="difficulty" class="block text-gray-700 text-sm font-bold mb-2">Difficulty:</label>
         <x-smart-inputs.multi-select-input 
         :options="$difficultyOptions"
-        :saveToStorage=true
         :selectedOptions="[]"
+        :useQueryParameters=true
         name="difficulty">        
         </x-smart-inputs.multi-select-input>
     </div>
@@ -78,8 +78,8 @@
         <x-smart-inputs.multi-tag-input 
         name="tags"
         :selectedOptions="[]"
-        :options="['esd', 'test']"
-        :saveToStorage=true
+        :options="[]"
+        :useQueryParameters=true
         class="w-full"/>
     </div>
 
@@ -87,6 +87,7 @@
     <div class="mb-4 min-w-36">
         <label for="community_size" class="block text-gray-700 text-sm font-bold mb-2">Community Size</label>
         <x-smart-inputs.rating-filter
+        :useQueryParameters=true
         name="community_size"
         />
     </div>
@@ -94,6 +95,7 @@
     <div class="mb-4 min-w-36">
         <label for="teaching_clarity" class="block text-gray-700 text-sm font-bold mb-2">Teaching Clarity</label>
         <x-smart-inputs.rating-filter
+        :useQueryParameters=true
         name="teaching_clarity"
         />
     </div>
@@ -101,6 +103,7 @@
     <div class="mb-4 min-w-36">
         <label for="technical_dept" class="block text-gray-700 text-sm font-bold mb-2">Technical Depth</label>
         <x-smart-inputs.rating-filter
+        :useQueryParameters=true
         name="technical_depth"
         />
     </div>
@@ -108,6 +111,7 @@
     <div class="mb-4 min-w-36">
         <label for="practicality_to_industry" class="block text-gray-700 text-sm font-bold mb-2">Practicality to Industry</label>
         <x-smart-inputs.rating-filter
+        :useQueryParameters=true
         name="practicality_to_industry"
         />
     </div>
@@ -115,6 +119,7 @@
     <div class="mb-4 min-w-36">
         <label for="user_friendliness" class="block text-gray-700 text-sm font-bold mb-2">User Friendliness</label>
         <x-smart-inputs.rating-filter
+        :useQueryParameters=true
         name="user_friendliness"
         />
     </div>
@@ -122,6 +127,7 @@
     <div class="mb-4 min-w-36">
         <label for="updates_and_maintenance" class="block text-gray-700 text-sm font-bold mb-2">Updates and Maintenance </label>
         <x-smart-inputs.rating-filter
+        :useQueryParameters=true
         name="updates_and_maintenance"
         />
     </div>
@@ -129,6 +135,7 @@
     <div class="mb-4 min-w-36">
         <label for="average_score" class="block text-gray-700 text-sm font-bold mb-2">Average Score</label>
         <x-smart-inputs.rating-filter
+        :useQueryParameters=true
         name="average_score"
         />
     </div>

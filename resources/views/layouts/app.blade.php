@@ -61,7 +61,7 @@
             Alpine.store('getQueryParameter', (name) => {
                 const queryString = window.location.search;
                 const urlParams = new URLSearchParams(queryString);
-                const queryValue = urlParams.get(name);
+                const queryValue = urlParams.get(name) || urlParams.getAll(`${name}[]`);
 
                 return queryValue;
             });

@@ -1,6 +1,6 @@
-@props(['options' => [], 'name' => '', 'selectedOption' => '', 'hasSearch' => false, 'saveToStorage' => false, 'attributes' => []])
+@props(['options' => [], 'name' => '', 'selectedOption' => '', 'hasSearch' => false, 'saveToStorage' => false, 'useQueryParameters'=> false, 'attributes' => []])
 
-<div {{$attributes}} x-data="singleSelectComponent('{{ $name }}', {{ json_encode($options) }}, '{{ $selectedOption }}', {{ $hasSearch ? 'true' : 'false' }}, {{ $saveToStorage ? 'true' : 'false' }})" 
+<div {{$attributes}} x-data="singleSelectComponent('{{ $name }}', {{ json_encode($options) }}, '{{ $selectedOption }}', {{ $hasSearch ? 'true' : 'false' }}, {{ $saveToStorage ? 'true' : 'false' }}, {{ $useQueryParameters ? 'true' : 'false'}})" 
     class="w-full max-w-xs flex flex-col gap-1 min-w-40" 
     x-on:keydown.esc.window="isOpen = false"
     x-init="initialize()"
@@ -75,7 +75,7 @@
 </div>
 
 <script>
-    function singleSelectComponent(name, options, selectedOption, hasSearch, saveToStorage) {
+    function singleSelectComponent(name, options, selectedOption, hasSearch, saveToStorage, useQueryParameters) {
         return {
             options: options,
             filteredOptions: options,
@@ -89,7 +89,12 @@
             initialize() {
                 this.filteredOptions = this.options;
                 const storedOption = localStorage.getItem(this.storageID);
-                if (saveToStorage && storedOption) {
+                
+                if (useQueryParameters == true) 
+                {
+                    this.selectedOption = Alpine.store('getQueryParameter')(name) ?? '';
+                }
+                else if (saveToStorage == true && storedOption) {
                     this.selectedOption = storedOption;
                 }
                 else {
@@ -97,9 +102,8 @@
                 }
             },
             resetInputs() {
-                this.selectedOptions = [];
                 localStorage.removeItem(this.storageID);
-                this.initialize();
+                this.selectedOption = selectedOption;
             },
             isSelected(option) {
                 return this.selectedOption === option;

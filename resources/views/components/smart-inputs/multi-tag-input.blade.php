@@ -1,5 +1,5 @@
-@props(['options' => [], 'name'=>'', 'selectedOptions'=>[], 'saveToStorage'=>false, 'attributes' => []])
-<div {{$attributes}} x-data="multiSelectWithSearchComponent('{{ $name }}', {{ json_encode($options) }}, {{ json_encode($selectedOptions) }}, {{ $saveToStorage ? 'true' : 'false' }})" 
+@props(['options' => [], 'name'=>'', 'selectedOptions'=>[], 'saveToStorage'=>false, 'useQueryParameters'=>false, 'attributes' => []])
+<div {{$attributes}} x-data="multiTagWithSearchComponent('{{ $name }}', {{ json_encode($options) }}, {{ json_encode($selectedOptions) }}, {{ $saveToStorage ? 'true' : 'false' }}, {{ $useQueryParameters ? 'true' : 'false'}})" 
     class="w-full max-w-xs flex flex-col gap-1 min-w-40" 
     x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false"
     x-init="initialize()"
@@ -75,7 +75,7 @@
 </div>
 
 <script>
-    function multiSelectWithSearchComponent(name, options, selectedOptions, saveToStorage) {
+    function multiTagWithSearchComponent(name, options, selectedOptions, saveToStorage, useQueryParameters) {
         return {
             options: options.map(option => option.toLowerCase()),
             filteredOptions: options.map(option => option.toLowerCase()),
@@ -85,23 +85,32 @@
             searchQuery: '',
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
-                const savedOptions = JSON.parse(localStorage.getItem(this.storageID));
-                if (saveToStorage && savedOptions) {
+                const savedOptions = localStorage.getItem(this.storageID) ?? [];
+                if (useQueryParameters == true)
+                {
+                    this.selectedOptions = Alpine.store('getQueryParameter')(name) ?? [];
+                }
+                else if (saveToStorage && savedOptions) {
                     this.selectedOptions = savedOptions;
                 } else {
                     this.selectedOptions = selectedOptions.map(option => option.toLowerCase());
                 }
+            
+                this.addToOptions(); 
+                this.updateFilteredOptions();
+            },
+            addToOptions() {
                 this.selectedOptions.forEach(option => {
                     if (!this.options.includes(option)) {
                         this.options.push(option);
                     }
                 });
-                this.updateFilteredOptions();
             },
             resetInputs() {
-                this.selectedOptions = [];
                 localStorage.removeItem(this.storageID);
-                this.initialize();
+
+                this.selectedOptions = selectedOptions.map(option => option.toLowerCase());
+                this.updateFilteredOptions();
             },
             handleOptionToggle(option) {
                 if (option.checked) {

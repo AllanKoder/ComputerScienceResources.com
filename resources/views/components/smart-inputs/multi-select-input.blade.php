@@ -1,5 +1,5 @@
-@props(['options' => [], 'name'=>'', 'selectedOptions'=>[], 'saveToStorage'=>false, 'attributes' => []])
-<div {{$attributes}} x-data="multiSelectComponent('{{ $name }}', {{ json_encode($options) }}, {{ json_encode($selectedOptions) }}, {{ $saveToStorage ? 'true' : 'false' }})" 
+@props(['options' => [], 'name'=>'', 'selectedOptions'=>[], 'saveToStorage'=>false, 'useQueryParameters'=>false, 'attributes' => []])
+<div {{$attributes}} x-data="multiSelectComponent('{{ $name }}', {{ json_encode($options) }}, {{ json_encode($selectedOptions) }}, {{ $saveToStorage ? 'true' : 'false' }}, {{ $useQueryParameters ? 'true' : 'false' }})" 
     class="w-full max-w-xs flex flex-col gap-1 min-w-40" 
     x-on:keydown="highlightFirstMatchingOption($event.key)" 
     x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false"
@@ -61,7 +61,7 @@
 </div>
 
 <script>
-    function multiSelectComponent(name, options, selectedOptions, saveToStorage) {
+    function multiSelectComponent(name, options, selectedOptions, saveToStorage, useQueryParameters) {
         return {
             options: options,
             isOpen: false,
@@ -70,10 +70,12 @@
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
                 // data from local storage
-                let storedOptions = JSON.parse(localStorage.getItem(this.storageID));
+                let storedOptions = localStorage.getItem(this.storageID) ?? [];
 
-                // if there are stored options, use them; otherwise, use the initial selected options
-                if (storedOptions && saveToStorage) {
+                if (useQueryParameters == true) {
+                    this.selectedOptions = Alpine.store('getQueryParameter')(name) ?? [];
+                }
+                else if (storedOptions && saveToStorage == true) {
                     this.selectedOptions = storedOptions;
                 } else {
                     this.selectedOptions = selectedOptions;

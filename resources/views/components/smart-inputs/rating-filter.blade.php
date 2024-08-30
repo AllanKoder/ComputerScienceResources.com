@@ -1,7 +1,8 @@
-@props(['name', 'initialVal'=>1, 'defaultVal'=>1])
+@props(['name', 'useQueryParameters'=>false, 'initialVal'=>2, 'defaultVal'=>1])
 
-<div x-data="ratingFilter('{{$name}}', {{$initialVal}}, {{$defaultVal}})"
+<div x-data="ratingFilter('{{$name}}', {{$initialVal}}, {{$defaultVal}}, {{ $useQueryParameters ? 'true' : 'false'}})"
 @clear-inputs-event.window="resetInputs()"
+x-init='initialize()'
 class="flex items-center gap-1">
     <label for="oneStar-{{$name}}" class="cursor-pointer transition hover:scale-125 has-[:focus]:scale-125">
         <span class="sr-only">one star</span>
@@ -39,11 +40,18 @@ class="flex items-center gap-1">
 </div>  
 
 <script>
-    function ratingFilter(name, initialVal, defaultVal) {
+    function ratingFilter(name, initialVal, defaultVal, useQueryParameters) {
         return {
             currentVal: initialVal,
             initialize() {
-                this.currentVal = initialVal;
+                if (useQueryParameters == true) 
+                {
+                    this.currentVal = Alpine.store('getQueryParameter')(name) ?? 1;
+                }
+                else
+                {
+                    this.currentVal = initialVal;
+                }
             },
             resetInputs() {
                 this.currentVal = defaultVal;

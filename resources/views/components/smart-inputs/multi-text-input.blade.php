@@ -26,7 +26,7 @@
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
                 const savedInputs = JSON.parse(localStorage.getItem(this.storageID));
-                if (saveToStorage && savedInputs) {
+                if (saveToStorage == true && savedInputs) {
                     this.inputs = savedInputs;
                 } else {
                     this.inputs = inputTexts.slice();

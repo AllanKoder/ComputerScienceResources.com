@@ -2,12 +2,12 @@
 
 @if($type == "textarea")
     <textarea {{ $attributes->merge(['class' => 'form-control-text-input']) }} type="text" name="{{ $name }}" id="text-input-{{ $name }}" 
-        x-data="textInputComponent('{{ $name }}', '{{ $saveToStorage ? 'true' : ''}}', '{{ $inputText }}', '{{ $useQueryParameters ? 'true' : ''}}')"
+        x-data="textInputComponent('{{ $name }}', {{ $saveToStorage ? 'true' : 'false'}}, '{{ $inputText }}', '{{ $useQueryParameters ? 'true' : 'false'}}')"
         x-init="initialize()" x-model="inputValue" 
         @clear-inputs-event.window="resetInputs()"></textarea>
 @else
     <input {{ $attributes->merge(['class' => 'form-control-text-input']) }} type="{{ $type }}" name="{{ $name }}" id="text-input-{{ $name }}" 
-    x-data="textInputComponent('{{ $name }}', '{{ $saveToStorage ? 'true' : ''}}', '{{ $inputText }}', '{{ $useQueryParameters ? 'true' : ''}}')"
+    x-data="textInputComponent('{{ $name }}', {{ $saveToStorage ? 'true' : 'false'}}, '{{ $inputText }}', {{ $useQueryParameters ? 'true' : 'false'}})"
     x-init="initialize()" x-model="inputValue" 
     @clear-inputs-event.window="resetInputs()" />
 @endif
@@ -18,34 +18,26 @@
             inputValue: '',
             get storageID() { return `${Alpine.store('getURL')()}-text-input-${name}` },
             initialize() {
-                if (saveToStorage)
-                {
-                    // Watch for changes to inputValue and update local storage
+                // Load the value from local storage if it exists
+                const storedValue = localStorage.getItem(this.storageID);
+                if (useQueryParameters == true) {
+                    this.inputValue = Alpine.store('getQueryParameter')(name) ?? '';
+                } else if (storedValue && saveToStorage) {
+                    this.inputValue = storedValue;
+                } else {
+                    this.inputValue = inputText;
+                }
+
+                // Now set up the watcher after initializing inputValue
+                if (saveToStorage) {
                     this.$watch('inputValue', (value) => {
                         localStorage.setItem(this.storageID, value);
                     });
                 }
-
-               if (useQueryParameters)
-               {
-                   this.inputValue = Alpine.store('getQueryParameter')(name);
-                   return;
-               }
-
-               this.resetInputs();
             },
             resetInputs() {
-                this.inputValue = '';
-                localStorage.removeItem(this.storageID);
-                // Load the value from local storage if it exists
-                const storedValue = localStorage.getItem(this.storageID);
-                if (storedValue && saveToStorage) {
-                    this.inputValue = storedValue;
-                }
-                else {
-                    this.inputValue = inputText;
-                }
-           },
+                this.inputValue = inputText;
+            },
         }
     }
 </script>
