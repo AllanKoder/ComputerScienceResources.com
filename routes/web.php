@@ -8,6 +8,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ResourceController;
 use App\Http\Controllers\ResourceEditController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,6 +64,10 @@ Route::controller(ResourceEditController::class)->group(function () {
 // Reports
 Route::controller(ReportController::class)->group(function () {
     Route::post('/report/{type}/{id}', 'store')->name('reports.store');
+});
+
+Route::get('/testing/svelte', function () {
+    return Inertia::render('welcome');
 });
 
 Route::get('/dashboard', function () {
