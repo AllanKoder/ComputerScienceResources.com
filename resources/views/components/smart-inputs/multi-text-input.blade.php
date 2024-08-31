@@ -56,7 +56,6 @@
                         title: 'Confirm Deletion',
                         description: 'This will be deleted and unrecoverable',
                         onSuccess: () => { successCallback(); },
-                        onFailure: () => { console.log('Failure!'); }
                     }
                 }));
             },

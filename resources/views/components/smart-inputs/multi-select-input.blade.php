@@ -1,5 +1,5 @@
-@props(['options' => [], 'name'=>'', 'selectedOptions'=>[], 'saveToStorage'=>false, 'useQueryParameters'=>false, 'attributes' => []])
-<div {{$attributes}} x-data="multiSelectComponent('{{ $name }}', {{ json_encode($options) }}, {{ json_encode($selectedOptions) }}, {{ $saveToStorage ? 'true' : 'false' }}, {{ $useQueryParameters ? 'true' : 'false' }})" 
+@props(['options' => [], 'name'=>'', 'selectedOptions'=>[], 'saveToStorage'=>false, 'hasSearch' => false, 'useQueryParameters'=>false, 'attributes' => []])
+<div {{$attributes}} x-data="multiSelectComponent('{{ $name }}', {{ json_encode($options) }}, {{ json_encode($selectedOptions) }}, {{ $saveToStorage ? 'true' : 'false' }}, {{ $useQueryParameters ? 'true' : 'false' }}, {{ $hasSearch ? 'true' : 'false'}})" 
     class="w-full max-w-xs flex flex-col gap-1 min-w-40" 
     x-on:keydown="highlightFirstMatchingOption($event.key)" 
     x-on:keydown.esc.window="isOpen = false, openedWithKeyboard = false"
@@ -32,7 +32,21 @@
         x-on:keydown.down.prevent="$focus.wrap().next()" 
         x-on:keydown.up.prevent="$focus.wrap().previous()" 
         x-transition x-trap="openedWithKeyboard">
-            <template x-for="(item, index) in options" x-bind:key="`${item}-${'{{$name}}'}`">
+            <!-- Search bar inside the dropdown -->
+            <template x-if="hasSearch">
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="1.5" class="absolute left-4 top-1/2 size-5 -translate-y-1/2 text-neutral-600/50 dark:text-neutral-300/50" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"/>
+                    </svg>
+                    <input type="text" 
+                    class="w-full outline-none border-neutral-300 border-transparent focus:border-transparent focus:ring-0 bg-neutral-50 py-2.5 pl-11 pr-4 text-sm text-neutral-600" 
+                    x-ref="searchField" aria-label="Search" 
+                    x-on:keydown.enter.prevent="handleSearchEnter()"
+                    x-model="searchQuery" x-on:input="filterOptions()"
+                    placeholder="Search" />
+                </div>
+            </template>
+            <template x-for="(item, index) in filteredOptions" x-bind:key="`${item}-${'{{$name}}'}`">
                 <!-- option  -->
                 <li role="option">
                     <label class="flex cursor-pointer items-center gap-2 px-4 py-3 text-sm font-medium text-slate-700 hover:bg-slate-900/5 has-[:focus]:bg-slate-900/5 dark:text-slate-300 dark:hover:bg-white/5 dark:has-[:focus]:bg-white/5 [&:has(input:checked)]:text-black dark:[&:has(input:checked)]:text-white [&:has(input:disabled)]:cursor-not-allowed [&:has(input:disabled)]:opacity-75" 
@@ -61,11 +75,14 @@
 </div>
 
 <script>
-    function multiSelectComponent(name, options, selectedOptions, saveToStorage, useQueryParameters) {
+    function multiSelectComponent(name, options, selectedOptions, saveToStorage, useQueryParameters, hasSearch) {
         return {
             options: options,
+            filteredOptions: options, 
             isOpen: false,
             openedWithKeyboard: false,
+            hasSearch: hasSearch,
+            searchQuery: '',
             selectedOptions: selectedOptions.map(option => option.toLowerCase()),
             get storageID() { return `${Alpine.store('getURL')()}-stored-${name}` },
             initialize() {
@@ -83,7 +100,7 @@
                         if (!this.options.includes(option)) {
                             this.options.push(option);
                         }
-                    })
+                    });
                 }
             },
             resetInputs() {
@@ -107,19 +124,46 @@
                 // join the selected options with a comma
                 return this.selectedOptions.join(', ');
             },
+            handleSearchEnter() {
+                if (this.filteredOptions.length >= 1) {
+                    let option = this.filteredOptions[0];
+                    if (!this.selectedOptions.includes(option)) 
+                    {
+                        this.selectedOptions.push(option);
+                    }
+                    else {
+                        this.selectedOptions = this.selectedOptions.filter(
+                            (opt) => opt !== option,
+                        )
+                    }
+                    this.isOpen = false;
+                    this.openedWithKeyboard = false;
+                    this.searchQuery = '';
+                    this.filterOptions();
+                    this.updateStorage();
+                }
+            },
+            filterOptions() {
+                this.filteredOptions = this.options.filter(option => option.toLowerCase().includes(this.searchQuery.toLowerCase()));
+            },
             highlightFirstMatchingOption(pressedKey) {
                 // if Enter pressed, do nothing
                 if (pressedKey === 'Enter') return
 
-                // find and focus the option that starts with the pressed key
-                const option = this.options.find((item) =>
-                    item.toLowerCase().startsWith(pressedKey.toLowerCase()),
-                )
-                if (option) {
-                    const index = this.options.indexOf(option)
-                    const allOptions = document.querySelectorAll(`.combobox-option-${name}`)
-                    if (allOptions[index]) {
-                        allOptions[index].focus()
+                if (this.hasSearch) {
+                    this.$refs.searchField.focus();
+                }
+                else {
+                        // find and focus the option that starts with the pressed key
+                        const option = this.options.find((item) =>
+                        item.toLowerCase().startsWith(pressedKey.toLowerCase()),
+                    )
+                    if (option) {
+                        const index = this.options.indexOf(option)
+                        const allOptions = document.querySelectorAll(`.combobox-option-${name}`)
+                        if (allOptions[index]) {
+                            allOptions[index].focus()
+                        }
                     }
                 }
             },

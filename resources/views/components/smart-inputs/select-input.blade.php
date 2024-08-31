@@ -120,13 +120,13 @@
                 this.updateStorage();
             },
             handleSearchEnter() {
-                if (this.filteredOptions.length === 1) {
+                if (this.filteredOptions.length >= 1) {
                     this.selectedOption = this.filteredOptions[0];
                     this.isOpen = false;
                     this.openedWithKeyboard = false;
-                    if (this.saveToStorage) {
-                        localStorage.setItem(this.storageID, this.selectedOption);
-                    }
+                    this.searchQuery = '';
+                    this.filterOptions();
+                    this.updateStorage();
                 }
             },
             filterOptions() {
@@ -137,7 +137,7 @@
                 return selected ? selected : 'Select an option';
             },
             handleKeydownOnOptions(event) {
-                if (event.key === 'Enter' && this.filteredOptions.length === 1) {
+                if (event.key === 'Enter' && this.filteredOptions.length >= 1) {
                     this.selectedOption = this.filteredOptions[0];
                     this.isOpen = false;
                     this.openedWithKeyboard = false;

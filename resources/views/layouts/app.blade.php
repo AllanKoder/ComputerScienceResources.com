@@ -9,7 +9,6 @@
         <title>{{ config('app.name', 'Laravel') }}</title>
         
         <!-- Font Awesome -->
-        <script src="https://kit.fontawesome.com/2134d661bb.js" crossorigin="anonymous"></script>        
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         

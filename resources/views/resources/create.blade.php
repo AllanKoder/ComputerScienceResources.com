@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="flex flex-col items-center justify-center">
-        <div x-data>
-            <button @click="$dispatch('clear-inputs-event')">Clear Input</button>
+        <div x-data='confirmClearInput'>
+            <button @click="clearInput($dispatch)">Clear Input</button>
         </div>
         <form id="create-resource-form" method="POST" action="{{ route('resources.store') }}" class="w-full max-w-xl my-14">
             @csrf <!-- CSRF token for security -->
@@ -31,7 +31,7 @@
                 <label for="image_url" class="block text-gray-700 text-sm font-bold mb-2">Image URL:</label>
                 <x-smart-inputs.text-input type="url" 
                 :saveToStorage=true
-                :inputText="'test'"
+                :inputText="''"
                 name="image_url" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight" required></x-smart-inputs.text-input>
             </div>
             
@@ -84,7 +84,7 @@
                 <label for="topics" class="block text-gray-700 text-sm font-bold mb-2">Computer Science Topics:</label>
                 <x-smart-inputs.multi-tag-input class="w-full" 
                 :saveToStorage=true
-                :selectedOptions="['asd','blahg']"
+                :selectedOptions="[]"
                 name="topics" required/>
             </div>
               
@@ -116,4 +116,19 @@
             </div>            
         </form>
     </div>
+    <script>
+        function confirmClearInput() {
+            return {
+                clearInput(dispatch) {
+                    window.dispatchEvent(new CustomEvent('open-confirm-modal', {
+                        detail: {
+                                title: 'Confirm Resetting the Fields',
+                                description: 'This cannot be undone',
+                                onSuccess: () => { dispatch('clear-inputs-event') },
+                            }
+                    }));
+                } 
+            };
+        }         
+    </script>
 </x-app-layout>

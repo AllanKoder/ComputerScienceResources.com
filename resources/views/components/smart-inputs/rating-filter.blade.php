@@ -4,7 +4,7 @@
 @clear-inputs-event.window="resetInputs()"
 x-init='initialize()'
 class="flex items-center gap-1">
-    <label for="oneStar-{{$name}}" class="cursor-pointer transition hover:scale-125 has-[:focus]:scale-125">
+    <label for="oneStar-{{$name}}" class="cursor-pointer transition hover:scale-125 has-[:focus]:scale-125" tabindex="0" @keydown.enter="currentVal = 1">
         <span class="sr-only">one star</span>
         <input x-model="currentVal" id="oneStar-{{$name}}" type="radio" class="sr-only" name="{{$name}}" value="1">
         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" :class="currentVal > 0 ? 'text-amber-500' : 'text-neutral-600 dark:text-neutral-300'">
@@ -12,7 +12,7 @@ class="flex items-center gap-1">
         </svg>
     </label>
 
-    <label for="twoStar-{{$name}}" class="cursor-pointer transition hover:scale-125 has-[:focus]:scale-125">
+    <label for="twoStar-{{$name}}" class="cursor-pointer transition hover:scale-125 has-[:focus]:scale-125" tabindex="0" @keydown.enter="currentVal = 2">
         <span class="sr-only">two stars</span>
         <input x-model="currentVal" id="twoStar-{{$name}}" type="radio" class="sr-only" name="{{$name}}" value="2">
         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" :class="currentVal > 1 ? 'text-amber-500' : 'text-neutral-600 dark:text-neutral-300'">
@@ -20,7 +20,7 @@ class="flex items-center gap-1">
         </svg>
     </label>
 
-    <label for="threeStar-{{$name}}" class="cursor-pointer transition hover:scale-125 has-[:focus]:scale-125">
+    <label for="threeStar-{{$name}}" class="cursor-pointer transition hover:scale-125 has-[:focus]:scale-125" tabindex="0" @keydown.enter="currentVal = 3">
         <span class="sr-only">three stars</span>
         <input x-model="currentVal" id="threeStar-{{$name}}" type="radio" class="sr-only" name="{{$name}}" value="3">
         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" :class="currentVal > 2 ? 'text-amber-500' : 'text-neutral-600 dark:text-neutral-300'">
@@ -28,7 +28,7 @@ class="flex items-center gap-1">
         </svg>
     </label>
 
-    <label for="fourStar-{{$name}}" class="cursor-pointer transition hover:scale-125 has-[:focus]:scale-125">
+    <label for="fourStar-{{$name}}" class="cursor-pointer transition hover:scale-125 has-[:focus]:scale-125" tabindex="0" @keydown.enter="currentVal = 4">
         <span class="sr-only">four stars</span>
         <input x-model="currentVal" id="fourStar-{{$name}}" type="radio" class="sr-only" name="{{$name}}" value="4">
         <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5" :class="currentVal > 3 ? 'text-amber-500' : 'text-neutral-600 dark:text-neutral-300'">

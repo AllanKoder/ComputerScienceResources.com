@@ -35,6 +35,7 @@
         <label for="formats" class="block text-gray-700 text-sm font-bold mb-2">Resource Format:</label>
         <x-smart-inputs.multi-select-input 
         :options="$formatOptions"
+        :hasSearch=true
         :selectedOptions="[]"
         :useQueryParameters=true
         name="formats"
@@ -149,12 +150,9 @@
 </form>
 
 <div class="flex items-center justify-between">
-    <button id="reset-filter-button" class="bg-red-500 hover:bg-red-600 text-white font-bold mx-5 py-1 px-2">
-        Reset Filter
-    </button>
+    <div x-data>
+        <button class="bg-red-500" @click="$dispatch('clear-inputs-event')">Clear Input</button>
+    </div>
 </div>   
-<div x-data>
-    <button @click="$dispatch('clear-inputs-event')">Clear Input</button>
-</div>
 
 <!-- TODO: add a sort by dropdown -->

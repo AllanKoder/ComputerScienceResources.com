@@ -9,6 +9,7 @@
             <!-- Dialog Header -->
             <div class="flex items-center jusstify-between border-b border-neutral-300 bg-neutral-50/60 p-4 dark:border-neutral-700 dark:bg-neutral-950/20">
                 <h3 id="modalTitle" class="font-semibold tracking-wide text-neutral-900 dark:text-white" x-text="title"></h3>
+                <span class="mx-auto"></span>
                 <button @click="modalIsOpen = false" aria-label="close modal">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" stroke="currentColor" fill="none" stroke-width="1.4" class="w-5 h-5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -16,15 +17,15 @@
                 </button>
             </div>
             <!-- Dialog Body -->
-            <div class="px-4 py-8">
+            <div class="px-4 py-3">
                 <p x-text="description"></p>
             </div>
             <!-- Dialog Footer -->
             <div class="flex flex-col-reverse justify-between gap-2 border-t border-neutral-300 bg-neutral-50/60 p-4 dark:border-neutral-700 dark:bg-neutral-950/20 sm:flex-row sm:items-center md:justify-end">
-                <button @click="failureCallback" type="button" class="cursor-pointer whitespace-nowrap rounded-md px-4 py-2 text-center text-sm font-medium tracking-wide text-neutral-600 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:text-neutral-300 dark:focus-visible:outline-white">
+                <button @click="failureCallback" type="button" class="cursor-pointer whitespace-nowrap px-4 bg-gray-100 py-2 text-center text-sm font-medium tracking-wide text-neutral-600 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:text-neutral-300 dark:focus-visible:outline-white">
                     <p x-text="closeText"></p>
                 </button>
-                <button @click="successCallback" type="button" class="cursor-pointer whitespace-nowrap rounded-md bg-black px-4 py-2 text-center text-sm font-medium tracking-wide text-neutral-100 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:bg-white dark:text-black dark:focus-visible:outline-white">
+                <button @click="successCallback" type="button" class="cursor-pointer whitespace-nowrap bg-black px-4 py-2 text-center text-sm font-medium tracking-wide text-neutral-100 hover:opacity-75 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black active:opacity-100 active:outline-offset-0 dark:bg-white dark:text-black dark:focus-visible:outline-white">
                     <p x-text="confirmText"></p>
                 </button>
             </div>
@@ -39,7 +40,7 @@
             title: '',
             description: '',
             confirmText: 'Confirm',
-            closeText: 'Close',
+            closeText: 'cancel',
             onSuccess: () => {},
             onFailure: () => {},
             successCallback() {
@@ -61,8 +62,8 @@
                 this.title = title || this.title;
                 this.description = description || this.description;
                 this.modalIsOpen = true;
-                this.onSuccess = onSuccess;
-                this.onFailure = onFailure;
+                this.onSuccess = onSuccess || this.onSuccess;
+                this.onFailure = onFailure || this.onFailure;
                 this.confirmText = confirmText || this.confirmText;
                 this.closeText = closeText || this.closeText;
             }
