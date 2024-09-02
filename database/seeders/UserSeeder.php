@@ -22,7 +22,7 @@ class UserSeeder extends Seeder
         User::factory()->create([
             'name' => 'Allan Kong',
             'email' => 'allankong176@gmail.com',
-            'password' => Hash::make('Admin123!'),
+            'password' => Hash::make('password'),
         ]);
         
         User::factory()->create([

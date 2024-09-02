@@ -16,7 +16,7 @@ class CommentController extends Controller
         protected CommentService $commentService
     )
     {
-        $this->middleware('auth', ['except' => ['comments']]);
+
     }
 
     /**

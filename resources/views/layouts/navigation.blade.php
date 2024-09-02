@@ -57,6 +57,12 @@
                             </form>
                         </x-slot>
                     </x-dropdown>
+                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                        Logout
+                    </a>
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                    </form>
                 </div>
 
                 <!-- Hamburger -->
@@ -68,6 +74,8 @@
                         </svg>
                     </button>
                 </div>
+            @else
+                <a href='/login'>Login</a>
             @endif
         </div>
     </div>

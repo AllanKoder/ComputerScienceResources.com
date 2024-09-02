@@ -12,7 +12,7 @@ class ResourceReviewController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth',  ['except' => ['index', 'show', 'replies']]);
+        
     }
 
     private function filterResources(Request $request)

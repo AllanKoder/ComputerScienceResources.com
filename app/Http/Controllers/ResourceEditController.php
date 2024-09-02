@@ -16,8 +16,7 @@ class ResourceEditController extends Controller
         protected DiffService $diffService,
         protected ResourceEditService $resourceEditService,
     ){
-        $this->middleware('auth',  ['except' => ['index', 'show', 'edits', 'diff', 'original']]);
-        // $this->middleware('cache.headers:private;max_age=180');
+        $this->middleware('cache.headers:private;max_age=180')->only(['diff', 'original']);
     }
 
     /**
