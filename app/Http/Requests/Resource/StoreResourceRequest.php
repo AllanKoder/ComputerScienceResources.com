@@ -16,7 +16,7 @@ class StoreResourceRequest extends FormRequest
         $availableFormats = array_values(config('formats'));
         $availablePricings = array_values(config('pricings'));
         $availableDifficulty = array_values(config('difficulties'));
-
+        //TODO: MAKE PRICINGS AN ARRAY
         return [
             'title' => 'required|string|max:255',
             'description' => 'required|string|max:2000',
@@ -28,7 +28,8 @@ class StoreResourceRequest extends FormRequest
             'limitations' => 'sometimes|array|max:10',
             'limitations.*' => 'string',
             'resource_url' => 'required|url',
-            'pricing' => 'required|string|in:' . implode(',', $availablePricings),
+            'pricings' => 'required|string|in:' . implode(',', $availablePricings),
+            'pricings'
             'topics' => 'sometimes|array',
             'topics.*' => 'string',
             'difficulty' => 'required|in:' . implode(',', $availableDifficulty),

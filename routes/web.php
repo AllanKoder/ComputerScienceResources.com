@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\ResourceReviewController;
@@ -98,8 +99,15 @@ Route::get('/dashboard', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::patch('/profile/name', [ProfileController::class, 'updateName'])->name('profile.update.name');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::patch('/profile/email', [ProfileController::class, 'updateEmail'])->name('profile.update.email');
+
+    Route::get('/email/change/type', [ProfileController::class, 'typeEmailCode'])->name('email.change.type');
+    Route::post('/email/change/verify', [ProfileController::class, 'verifyEmailCode'])->name('email.change.verify');
+
+    Route::put('/password/change/update', [PasswordController::class, 'startPasswordChange'])->name('password.update');
+    Route::get('/password/change/confirm/{token}', [PasswordController::class, 'verifyPasswordChange'])->name('password.change.verify');
 });
 
 require __DIR__.'/auth.php';
