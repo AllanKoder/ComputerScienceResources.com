@@ -5,7 +5,7 @@ namespace App\Providers;
 use App\Services\DiffService;
 use App\Services\ResourceEditService;
 use App\Services\ResourceService;
-
+use App\Mail\VerifyEmailAddress;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -56,8 +56,7 @@ class AppServiceProvider extends ServiceProvider
         VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
             return (new MailMessage)
                 ->subject('Verify Email Address')
-                ->line('Click the button below to verify your email address and get started helping the world with Computer Science Resources.')
-                ->action('Verify Email Address', $url);
+                ->view('mail.verify-email', ['url' => $url]); // Use the custom template
         });
     }
 }
