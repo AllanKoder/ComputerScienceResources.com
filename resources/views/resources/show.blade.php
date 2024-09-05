@@ -1,9 +1,7 @@
-<!-- resources/views/resources/show.blade.php -->
-
 <x-app-layout>
     <div class="mb-4">
         <!-- Show the Resource -->
-        <x-resource-details :showFavorite=true :resource="$resource" />
+        <x-resource-details :showFavorite=true :resource="$resource"/>
         
         @if($reviewSummaryData)
             @include('reviews.summary.show', array('reviewSummaryData'=>$reviewSummaryData))

@@ -1,10 +1,10 @@
-@props(['showFavorite'=>false, 'resource']);
+@props(['showFavorite'=>false, 'isFavorited'=>false, 'resource'])
 
 <div class="flex grid-cols-2 gap-4">
     <div class="flex items-center justify-center h-20 overflow-hidden border-2 border-gray p-1 rounded">
         <!-- Container with a set height and max-width to control the image size -->
         <div class="h-full max-w-full">
-            <img src="{{ $resource->image_url }}" class="h-full w-auto object-contain" alt="{{ $resource->title }}"/>
+            <img loading="lazy" src="{{ $resource->image_url }}" class="h-full w-auto object-contain" alt="{{ $resource->title }}"/>
         </div>
     </div>
     <div class="w-10/12">    
@@ -19,21 +19,16 @@
         <p class="mb-1">{{ $resource->description }}</p>
     </div>
 
-    @if ($showFavorite)
-        <div>
-            <h3>{{ $resource->name }}</h3>
-
-            <!-- Display Favorite Button -->
-            <form action="{{ route('favorites.post', $resource->id) }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-primary">Favorite</button>
-            </form>
-
-            <!-- Display Unfavorite Button -->
-            <form action="{{ route('favorites.destroy', $resource->id) }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-danger">Unfavorite</button>
-            </form>
+    @if ($showFavorite && auth()->check())
+        <div id="favorite-button-container" 
+        hx-get="{{ route('favorites.button', $resource->id) }}" 
+        hx-trigger="load" 
+        hx-target="this"
+        hx-swap="outerHTML">
+            <!-- Initial button content can go here, if needed -->
+            <button class="favorite-btn">
+                Loading...
+            </button>
         </div>
     @endif
 </div>

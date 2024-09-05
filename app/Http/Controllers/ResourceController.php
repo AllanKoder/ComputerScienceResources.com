@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Resource\StoreResourceRequest;
 use App\Http\Requests\Resource\GetResourcesRequest;
+use App\Models\FavoriteListItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use App\Models\Resource;
@@ -59,7 +60,7 @@ class ResourceController extends Controller
         
         // Retrieve review summary
         $reviewSummaryData = $resource->getReviewSummary();
-    
+        
         return view('resources.show', compact('resource', 'commentTree', 'totalUpvotes', 'reviewSummaryData'));
     }
     

@@ -23,6 +23,33 @@ class FavoritesController extends Controller
         ]);
     }
 
+    private function generateCacheKey(Resource $resource): string
+    {
+        return "favorite_button_{$resource->id}_user_" . auth()->id();
+    }
+
+    public function favoriteButton(Resource $resource)
+    {    
+        $cacheKey = $this->generateCacheKey($resource);
+
+        $html = \Cache::remember($cacheKey, now()->addMinutes(5), function () use ($resource) {
+            if (auth()->check()) {
+                $user = auth()->user(); // Get the authenticated user
+    
+                $isFavorited = FavoriteListItem::hasFavorited($user, $resource);
+                
+                if ($isFavorited) {
+                    return view('components.htmx.unfavorite-button', ['resource' => $resource])->render();
+                } else {
+                    return view('components.htmx.favorite-button', ['resource' => $resource])->render();
+                }
+            } else {
+                abort(403, 'Unauthorized action');
+            }
+        });
+    
+        return response($html);    
+    }
     public function favorite(Resource $resource)
     {
         FavoriteListItem::firstOrCreate([
@@ -30,7 +57,12 @@ class FavoritesController extends Controller
             'resource_id' => $resource->id,
         ]);
 
-        # return the favorited button
+        \Cache::forget($this->generateCacheKey($resource));
+
+        // Cache and return the unfavorite button view
+        return \Cache::remember($this->generateCacheKey($resource), now()->addMinutes(5), function () use ($resource) {
+            return view('components.htmx.unfavorite-button', ['resource' => $resource])->render();
+        });
     }
 
 
@@ -47,8 +79,12 @@ class FavoritesController extends Controller
             return response()->json(['message' => "don't send bad requests please! :)"], 500);
         }
 
+        \Cache::forget($this->generateCacheKey($resource));
         $item->delete();
 
-        # return the unfavorited button
+        // Cache and return the favorite button view
+        return \Cache::remember($this->generateCacheKey($resource), now()->addMinutes(5), function () use ($resource) {
+            return view('components.htmx.favorite-button', ['resource' => $resource])->render();
+        });
     }
 }
