@@ -1,4 +1,4 @@
-<!-- resources/views/components/resource-details.blade.php -->
+@props(['showFavorite'=>false, 'resource']);
 
 <div class="flex grid-cols-2 gap-4">
     <div class="flex items-center justify-center h-20 overflow-hidden border-2 border-gray p-1 rounded">
@@ -18,6 +18,24 @@
         </span>
         <p class="mb-1">{{ $resource->description }}</p>
     </div>
+
+    @if ($showFavorite)
+        <div>
+            <h3>{{ $resource->name }}</h3>
+
+            <!-- Display Favorite Button -->
+            <form action="{{ route('favorites.post', $resource->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-primary">Favorite</button>
+            </form>
+
+            <!-- Display Unfavorite Button -->
+            <form action="{{ route('favorites.destroy', $resource->id) }}" method="POST">
+                @csrf
+                <button type="submit" class="btn btn-danger">Unfavorite</button>
+            </form>
+        </div>
+    @endif
 </div>
 
 

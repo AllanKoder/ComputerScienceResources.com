@@ -2,8 +2,8 @@
 
 <x-app-layout>
     <div class="mb-4">
-        <!-- Displaying title, description, and image -->
-        <x-resource-details :resource="$resource" />
+        <!-- Show the Resource -->
+        <x-resource-details :showFavorite=true :resource="$resource" />
         
         @if($reviewSummaryData)
             @include('reviews.summary.show', array('reviewSummaryData'=>$reviewSummaryData))
@@ -21,7 +21,6 @@
             Total Votes: <span>{{ $totalUpvotes ?? 0 }}</span>
         </div>
         @include('reports.partials.create', array('type'=>'resource', 'id'=>$resource->id))
-        
     </div>
     
     <div class="tab-list" role="tablist">

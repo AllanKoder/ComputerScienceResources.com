@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ResourceListController;
 use App\Http\Controllers\VoteController;
 use App\Http\Controllers\ResourceReviewController;
 use App\Http\Controllers\ReportController;
@@ -84,6 +86,24 @@ Route::middleware(['auth', 'verified'])->controller(ResourceEditController::clas
     Route::post('/resource_edit/{resource}', 'store')->name('resource_edits.store');
     Route::get('/resource_edit/{resource}/create', 'create')->name('resource_edits.create');
     Route::post('/resource_edit/merge/{resource_edit}', 'merge')->name('resource_edits.merge');
+});
+
+// Resource Lists
+Route::controller(ResourceListController::class)->group(function () {
+    Route::get('/resource_list/', 'index')->name('resource_list.index');
+});
+
+
+// Favorites
+// Public Routes
+Route::controller(FavoritesController::class)->group(function () {
+    Route::get('/favorite/resources/', 'favorites')->name('favorites.index');
+});
+
+// Private Routes
+Route::middleware(['auth', 'verified'])->controller(FavoritesController::class)->group(function () {
+    Route::post('/favorite/resource/{resource}', 'favorite')->name('favorites.post');
+    Route::post('/unfavorite/resource/{resource}', 'unfavorite')->name('favorites.destroy');
 });
 
 

@@ -16,7 +16,7 @@ class AuthController extends Controller
 
     function callback($platform)
     {
-        $authUser = Socialite::driver($platform)->user();
+        $authUser = Socialite::driver($platform)->stateless()->user();
 
         \Log::debug('Auth User: ' . json_encode($authUser));
 
