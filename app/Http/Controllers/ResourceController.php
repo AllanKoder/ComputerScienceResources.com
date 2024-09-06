@@ -49,6 +49,8 @@ class ResourceController extends Controller
     // Display the specified resource.
     public function show($id)
     {
+        // TODO: add Memcache
+
         // Fetch the resource
         $resource = Resource::with('comments')->findOrFail($id);
     
@@ -60,8 +62,19 @@ class ResourceController extends Controller
         
         // Retrieve review summary
         $reviewSummaryData = $resource->getReviewSummary();
+       
+        // Favorite Button
+        $isFavorited = false;
         
-        return view('resources.show', compact('resource', 'commentTree', 'totalUpvotes', 'reviewSummaryData'));
+        if (auth()->check()){
+            $isFavorited = FavoriteListItem::hasFavorited(auth()->user(), $resource);        
+        }
+
+        // TODO: Figure out if no cache is fine on this page.
+        return response()->view('resources.show', compact('resource', 'commentTree', 'totalUpvotes', 'reviewSummaryData', 'isFavorited'))
+                        ->header('Cache-Control', 'no-cache, no-store, must-revalidate')
+                        ->header('Pragma', 'no-cache')
+                        ->header('Expires', '0');;
     }
     
     // Show the form for editing the specified resource.

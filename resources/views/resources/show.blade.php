@@ -1,7 +1,7 @@
 <x-app-layout>
-    <div class="mb-4">
+    <div class="mb-4" hx-history="false">
         <!-- Show the Resource -->
-        <x-resource-details :showFavorite=true :resource="$resource"/>
+        <x-resource-details :showFavorite=true :isFavorited="$isFavorited" :resource="$resource"/>
         
         @if($reviewSummaryData)
             @include('reviews.summary.show', array('reviewSummaryData'=>$reviewSummaryData))

@@ -20,17 +20,12 @@
     </div>
 
     @if ($showFavorite && auth()->check())
-        <div id="favorite-button-container" 
-        hx-get="{{ route('favorites.button', $resource->id) }}" 
-        hx-trigger="load" 
-        hx-target="this"
-        hx-swap="outerHTML">
-            <!-- Initial button content can go here, if needed -->
-            <button class="favorite-btn">
-                Loading...
-            </button>
-        </div>
-    @endif
+        @if ($isFavorited) 
+            @include('components.htmx.unfavorite-button', ['resource' => $resource])
+        @else
+            @include('components.htmx.favorite-button', ['resource' => $resource])
+        @endif
+   @endif
 </div>
 
 

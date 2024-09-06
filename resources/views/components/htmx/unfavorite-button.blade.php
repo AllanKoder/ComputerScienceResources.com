@@ -2,7 +2,7 @@
 
 <!-- Unfavorite Button with Star -->
 <form method="POST" 
-    hx-post="{{ route('favorites.destroy', $resource->id) }}" 
+    hx-delete="{{ route('favorites.destroy', $resource->id) }}" 
     hx-target"this"
     hx-swap="outerHTML"
     >

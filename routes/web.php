@@ -103,7 +103,7 @@ Route::controller(FavoritesController::class)->group(function () {
 // Private Routes
 Route::middleware(['auth', 'verified'])->controller(FavoritesController::class)->group(function () {
     Route::post('/favorite/resource/{resource}', 'favorite')->name('favorites.post');
-    Route::post('/unfavorite/resource/{resource}', 'unfavorite')->name('favorites.destroy');
+    Route::delete('/unfavorite/resource/{resource}', 'unfavorite')->name('favorites.destroy');
     Route::get('/favorite/favorite_button/{resource}', 'favoriteButton')->name('favorites.button');
 });
 

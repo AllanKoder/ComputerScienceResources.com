@@ -23,32 +23,21 @@ class FavoritesController extends Controller
         ]);
     }
 
-    private function generateCacheKey(Resource $resource): string
-    {
-        return "favorite_button_{$resource->id}_user_" . auth()->id();
-    }
-
     public function favoriteButton(Resource $resource)
     {    
-        $cacheKey = $this->generateCacheKey($resource);
+        if (auth()->check()) {
+            $user = auth()->user(); // Get the authenticated user
 
-        $html = \Cache::remember($cacheKey, now()->addMinutes(5), function () use ($resource) {
-            if (auth()->check()) {
-                $user = auth()->user(); // Get the authenticated user
-    
-                $isFavorited = FavoriteListItem::hasFavorited($user, $resource);
-                
-                if ($isFavorited) {
-                    return view('components.htmx.unfavorite-button', ['resource' => $resource])->render();
-                } else {
-                    return view('components.htmx.favorite-button', ['resource' => $resource])->render();
-                }
+            $isFavorited = FavoriteListItem::hasFavorited($user, $resource);
+            
+            if ($isFavorited) {
+                return view('components.htmx.unfavorite-button', ['resource' => $resource])->render();
             } else {
-                abort(403, 'Unauthorized action');
+                return view('components.htmx.favorite-button', ['resource' => $resource])->render();
             }
-        });
-    
-        return response($html);    
+        } else {
+            abort(403, 'Unauthorized action');
+        }
     }
     public function favorite(Resource $resource)
     {
@@ -57,12 +46,9 @@ class FavoritesController extends Controller
             'resource_id' => $resource->id,
         ]);
 
-        \Cache::forget($this->generateCacheKey($resource));
-
-        // Cache and return the unfavorite button view
-        return \Cache::remember($this->generateCacheKey($resource), now()->addMinutes(5), function () use ($resource) {
-            return view('components.htmx.unfavorite-button', ['resource' => $resource])->render();
-        });
+        // return the unfavorite button view
+        return view('components.htmx.unfavorite-button', ['resource' => $resource]);
+        
     }
 
 
@@ -75,16 +61,11 @@ class FavoritesController extends Controller
 
         if (!$item)
         {
-            // return 500 so HTMX does not rerender
-            return response()->json(['message' => "don't send bad requests please! :)"], 500);
+            return view('components.htmx.favorite-button', ['resource' => $resource]);
         }
 
-        \Cache::forget($this->generateCacheKey($resource));
         $item->delete();
 
-        // Cache and return the favorite button view
-        return \Cache::remember($this->generateCacheKey($resource), now()->addMinutes(5), function () use ($resource) {
-            return view('components.htmx.favorite-button', ['resource' => $resource])->render();
-        });
+        return view('components.htmx.favorite-button', ['resource' => $resource]);
     }
 }
