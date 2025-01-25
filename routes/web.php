@@ -28,4 +28,5 @@ Route::middleware([
 
 Route::controller(ComputerScienceResourceController::class)->group(function () {
     Route::get('/resources', 'index')->name('resources');
+    Route::get('/resources/create', 'create')->name('resources.create');
 });
