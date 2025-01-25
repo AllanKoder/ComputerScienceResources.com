@@ -1,0 +1,20 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\ComputerScienceResource;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Log;
+
+class ComputerScienceResourceSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        Log::info('Running ComputerScienceResourceSeeder');
+        ComputerScienceResource::factory(10)->create();
+    }
+}

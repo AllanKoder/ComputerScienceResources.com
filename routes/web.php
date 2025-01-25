@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ComputerScienceResourceController;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -21,4 +22,10 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+});
+
+// Resources Controller
+
+Route::controller(ComputerScienceResourceController::class)->group(function () {
+    Route::get('/resources', 'index')->name('resources');
 });
