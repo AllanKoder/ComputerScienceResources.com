@@ -1,14 +1,47 @@
 <script setup>
-import { Icon } from "@iconify/vue";
+import ResourceItem from "@/Components/Resources/ResourceItem.vue";
+import NewsItem from '@/Components/NewsItem.vue';
+
 import { ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps } from "vue";
 
 const props = defineProps({
     resources: Array,
+    newsItems: Array,
 });
 
 const resources = ref(props.resources);
+const newsItems = [
+  {
+    id: 1,
+    title: "New AI Breakthrough in Natural Language Processing",
+    thumbnail: "https://example.com/ai-nlp-thumbnail.jpg",
+    excerpt: "Researchers have achieved a significant milestone in AI language understanding, potentially revolutionizing human-computer interactions.",
+    date: "2025-01-23"
+  },
+  {
+    id: 2,
+    title: "Quantum Computing Reaches New Heights",
+    thumbnail: "https://example.com/quantum-computing-thumbnail.jpg",
+    excerpt: "Scientists have successfully demonstrated a 1000-qubit quantum computer, bringing us closer to practical quantum supremacy.",
+    date: "2025-01-24"
+  },
+  {
+    id: 3,
+    title: "Cybersecurity Alert: Major Vulnerability Discovered",
+    thumbnail: "https://example.com/cybersecurity-thumbnail.jpg",
+    excerpt: "A critical flaw in widely-used software has been identified. Experts urge immediate patching to prevent potential exploits.",
+    date: "2025-01-25"
+  },
+  {
+    id: 4,
+    title: "Tech Giants Collaborate on Open-Source AI Initiative",
+    thumbnail: "https://example.com/open-source-ai-thumbnail.jpg",
+    excerpt: "Leading tech companies announce a joint effort to develop and release open-source AI tools, aiming to democratize AI technology.",
+    date: "2025-01-25"
+  }
+];
 
 const upvote = (resource) => {
     // Implement upvote logic
@@ -18,141 +51,36 @@ const downvote = (resource) => {
     // Implement downvote logic
 };
 </script>
-
 <template>
     <AppLayout title="Computer Science Resources">
-
         <main class="py-12">
-            <div class="mx-auto sm:px-6 lg:px-8">
-                <section
-                    class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6"
-                >
-                    <table
-                        class="w-full border-separate"
-                        style="border-spacing: 0 2rem"
-                    >
-                        <tbody>
-                            <tr
+            <div class="max-w-[100rem] mx-auto sm:px-6 lg:px-8">
+                <div class="flex gap-4">
+                    <!-- Resources Section -->
+                    <section class="w-3/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
+                        <table class="w-full border-separate" style="border-spacing: 0 2rem">
+                            <ResourceItem
                                 v-for="resource in resources"
                                 :key="resource.id"
-                                class="mb-8 border-b p-12"
-                            >
-                                <td class="align-top pr-6">
-                                    <div class="flex flex-col items-center">
-                                        <button
-                                            @click="upvote(resource)"
-                                            class="mb-2 text-gray-500 hover:text-blue-500"
-                                        >
-                                            <Icon
-                                                icon="mdi:chevron-up"
-                                                width="24"
-                                                height="24"
-                                            />
-                                        </button>
-                                        <span class="text-lg font-bold">{{
-                                            resource.votes || 0
-                                        }}</span>
-                                        <button
-                                            @click="downvote(resource)"
-                                            class="mt-2 text-gray-500 hover:text-red-500"
-                                        >
-                                            <Icon
-                                                icon="mdi:chevron-down"
-                                                width="24"
-                                                height="24"
-                                            />
-                                        </button>
-                                    </div>
-                                </td>
+                                :resource="resource"
+                                @upvote="upvote"
+                                @downvote="downvote"
+                            />
+                        </table>
+                    </section>
 
-                                <td class="align-top pr-6 w-32">
-                                    <img
-                                        :src="resource.image_url"
-                                        :alt="resource.name"
-                                        class="w-full h-auto object-contain rounded"
-                                    />
-                                </td>
-
-                                <td class="align-top pr-6">
-                                    <div
-                                        class="flex justify-between items-start mb-3"
-                                    >
-                                        <h2 class="text-xl font-semibold">
-                                            {{ resource.name }}
-                                        </h2>
-                                        <time class="text-sm text-gray-500">{{
-                                            resource.resource_created_on
-                                        }}</time>
-                                    </div>
-                                    <p class="text-gray-600 mb-4">
-                                        {{ resource.description }}
-                                    </p>
-                                    <div class="flex flex-wrap gap-2">
-                                        <span
-                                            v-for="type in resource.resource_type.split(
-                                                ','
-                                            )"
-                                            :key="type"
-                                            class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"
-                                        >
-                                            {{ type.trim() }}
-                                        </span>
-                                        <span
-                                            class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded"
-                                        >
-                                            {{ resource.pricing }}
-                                        </span>
-                                    </div>
-                                </td>
-
-                                <td class="align-top">
-                                    <div class="flex flex-col items-center">
-                                        <div
-                                            class="text-2xl font-bold text-yellow-500 mb-2"
-                                        >
-                                            4.5
-                                        </div>
-                                        <div class="flex">
-                                            <Icon
-                                                icon="mdi:star"
-                                                class="text-yellow-500"
-                                                width="20"
-                                                height="20"
-                                            />
-                                            <Icon
-                                                icon="mdi:star"
-                                                class="text-yellow-500"
-                                                width="20"
-                                                height="20"
-                                            />
-                                            <Icon
-                                                icon="mdi:star"
-                                                class="text-yellow-500"
-                                                width="20"
-                                                height="20"
-                                            />
-                                            <Icon
-                                                icon="mdi:star"
-                                                class="text-yellow-500"
-                                                width="20"
-                                                height="20"
-                                            />
-                                            <Icon
-                                                icon="mdi:star-half"
-                                                class="text-yellow-500"
-                                                width="20"
-                                                height="20"
-                                            />
-                                        </div>
-                                        <div class="text-sm text-gray-500 mt-1">
-                                            (123 ratings)
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </section>
+                    <!-- News Column -->
+                    <aside class="w-1/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
+                        <h2 class="text-xl font-semibold mb-4">Latest News</h2>
+                        <div class="space-y-4">
+                            <NewsItem
+                                v-for="(news, index) in newsItems"
+                                :key="index"
+                                :news="news"
+                            />
+                        </div>
+                    </aside>
+                </div>
             </div>
         </main>
     </AppLayout>
