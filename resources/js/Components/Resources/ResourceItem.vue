@@ -65,7 +65,7 @@ const downvote = () => emit("downvote", props.resource);
                 <span
                     v-for="tag in resource.topic_tags"
                     :key="tag.id"
-                    class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"
+                    class="bg-gray-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"
                 >
                     {{ tag }}
                 </span>
@@ -74,7 +74,7 @@ const downvote = () => emit("downvote", props.resource);
                 <span
                     v-for="tag in resource.programming_language_tags"
                     :key="tag.id"
-                    class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded"
+                    class="bg-purple-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded"
                 >
                     {{ tag }}
                 </span>

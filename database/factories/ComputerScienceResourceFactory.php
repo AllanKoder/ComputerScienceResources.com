@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\ComputerScienceResource;
 use App\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -28,7 +29,8 @@ class ComputerScienceResourceFactory extends Factory
             'page_url' => fake()->url(),
             'resource_created_on' => fake()->date(),
 
-            'resource_type' => implode(',', 
+            'resource_type' => implode(
+                ',',
                 fake()->randomElements(['book', 'podcast', 'youtube channel', 'blog', 'website', 'organization', 'bootcamp', 'newsletter', 'workshop', 'course', 'forum', 'mobile app', 'desktop app', 'e-zine'], rand(1, 3))
             ),
             'difficulty' => fake()->randomElement(['beginner', 'industry_simple', 'industry_standard', 'industry_professional', 'academic']),
@@ -41,15 +43,15 @@ class ComputerScienceResourceFactory extends Factory
      */
     public function addTags(): Factory
     {
+        $types = ['topics','programming_languages', 'tags'];
+
         // Define your tags here
-        $tags = ['tag1','tag2','tag3','tag4','tag5'];
+        $tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', fake()->name(), fake()->name()];
 
         // Create random tags for this resource
-        $this->afterCreating(function (ComputerScienceResource $resource) use ($tags) {
-            $resource->attachTags(fake()->randomElements($tags, rand(1, 3)));
+        return $this->afterCreating(function (ComputerScienceResource $resource) use ($tags, $types) {
+            $tagElements = fake()->randomElements($tags, rand(1, 3));
+            $resource->attachTags($tagElements, fake()->randomElement($types));
         });
-
-        return $this;
     }
-
 }
