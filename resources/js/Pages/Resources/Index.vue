@@ -5,42 +5,46 @@ import NewsItem from '@/Components/NewsItem.vue';
 import { ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps } from "vue";
+import PaginateLinks from "@/Components/Pagination/PaginateLinks.vue";
 
 const props = defineProps({
-    resources: Array,
+    resources: Object,
     newsItems: Array,
 });
 
-const resources = ref(props.resources);
+
+const resources = ref(props.resources.data);
+const pagination = ref(props.resources.links);
+console.log(pagination);
 const newsItems = [
   {
-    id: 1,
+      id: 1,
     title: "New AI Breakthrough in Natural Language Processing",
     thumbnail: "https://example.com/ai-nlp-thumbnail.jpg",
     excerpt: "Researchers have achieved a significant milestone in AI language understanding, potentially revolutionizing human-computer interactions.",
     date: "2025-01-23"
   },
   {
-    id: 2,
-    title: "Quantum Computing Reaches New Heights",
-    thumbnail: "https://example.com/quantum-computing-thumbnail.jpg",
+      id: 2,
+      title: "Quantum Computing Reaches New Heights",
+      thumbnail: "https://example.com/quantum-computing-thumbnail.jpg",
     excerpt: "Scientists have successfully demonstrated a 1000-qubit quantum computer, bringing us closer to practical quantum supremacy.",
     date: "2025-01-24"
-  },
-  {
+},
+{
     id: 3,
     title: "Cybersecurity Alert: Major Vulnerability Discovered",
     thumbnail: "https://example.com/cybersecurity-thumbnail.jpg",
     excerpt: "A critical flaw in widely-used software has been identified. Experts urge immediate patching to prevent potential exploits.",
     date: "2025-01-25"
-  },
-  {
+},
+{
     id: 4,
     title: "Tech Giants Collaborate on Open-Source AI Initiative",
     thumbnail: "https://example.com/open-source-ai-thumbnail.jpg",
     excerpt: "Leading tech companies announce a joint effort to develop and release open-source AI tools, aiming to democratize AI technology.",
     date: "2025-01-25"
-  }
+}
 ];
 
 const upvote = (resource) => {
@@ -50,6 +54,8 @@ const upvote = (resource) => {
 const downvote = (resource) => {
     // Implement downvote logic
 };
+
+
 </script>
 <template>
     <AppLayout title="Computer Science Resources">
@@ -60,13 +66,17 @@ const downvote = (resource) => {
                     <section class="w-3/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
                         <table class="w-full border-separate" style="border-spacing: 0 2rem">
                             <ResourceItem
-                                v-for="resource in resources"
-                                :key="resource.id"
-                                :resource="resource"
+                            v-for="resource in resources"
+                            :key="resource.id"
+                            :resource="resource"
                                 @upvote="upvote"
                                 @downvote="downvote"
                             />
                         </table>
+
+                        <!-- Pagination Links -->
+                        <PaginateLinks :links="pagination"></PaginateLinks>
+
                     </section>
 
                     <!-- News Column -->

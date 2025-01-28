@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Tags\HasTags;
-use Spatie\Tags\Tag;
 
 class ComputerScienceResource extends Model
 {
