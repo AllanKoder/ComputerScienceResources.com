@@ -54,7 +54,7 @@ const downvote = (resource) => {
 <template>
     <AppLayout title="Computer Science Resources">
         <main class="py-12">
-            <div class="max-w-[100rem] mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-[110rem] mx-auto sm:px-6 lg:px-10">
                 <div class="flex gap-4">
                     <!-- Resources Section -->
                     <section class="w-3/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">

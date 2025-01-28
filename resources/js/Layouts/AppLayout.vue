@@ -141,6 +141,23 @@ const logout = () => {
                         >
                             Dashboard
                         </ResponsiveNavLink>
+
+                        <ResponsiveNavLink
+                            :href="route('resources')"
+                            :active="route().current('resources')"
+                        >
+                            Resources
+                        </ResponsiveNavLink>
+
+
+                        <!-- Create Resource Button -->
+                        <ResponsiveNavLink
+                            :href="route('resources.create')"
+                            class="mx-2 inline-flex items-center border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                        >
+                            <Icon icon="mdi:plus" class="" />
+                            Create
+                        </ResponsiveNavLink>
                     </div>
 
                     <!-- Responsive Settings Options -->

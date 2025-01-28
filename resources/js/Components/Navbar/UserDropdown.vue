@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { router } from "@inertiajs/vue3";
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
 
