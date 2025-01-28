@@ -51,6 +51,5 @@ class ComputerScienceResource extends Model
         );
     }
 
-    // Append calculated fields for JSON representation
     protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags'];
 }

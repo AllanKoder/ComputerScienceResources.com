@@ -1,6 +1,6 @@
 <script setup>
 import ResourceItem from "@/Components/Resources/ResourceItem.vue";
-import NewsItem from '@/Components/NewsItem.vue';
+import NewsItem from "@/Components/NewsItem.vue";
 
 import { ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
@@ -12,39 +12,48 @@ const props = defineProps({
     newsItems: Array,
 });
 
-
 const resources = ref(props.resources.data);
 const pagination = ref(props.resources.links);
-console.log(pagination);
+
+console.log(pagination)
+
 const newsItems = [
-  {
-      id: 1,
-    title: "New AI Breakthrough in Natural Language Processing",
-    thumbnail: "https://example.com/ai-nlp-thumbnail.jpg",
-    excerpt: "Researchers have achieved a significant milestone in AI language understanding, potentially revolutionizing human-computer interactions.",
-    date: "2025-01-23"
-  },
-  {
-      id: 2,
-      title: "Quantum Computing Reaches New Heights",
-      thumbnail: "https://example.com/quantum-computing-thumbnail.jpg",
-    excerpt: "Scientists have successfully demonstrated a 1000-qubit quantum computer, bringing us closer to practical quantum supremacy.",
-    date: "2025-01-24"
-},
-{
-    id: 3,
-    title: "Cybersecurity Alert: Major Vulnerability Discovered",
-    thumbnail: "https://example.com/cybersecurity-thumbnail.jpg",
-    excerpt: "A critical flaw in widely-used software has been identified. Experts urge immediate patching to prevent potential exploits.",
-    date: "2025-01-25"
-},
-{
-    id: 4,
-    title: "Tech Giants Collaborate on Open-Source AI Initiative",
-    thumbnail: "https://example.com/open-source-ai-thumbnail.jpg",
-    excerpt: "Leading tech companies announce a joint effort to develop and release open-source AI tools, aiming to democratize AI technology.",
-    date: "2025-01-25"
-}
+    {
+        id: 1,
+        title: "New AI Breakthrough in Natural Language Processing",
+        thumbnail:
+            "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg",
+        excerpt:
+            "Researchers have achieved a significant milestone in AI language understanding, potentially revolutionizing human-computer interactions.",
+        date: "2025-01-23",
+    },
+    {
+        id: 2,
+        title: "Quantum Computing Reaches New Heights",
+        thumbnail:
+            "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg",
+        excerpt:
+            "Scientists have successfully demonstrated a 1000-qubit quantum computer, bringing us closer to practical quantum supremacy.",
+        date: "2025-01-24",
+    },
+    {
+        id: 3,
+        title: "Cybersecurity Alert: Major Vulnerability Discovered",
+        thumbnail:
+            "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg",
+        excerpt:
+            "A critical flaw in widely-used software has been identified. Experts urge immediate patching to prevent potential exploits.",
+        date: "2025-01-25",
+    },
+    {
+        id: 4,
+        title: "Tech Giants Collaborate on Open-Source AI Initiative",
+        thumbnail:
+            "https://images.pexels.com/photos/674010/pexels-photo-674010.jpeg?cs=srgb&dl=pexels-anjana-c-169994-674010.jpg&fm=jpg",
+        excerpt:
+            "Leading tech companies announce a joint effort to develop and release open-source AI tools, aiming to democratize AI technology.",
+        date: "2025-01-25",
+    },
 ];
 
 const upvote = (resource) => {
@@ -54,8 +63,6 @@ const upvote = (resource) => {
 const downvote = (resource) => {
     // Implement downvote logic
 };
-
-
 </script>
 <template>
     <AppLayout title="Computer Science Resources">
@@ -63,12 +70,17 @@ const downvote = (resource) => {
             <div class="max-w-[110rem] mx-auto sm:px-6 lg:px-10">
                 <div class="flex gap-4">
                     <!-- Resources Section -->
-                    <section class="w-3/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
-                        <table class="w-full border-separate" style="border-spacing: 0 2rem">
+                    <section
+                        class="w-3/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6"
+                    >
+                        <table
+                            class="w-full border-separate"
+                            style="border-spacing: 0 2rem"
+                        >
                             <ResourceItem
-                            v-for="resource in resources"
-                            :key="resource.id"
-                            :resource="resource"
+                                v-for="resource in resources"
+                                :key="resource.id"
+                                :resource="resource"
                                 @upvote="upvote"
                                 @downvote="downvote"
                             />
@@ -76,11 +88,12 @@ const downvote = (resource) => {
 
                         <!-- Pagination Links -->
                         <PaginateLinks :links="pagination"></PaginateLinks>
-
                     </section>
 
                     <!-- News Column -->
-                    <aside class="w-1/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
+                    <aside
+                        class="w-1/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6"
+                    >
                         <h2 class="text-xl font-semibold mb-4">Latest News</h2>
                         <div class="space-y-4">
                             <NewsItem
