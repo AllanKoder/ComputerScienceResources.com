@@ -27,7 +27,7 @@ class ComputerScienceResourceController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Resources/Create');
     }
 
     /**

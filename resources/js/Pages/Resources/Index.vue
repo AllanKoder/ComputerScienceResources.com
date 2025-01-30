@@ -15,8 +15,6 @@ const props = defineProps({
 const resources = ref(props.resources.data);
 const pagination = ref(props.resources.links);
 
-console.log(pagination)
-
 const newsItems = [
     {
         id: 1,
