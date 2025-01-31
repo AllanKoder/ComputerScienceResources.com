@@ -3,23 +3,34 @@ import { Tag } from "primevue";
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import AutoComplete from "primevue/autocomplete";
+import { defineEmits, defineProps } from "vue";
 
-const tags = ref(new Set(["test"]));
+const props = defineProps({
+    queryUrl: String
+});
+
+const emits = defineEmits(['changed']);
+
+const tags = ref(new Set());
 const searchValue = ref("");
 const allSuggestions = ref(["test1", "test2"]);
 const suggestions = ref([]);
-const emptySearchMessage = ref("test")
+const emptySearchMessage = ref("");
 
 const addTag = (tag) => {
     if (tag && !tags.value.has(tag)) {
         tags.value.add(tag);
         searchValue.value = "";
+
+        emit('changed', tags)
     }
 };
 
 const removeTag = (tag) => {
     if (tag) {
         tags.value.delete(tag);
+
+        emit('changed', tags)
     }
 };
 
@@ -35,33 +46,37 @@ const handleKeydown = (event) => {
 };
 
 const filterSuggestions = (event) => {
-    console.log(suggestions.value)
+    console.log(suggestions.value);
     let query = event.query.toLowerCase();
-    console.log(query)
+    console.log(query);
     suggestions.value = allSuggestions.value.filter((item) =>
         item.toLowerCase().includes(query)
     );
 
-    console.log(suggestions.value)
-    if (suggestions.value.length == 0)
-    {
+    console.log(suggestions.value);
+    if (suggestions.value.length == 0) {
         emptySearchMessage.value = searchValue.value;
     }
 };
 </script>
 
 <template>
-    <div class="flex col-auto gap-3 flex-col">
+    <div class="flex col-auto gap-3 flex-col justify-center items-center">
         <!-- Search bar to add tags -->
         <AutoComplete
             v-model="searchValue"
             :suggestions="suggestions"
-            :empty-search-message='emptySearchMessage'
+            :empty-search-message="emptySearchMessage"
             @complete="filterSuggestions"
             @item-select="handleSelect"
             @keydown="handleKeydown"
             placeholder="Type to add tags"
-        />
+        >
+            <template #option="headerProps">
+                {{ headerProps.option }} - 
+                <span class="py-0.5 px-1 rounded-lg bg-gray-100">32</span> 
+            </template>
+        </AutoComplete>
 
         <!-- List of tags -->
         <div class="mt-2">
