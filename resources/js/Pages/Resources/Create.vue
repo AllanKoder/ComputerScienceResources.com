@@ -6,7 +6,7 @@ import Button from "primevue/button";
 import { Stepper, StepList, Step, StepPanel, StepPanels } from "primevue";
 
 import MandatoryFields from "@/Pages/Resources/Form/MandatoryFields.vue";
-import TagSelector from "@/Components/Form/TagSelector.vue";
+import TagsField from "./Form/TagsField.vue";
 
 const form = useForm("CreateResource", {
     title: "",
@@ -26,6 +26,7 @@ const handleFormChange = (newForm) => {
     // Handle form changes here
     console.log("Updated Form:", newForm);
 };
+
 </script>
 
 <template>
@@ -59,14 +60,12 @@ const handleFormChange = (newForm) => {
                             </div>
                         </StepPanel>
                         <StepPanel v-slot="{ activateCallback }" value="2">
-                            <div class="flex flex-col h-48">
-                                <div
-                                    class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                                >
+                            <div class="flex flex-col">
+                                <h2 class="text-2xl font-bold mb-4 text-center">
+                                    List the Programming Languages involved (if any)
+                                </h2>
 
-                                <TagSelector></TagSelector>
-
-                                </div>
+                                <TagsField :form="form" @change="handleFormChange"></TagsField>
                             </div>
                             <div class="flex pt-6 justify-between">
                                 <Button

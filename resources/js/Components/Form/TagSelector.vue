@@ -9,7 +9,7 @@ const props = defineProps({
     queryUrl: String
 });
 
-const emits = defineEmits(['changed']);
+const emit = defineEmits(['changed']);
 
 const tags = ref(new Set());
 const searchValue = ref("");
@@ -46,14 +46,11 @@ const handleKeydown = (event) => {
 };
 
 const filterSuggestions = (event) => {
-    console.log(suggestions.value);
     let query = event.query.toLowerCase();
-    console.log(query);
     suggestions.value = allSuggestions.value.filter((item) =>
         item.toLowerCase().includes(query)
     );
 
-    console.log(suggestions.value);
     if (suggestions.value.length == 0) {
         emptySearchMessage.value = searchValue.value;
     }

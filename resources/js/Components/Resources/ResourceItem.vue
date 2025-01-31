@@ -2,7 +2,10 @@
 import { Icon } from "@iconify/vue";
 
 defineProps({
-    resource: Object,
+    resource: {
+        type: Object,
+        required: true
+    }
 });
 
 const emit = defineEmits(["upvote", "downvote"]);
