@@ -35,7 +35,7 @@ const handleFormChange = (newForm) => {
             <div
                 class="bg-white shadow-lg rounded-lg p-6 max-w-screen-md w-full"
             >
-                <Stepper value="2" linear>
+                <Stepper value="1" linear>
                     <h2 class="text-2xl font-bold mb-4 text-center">
                         Add a New Resource
                     </h2>
@@ -46,10 +46,10 @@ const handleFormChange = (newForm) => {
                     </StepList>
                     <StepPanels>
                         <StepPanel v-slot="{ activateCallback }" value="1">
-                            <MandatoryFields
-                                :form="form"
-                                @change="handleFormChange"
-                            ></MandatoryFields>
+                                <MandatoryFields
+                                    :form="form"
+                                    @change="handleFormChange"
+                                ></MandatoryFields>
 
                             <div class="flex pt-6 justify-end">
                                 <Button
@@ -65,7 +65,7 @@ const handleFormChange = (newForm) => {
                                     List the Programming Languages involved (if any)
                                 </h2>
 
-                                <TagsField :form="form" @change="handleFormChange"></TagsField>
+                                <TagsField :form="form" field="languages" @change="handleFormChange"></TagsField>
                             </div>
                             <div class="flex pt-6 justify-between">
                                 <Button
