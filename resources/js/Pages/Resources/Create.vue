@@ -9,7 +9,7 @@ import MandatoryFields from "@/Pages/Resources/Form/MandatoryFields.vue";
 import TagsField from "./Form/TagsField.vue";
 
 const form = useForm("CreateResource", {
-    title: "",
+    name: "",
     formats: [],
     url: "",
     pricing: "",
@@ -22,9 +22,12 @@ const submitForm = () => {
     form.post("/resources");
 };
 
-const handleFormChange = (newForm) => {
-    // Handle form changes here
-    console.log("Updated Form:", newForm);
+const handleFormChange = (newFormData) => {
+    Object.keys(newFormData).forEach(key => {
+        form[key] = newFormData[key];
+    });
+
+    console.log(form);
 };
 
 </script>
@@ -46,10 +49,10 @@ const handleFormChange = (newForm) => {
                     </StepList>
                     <StepPanels>
                         <StepPanel v-slot="{ activateCallback }" value="1">
-                                <MandatoryFields
-                                    :form="form"
-                                    @change="handleFormChange"
-                                ></MandatoryFields>
+                            <MandatoryFields
+                                :form="form"
+                                @change="handleFormChange"
+                            ></MandatoryFields>
 
                             <div class="flex pt-6 justify-end">
                                 <Button
@@ -62,10 +65,15 @@ const handleFormChange = (newForm) => {
                         <StepPanel v-slot="{ activateCallback }" value="2">
                             <div class="flex flex-col">
                                 <h2 class="text-2xl font-bold mb-4 text-center">
-                                    List the Programming Languages involved (if any)
+                                    List the Programming Languages involved (if
+                                    any)
                                 </h2>
 
-                                <TagsField :form="form" field="languages" @change="handleFormChange"></TagsField>
+                                <TagsField
+                                    :form="form"
+                                    field="languages"
+                                    @change="handleFormChange"
+                                ></TagsField>
                             </div>
                             <div class="flex pt-6 justify-between">
                                 <Button
