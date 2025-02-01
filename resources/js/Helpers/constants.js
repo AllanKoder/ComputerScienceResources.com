@@ -1,4 +1,4 @@
-export const resourceTypes = [
+export const resourceFormats = [
     { label: "Website", value: "website" },
     { label: "Book", value: "book" },
     { label: "Blog", value: "blog" },

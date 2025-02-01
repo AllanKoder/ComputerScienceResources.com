@@ -10,7 +10,7 @@ import TagsField from "./Form/TagsField.vue";
 
 const form = useForm("CreateResource", {
     title: "",
-    type: [],
+    formats: [],
     url: "",
     pricing: "",
     difficulty: "",
