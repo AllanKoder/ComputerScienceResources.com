@@ -7,9 +7,9 @@ import { Form, FormField } from "@primevue/forms";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import { object, string, array } from "yup";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
-
+    
 import Select from "primevue/select";
-import { defineProps, defineEmits, watch } from "vue";
+import { defineProps, defineEmits, watch, ref } from "vue";
 import {
     resourceFormats,
     pricingOptions,
@@ -27,7 +27,9 @@ const props = defineProps({
 const emit = defineEmits(["change", "submit"]);
 
 // The form data that is being filled out
-const formData = reactive({ ...props.form });
+const formData = reactive({
+    ...props.form,
+});
 
 // The validation schema
 const schema = object({
@@ -36,7 +38,6 @@ const schema = object({
     imageUrl: string().url("Must be a valid image URL"),
     formats: array()
         .of(string())
-        .default([])
         .min(1, "At least one resource format is required"),
     description: string().required("Description is required"),
     difficulty: string().required("Difficulty level is required"),
@@ -44,7 +45,7 @@ const schema = object({
 });
 
 // PrimeVue Resolver
-const resolver = yupResolver(schema);
+const resolver = ref(yupResolver(schema));
 
 // Update change
 watch(
@@ -74,49 +75,71 @@ const validateAndSubmit = () => {
 <template>
     <Form
         :resolver="resolver"
+        @submit="validateAndSubmit"
+        :initialValues="formData"
         class="flex flex-col gap-4 w-full"
     >
         <div class="space-y-4">
-            <FormField v-slot="{ field, errors }" name="name">
+            <!-- Name Field -->
+            <FormField
+                v-slot="$field"
+                name="name"
+                initialValue=""
+                class="flex flex-col gap-1"
+            >
                 <label class="block text-sm font-medium text-gray-700"
                     >Name</label
                 >
                 <InputText
-                    v-bind="field"
                     v-model="formData.name"
                     placeholder="Enter the Name"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
-
-                <PrimeVueFormError :errors="errors" />
+                <PrimeVueFormError
+                    v-if="$field?.invalid"
+                    :errors="$field.errors"
+                />
             </FormField>
 
-            <FormField v-slot="{ field, errors }" name="url">
+            <!-- URL Field -->
+            <FormField
+                v-slot="$field"
+                name="url"
+                initialValue=""
+                class="flex flex-col gap-1"
+            >
                 <label class="block text-sm font-medium text-gray-700"
                     >Resource Website URL</label
                 >
                 <InputText
-                    v-bind="field"
                     v-model="formData.url"
                     placeholder="Enter resource URL"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
-
-                <PrimeVueFormError :errors="errors" />
+                <PrimeVueFormError
+                    v-if="$field?.invalid"
+                    :errors="$field.errors"
+                />
             </FormField>
 
-            <FormField v-slot="{ field, errors }" name="imageUrl">
+            <!-- Image URL Field -->
+            <FormField
+                v-slot="$field"
+                name="imageUrl"
+                class="flex flex-col gap-1"
+            >
                 <label class="block text-sm font-medium text-gray-700"
                     >Image URL</label
                 >
                 <InputText
-                    v-bind="field"
                     v-model="formData.imageUrl"
                     placeholder="Enter image URL"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
-
-                <PrimeVueFormError :errors="errors" />
+                <PrimeVueFormError
+                    v-if="$field?.invalid"
+                    :errors="$field.errors"
+                />
 
                 <!-- Displaying the Image Preview -->
                 <div class="mt-4">
@@ -130,43 +153,62 @@ const validateAndSubmit = () => {
                 </div>
             </FormField>
 
-            <FormField v-slot="{ field, errors }" name="formats">
+            <FormField
+                v-slot="$field"
+                name="formats"
+                class="flex flex-col gap-1"
+            >
+                <!-- Resource Format Field -->
                 <label class="block text-sm font-medium text-gray-700"
                     >Resource Format</label
                 >
                 <MultiSelect
-                    v-bind="field"
-                    :options="resourceFormats"
                     v-model="formData.formats"
+                    :options="resourceFormats"
                     option-label="label"
                     option-value="value"
-                    placeholder="Select formats"
-                    class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                    placeholder="Select Resource Formats"
+                    class="w-full"
                 />
-
-                <PrimeVueFormError :errors="errors" />
+                <PrimeVueFormError
+                    v-if="$field?.invalid"
+                    :errors="$field.errors"
+                />
             </FormField>
 
-            <FormField v-slot="{ field, errors }" name="description">
+            <!-- Description Field -->
+            <FormField
+                v-slot="$field"
+                name="description"
+                initialValue=""
+                class="flex flex-col gap-1"
+            >
                 <label class="block text-sm font-medium text-gray-700"
                     >Description</label
                 >
                 <Textarea
-                    v-bind="field"
                     v-model="formData.description"
                     placeholder="Describe the resource..."
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                     rows="3"
                 />
-                <PrimeVueFormError :errors="errors" />
+                <PrimeVueFormError
+                    v-if="$field?.invalid"
+                    :errors="$field.errors"
+                />
             </FormField>
 
-            <FormField v-slot="{ field, errors }" name="difficulty">
+            <!-- Difficulty Field -->
+            <FormField
+                v-slot="$field"
+                name="difficulty"
+                initialValue=""
+                class="flex flex-col gap-1"
+            >
                 <label class="block text-sm font-medium text-gray-700"
                     >Difficulty</label
                 >
                 <Select
-                    v-bind="field"
                     :options="difficultyLevels"
                     v-model="formData.difficulty"
                     option-label="label"
@@ -174,15 +216,23 @@ const validateAndSubmit = () => {
                     placeholder="Select Difficulty Level"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
-                <PrimeVueFormError :errors="errors" />
+                <PrimeVueFormError
+                    v-if="$field?.invalid"
+                    :errors="$field.errors"
+                />
             </FormField>
 
-            <FormField v-slot="{ field, errors }" name="pricing">
+            <!-- Pricing Field -->
+            <FormField
+                v-slot="$field"
+                name="pricing"
+                initialValue=""
+                class="flex flex-col gap-1"
+            >
                 <label class="block text-sm font-medium text-gray-700"
                     >Pricing</label
                 >
                 <Select
-                    v-bind="field"
                     :options="pricingOptions"
                     v-model="formData.pricing"
                     option-label="label"
@@ -190,14 +240,14 @@ const validateAndSubmit = () => {
                     placeholder="Select Pricing"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
-                <PrimeVueFormError :errors="errors" />
+                <PrimeVueFormError
+                    v-if="$field?.invalid"
+                    :errors="$field.errors"
+                />
             </FormField>
 
-            <Button
-                label="Next"
-                icon="pi pi-arrow-right"
-                @click="validateAndSubmit"
-            />
+            <!-- Submit Button -->
+            <Button label="Next" icon="pi pi-arrow-right" type="submit" />
         </div>
     </Form>
 </template>
