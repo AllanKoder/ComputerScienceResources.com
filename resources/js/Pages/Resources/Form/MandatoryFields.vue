@@ -7,7 +7,7 @@ import { Form, FormField } from "@primevue/forms";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import { object, string, array } from "yup";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
-    
+
 import Select from "primevue/select";
 import { defineProps, defineEmits, watch, ref } from "vue";
 import {
@@ -24,7 +24,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["change", "submit"]);
+const emit = defineEmits(["change", "next"]);
 
 // The form data that is being filled out
 const formData = reactive({
@@ -56,14 +56,12 @@ watch(
     { deep: true }
 );
 
-const validateAndSubmit = () => {
+const validateAndNext = () => {
     // Validate the form using the schema
     schema
         .validate(formData)
         .then((validData) => {
-            console.log("succesffu;");
-            console.log(validData);
-            emit("submit", validData);
+            emit("next", validData);
         })
         .catch((error) => {
             // If validation fails, you can handle the errors here
@@ -75,18 +73,12 @@ const validateAndSubmit = () => {
 <template>
     <Form
         :resolver="resolver"
-        @submit="validateAndSubmit"
         :initialValues="formData"
         class="flex flex-col gap-4 w-full"
     >
         <div class="space-y-4">
             <!-- Name Field -->
-            <FormField
-                v-slot="$field"
-                name="name"
-                initialValue=""
-                class="flex flex-col gap-1"
-            >
+            <FormField v-slot="$field" name="name" class="flex flex-col gap-1">
                 <label class="block text-sm font-medium text-gray-700"
                     >Name</label
                 >
@@ -102,12 +94,7 @@ const validateAndSubmit = () => {
             </FormField>
 
             <!-- URL Field -->
-            <FormField
-                v-slot="$field"
-                name="url"
-                initialValue=""
-                class="flex flex-col gap-1"
-            >
+            <FormField v-slot="$field" name="url" class="flex flex-col gap-1">
                 <label class="block text-sm font-medium text-gray-700"
                     >Resource Website URL</label
                 >
@@ -180,7 +167,6 @@ const validateAndSubmit = () => {
             <FormField
                 v-slot="$field"
                 name="description"
-                initialValue=""
                 class="flex flex-col gap-1"
             >
                 <label class="block text-sm font-medium text-gray-700"
@@ -202,7 +188,6 @@ const validateAndSubmit = () => {
             <FormField
                 v-slot="$field"
                 name="difficulty"
-                initialValue=""
                 class="flex flex-col gap-1"
             >
                 <label class="block text-sm font-medium text-gray-700"
@@ -226,7 +211,6 @@ const validateAndSubmit = () => {
             <FormField
                 v-slot="$field"
                 name="pricing"
-                initialValue=""
                 class="flex flex-col gap-1"
             >
                 <label class="block text-sm font-medium text-gray-700"
@@ -245,9 +229,14 @@ const validateAndSubmit = () => {
                     :errors="$field.errors"
                 />
             </FormField>
-
-            <!-- Submit Button -->
-            <Button label="Next" icon="pi pi-arrow-right" type="submit" />
         </div>
     </Form>
+    <!-- continue Button -->
+    <div class="flex pt-6 justify-end">
+        <Button
+            label="Next"
+            icon="pi pi-arrow-right"
+            @click="validateAndNext"
+        />
+    </div>
 </template>

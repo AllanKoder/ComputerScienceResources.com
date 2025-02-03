@@ -6,12 +6,14 @@ import AutoComplete from "primevue/autocomplete";
 import { defineEmits, defineProps } from "vue";
 
 const props = defineProps({
-    queryUrl: String
+    initial: Array,
+    queryUrl: String,
+    parentTags: Array,
 });
 
-const emit = defineEmits(['changed']);
+const emit = defineEmits(["changed"]);
 
-const tags = ref(new Set());
+const tags = ref(new Set(props.initial));
 const searchValue = ref("");
 const allSuggestions = ref(["test1", "test2"]);
 const suggestions = ref([]);
@@ -21,16 +23,14 @@ const addTag = (tag) => {
     if (tag && !tags.value.has(tag)) {
         tags.value.add(tag);
         searchValue.value = "";
-
-        emit('changed', tags)
+        emit("changed", Array.from(tags.value));
     }
 };
 
 const removeTag = (tag) => {
     if (tag) {
         tags.value.delete(tag);
-
-        emit('changed', tags)
+        emit("changed", Array.from(tags.value));
     }
 };
 
@@ -70,11 +70,10 @@ const filterSuggestions = (event) => {
             placeholder="Type to add tags"
         >
             <template #option="headerProps">
-                {{ headerProps.option }} - 
-                <span class="py-0.5 px-1 rounded-lg bg-gray-100">32</span> 
+                {{ headerProps.option }} -
+                <span class="py-0.5 px-1 rounded-lg bg-gray-100">32</span>
             </template>
         </AutoComplete>
-
         <!-- List of tags -->
         <div class="mt-2">
             <Tag v-for="tag in tags" :key="tag" class="mr-2 mb-2">

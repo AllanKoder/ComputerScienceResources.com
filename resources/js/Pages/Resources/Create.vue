@@ -1,21 +1,24 @@
 <script setup>
-import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Button from "primevue/button";
 import { Stepper, StepList, Step, StepPanel, StepPanels } from "primevue";
 
 import MandatoryFields from "@/Pages/Resources/Form/MandatoryFields.vue";
-import TagsField from "./Form/TagsField.vue";
+import TagSelector from "@/Components/Form/TagSelector.vue";
+import Message from "primevue/message";
+import TopicsFields from "./Form/TopicsFields.vue";
 
 const form = useForm("CreateResource", {
-    name: "",
-    formats: [],
-    url: "",
-    pricing: "",
-    difficulty: "",
-    description: "",
-    imageUrl: "",
+    name: "test",
+    formats: ["website"],
+    url: "http://youtube.com",
+    pricing: "free",
+    difficulty: "academic",
+    description: "http://youtube.com",
+    imageUrl: "http://youtube.com",
+    languages: [],
+    topics: [],
 });
 
 const submitForm = () => {
@@ -23,13 +26,10 @@ const submitForm = () => {
 };
 
 const handleFormChange = (newFormData) => {
-    Object.keys(newFormData).forEach(key => {
+    Object.keys(newFormData).forEach((key) => {
         form[key] = newFormData[key];
     });
-
-    console.log(form);
 };
-
 </script>
 
 <template>
@@ -43,69 +43,40 @@ const handleFormChange = (newFormData) => {
                         Add a New Resource
                     </h2>
                     <StepList>
-                        <Step value="1">Header I</Step>
-                        <Step value="2">Header II</Step>
-                        <Step value="3">Header III</Step>
+                        <Step value="1">Details</Step>
+                        <Step value="2">Topics</Step>
+                        <Step value="3">Tags</Step>
                     </StepList>
                     <StepPanels>
                         <StepPanel v-slot="{ activateCallback }" value="1">
                             <MandatoryFields
                                 :form="form"
                                 @change="handleFormChange"
+                                @next="activateCallback('2')"
                             ></MandatoryFields>
-
-                            <div class="flex pt-6 justify-end">
-                                <Button
-                                    label="Next"
-                                    icon="pi pi-arrow-right"
-                                    @click="activateCallback('2')"
-                                />
-                            </div>
                         </StepPanel>
                         <StepPanel v-slot="{ activateCallback }" value="2">
-                            <div class="flex flex-col">
-                                <h2 class="text-2xl font-bold mb-4 text-center">
-                                    List the Programming Languages involved (if
-                                    any)
-                                </h2>
-
-                                <TagsField
-                                    :form="form"
-                                    field="languages"
-                                    @change="handleFormChange"
-                                ></TagsField>
-                            </div>
-                            <div class="flex pt-6 justify-between">
-                                <Button
-                                    label="Back"
-                                    severity="secondary"
-                                    icon="pi pi-arrow-left"
-                                    @click="activateCallback('1')"
-                                />
-                                <Button
-                                    label="Next"
-                                    icon="pi pi-arrow-right"
-                                    iconPos="right"
-                                    @click="activateCallback('3')"
-                                />
-                            </div>
+                            <TopicsFields
+                                :form="form"
+                                @change="handleFormChange"
+                                @back="activateCallback('1')"
+                                @next="activateCallback('3')"
+                            ></TopicsFields>
                         </StepPanel>
                         <StepPanel v-slot="{ activateCallback }" value="3">
-                            <div class="flex flex-col h-48">
-                                <div
-                                    class="border-2 border-dashed border-surface-200 dark:border-surface-700 rounded bg-surface-50 dark:bg-surface-950 flex-auto flex justify-center items-center font-medium"
-                                >
-                                    Content III
-                                </div>
+                            <div class="flex flex-col">
+                                <TagSelector
+                                    :form="form"
+                                    @changed="(tags) => (form.languages = tags)"
+                                ></TagSelector>
                             </div>
-                            <div class="pt-6">
-                                <Button
-                                    label="Back"
-                                    severity="secondary"
-                                    icon="pi pi-arrow-left"
-                                    @click="activateCallback('2')"
-                                />
-                            </div>
+
+                            <Button
+                                label="Back"
+                                severity="secondary"
+                                icon="pi pi-arrow-left"
+                                @click="activateCallback('2')"
+                            />
 
                             <Button
                                 label="Submit"
