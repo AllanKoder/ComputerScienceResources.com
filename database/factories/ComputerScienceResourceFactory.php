@@ -46,15 +46,14 @@ class ComputerScienceResourceFactory extends Factory
      */
     public function addTags(): Factory
     {
-        $types = ['topics','programming_languages', 'tags'];
-
         // Define your tags here
         $tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', fake()->name(), fake()->name()];
 
         // Create random tags for this resource
-        return $this->afterCreating(function (ComputerScienceResource $resource) use ($tags, $types) {
-            $tagElements = fake()->randomElements($tags, rand(1, 3));
-            $resource->attachTags($tagElements, fake()->randomElement($types));
+        return $this->afterCreating(function (ComputerScienceResource $resource) use ($tags) {
+            $resource->topic_tags = fake()->randomElements($tags);
+            $resource->programming_language_tags = fake()->randomElements($tags);
+            $resource->general_tags = fake()->randomElements($tags);
         });
     }
 }

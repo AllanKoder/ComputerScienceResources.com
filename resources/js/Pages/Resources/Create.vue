@@ -10,20 +10,27 @@ import TopicsFields from "@/Pages/Resources/Form/TopicsFields.vue";
 const form = useForm("CreateResource", {
     name: "test",
     platforms: ["website"],
-    pageUrl: "http://youtube.com",
+    page_url: "http://youtube.com",
+    image_url: "http://youtube.com",
     pricing: "free",
     difficulty: "academic",
     description: "http://youtube.com",
-    imageUrl: "http://youtube.com",
     topics: ["te", "e", "sdf"],
-    programmingLanguages: [],
-    generalTags: ["a"],
+    programming_languages: [],
+    general_tags: ["a"],
 });
 
 const submitForm = () => {
     console.log(form);
     form.post(route("resources.store"), {
-        onSuccess: () => console.log("yess"),
+        onSuccess: () => {
+            console.log("success");
+            // Clear the form
+        },
+        onError: (errors) => {
+            console.error("Errors:", errors);
+            // Handle errors display them to the user
+        },
     });
 };
 

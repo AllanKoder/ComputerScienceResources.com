@@ -26,18 +26,18 @@ class StoreResourceRequest extends FormRequest
             'description' => 'required|string|max:4000',
             'platforms' => 'required|array',
             'platforms.*' => 'distinct|string|in:' . implode(',', config('computerScienceResource.platforms')),
-            'pageUrl' => 'required|string|url:http,https',
+            'page_url' => 'required|string|url:http,https',
             'difficulty' => 'required|string|in:' . implode(',', config('computerScienceResource.difficulties')),
             'pricing' => 'required|string|in:' . implode(',', config('computerScienceResource.pricings')),
             'topics' => 'required|array|min:3',
             'topics.*' => 'distinct|string',
 
             // Optional
-            'imageUrl' => 'sometimes|string|url:http,https',
-            'generalTags' => 'sometimes|array',
-            'generalTags.*' => 'distinct|string',
-            'programmingLanguages' => 'sometimes|array',
-            'programmingLanguages.*' => 'distinct|string'
+            'image_url' => 'sometimes|string|url:http,https',
+            'general_tags' => 'sometimes|array',
+            'general_tags.*' => 'distinct|string',
+            'programming_languages' => 'sometimes|array',
+            'programming_languages.*' => 'distinct|string'
         ];
     }
 }

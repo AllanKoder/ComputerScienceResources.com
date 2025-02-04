@@ -34,8 +34,8 @@ const formData = reactive({
 // The validation schema
 const schema = object({
     name: string().required("Name is required").max(100, "Max 100 chars"),
-    pageUrl: string().url("Must be a valid URL").required("URL is required"),
-    imageUrl: string().url("Must be a valid image URL"),
+    page_url: string().url("Must be a valid URL").required("URL is required"),
+    image_url: string().url("Must be a valid image URL"),
     platforms: array()
         .of(string())
         .min(1, "At least one platform is required"),
@@ -99,7 +99,7 @@ const validateAndNext = () => {
                     >Resource Website URL</label
                 >
                 <InputText
-                    v-model="formData.pageUrl"
+                    v-model="formData.page_url"
                     placeholder="Enter resource URL"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
@@ -119,7 +119,7 @@ const validateAndNext = () => {
                     >Image URL</label
                 >
                 <InputText
-                    v-model="formData.imageUrl"
+                    v-model="formData.image_url"
                     placeholder="Enter image URL"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />

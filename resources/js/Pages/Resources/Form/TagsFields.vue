@@ -31,8 +31,8 @@ watch(
         What Programming Languages are used (if any)?
     </h2>
     <TagSelector
-        :initial="formData.programmingLanguages ?? []"
-        @changed="(tags) => (formData.programmingLanguages = tags)"
+        :initial="formData.programming_languages ?? []"
+        @changed="(tags) => (formData.programming_languages = tags)"
     ></TagSelector>
 
     <!-- Tag Selector for Other tags -->
@@ -40,8 +40,8 @@ watch(
         What else is it related to?
     </h2>
     <TagSelector
-        :initial="formData.generalTags ?? []"
-        @changed="(tags) => (formData.generalTags = tags)"
+        :initial="formData.general_tags ?? []"
+        @changed="(tags) => (formData.general_tags = tags)"
     ></TagSelector>
 
     <!-- Prev/Next Button -->

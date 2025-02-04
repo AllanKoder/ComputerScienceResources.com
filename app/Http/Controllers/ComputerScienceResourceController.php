@@ -38,14 +38,14 @@ class ComputerScienceResourceController extends Controller
     public function store(StoreResourceRequest $request)
     {
         $validatedData = $request->validated();
-        Log::debug("Called store resource with data " . json_encode($request->validated()));
+        Log::debug("Called store resource with data " . json_encode($request));
 
         $resource = ComputerScienceResource::create([
             'user_id' => auth()->id(),
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
-            'image_url' => $validatedData['imageUrl'] ?? null,
-            'page_url' => $validatedData['pageUrl'],
+            'image_url' => $validatedData['image_url'] ?? null,
+            'page_url' => $validatedData['page_url'],
             'platforms' => implode(',', $validatedData['platforms']),
             'difficulty' => $validatedData['difficulty'],
             'pricing' => $validatedData['pricing'],
@@ -55,13 +55,13 @@ class ComputerScienceResourceController extends Controller
         $resource->topic_tags = $validatedData['topics'];
 
         // Add programming languages as tags (if provided)
-        if (isset($validatedData['programmingLanguages'])) {
-            $resource->programming_language_tags = $validatedData['programmingLanguages'];
+        if (isset($validatedData['programming_languages'])) {
+            $resource->programming_language_tags = $validatedData['programming_languages'];
         }
 
         // Add general tags (if provided)
-        if (isset($validatedData['generalTags'])) {
-            $resource->general_tags = $validatedData['generalTags'];
+        if (isset($validatedData['general_tags'])) {
+            $resource->general_tags = $validatedData['general_tags'];
         }
 
         Log::debug("Created resource " . json_encode($resource));
