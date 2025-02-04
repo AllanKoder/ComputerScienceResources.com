@@ -11,9 +11,9 @@ import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import Select from "primevue/select";
 import { defineProps, defineEmits, watch, ref } from "vue";
 import {
-    resourceFormats,
-    pricingOptions,
-    difficultyLevels,
+    platforms,
+    pricings,
+    difficulties,
 } from "@/Helpers/constants";
 import { reactive } from "vue";
 
@@ -33,13 +33,13 @@ const formData = reactive({
 
 // The validation schema
 const schema = object({
-    name: string().required("Name is required"),
-    url: string().url("Must be a valid URL").required("URL is required"),
+    name: string().required("Name is required").max(100, "Max 100 chars"),
+    pageUrl: string().url("Must be a valid URL").required("URL is required"),
     imageUrl: string().url("Must be a valid image URL"),
-    formats: array()
+    platforms: array()
         .of(string())
-        .min(1, "At least one resource format is required"),
-    description: string().required("Description is required"),
+        .min(1, "At least one platform is required"),
+    description: string().required("Description is required").max(4000),
     difficulty: string().required("Difficulty level is required"),
     pricing: string().required("Pricing information is required"),
 });
@@ -99,7 +99,7 @@ const validateAndNext = () => {
                     >Resource Website URL</label
                 >
                 <InputText
-                    v-model="formData.url"
+                    v-model="formData.pageUrl"
                     placeholder="Enter resource URL"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
@@ -142,19 +142,19 @@ const validateAndNext = () => {
 
             <FormField
                 v-slot="$field"
-                name="formats"
+                name="platforms"
                 class="flex flex-col gap-1"
             >
-                <!-- Resource Format Field -->
+                <!-- Resource Platforms Field -->
                 <label class="block text-sm font-medium text-gray-700"
-                    >Resource Format</label
+                    >Resource Platforms</label
                 >
                 <MultiSelect
-                    v-model="formData.formats"
-                    :options="resourceFormats"
+                    v-model="formData.platforms"
+                    :options="platforms"
                     option-label="label"
                     option-value="value"
-                    placeholder="Select Resource Formats"
+                    placeholder="Select Resource Platform"
                     class="w-full"
                 />
                 <PrimeVueFormError
@@ -194,7 +194,7 @@ const validateAndNext = () => {
                     >Difficulty</label
                 >
                 <Select
-                    :options="difficultyLevels"
+                    :options="difficulties"
                     v-model="formData.difficulty"
                     option-label="label"
                     option-value="value"
@@ -217,7 +217,7 @@ const validateAndNext = () => {
                     >Pricing</label
                 >
                 <Select
-                    :options="pricingOptions"
+                    :options="pricings"
                     v-model="formData.pricing"
                     option-label="label"
                     option-value="value"

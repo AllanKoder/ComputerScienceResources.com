@@ -52,7 +52,7 @@ const downvote = () => emit("downvote", props.resource);
             <p class="text-gray-600 mb-4">{{ resource.description }}</p>
             <div class="flex flex-wrap gap-2">
                 <span
-                    v-for="type in resource.resource_type.split(',')"
+                    v-for="type in resource.platforms.split(',')"
                     :key="type"
                     class="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded"
                 >

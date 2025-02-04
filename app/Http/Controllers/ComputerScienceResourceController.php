@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -33,9 +35,38 @@ class ComputerScienceResourceController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreResourceRequest $request)
     {
-        //
+        $validatedData = $request->validated();
+        Log::debug("Called store resource with data " . json_encode($request->validated()));
+
+        $resource = ComputerScienceResource::create([
+            'user_id' => auth()->id(),
+            'name' => $validatedData['name'],
+            'description' => $validatedData['description'],
+            'image_url' => $validatedData['imageUrl'] ?? null,
+            'page_url' => $validatedData['pageUrl'],
+            'platforms' => implode(',', $validatedData['platforms']),
+            'difficulty' => $validatedData['difficulty'],
+            'pricing' => $validatedData['pricing'],
+        ]);
+
+        // Add topics as tags
+        $resource->attachTags($validatedData['topics'], 'topics');
+
+        // Add programming languages as tags (if provided)
+        if (isset($validatedData['programmingLanguages'])) {
+            $resource->attachTags($validatedData['programmingLanguages'], 'programming_languages');
+        }
+
+        // Add general tags (if provided)
+        if (isset($validatedData['tags'])) {
+            $resource->attachTags($validatedData['tags'], 'tags');
+        }
+
+        Log::debug("Created resource " . json_encode($resource));
+
+        return to_route('resources');
     }
 
     /**

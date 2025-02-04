@@ -1,7 +1,6 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from "vue";
 import TagSelector from "@/Components/Form/TagSelector.vue";
-import Message from "primevue/message";
 import Button from "primevue/button";
 
 const props = defineProps({
@@ -24,42 +23,25 @@ watch(
     },
     { deep: true }
 );
-
-const validate = () => {
-    return formData.value.topics && formData.value.topics.length >= 3;
-};
-
-const validationError = ref("");
-// Function to handle form submission
-const validateAndNext = async () => {
-    if (validate()) {
-        emit("next");
-    } else {
-        console.error("Validation failed");
-        validationError.value = "Must have at least 3 topics";
-    }
-};
 </script>
 
 <template>
+    <!-- Tag Selector for Programming Languages -->
     <h2 class="text-2xl font-bold mb-4 text-center">
-        What topics does this resource cover?
+        What Programming Languages are used (if any)?
     </h2>
+    <TagSelector
+        :initial="formData.programmingLanguages ?? []"
+        @changed="(tags) => (formData.programmingLanguages = tags)"
+    ></TagSelector>
 
-    <!-- Show error message if validation fails -->
-    <Message
-        v-if="validationError"
-        severity="error"
-        size="small"
-        variant="simple"
-    >
-        {{ validationError }}
-    </Message>
-
-    <!-- Tag Selector for topics -->
+    <!-- Tag Selector for Other tags -->
+    <h2 class="text-2xl font-bold mb-4 text-center">
+        What else is it related to?
+    </h2>
     <TagSelector
         :initial="formData.topics ?? []"
-        @changed="(tags) => (formData.topics = tags)"
+        @changed="(tags) => (formData.tags = tags)"
     ></TagSelector>
 
     <!-- Prev/Next Button -->
@@ -72,10 +54,10 @@ const validateAndNext = async () => {
         />
 
         <Button
-            label="Next"
+            label="Submit"
             icon="pi pi-arrow-right"
             iconPos="right"
-            @click="validateAndNext"
+            @click="() => emit('next')"
         />
     </div>
 </template>

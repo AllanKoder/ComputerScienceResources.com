@@ -1,28 +1,29 @@
 <script setup>
 import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import Button from "primevue/button";
 import { Stepper, StepList, Step, StepPanel, StepPanels } from "primevue";
 
 import MandatoryFields from "@/Pages/Resources/Form/MandatoryFields.vue";
-import TagSelector from "@/Components/Form/TagSelector.vue";
-import Message from "primevue/message";
-import TopicsFields from "./Form/TopicsFields.vue";
+import TagsFields from "@/Pages/Resources/Form/TagsFields.vue";
+import TopicsFields from "@/Pages/Resources/Form/TopicsFields.vue";
 
 const form = useForm("CreateResource", {
     name: "test",
-    formats: ["website"],
-    url: "http://youtube.com",
+    platforms: ["website"],
+    pageUrl: "http://youtube.com",
     pricing: "free",
     difficulty: "academic",
     description: "http://youtube.com",
     imageUrl: "http://youtube.com",
-    languages: [],
-    topics: [],
+    topics: ["te", "e", "sdf"],
+    programmingLanguages: [],
 });
 
 const submitForm = () => {
-    form.post("/resources");
+    console.log(form);
+    form.post(route("resources.store"), {
+        onSuccess: () => console.log("yess"),
+    });
 };
 
 const handleFormChange = (newFormData) => {
@@ -65,24 +66,13 @@ const handleFormChange = (newFormData) => {
                         </StepPanel>
                         <StepPanel v-slot="{ activateCallback }" value="3">
                             <div class="flex flex-col">
-                                <TagSelector
+                                <TagsFields
                                     :form="form"
-                                    @changed="(tags) => (form.languages = tags)"
-                                ></TagSelector>
+                                    @change="handleFormChange"
+                                    @back="activateCallback('2')"
+                                    @next="submitForm"
+                                />
                             </div>
-
-                            <Button
-                                label="Back"
-                                severity="secondary"
-                                icon="pi pi-arrow-left"
-                                @click="activateCallback('2')"
-                            />
-
-                            <Button
-                                label="Submit"
-                                class="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded w-full"
-                                @click="submitForm"
-                            />
                         </StepPanel>
                     </StepPanels>
                 </Stepper>

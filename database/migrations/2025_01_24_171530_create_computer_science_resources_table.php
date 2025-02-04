@@ -23,9 +23,8 @@ return new class extends Migration
                 $table->text('description')->fulltext();
                 $table->string('image_url');
                 $table->string('page_url');
-                $table->date('resource_created_on')->index();
 
-                $table->set('resource_type', ['book', 'podcast', 'youtube channel', 'blog', 'website', 'organization', 'bootcamp', 'newsletter', 'workshop', 'course', 'forum', 'mobile app', 'desktop app', 'e-zine'])
+                $table->set('platforms', ['book', 'podcast', 'youtube_channel', 'blog', 'website', 'organization', 'bootcamp', 'newsletter', 'workshop', 'course', 'forum', 'mobile_app', 'desktop_app', 'magazine'])
                     ->index();
                 $table->enum('difficulty', ['beginner', 'industry_simple', 'industry_standard', 'industry_professional', 'academic'])
                     ->index();

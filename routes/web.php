@@ -29,9 +29,11 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
  
- 
+    
+    // CompSci Resources
     Route::controller(ComputerScienceResourceController::class)->group(function () {
         Route::get('/resources/create', 'create')->name('resources.create');
+        Route::post('/resources', 'store')->name('resources.store');
     });
 });
 

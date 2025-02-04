@@ -15,6 +15,8 @@ class ComputerScienceResource extends Model
 
     protected $table = "computer_science_resources";
 
+    protected $guarded = [];
+
     /**
      * Accessor to get topic tags.
      *

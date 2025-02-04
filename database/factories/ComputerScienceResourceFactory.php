@@ -21,20 +21,23 @@ class ComputerScienceResourceFactory extends Factory
      */
     public function definition(): array
     {
+        $platforms = config('computerScienceResource.platforms');
+        $difficulties = config('computerScienceResource.difficulties');
+        $pricings = config('computerScienceResource.pricings');
+
         return [
             'name' => fake()->name(),
             'description' => fake()->realText(),
             'user_id' => User::all()->random()->id,
             'image_url' => 'https://cdn.iconscout.com/icon/free/png-256/free-leetcode-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-vol-1-pack-logos-icons-3030025.png',
             'page_url' => fake()->url(),
-            'resource_created_on' => fake()->date(),
 
-            'resource_type' => implode(
+            'platforms' => implode(
                 ',',
-                fake()->randomElements(['book', 'podcast', 'youtube channel', 'blog', 'website', 'organization', 'bootcamp', 'newsletter', 'workshop', 'course', 'forum', 'mobile app', 'desktop app', 'e-zine'], rand(1, 3))
+                fake()->randomElements($platforms, rand(1, 3))
             ),
-            'difficulty' => fake()->randomElement(['beginner', 'industry_simple', 'industry_standard', 'industry_professional', 'academic']),
-            'pricing' => fake()->randomElement(['free', 'premium', 'paid', 'freemium']),
+            'difficulty' => fake()->randomElement($difficulties),
+            'pricing' => fake()->randomElement($pricings),
         ];
     }
 
