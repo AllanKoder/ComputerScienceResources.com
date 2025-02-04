@@ -17,6 +17,7 @@ const form = useForm("CreateResource", {
     imageUrl: "http://youtube.com",
     topics: ["te", "e", "sdf"],
     programmingLanguages: [],
+    generalTags: ["a"],
 });
 
 const submitForm = () => {

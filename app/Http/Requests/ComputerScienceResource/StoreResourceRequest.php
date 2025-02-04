@@ -34,8 +34,8 @@ class StoreResourceRequest extends FormRequest
 
             // Optional
             'imageUrl' => 'sometimes|string|url:http,https',
-            'tags' => 'sometimes|array',
-            'tags.*' => 'distinct|string',
+            'generalTags' => 'sometimes|array',
+            'generalTags.*' => 'distinct|string',
             'programmingLanguages' => 'sometimes|array',
             'programmingLanguages.*' => 'distinct|string'
         ];

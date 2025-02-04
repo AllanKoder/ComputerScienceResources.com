@@ -40,8 +40,8 @@ watch(
         What else is it related to?
     </h2>
     <TagSelector
-        :initial="formData.topics ?? []"
-        @changed="(tags) => (formData.tags = tags)"
+        :initial="formData.generalTags ?? []"
+        @changed="(tags) => (formData.generalTags = tags)"
     ></TagSelector>
 
     <!-- Prev/Next Button -->

@@ -52,16 +52,16 @@ class ComputerScienceResourceController extends Controller
         ]);
 
         // Add topics as tags
-        $resource->attachTags($validatedData['topics'], 'topics');
+        $resource->topic_tags = $validatedData['topics'];
 
         // Add programming languages as tags (if provided)
         if (isset($validatedData['programmingLanguages'])) {
-            $resource->attachTags($validatedData['programmingLanguages'], 'programming_languages');
+            $resource->programming_language_tags = $validatedData['programmingLanguages'];
         }
 
         // Add general tags (if provided)
-        if (isset($validatedData['tags'])) {
-            $resource->attachTags($validatedData['tags'], 'tags');
+        if (isset($validatedData['generalTags'])) {
+            $resource->general_tags = $validatedData['generalTags'];
         }
 
         Log::debug("Created resource " . json_encode($resource));
