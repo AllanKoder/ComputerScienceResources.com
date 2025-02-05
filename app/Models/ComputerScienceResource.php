@@ -18,6 +18,24 @@ class ComputerScienceResource extends Model
     protected $guarded = [];
 
     /**
+     * Convert the model's fields to the form request variant.
+     *
+     * @return array
+     */
+    public function toFormRequestArray(): array
+    {
+        $data = $this->toArray();
+        
+        // Convert platforms from string to array
+        $data['platforms'] = explode(',', $data['platforms']);
+        
+        // Remove unnecessary fields
+        unset($data['created_at'], $data['updated_at']);
+        
+        return $data;
+    }
+
+    /**
      * Accessor to get topic tags.
      *
      * @return Attribute

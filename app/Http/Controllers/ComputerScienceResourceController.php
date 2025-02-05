@@ -52,11 +52,11 @@ class ComputerScienceResourceController extends Controller
         ]);
 
         // Add topics as tags
-        $resource->topic_tags = $validatedData['topics'];
+        $resource->topic_tags = $validatedData['topic_tags'];
 
         // Add programming languages as tags (if provided)
-        if (isset($validatedData['programming_languages'])) {
-            $resource->programming_language_tags = $validatedData['programming_languages'];
+        if (isset($validatedData['programming_language_tags'])) {
+            $resource->programming_language_tags = $validatedData['programming_language_tags'];
         }
 
         // Add general tags (if provided)

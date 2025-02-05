@@ -31,8 +31,8 @@ watch(
         What Programming Languages are used (if any)?
     </h2>
     <TagSelector
-        :initial="formData.programming_languages ?? []"
-        @changed="(tags) => (formData.programming_languages = tags)"
+        :initial="formData.programming_language_tags ?? []"
+        @changed="(tags) => (formData.programming_language_tags = tags)"
     ></TagSelector>
 
     <!-- Tag Selector for Other tags -->

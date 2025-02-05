@@ -51,7 +51,7 @@ class ComputerScienceResourceFactory extends Factory
 
         // Create random tags for this resource
         return $this->afterCreating(function (ComputerScienceResource $resource) use ($tags) {
-            $resource->topic_tags = fake()->randomElements($tags);
+            $resource->topic_tags = fake()->randomElements($tags, fake()->numberBetween(3, count($tags)));
             $resource->programming_language_tags = fake()->randomElements($tags);
             $resource->general_tags = fake()->randomElements($tags);
         });

@@ -26,7 +26,7 @@ watch(
 );
 
 const validate = () => {
-    return formData.value.topics && formData.value.topics.length >= 3;
+    return formData.value.topic_tags && formData.value.topic_tags.length >= 3;
 };
 
 const validationError = ref("");
@@ -58,8 +58,8 @@ const validateAndNext = async () => {
 
     <!-- Tag Selector for topics -->
     <TagSelector
-        :initial="formData.topics ?? []"
-        @changed="(tags) => (formData.topics = tags)"
+        :initial="formData.topic_tags ?? []"
+        @changed="(tags) => (formData.topic_tags = tags)"
     ></TagSelector>
 
     <!-- Prev/Next Button -->

@@ -15,8 +15,8 @@ const form = useForm("CreateResource", {
     pricing: "free",
     difficulty: "academic",
     description: "http://youtube.com",
-    topics: ["te", "e", "sdf"],
-    programming_languages: [],
+    topic_tags: ["te", "e", "sdf"],
+    programming_language_tags: [],
     general_tags: ["a"],
 });
 
