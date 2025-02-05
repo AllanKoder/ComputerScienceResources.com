@@ -37,3 +37,4 @@ Route::middleware([
     });
 });
 
+require __DIR__.'/socialstream.php';

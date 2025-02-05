@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Database\Factories\ComputerScienceResourceFactory;
+use Hash;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
@@ -22,7 +23,7 @@ class UserSeeder extends Seeder
             [
                 'name'=>'Allan Kong',
                 'email'=>'allankong176@gmail.com',
-                'password'=>'password',
+                'password'=>Hash::make('password'),
             ]
         );
     }

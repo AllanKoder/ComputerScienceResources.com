@@ -2,23 +2,19 @@
 
 namespace Database\Factories;
 
+use App\Models\ConnectedAccount;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Laravel\Jetstream\Features;
+use JoelButcher\Socialstream\Providers;
+use Laravel\Jetstream\Features as JetstreamFeatures;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
  */
 class UserFactory extends Factory
 {
-    /**
-     * The current password being used by the factory.
-     */
-    protected static ?string $password;
-
     /**
      * Define the model's default state.
      *
@@ -30,7 +26,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
-            'password' => static::$password ??= Hash::make('password'),
+            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'remember_token' => Str::random(10),
@@ -54,7 +50,7 @@ class UserFactory extends Factory
      */
     public function withPersonalTeam(?callable $callback = null): static
     {
-        if (! Features::hasTeamFeatures()) {
+        if (! JetstreamFeatures::hasTeamFeatures()) {
             return $this->state([]);
         }
 
@@ -64,6 +60,26 @@ class UserFactory extends Factory
                     'name' => $user->name.'\'s Team',
                     'user_id' => $user->id,
                     'personal_team' => true,
+                ])
+                ->when(is_callable($callback), $callback),
+            'ownedTeams'
+        );
+    }
+
+    /**
+     * Indicate that the user should have a connected account for the given provider.
+     */
+    public function withConnectedAccount(string $provider, ?callable $callback = null): static
+    {
+        if (! Providers::enabled($provider)) {
+            return $this->state([]);
+        }
+
+        return $this->has(
+            ConnectedAccount::factory()
+                ->state(fn (array $attributes, User $user) => [
+                    'provider' => $provider,
+                    'user_id' => $user->id,
                 ])
                 ->when(is_callable($callback), $callback),
             'ownedTeams'
