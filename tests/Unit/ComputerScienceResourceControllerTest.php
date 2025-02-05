@@ -21,12 +21,36 @@ class ComputerScienceResourceControllerTest extends TestCase
         $this->user = User::factory()->create();
     }
 
+    /**
+     * Convert the ComputerScienceResource's fields to the form request variant.
+     *
+     * @return array
+     */
+    private function toFormRequestArray(ComputerScienceResource $model): array
+    {
+        $data = $model->toArray();
+        
+        // Convert platforms from string to array
+        $data['platforms'] = explode(',', $data['platforms']);
+        
+        // Remove unnecessary fields
+        unset($data['created_at'], $data['updated_at']);
+
+        // Tags
+        $tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', fake()->name(), fake()->name()];
+        $data['topic_tags'] = fake()->randomElements($tags, fake()->numberBetween(3, count($tags)));
+        $data['programming_language_tags'] = fake()->randomElements($tags);
+        $data['general_tags'] = fake()->randomElements($tags);
+        
+        return $data;
+    }
+
     public function test_can_post_resource()
     {
         $this->actingAs($this->user);
 
-        $resourceData = ComputerScienceResource::factory()->addTags()->create();
-        $formData = $resourceData->toFormRequestArray();
+        $resourceData = ComputerScienceResource::factory()->make();
+        $formData = $this->toFormRequestArray($resourceData);
 
         $response = $this->postJson(route('resources.store'), $formData);
 
@@ -45,8 +69,8 @@ class ComputerScienceResourceControllerTest extends TestCase
 
     public function test_cannot_post_resource_unauthed()
     {
-        $resourceData = ComputerScienceResource::factory()->addTags()->create();
-        $formData = $resourceData->toFormRequestArray();
+        $resourceData = ComputerScienceResource::factory()->make();
+        $formData = $this->toFormRequestArray($resourceData);
 
         $response = $this->postJson(route('resources.store'), $formData);
 
@@ -61,8 +85,8 @@ class ComputerScienceResourceControllerTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        $resourceData = ComputerScienceResource::factory()->addTags()->create();
-        $formData = $resourceData->toFormRequestArray();
+        $resourceData = ComputerScienceResource::factory()->make();
+        $formData = $this->toFormRequestArray($resourceData);
         $formData['name'] = str_repeat('0', 101);
 
         $response = $this->postJson(route('resources.store'), $formData);
@@ -74,7 +98,9 @@ class ComputerScienceResourceControllerTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        $validData = ComputerScienceResource::factory()->addTags()->make()->toFormRequestArray();
+        $resource = ComputerScienceResource::factory()->make();
+        $validData = $this->toFormRequestArray($resource);
+
 
         $invalidDataSets = [
             'name' => str_repeat('a', 101), # Too long
@@ -122,9 +148,9 @@ class ComputerScienceResourceControllerTest extends TestCase
 
             $this->assertTrue($errorFound, "Failed asserting that the response contains a validation error for '$field'. " . $errorMessage);
 
-            $resource = ComputerScienceResource::first();
+            $not_created_resource = ComputerScienceResource::first();
             $this->assertNull(
-                $resource,
+                $not_created_resource,
                 "Failed asserting that a resource with name '{$testData['name']}' was not created in the database. Invalid field being: " . $field
             );
         }
