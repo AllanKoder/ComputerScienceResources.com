@@ -17,6 +17,7 @@ Route::get('/', function () {
 
 Route::controller(ComputerScienceResourceController::class)->group(function () {
     Route::get('/resources', 'index')->name('resources');
+    Route::get('/resources/{computerScienceResource}', 'show')->name('resources.show');
 });
 
 // Authenticated

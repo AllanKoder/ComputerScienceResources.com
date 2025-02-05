@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
+use Illuminate\Database\Console\DumpCommand;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
@@ -74,7 +75,9 @@ class ComputerScienceResourceController extends Controller
      */
     public function show(ComputerScienceResource $computerScienceResource)
     {
-        //
+        return Inertia::render('Resources/Show', [
+            'resource' => $computerScienceResource
+        ]);
     }
 
     /**

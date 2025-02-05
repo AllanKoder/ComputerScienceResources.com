@@ -4,8 +4,8 @@ import { Icon } from "@iconify/vue";
 defineProps({
     resource: {
         type: Object,
-        required: true
-    }
+        required: true,
+    },
 });
 
 const emit = defineEmits(["upvote", "downvote"]);
@@ -44,7 +44,15 @@ const downvote = () => emit("downvote", props.resource);
 
         <td class="align-top pr-6">
             <div class="flex justify-between items-start mb-3">
-                <h2 class="text-xl font-semibold">{{ resource.name }}</h2>
+                <a
+                    :href="
+                        route('resources.show', {
+                            computerScienceResource: resource.id,
+                        })
+                    "
+                >
+                    <h2 class="text-xl font-semibold">{{ resource.name }}</h2>
+                </a>
                 <time class="text-sm text-gray-500">{{
                     resource.resource_created_on
                 }}</time>
@@ -83,8 +91,11 @@ const downvote = () => emit("downvote", props.resource);
                 </span>
 
                 <!-- Display general tags -->
-                <span v-for="tag in resource.general_tags" :key="tag.id" 
-                    class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                <span
+                    v-for="tag in resource.general_tags"
+                    :key="tag.id"
+                    class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded"
+                >
                     {{ tag }}
                 </span>
             </div>
