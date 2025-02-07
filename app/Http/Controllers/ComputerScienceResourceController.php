@@ -75,7 +75,6 @@ class ComputerScienceResourceController extends Controller
      */
     public function show(ComputerScienceResource $computerScienceResource)
     {
-        dump($computerScienceResource);
         return Inertia::render('Resources/Show', [
             'resource' => $computerScienceResource
         ]);

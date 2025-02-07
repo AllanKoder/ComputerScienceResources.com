@@ -20,6 +20,11 @@ trait HasVotes
      */
     public function upvote($userId)
     {
+        $currentVote = $this->getVoteValue($userId);
+    
+        if ($currentVote == 1) {
+            return $this->deleteVote($userId);
+        }
         return $this->vote($userId, 1);
     }
 
@@ -28,6 +33,11 @@ trait HasVotes
      */
     public function downvote($userId)
     {
+        $currentVote = $this->getVoteValue($userId);
+    
+        if ($currentVote == -1) {
+            return $this->deleteVote($userId);
+        }
         return $this->vote($userId, -1);
     }
 
@@ -65,5 +75,13 @@ trait HasVotes
         $values = ['value' => $value];
 
         return $this->votes()->updateOrCreate($attributes, $values);
+    }
+
+    /**
+     * Delete a Vote
+     */
+    protected function deleteVote($userId)
+    {
+        $this->votes()->where('user_id', $userId)->delete();
     }
 }
