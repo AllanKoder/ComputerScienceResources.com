@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComputerScienceResourceController;
+use App\Http\Controllers\UpvoteController;
 use Inertia\Inertia;
 
 // Public
@@ -31,6 +32,11 @@ Route::middleware([
     Route::controller(ComputerScienceResourceController::class)->group(function () {
         Route::get('/resources/create', 'create')->name('resources.create');
         Route::post('/resources', 'store')->name('resources.store');
+    });
+
+    Route::controller(UpvoteController::class)->group(function () {
+        Route::post('/upvote/{type}/{id}', 'upvote')->name('upvote');
+        Route::post('/downvote/{type}/{id}', 'downvote')->name('downvote');
     });
 });
 

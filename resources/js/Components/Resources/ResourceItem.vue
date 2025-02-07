@@ -18,7 +18,10 @@ const downvote = () => emit("downvote", props.resource);
 <template>
     <tr class="mb-8 border-b p-12">
         <td class="align-top pr-6">
-            <UpvoteResource :resource="resource.id"></UpvoteResource>
+            <UpvoteResource
+                :resourceId="resource.id"
+                :votes="resource.total_votes"
+            ></UpvoteResource>
         </td>
 
         <td class="align-top pr-6 w-32">

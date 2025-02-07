@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasVotes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -12,6 +13,7 @@ class ComputerScienceResource extends Model
     /** @use HasFactory<\Database\Factories\ComputerScienceResourceFactory> */
     use HasFactory;
     use HasTags;
+    use HasVotes;
 
     protected $table = "computer_science_resources";
 
@@ -56,5 +58,17 @@ class ComputerScienceResource extends Model
         );
     }
 
-    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags'];
+    /**
+     * Accessor to get votes.
+     *
+     * @return Attribute
+     */
+    protected function totalVotes(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->getTotalVotes(),
+        );
+    }
+
+    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'total_votes'];
 }
