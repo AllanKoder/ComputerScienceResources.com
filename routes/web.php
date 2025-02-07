@@ -15,10 +15,6 @@ Route::get('/', function () {
     ]);
 });
 
-Route::controller(ComputerScienceResourceController::class)->group(function () {
-    Route::get('/resources', 'index')->name('resources');
-    Route::get('/resources/{computerScienceResource}', 'show')->name('resources.show');
-});
 
 // Authenticated
 Route::middleware([
@@ -36,6 +32,12 @@ Route::middleware([
         Route::get('/resources/create', 'create')->name('resources.create');
         Route::post('/resources', 'store')->name('resources.store');
     });
+});
+
+// Public
+Route::controller(ComputerScienceResourceController::class)->group(function () {
+    Route::get('/resources', 'index')->name('resources');
+    Route::get('/resources/{computerScienceResource}', 'show')->name('resources.show');
 });
 
 require __DIR__.'/socialstream.php';

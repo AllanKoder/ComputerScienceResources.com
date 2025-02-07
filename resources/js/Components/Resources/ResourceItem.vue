@@ -1,5 +1,6 @@
 <script setup>
 import { Icon } from "@iconify/vue";
+import UpvoteResource from "./UpvoteResource.vue";
 
 defineProps({
     resource: {
@@ -17,21 +18,7 @@ const downvote = () => emit("downvote", props.resource);
 <template>
     <tr class="mb-8 border-b p-12">
         <td class="align-top pr-6">
-            <div class="flex flex-col items-center">
-                <button
-                    @click="upvote"
-                    class="mb-2 text-gray-500 hover:text-blue-500"
-                >
-                    <Icon icon="mdi:chevron-up" width="24" height="24" />
-                </button>
-                <span class="text-lg font-bold">{{ resource.votes || 0 }}</span>
-                <button
-                    @click="downvote"
-                    class="mt-2 text-gray-500 hover:text-red-500"
-                >
-                    <Icon icon="mdi:chevron-down" width="24" height="24" />
-                </button>
-            </div>
+            <UpvoteResource :resource="resource.id"></UpvoteResource>
         </td>
 
         <td class="align-top pr-6 w-32">
