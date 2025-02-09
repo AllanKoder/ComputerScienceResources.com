@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\ModelResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class UpvoteController extends Controller
 {
@@ -21,8 +22,12 @@ class UpvoteController extends Controller
 
         $id = auth()->id();
         $model->upvote($id);
-
-        return back();
+        
+        $model->refresh();
+        $newVotes = $model->total_votes;
+        
+        Log::debug('New votes is ' . $newVotes);
+        return response()->json(['votes' => $newVotes]);
     }
 
     /**
@@ -39,6 +44,10 @@ class UpvoteController extends Controller
         $id = auth()->id();
         $model->downvote($id);
 
-        return back();
+        $model->refresh();
+        $newVotes = $model->total_votes;
+
+        Log::debug('New votes is ' . $newVotes);
+        return response()->json(['votes' => $newVotes]);
     }
 }

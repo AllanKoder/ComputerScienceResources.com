@@ -1,7 +1,7 @@
 <script setup>
 import { defineProps, ref, watch } from "vue";
+import axios from "axios";
 import { Icon } from "@iconify/vue";
-import { Link, router } from "@inertiajs/vue3";
 
 const props = defineProps({
     resourceId: {
@@ -15,7 +15,10 @@ const props = defineProps({
 });
 
 const votes = ref(props.votes);
+const upvoteLoading = ref(false);
+const downvoteLoading = ref(false);
 
+// If the parent ever changes the initial votes, keep in sync.
 watch(
     () => props.votes,
     (newVotes) => {
@@ -23,27 +26,55 @@ watch(
     }
 );
 
+async function handleUpvote() {
+    if (upvoteLoading.value) return;
+    upvoteLoading.value = true;
+    try {
+        const response = await axios.post(
+            route('upvote', { id: props.resourceId, type: 'resource' })
+        );
+        votes.value = response.data.votes;
+    } catch (error) {
+        console.error("Error upvoting:", error);
+    } finally {
+        upvoteLoading.value = false;
+    }
+}
+
+async function handleDownvote() {
+    if (downvoteLoading.value) return;
+    downvoteLoading.value = true;
+    try {
+        const response = await axios.post(
+            route('downvote', { id: props.resourceId, type: 'resource' })
+        );
+        votes.value = response.data.votes;
+    } catch (error) {
+        console.error("Error downvoting:", error);
+    } finally {
+        downvoteLoading.value = false;
+    }
+}
 </script>
 
 <template>
     <div class="flex flex-col items-center">
-        <Link
-            :href="route('upvote', { id: props.resourceId, type: 'resource' })"
-            method="post"
-            as="button"
-            preserve-scroll
+        <button 
+            @click="handleUpvote" 
+            :disabled="upvoteLoading" 
+            :class="{'opacity-50': upvoteLoading}" 
+            class="cursor-pointer"
         >
             <Icon icon="mdi:chevron-up" width="24" height="24" />
-        </Link>
+        </button>
         <span class="text-lg font-bold">{{ votes }}</span>
-        <Link
-            :href="route('downvote', { id: props.resourceId, type: 'resource' })"
-            method="post"
-            as="button"
-            preserve-scroll
+        <button 
+            @click="handleDownvote" 
+            :disabled="downvoteLoading" 
+            :class="{'opacity-50': downvoteLoading}" 
+            class="cursor-pointer"
         >
             <Icon icon="mdi:chevron-down" width="24" height="24" />
-        </Link>
+        </button>
     </div>
 </template>
-
