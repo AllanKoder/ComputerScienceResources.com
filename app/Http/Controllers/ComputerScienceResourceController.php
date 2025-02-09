@@ -76,7 +76,8 @@ class ComputerScienceResourceController extends Controller
     public function show(ComputerScienceResource $computerScienceResource)
     {
         return Inertia::render('Resources/Show', [
-            'resource' => $computerScienceResource
+            'resource' => fn () => $computerScienceResource,
+            'votes' => fn () => $computerScienceResource->getTotalVotes(),
         ]);
     }
 

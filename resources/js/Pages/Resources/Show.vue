@@ -11,6 +11,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    votes: {
+        type: Number,
+        required: true
+    },
     user: {
         type: Object,
         required: false,
@@ -20,9 +24,6 @@ const props = defineProps({
 const resource = props.resource;
 
 const emit = defineEmits(["upvote", "downvote"]);
-
-const upvote = () => emit("upvote", resource);
-const downvote = () => emit("downvote", resource);
 
 const platformColors = {
     book: "blue",
@@ -74,7 +75,7 @@ const platformList = computed(() => {
                             >
                                 <UpvoteResource
                                     :resourceId="resource.id"
-                                    :votes="resource.total_votes"
+                                    :votes="props.votes"
                                 ></UpvoteResource>
                             </div>
                             <img

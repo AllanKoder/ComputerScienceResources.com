@@ -22,7 +22,7 @@ class UpvoteController extends Controller
         $id = auth()->id();
         $model->upvote($id);
 
-        return response()->json(['message' => 'Upvoted successfully']);
+        return to_route('resources.show', ['computerScienceResource'=>$id]);
     }
 
     /**
@@ -39,6 +39,6 @@ class UpvoteController extends Controller
         $id = auth()->id();
         $model->downvote($id);
 
-        return response()->json(['message' => 'Downvoted successfully']);
+        return to_route('resources.show', ['computerScienceResource'=>$id]);
     }
 }
