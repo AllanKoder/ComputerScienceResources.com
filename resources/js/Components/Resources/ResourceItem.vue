@@ -11,8 +11,6 @@ defineProps({
 
 const emit = defineEmits(["upvote", "downvote"]);
 
-const upvote = () => emit("upvote", props.resource);
-const downvote = () => emit("downvote", props.resource);
 </script>
 
 <template>

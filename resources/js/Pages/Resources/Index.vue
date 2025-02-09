@@ -12,8 +12,6 @@ const props = defineProps({
     newsItems: Array,
 });
 
-const resources = ref(props.resources.data);
-const pagination = ref(props.resources.links);
 
 const newsItems = [
     {
@@ -54,13 +52,6 @@ const newsItems = [
     },
 ];
 
-const upvote = (resource) => {
-    // Implement upvote logic
-};
-
-const downvote = (resource) => {
-    // Implement downvote logic
-};
 </script>
 <template>
     <AppLayout title="Computer Science Resources">
@@ -76,7 +67,7 @@ const downvote = (resource) => {
                             style="border-spacing: 0 2rem"
                         >
                             <ResourceItem
-                                v-for="resource in resources"
+                                v-for="resource in props.resources.data"
                                 :key="resource.id"
                                 :resource="resource"
                                 @upvote="upvote"
@@ -85,7 +76,7 @@ const downvote = (resource) => {
                         </table>
 
                         <!-- Pagination Links -->
-                        <PaginateLinks :links="pagination"></PaginateLinks>
+                        <PaginateLinks :links="props.resources.links"></PaginateLinks>
                     </section>
 
                     <!-- News Column -->

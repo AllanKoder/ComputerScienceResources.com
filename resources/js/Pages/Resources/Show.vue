@@ -11,10 +11,6 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    votes: {
-        type: Number,
-        required: true
-    },
     user: {
         type: Object,
         required: false,
@@ -75,7 +71,7 @@ const platformList = computed(() => {
                             >
                                 <UpvoteResource
                                     :resourceId="resource.id"
-                                    :votes="props.votes"
+                                    :votes="props.resource.total_votes"
                                 ></UpvoteResource>
                             </div>
                             <img

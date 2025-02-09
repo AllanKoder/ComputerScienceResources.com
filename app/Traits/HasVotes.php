@@ -3,7 +3,10 @@
 namespace App\Traits;
 
 use App\Models\Upvote;
+use App\Events\UpvoteProcessed;
+use App\Models\UpvoteSummary;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait HasVotes
 {
@@ -14,6 +17,14 @@ trait HasVotes
     {
         return $this->morphMany(Upvote::class, 'upvotable');
     }
+    
+    /**
+     * Get the upvote summary of the model
+     */
+    public function upvoteSummary(): MorphOne
+    {
+        return $this->morphOne(UpvoteSummary::class, 'upvotable');
+    }
 
     /**
      * Upvote the model.
@@ -21,10 +32,15 @@ trait HasVotes
     public function upvote($userId)
     {
         $currentVote = $this->getVoteValue($userId);
-    
-        if ($currentVote == 1) {
+        $modelType = get_class($this);
+        $modelId = $this->id;
+   
+        if ($currentVote > 0) {
+            UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 0);
             return $this->deleteVote($userId);
         }
+
+        UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 1);
         return $this->vote($userId, 1);
     }
 
@@ -34,10 +50,15 @@ trait HasVotes
     public function downvote($userId)
     {
         $currentVote = $this->getVoteValue($userId);
-    
-        if ($currentVote == -1) {
+        $modelType = get_class($this);
+        $modelId = $this->id;
+
+        if ($currentVote < 0) {
+            UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 0);
             return $this->deleteVote($userId);
         }
+
+        UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, -1);
         return $this->vote($userId, -1);
     }
 
@@ -63,7 +84,8 @@ trait HasVotes
      */
     public function getTotalVotes(): int
     {
-        return $this->votes()->sum('value');
+        $summary = $this->upvoteSummary;
+        return $summary ? $summary->value() : 0;
     }
 
     /**

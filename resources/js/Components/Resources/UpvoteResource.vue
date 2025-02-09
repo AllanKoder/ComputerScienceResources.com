@@ -22,13 +22,13 @@ watch(
         votes.value = newVotes;
     }
 );
+
 </script>
 
 <template>
     <div class="flex flex-col items-center">
         <Link
             :href="route('upvote', { id: props.resourceId, type: 'resource' })"
-            :only="['votes']"
             method="post"
             as="button"
             preserve-scroll
@@ -37,10 +37,7 @@ watch(
         </Link>
         <span class="text-lg font-bold">{{ votes }}</span>
         <Link
-            :href="
-                route('downvote', { id: props.resourceId, type: 'resource' })
-            "
-            :only="['votes']"
+            :href="route('downvote', { id: props.resourceId, type: 'resource' })"
             method="post"
             as="button"
             preserve-scroll
@@ -49,3 +46,4 @@ watch(
         </Link>
     </div>
 </template>
+

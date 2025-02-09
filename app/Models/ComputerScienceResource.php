@@ -16,9 +16,10 @@ class ComputerScienceResource extends Model
     use HasVotes;
 
     protected $table = "computer_science_resources";
-
+    
     protected $guarded = [];
-
+    
+    protected $with = ['tags', 'upvoteSummary'];
     /**
      * Accessor to get topic tags.
      *
@@ -59,7 +60,7 @@ class ComputerScienceResource extends Model
     }
 
     /**
-     * Accessor to get votes.
+     * Accessor to get vote count.
      *
      * @return Attribute
      */

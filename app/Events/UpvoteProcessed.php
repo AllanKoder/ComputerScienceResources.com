@@ -19,7 +19,7 @@ class UpvoteProcessed implements ShouldDispatchAfterCommit
     /**
      * Create a new event instance.
      */
-    public function __construct(public Upvote $upvote)
+    public function __construct(public string $type, public int $id, public int $previousValue, public int $newValue)
     {
     }
 

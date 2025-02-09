@@ -22,13 +22,13 @@ class UpvoteController extends Controller
         $id = auth()->id();
         $model->upvote($id);
 
-        return to_route('resources.show', ['computerScienceResource'=>$id]);
+        return back();
     }
 
     /**
      * Downvote a Model (type, id)
      */
-    public function downvote(ModelResolverService $resolver, Request $request, $type, $id)
+    public function downvote(ModelResolverService $resolver, $type, $id)
     {
         $model = $resolver->resolve($type, $id);
         
@@ -39,6 +39,6 @@ class UpvoteController extends Controller
         $id = auth()->id();
         $model->downvote($id);
 
-        return to_route('resources.show', ['computerScienceResource'=>$id]);
+        return back();
     }
 }
