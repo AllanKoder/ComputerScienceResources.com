@@ -12,11 +12,17 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    userVote: {
+        type: Number,
+        required: true,
+    },
 });
 
 const votes = ref(props.votes);
 const upvoteLoading = ref(false);
 const downvoteLoading = ref(false);
+
+const userVote = ref(props.userVote);
 
 // If the parent ever changes the initial votes, keep in sync.
 watch(
@@ -31,9 +37,10 @@ async function handleUpvote() {
     upvoteLoading.value = true;
     try {
         const response = await axios.post(
-            route('upvote', { id: props.resourceId, type: 'resource' })
+            route("upvote", { id: props.resourceId, type: "resource" })
         );
         votes.value = response.data.votes;
+        userVote.value = response.data.userVote;
     } catch (error) {
         console.error("Error upvoting:", error);
     } finally {
@@ -46,9 +53,10 @@ async function handleDownvote() {
     downvoteLoading.value = true;
     try {
         const response = await axios.post(
-            route('downvote', { id: props.resourceId, type: 'resource' })
+            route("downvote", { id: props.resourceId, type: "resource" })
         );
         votes.value = response.data.votes;
+        userVote.value = response.data.userVote;
     } catch (error) {
         console.error("Error downvoting:", error);
     } finally {
@@ -59,19 +67,25 @@ async function handleDownvote() {
 
 <template>
     <div class="flex flex-col items-center">
-        <button 
-            @click="handleUpvote" 
-            :disabled="upvoteLoading" 
-            :class="{'opacity-50': upvoteLoading}" 
+        <button
+            @click="handleUpvote"
+            :disabled="upvoteLoading"
+            :class="{ 'opacity-50': upvoteLoading,
+                                'text-red-500': userVote > 0,
+
+             }"
             class="cursor-pointer"
         >
             <Icon icon="mdi:chevron-up" width="24" height="24" />
         </button>
         <span class="text-lg font-bold">{{ votes }}</span>
-        <button 
-            @click="handleDownvote" 
-            :disabled="downvoteLoading" 
-            :class="{'opacity-50': downvoteLoading}" 
+        <button
+            @click="handleDownvote"
+            :disabled="downvoteLoading"
+            :class="{
+                'opacity-50': downvoteLoading,
+                'text-blue-500': userVote < 0,
+            }"
             class="cursor-pointer"
         >
             <Icon icon="mdi:chevron-down" width="24" height="24" />

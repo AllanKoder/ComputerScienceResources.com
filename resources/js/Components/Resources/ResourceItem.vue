@@ -19,6 +19,7 @@ const emit = defineEmits(["upvote", "downvote"]);
             <UpvoteResource
                 :resourceId="resource.id"
                 :votes="resource.total_votes"
+                :userVote="resource.user_vote"
             ></UpvoteResource>
         </td>
 

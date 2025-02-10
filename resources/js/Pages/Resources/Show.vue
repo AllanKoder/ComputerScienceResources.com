@@ -72,6 +72,7 @@ const platformList = computed(() => {
                                 <UpvoteResource
                                     :resourceId="resource.id"
                                     :votes="props.resource.total_votes"
+                                    :userVote="props.resource.user_vote"
                                 ></UpvoteResource>
                             </div>
                             <img

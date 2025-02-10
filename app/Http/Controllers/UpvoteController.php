@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\UpvoteSummary;
 use App\Services\ModelResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,14 +21,17 @@ class UpvoteController extends Controller
             return response()->json(['message' => 'Model not found'], 404);
         }
 
-        $id = auth()->id();
-        $model->upvote($id);
+        $user_id = auth()->id();
+        $userVote = $model->upvote($user_id);
         
-        $model->refresh();
-        $newVotes = $model->total_votes;
-        
+        $modelType = get_class($model);
+        $newVotes = UpvoteSummary::firstWhere([
+            'upvotable_type' => $modelType,
+            'upvotable_id' => $id
+        ])?->value() ?? 0;        
+    
         Log::debug('New votes is ' . $newVotes);
-        return response()->json(['votes' => $newVotes]);
+        return response()->json(['votes' => $newVotes, 'userVote'=>$userVote]);
     }
 
     /**
@@ -41,13 +45,16 @@ class UpvoteController extends Controller
             return response()->json(['message' => 'Model not found'], 404);
         }
 
-        $id = auth()->id();
-        $model->downvote($id);
+        $user_id = auth()->id();
+        $userVote = $model->downvote($user_id);
 
-        $model->refresh();
-        $newVotes = $model->total_votes;
+        $modelType = get_class($model);
+        $newVotes = UpvoteSummary::firstWhere([
+            'upvotable_type' => $modelType,
+            'upvotable_id' => $id
+        ])?->value() ?? 0;    
 
         Log::debug('New votes is ' . $newVotes);
-        return response()->json(['votes' => $newVotes]);
+        return response()->json(['votes' => $newVotes, 'userVote'=>$userVote]);
     }
 }

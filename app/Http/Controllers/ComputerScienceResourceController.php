@@ -18,7 +18,7 @@ class ComputerScienceResourceController extends Controller
     public function index()
     {
         // Eager load topic tags and other tag types as needed
-        $resources = ComputerScienceResource::paginate(10);;
+        $resources = ComputerScienceResource::with('votes')->paginate(10);;
 
         return Inertia::render('Resources/Index', [
             'resources' => $resources,

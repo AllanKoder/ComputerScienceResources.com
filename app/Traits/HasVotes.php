@@ -29,7 +29,7 @@ trait HasVotes
     /**
      * Upvote the model.
      */
-    public function upvote($userId)
+    public function upvote($userId): int
     {
         $currentVote = $this->getVoteValue($userId);
         $modelType = get_class($this);
@@ -37,17 +37,19 @@ trait HasVotes
    
         if ($currentVote > 0) {
             UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 0);
-            return $this->deleteVote($userId);
+            $this->deleteVote($userId);
+            return 0;
         }
 
         UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 1);
-        return $this->vote($userId, 1);
+        $this->vote($userId, 1);
+        return 1;
     }
 
     /**
      * Downvote the model.
      */
-    public function downvote($userId)
+    public function downvote($userId) : int
     {
         $currentVote = $this->getVoteValue($userId);
         $modelType = get_class($this);
@@ -55,11 +57,13 @@ trait HasVotes
 
         if ($currentVote < 0) {
             UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 0);
-            return $this->deleteVote($userId);
+            $this->deleteVote($userId);
+            return 0;
         }
 
         UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, -1);
-        return $this->vote($userId, -1);
+        $this->vote($userId, -1);
+        return -1;
     }
 
     /**
@@ -75,7 +79,7 @@ trait HasVotes
      */
     public function getVoteValue($userId): int
     {
-        $vote = $this->votes()->where('user_id', $userId)->first();
+        $vote = $this->votes->where('user_id', $userId)->first();
         return $vote ? $vote->value : 0;
     }
 

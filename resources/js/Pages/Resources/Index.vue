@@ -70,8 +70,6 @@ const newsItems = [
                                 v-for="resource in props.resources.data"
                                 :key="resource.id"
                                 :resource="resource"
-                                @upvote="upvote"
-                                @downvote="downvote"
                             />
                         </table>
 
