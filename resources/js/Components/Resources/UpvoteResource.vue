@@ -8,7 +8,7 @@ const props = defineProps({
         type: Number,
         required: true,
     },
-    votes: {
+    initialVotes: {
         type: Number,
         required: true,
     },
@@ -18,7 +18,7 @@ const props = defineProps({
     },
 });
 
-const votes = ref(props.votes);
+const votes = ref(props.initialVotes);
 const upvoteLoading = ref(false);
 const downvoteLoading = ref(false);
 
@@ -26,7 +26,7 @@ const userVote = ref(props.userVote);
 
 // If the parent ever changes the initial votes, keep in sync.
 watch(
-    () => props.votes,
+    () => props.initialVotes,
     (newVotes) => {
         votes.value = newVotes;
     }
@@ -39,8 +39,8 @@ async function handleUpvote() {
         const response = await axios.post(
             route("upvote", { id: props.resourceId, type: "resource" })
         );
-        votes.value = response.data.votes;
         userVote.value = response.data.userVote;
+        votes.value += response.data.changeFromVote;
     } catch (error) {
         console.error("Error upvoting:", error);
     } finally {
@@ -55,8 +55,8 @@ async function handleDownvote() {
         const response = await axios.post(
             route("downvote", { id: props.resourceId, type: "resource" })
         );
-        votes.value = response.data.votes;
         userVote.value = response.data.userVote;
+        votes.value += response.data.changeFromVote;
     } catch (error) {
         console.error("Error downvoting:", error);
     } finally {

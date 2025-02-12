@@ -16,22 +16,18 @@ class UpvoteController extends Controller
     public function upvote(ModelResolverService $resolver, $type, $id)
     {
         $model = $resolver->resolve($type, $id);
-        
+
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);
         }
 
         $user_id = auth()->id();
-        $userVote = $model->upvote($user_id);
-        
-        $modelType = get_class($model);
-        $newVotes = UpvoteSummary::firstWhere([
-            'upvotable_type' => $modelType,
-            'upvotable_id' => $id
-        ])?->value() ?? 0;        
-    
-        Log::debug('New votes is ' . $newVotes);
-        return response()->json(['votes' => $newVotes, 'userVote'=>$userVote]);
+        $result = $model->upvote($user_id);
+
+        return response()->json([
+            'userVote' => $result['userVote'],
+            'changeFromVote' => $result['changeFromVote']
+        ]);
     }
 
     /**
@@ -40,21 +36,17 @@ class UpvoteController extends Controller
     public function downvote(ModelResolverService $resolver, $type, $id)
     {
         $model = $resolver->resolve($type, $id);
-        
+
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);
         }
 
         $user_id = auth()->id();
-        $userVote = $model->downvote($user_id);
+        $result = $model->downvote($user_id);
 
-        $modelType = get_class($model);
-        $newVotes = UpvoteSummary::firstWhere([
-            'upvotable_type' => $modelType,
-            'upvotable_id' => $id
-        ])?->value() ?? 0;    
-
-        Log::debug('New votes is ' . $newVotes);
-        return response()->json(['votes' => $newVotes, 'userVote'=>$userVote]);
+        return response()->json([
+            'userVote' => $result['userVote'],
+            'changeFromVote' => $result['changeFromVote']
+        ]);
     }
 }

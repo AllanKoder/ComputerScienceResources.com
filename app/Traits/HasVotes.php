@@ -5,11 +5,13 @@ namespace App\Traits;
 use App\Models\Upvote;
 use App\Events\UpvoteProcessed;
 use App\Models\UpvoteSummary;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait HasVotes
 {
+
     /**
      * Get all of the model's votes.
      */
@@ -17,7 +19,7 @@ trait HasVotes
     {
         return $this->morphMany(Upvote::class, 'upvotable');
     }
-    
+
     /**
      * Get the upvote summary of the model
      */
@@ -29,27 +31,35 @@ trait HasVotes
     /**
      * Upvote the model.
      */
-    public function upvote($userId): int
+    public function upvote($userId): array
     {
         $currentVote = $this->getVoteValue($userId);
         $modelType = get_class($this);
         $modelId = $this->id;
-   
+
         if ($currentVote > 0) {
             UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 0);
-            $this->deleteVote($userId);
-            return 0;
+            return array(
+                'model' => $this->deleteVote($userId),
+                // The value of the user vote (-n,0,n)
+                'userVote' => 0,
+                // What the change of votes of the model after the user voted
+                'changeFromVote' => 0 - $currentVote,
+            );
         }
 
         UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 1);
-        $this->vote($userId, 1);
-        return 1;
+        return array(
+            'model' => $this->vote($userId, 1),
+            'userVote' => 1,
+            'changeFromVote' => 1 - $currentVote,
+        );
     }
 
     /**
      * Downvote the model.
      */
-    public function downvote($userId) : int
+    public function downvote($userId): array
     {
         $currentVote = $this->getVoteValue($userId);
         $modelType = get_class($this);
@@ -57,13 +67,29 @@ trait HasVotes
 
         if ($currentVote < 0) {
             UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 0);
-            $this->deleteVote($userId);
-            return 0;
+            return array(
+                'model' => $this->deleteVote($userId),
+                'userVote' => 0,
+                'changeFromVote' => 0 - $currentVote,
+            );
         }
 
         UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, -1);
-        $this->vote($userId, -1);
-        return -1;
+        return array(
+            'model' => $this->vote($userId, -1),
+            'userVote' => -1,
+            'changeFromVote' => -1 - $currentVote,
+        );
+    }
+
+    public function getChangeInVotes(): int
+    {
+        return $this->changeFromVote;
+    }
+
+    public function getUserVote(): int
+    {
+        return $this->userVote;
     }
 
     /**
