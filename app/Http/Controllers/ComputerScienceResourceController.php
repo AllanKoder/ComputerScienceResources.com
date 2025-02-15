@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
+use App\Models\ResourceReview;
 use Illuminate\Database\Console\DumpCommand;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -18,7 +19,7 @@ class ComputerScienceResourceController extends Controller
     public function index()
     {
         // Eager load topic tags and other tag types as needed
-        $resources = ComputerScienceResource::with('votes')->paginate(10);;
+        $resources = ComputerScienceResource::with('votes')->paginate(10);
 
         return Inertia::render('Resources/Index', [
             'resources' => $resources,
@@ -75,8 +76,10 @@ class ComputerScienceResourceController extends Controller
      */
     public function show(ComputerScienceResource $computerScienceResource)
     {
+        $reviews = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id)->get();
         return Inertia::render('Resources/Show', [
             'resource' => fn () => $computerScienceResource,
+            'reviews' => $reviews
         ]);
     }
 

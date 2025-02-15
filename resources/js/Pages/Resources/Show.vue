@@ -1,15 +1,20 @@
 <script setup>
 import { Head } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { ref, computed } from "vue";
+import { computed } from "vue";
 import Tag from "primevue/tag";
-import Button from "primevue/button";
 import UpvoteResource from "@/Components/Resources/UpvoteResource.vue";
+import {pricingLabels, difficultyLabels} from "@/Helpers/constants.js";
+import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
 
 const props = defineProps({
     resource: {
         type: Object,
         required: true,
+    },
+    reviews: {
+        type: Object,
+        required: true
     },
     user: {
         type: Object,
@@ -36,21 +41,6 @@ const platformColors = {
     mobile_app: "lime",
     desktop_app: "amber",
     magazine: "rose",
-};
-
-const difficultyLabels = {
-    beginner: "Beginner",
-    industry_simple: "Industry Simple",
-    industry_standard: "Industry Standard",
-    industry_professional: "Industry Professional",
-    academic: "Academic",
-};
-
-const pricingLabels = {
-    free: "Free",
-    premium: "Premium",
-    paid: "Paid",
-    freemium: "Freemium",
 };
 
 const platformList = computed(() => {
@@ -179,6 +169,10 @@ const platformList = computed(() => {
                             </div>
                         </div>
                     </div>
+
+                    <!-- Reviews -->
+
+                    <ResourceReviews :reviews="props.reviews"></ResourceReviews>
                 </div>
             </div>
         </main>

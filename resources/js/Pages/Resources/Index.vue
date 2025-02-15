@@ -2,7 +2,6 @@
 import ResourceItem from "@/Components/Resources/ResourceItem.vue";
 import NewsItem from "@/Components/NewsItem.vue";
 
-import { ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps } from "vue";
 import PaginateLinks from "@/Components/Pagination/PaginateLinks.vue";

@@ -27,3 +27,18 @@ export const difficulties = [
     { label: "Industry Professional - Senior Engineer", value: "industry_professional" },
     { label: "Academic - Research", value: "academic" }
 ];
+
+export const difficultyLabels = {
+    beginner: "Beginner",
+    industry_simple: "Industry Simple",
+    industry_standard: "Industry Standard",
+    industry_professional: "Industry Professional",
+    academic: "Academic",
+};
+
+export const pricingLabels = {
+    free: "Free",
+    premium: "Premium",
+    paid: "Paid",
+    freemium: "Freemium",
+};
