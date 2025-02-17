@@ -68,7 +68,8 @@ class ComputerScienceResourceController extends Controller
 
         Log::debug("Created resource " . json_encode($resource));
 
-        return to_route('resources');
+        return to_route('resources')
+            ->with('success', 'Created Resource Succesfully!');
     }
 
     /**
@@ -76,9 +77,9 @@ class ComputerScienceResourceController extends Controller
      */
     public function show(ComputerScienceResource $computerScienceResource)
     {
-        $reviews = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id)->get();
+        $reviews = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id)->orderByDesc('created_at')->get();
         return Inertia::render('Resources/Show', [
-            'resource' => fn () => $computerScienceResource,
+            'resource' => fn() => $computerScienceResource,
             'reviews' => $reviews
         ]);
     }

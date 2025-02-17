@@ -172,7 +172,7 @@ const platformList = computed(() => {
 
                     <!-- Reviews -->
 
-                    <ResourceReviews :reviews="props.reviews"></ResourceReviews>
+                    <ResourceReviews :reviews="props.reviews" :resourceId="resource.id"></ResourceReviews>
                 </div>
             </div>
         </main>

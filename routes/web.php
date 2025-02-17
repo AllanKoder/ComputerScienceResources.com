@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComputerScienceResourceController;
+use App\Http\Controllers\ResourceReviewController;
 use App\Http\Controllers\UpvoteController;
 use Inertia\Inertia;
 
@@ -17,7 +18,7 @@ Route::get('/', function () {
 });
 
 
-// Authenticated
+// Authenticated and verified
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -37,6 +38,12 @@ Route::middleware([
     Route::controller(UpvoteController::class)->group(function () {
         Route::post('/upvote/{type}/{id}', 'upvote')->name('upvote');
         Route::post('/downvote/{type}/{id}', 'downvote')->name('downvote');
+    });
+
+
+    // CompSci Resource Reviews
+    Route::controller(ResourceReviewController::class)->group(function () {
+        Route::post('/review/{computerScienceResource}', 'store')->name('review.store');
     });
 });
 

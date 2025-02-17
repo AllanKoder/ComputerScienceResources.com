@@ -42,3 +42,13 @@ export const pricingLabels = {
     paid: "Paid",
     freemium: "Freemium",
 };
+
+export const ratingLabels = {
+    community: "Community",
+    teaching_clarity: "Teaching Clarity",
+    engagement: "Engagement",
+    practicality: "Practicality",
+    user_friendliness: "User Friendliness",
+    updates: "Updates",
+  };
+  
