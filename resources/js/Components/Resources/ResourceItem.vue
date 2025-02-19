@@ -92,24 +92,18 @@ const emit = defineEmits(["upvote", "downvote"]);
 
         <td class="align-top">
             <div class="flex flex-col items-center">
-                <div class="text-2xl font-bold text-yellow-500 mb-2">4.5</div>
+                <div class="text-2xl font-bold text-yellow-500 mb-2"></div>
                 <div class="flex">
                     <Icon
-                        v-for="i in 4"
+                        v-for="i in (Math.floor(resource.review_summary?.average_reviews_score) || 0)"
                         :key="i"
                         icon="mdi:star"
                         class="text-yellow-500"
                         width="20"
                         height="20"
                     />
-                    <Icon
-                        icon="mdi:star-half"
-                        class="text-yellow-500"
-                        width="20"
-                        height="20"
-                    />
                 </div>
-                <div class="text-sm text-gray-500 mt-1">(123 ratings)</div>
+                <div class="text-sm text-gray-500 mt-1">({{ resource.review_summary?.review_count || 0}} ratings)</div>
             </div>
         </td>
     </tr>

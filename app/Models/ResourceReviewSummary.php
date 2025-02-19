@@ -2,10 +2,47 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class ResourceReviewSummary extends Model
 {
     protected $fillable = ['computer_science_resource_id'];
+
     protected $primaryKey = 'computer_science_resource_id';
+    public $incrementing = false;
+    public $timestamps = false;
+
+    /**
+     * Get the average reviews score.
+     *
+     * @return Attribute
+     */
+    protected function averageReviewsScore(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->review_count === 0) {
+                    return 0;
+                }
+    
+                $fields = [
+                    $this->community,
+                    $this->teaching_clarity,
+                    $this->engagement,
+                    $this->practicality,
+                    $this->user_friendliness,
+                    $this->updates,
+                ];
+    
+                $numericFields = array_filter($fields, 'is_numeric');
+    
+                $sum = array_sum($numericFields);
+    
+                return round($sum / ($this->review_count * 6), 2);
+            }
+        );
+    }
+    
+    protected $appends = ['average_reviews_score'];
 }

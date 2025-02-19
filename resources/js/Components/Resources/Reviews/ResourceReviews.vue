@@ -22,18 +22,6 @@ const toggleExpand = (id) => {
     expandedReviews.value[id] = !expandedReviews.value[id];
 };
 
-const calculateAverageRating = (review) => {
-    const ratings = [
-        review.community,
-        review.teaching_clarity,
-        review.engagement,
-        review.practicality,
-        review.user_friendliness,
-        review.updates,
-    ];
-    return ratings.reduce((a, b) => a + b, 0) / ratings.length;
-};
-
 // Convert ratingLabels object to array for iteration in template
 const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
     key,
@@ -58,7 +46,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                     <div class="flex items-center">
                         <span class="mr-2 font-medium">Rating:</span>
                         <Rating
-                            :modelValue="calculateAverageRating(review)"
+                            :modelValue="4.5"
                             readonly
                             :cancel="false"
                         />

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasVotes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Tags\HasTags;
@@ -16,10 +17,19 @@ class ComputerScienceResource extends Model
     use HasVotes;
 
     protected $table = "computer_science_resources";
-    
+
     protected $guarded = [];
+
+    protected $with = ['tags', 'votes', 'upvoteSummary'];
+
+    /**
+     * Get the review summary relationship.
+     */
+    public function reviewSummary(): HasOne
+    {
+        return $this->hasOne(ResourceReviewSummary::class);
+    }
     
-    protected $with = ['tags', 'upvoteSummary'];
     /**
      * Accessor to get topic tags.
      *
@@ -28,8 +38,8 @@ class ComputerScienceResource extends Model
     protected function topicTags(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->tagsWithType('topics')->pluck('name')->toArray(),
-            set: fn (array $value) => $this->syncTagsWithType($value, 'topics')
+            get: fn() => $this->tagsWithType('topics')->pluck('name')->toArray(),
+            set: fn(array $value) => $this->syncTagsWithType($value, 'topics')
         );
     }
 
@@ -41,8 +51,8 @@ class ComputerScienceResource extends Model
     protected function programmingLanguageTags(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->tagsWithType('programming_languages')->pluck('name')->toArray(),
-            set: fn (array $value) => $this->syncTagsWithType($value, 'programming_languages')
+            get: fn() => $this->tagsWithType('programming_languages')->pluck('name')->toArray(),
+            set: fn(array $value) => $this->syncTagsWithType($value, 'programming_languages')
         );
     }
 
@@ -54,8 +64,8 @@ class ComputerScienceResource extends Model
     protected function generalTags(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->tagsWithType('general_tags')->pluck('name')->toArray(),
-            set: fn (array $value) => $this->syncTagsWithType($value, 'general_tags')
+            get: fn() => $this->tagsWithType('general_tags')->pluck('name')->toArray(),
+            set: fn(array $value) => $this->syncTagsWithType($value, 'general_tags')
         );
     }
 
@@ -67,7 +77,8 @@ class ComputerScienceResource extends Model
     protected function totalVotes(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->getTotalVotes(),
+            get: fn() => $this->upvoteSummary ?
+                $this->upvoteSummary->value() : 0,
         );
     }
 
@@ -79,7 +90,7 @@ class ComputerScienceResource extends Model
     protected function userVote(): Attribute
     {
         return Attribute::make(
-            get: fn () => auth()->check() ? $this->getVoteValue(auth()->id()) : 0
+            get: fn() => auth()->check() ? $this->getVoteValue(auth()->id()) : 0
         );
     }
 

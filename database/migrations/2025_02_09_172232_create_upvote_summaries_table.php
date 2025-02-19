@@ -13,6 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('upvote_summaries', function (Blueprint $table) {
+            $table->id();
             $table->morphs('upvotable');
             $table->unsignedBigInteger('upvotes')->default(0);
             $table->unsignedBigInteger('downvotes')->default(0);

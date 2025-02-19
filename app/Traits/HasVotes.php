@@ -110,15 +110,6 @@ trait HasVotes
     }
 
     /**
-     * Get the total votes for the model.
-     */
-    public function getTotalVotes(): int
-    {
-        $summary = $this->upvoteSummary;
-        return $summary ? $summary->value() : 0;
-    }
-
-    /**
      * Vote on the model.
      */
     protected function vote($userId, $value)

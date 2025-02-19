@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UpvoteSummary extends Model
 {
+    public $timestamps = false;
     protected $fillable = ['upvotable_id', 'upvotable_type'];
 
     public function value(): int
