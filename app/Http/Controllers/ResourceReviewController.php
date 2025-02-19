@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ResourceReviewProcessed;
 use App\Http\Requests\ResourceReview\StoreResourceReview;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceReview;
@@ -33,6 +34,8 @@ class ResourceReviewController extends Controller
             'pros' => $validatedData['pros'],
             'cons' => $validatedData['cons'],
         ]);
+
+        ResourceReviewProcessed::dispatch($computerScienceResource->id, null, $review->attributesToArray());
 
         return to_route('resources.show', ['computerScienceResource' => $review->computer_science_resource_id])
             ->with('success', 'Review created successfully!');

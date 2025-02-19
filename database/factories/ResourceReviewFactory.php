@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Events\ResourceReviewProcessed;
 use App\Models\ComputerScienceResource;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -40,5 +41,18 @@ class ResourceReviewFactory extends Factory
             'pros' => json_encode($this->faker->words(mt_rand(1, 5))),
             'cons' => json_encode($this->faker->words(mt_rand(1, 5))),
         ];
+    }
+
+    /**
+     * Configure the model factory.
+     *
+     * @return static
+     */
+    public function configure(): static
+    {
+        return $this->afterCreating(function ($resourceReview) {
+            // Dispatch the event after creating the resource review
+            ResourceReviewProcessed::dispatch($resourceReview->computer_science_resource_id, null, $resourceReview->attributesToArray());
+        });
     }
 }

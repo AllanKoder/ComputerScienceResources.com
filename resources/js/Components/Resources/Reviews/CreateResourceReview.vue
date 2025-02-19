@@ -2,7 +2,6 @@
 import { ref } from "vue";
 import { useForm } from "@inertiajs/vue3";
 
-// Import PrimeVue form components and their Yup resolver
 import { Form, FormField } from "@primevue/forms";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import InputText from "primevue/inputtext";
@@ -20,8 +19,6 @@ const props = defineProps({
     },
 });
 
-// Initialize the form using Inertia's useForm.
-// The pros and cons fields default to the JSON string "[]" so that they pass validation.
 const form = useForm({
     title: "1",
     description: "1",
