@@ -26,7 +26,7 @@ class ModelResolverService
         return $modelClass::find($id);
     }
 
-    protected function getModelClass($type)
+    public function getModelClass($type)
     {
         return $this->models[$type] ?? null;
     }

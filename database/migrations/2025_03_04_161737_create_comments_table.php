@@ -17,7 +17,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignIdFor(User::class);
             $table->text("content");
-
+            
             $table->morphs("commentable");
             $table->char("id_path", 255)->index(); # comma seperated list of the parent path
             $table->smallInteger("depth")->index();

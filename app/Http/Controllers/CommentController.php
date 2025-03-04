@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Models\Comment;
+use App\Services\ModelResolverService;
 use Auth;
 use Illuminate\Http\Request;
 use DB;
@@ -30,7 +31,7 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreCommentRequest $request)
+    public function store(ModelResolverService $modelResolver, StoreCommentRequest $request)
     {
         Log::debug("Called store on comment controller");
         $validatedData = $request->validated();
@@ -41,7 +42,7 @@ class CommentController extends Controller
         $comment->user_id = Auth::id();
         
         // Set the commentable type
-        $comment->commentable_type = $validatedData['commentable_type'];
+        $comment->commentable_type = $modelResolver->getModelClass($validatedData['commentable_type']);
         $comment->commentable_id = $validatedData['commentable_id'];
 
         // Top level comment

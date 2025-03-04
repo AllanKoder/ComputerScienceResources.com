@@ -21,7 +21,7 @@ class UpvoteController extends Controller
             return response()->json(['message' => 'Model not found'], 404);
         }
 
-        $user_id = auth()->id();
+        $user_id = Auth::id();
         $result = $model->upvote($user_id);
 
         return response()->json([
@@ -41,7 +41,7 @@ class UpvoteController extends Controller
             return response()->json(['message' => 'Model not found'], 404);
         }
 
-        $user_id = auth()->id();
+        $user_id = Auth::id();
         $result = $model->downvote($user_id);
 
         return response()->json([
