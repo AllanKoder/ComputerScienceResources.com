@@ -16,12 +16,13 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->foreignIdFor(User::class);
-            $table->text("comment");
+            $table->text("content");
 
             $table->morphs("commentable");
             $table->char("id_path", 255)->index(); # comma seperated list of the parent path
             $table->smallInteger("depth")->index();
-            $table->integer("children_count")->index();
+
+            $table->integer("children_count")->default(0);
         });
     }
 

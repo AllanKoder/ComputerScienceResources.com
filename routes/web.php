@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CommentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComputerScienceResourceController;
@@ -40,10 +41,14 @@ Route::middleware([
         Route::post('/downvote/{type}/{id}', 'downvote')->name('downvote');
     });
 
-
     // CompSci Resource Reviews
     Route::controller(ResourceReviewController::class)->group(function () {
-        Route::post('/review/{computerScienceResource}', 'store')->name('review.store');
+        Route::post('/reviews/{computerScienceResource}', 'store')->name('review.store');
+    });
+
+    // Comments
+    Route::controller(CommentController::class)->group(function () {
+        Route::post('/comments', 'store')->name('comments.store');
     });
 });
 

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreCommentRequest;
+use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Models\Comment;
+use Auth;
 use Illuminate\Http\Request;
+use DB;
+use Log;
 
 class CommentController extends Controller
 {
@@ -29,7 +32,49 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request)
     {
-        //
+        Log::debug("Called store on comment controller");
+        $validatedData = $request->validated();
+        
+        Log::debug("Data validated and is " . json_encode($validatedData));
+        $comment = new Comment;
+        $comment->content = $validatedData['content'];
+        $comment->user_id = Auth::id();
+        
+        // Set the commentable type
+        $comment->commentable_type = $validatedData['commentable_type'];
+        $comment->commentable_id = $validatedData['commentable_id'];
+
+        // Top level comment
+        $parentCommentId = $validatedData['parent_comment_id'];
+        if (!$parentCommentId)
+        {
+            $comment->id_path = "";
+            $comment->depth = 0;
+            $comment->children_count = 0;
+        }
+        // Is reply to a comment
+        else
+        {
+            // Parent
+            $parent = Comment::find($parentCommentId);
+            
+            // get the parent path, then append the current parent id to the path
+            $comment->id_path = ($parent->depth > 0) ? ($parent->id_path + ',' + $parent->id) : strval($parent->id);
+
+            $comment->depth = $parent->depth + 1;
+
+            // update the children count of all parents (implode)
+            $all_parents = explode(',', $comment->id_path);
+
+            DB::table('comments')
+            ->whereIn('id', $all_parents)
+            ->update(['children_count' => DB::raw('children_count + 1')]);
+        }
+
+        $comment->save();
+        
+        Log::debug("New saved comment is " . json_encode($comment));
+        return back();
     }
 
     /**

@@ -90,7 +90,7 @@ const submitReview = () => {
         .then(() => {
             console.log("posted");
             form.post(
-                route("review.store", {
+                route("reviews.store", {
                     computerScienceResource: props.resourceId,
                 }),
                 { preserveScroll: true }

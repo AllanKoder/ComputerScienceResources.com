@@ -88,5 +88,5 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
         </div>
     </div>
 
-    <Commentable :commentable_id="1" :commentable_type="'comment'"></Commentable>
+    <Commentable :commentable_id="1" :commentable_type="'resource'"></Commentable>
 </template>
