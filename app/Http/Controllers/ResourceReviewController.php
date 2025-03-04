@@ -6,8 +6,8 @@ use App\Events\ResourceReviewProcessed;
 use App\Http\Requests\ResourceReview\StoreResourceReview;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceReview;
+use Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
 
 class ResourceReviewController extends Controller
 {
@@ -21,7 +21,7 @@ class ResourceReviewController extends Controller
 
         // Create the resource review
         $review = ResourceReview::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'computer_science_resource_id' => $computerScienceResource->id,
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],

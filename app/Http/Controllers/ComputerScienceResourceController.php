@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Auth;
 
 class ComputerScienceResourceController extends Controller
 {
@@ -42,7 +43,7 @@ class ComputerScienceResourceController extends Controller
         Log::debug("Called store resource with data " . json_encode($request));
 
         $resource = ComputerScienceResource::create([
-            'user_id' => auth()->id(),
+            'user_id' => Auth::id(),
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
             'image_url' => $validatedData['image_url'] ?? null,
