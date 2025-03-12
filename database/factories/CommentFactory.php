@@ -6,6 +6,7 @@ use App\Models\ComputerScienceResource;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\Comment;
+use App\Models\ResourceReview;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
@@ -19,13 +20,24 @@ class CommentFactory extends Factory
      */
     public function definition(): array
     {
-        // Set the fixed commentable type.
-        $commentableType = ComputerScienceResource::class;
-
-        // Get a random ComputerScienceResource or create one if none exist.
-        $resource = ComputerScienceResource::inRandomOrder()->first()
-            ?? ComputerScienceResource::factory()->create();
-        $commentableId = $resource->id;
+        // Set the random commentable type.
+        $commentableType = $this->faker->randomElement([
+            ResourceReview::class,
+            Comment::class,
+        ]);
+        
+        // Create the commented type
+        $commenting = null;
+        if ($commentableType == ResourceReview::class) {
+            $commenting = ResourceReview::inRandomOrder()->first()
+                ?? ResourceReview::factory()->create();
+        } elseif ($commentableType == Comment::class)
+        {
+            $commenting = Comment::inRandomOrder()->first()
+                ?? Comment::factory()->create();
+        }
+        
+        $commentableId = $commenting->id;
 
         // Get a random user (or create one if necessary).
         $user = User::inRandomOrder()->first()
@@ -44,25 +56,40 @@ class CommentFactory extends Factory
         }
 
         if ($parent) {
-            // Build the id_path: if the parent's depth is > 0, append parent's id to its id_path; else just use parent's id.
+            // Set the parent comment id.
+            $parentCommentId = $parent->id;
+
+            // Get the parent's root, and set that as this comment's root, unless it is the root itself.
+            $rootCommentId = ($parent->depth == 0) ? $parent->id : $parent->root_comment_id;
+
+            // Set the new depth.
             $depth = $parent->depth + 1;
-            $idPath = $parent->depth > 0 ? $parent->id_path . ',' . $parent->id : strval($parent->id);
         } else {
             // Top-level comment.
+            $parentCommentId = null;
+            $rootCommentId = null;
             $depth = 0;
-            $idPath = "";
         }
-
-        // Ignore children count for now
 
         return [
             'user_id' => $user->id,
             'content' => $this->faker->paragraph,
             'commentable_type' => $commentableType,
             'commentable_id' => $commentableId,
-            'id_path' => $idPath,
+            'parent_comment_id' => $parentCommentId,
+            'root_comment_id' => $rootCommentId,
             'depth' => $depth,
             'children_count' => 0,
         ];
+    }
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Comment $comment) {
+            if ($comment->root_comment_id) {
+                Comment::where('id', $comment->root_comment_id)
+                    ->increment('children_count');
+            }
+        });
     }
 }

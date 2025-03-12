@@ -5,13 +5,23 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Models\Comment;
 use App\Services\ModelResolverService;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Collection;
 use DB;
+use Auth;
 use Log;
+
 
 class CommentController extends Controller
 {
+    protected $modelResolver;
+    
+        public function __construct(ModelResolverService $modelResolver)
+    {
+        $this->modelResolver = $modelResolver;
+    }
+
+
     /**
      * Display a listing of the resource.
      */
@@ -31,49 +41,48 @@ class CommentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ModelResolverService $modelResolver, StoreCommentRequest $request)
+    public function store(StoreCommentRequest $request)
     {
         Log::debug("Called store on comment controller");
         $validatedData = $request->validated();
-        
+
         Log::debug("Data validated and is " . json_encode($validatedData));
         $comment = new Comment;
         $comment->content = $validatedData['content'];
         $comment->user_id = Auth::id();
-        
+
         // Set the commentable type
-        $comment->commentable_type = $modelResolver->getModelClass($validatedData['commentable_type']);
+        $comment->commentable_type = $this->modelResolver->getModelClass($validatedData['commentable_type']);
         $comment->commentable_id = $validatedData['commentable_id'];
 
         // Top level comment
         $parentCommentId = $validatedData['parent_comment_id'];
-        if (!$parentCommentId)
-        {
-            $comment->id_path = "";
+        if (!$parentCommentId) {
+            $comment->parent_comment_id = null;
             $comment->depth = 0;
             $comment->children_count = 0;
         }
         // Is reply to a comment
-        else
-        {
-            // Parent
+        else {
             $parent = Comment::find($parentCommentId);
-            
-            // get the parent path, then append the current parent id to the path
-            $comment->id_path = ($parent->depth > 0) ? ($parent->id_path + ',' + $parent->id) : strval($parent->id);
 
+            // Set the parent id
+            $comment->parent_comment_id = $parentCommentId;
+
+            // Get the parent's root, and set that as this comment's root, unless it is the root itself.
+            $root_comment_id = ($parent->depth == 0) ? $parent->id : $parent->root_comment_id;
+            $comment->root_commment_id = $root_comment_id;
+
+            // Set the new depth
             $comment->depth = $parent->depth + 1;
 
-            // update the children count of all parents (implode)
-            $all_parents = explode(',', $comment->id_path);
-
             DB::table('comments')
-            ->whereIn('id', $all_parents)
-            ->update(['children_count' => DB::raw('children_count + 1')]);
+                ->where('id', $root_comment_id)
+                ->update(['children_count' => DB::raw('children_count + 1')]);
         }
 
         $comment->save();
-        
+
         Log::debug("New saved comment is " . json_encode($comment));
         return back();
     }
@@ -81,11 +90,64 @@ class CommentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Comment $comment)
+    public function show(string $commentableType, int $commentableId, int $index)
     {
-        //
-    }
+        validator(
+            [
+                'index' => $index,
+                'commentable_type' => $commentableType,
+            ],
+            [
+                'index' => 'required|integer|min:0',
+                'commentable_type' => 'required|in:review,comment',
+            ]
+        )->validate();
+        
+        $MAX_COMMENT_AT_A_TIME = config('comment')['max_comment_query'];
 
+        Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index);
+        
+        // Get the root comments:
+        $root_comments = Comment::where([
+            'commentable_type' => $this->modelResolver->getModelClass($commentableType),
+            'commentable_id' => $commentableId,
+            'depth' => 0,
+        ])->get();
+
+        Log::debug("Root comments: " . json_encode($root_comments));
+
+        // Initialize variables
+        $current_comments_sum = 0;
+        $comments_to_return = [];
+        $current_index = 0;
+
+        foreach ($root_comments as $comment) {
+            $children_count = $comment->children_count + 1; // Include the root comment itself
+
+            // If adding this comment exceeds the max comments, it's the next index
+            if ($current_comments_sum + $children_count > $MAX_COMMENT_AT_A_TIME) {
+                // If we are currently on the correct index, break out of the loop
+                if ($current_index == $index) break;
+
+                $current_index += 1;
+                $current_comments_sum = 0;
+                $comments_to_return = [];
+            }
+    
+            // Add the comment to the result
+            $comments_to_return[] = $comment;
+            $current_comments_sum += $children_count;
+        }
+
+        $comments_to_return = new Collection($comments_to_return);
+
+        // Lazy eager load the 'replies' relationship for the selected comments.
+        $comments_to_return->load('replies');
+    
+        \Log::debug("Comments to return: " . json_encode($comments_to_return));
+        return $comments_to_return;
+    }
+    
     /**
      * Show the form for editing the specified resource.
      */

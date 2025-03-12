@@ -37,7 +37,12 @@ class StoreCommentRequest extends FormRequest
             "commentable_type" => [
                 'required',
                 'string',
-                function (string $attribute, mixed $value, Closure $fail) {
+                function (string $_attribute, mixed $value, Closure $fail) {
+                    if (!in_array($value, array('review', 'comment')))
+                    {
+                        $fail("Not a valid commentable type");
+                    }
+
                     $id = request('commentable_id');
                     $model = $this->modelResolver->resolve($value, $id);
                     

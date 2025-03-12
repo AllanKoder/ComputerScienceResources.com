@@ -43,7 +43,7 @@ Route::middleware([
 
     // CompSci Resource Reviews
     Route::controller(ResourceReviewController::class)->group(function () {
-        Route::post('/reviews/{computerScienceResource}', 'store')->name('review.store');
+        Route::post('/reviews/{computerScienceResource}', 'store')->name('reviews.store');
     });
 
     // Comments
@@ -56,6 +56,10 @@ Route::middleware([
 Route::controller(ComputerScienceResourceController::class)->group(function () {
     Route::get('/resources', 'index')->name('resources');
     Route::get('/resources/{computerScienceResource}', 'show')->name('resources.show');
+});
+
+Route::controller(CommentController::class)->group(function () {
+    Route::post('/comments/show/{type}/{id}/{index}', 'show')->name('comments.show');
 });
 
 require __DIR__.'/socialstream.php';

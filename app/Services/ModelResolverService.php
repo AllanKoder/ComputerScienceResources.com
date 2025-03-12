@@ -6,6 +6,7 @@ class ModelResolverService
 {
     protected $models = [
         'resource' => \App\Models\ComputerScienceResource::class,
+        'review' => \App\Models\ResourceReview::class,
         'comment' => \App\Models\Comment::class,
         // Add other model types here
     ];
