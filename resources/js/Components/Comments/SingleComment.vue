@@ -1,9 +1,11 @@
 <script setup>
-import { ref } from "vue";
-import { Icon } from "@iconify/vue";
-import CommentForm from "@/Components/Comments/CommentForm.vue";
+import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 
 const props = defineProps({
+    comment: {
+        type: Object,
+        required: true,
+    },
     commentable_id: {
         type: Number,
         required: true,
@@ -12,39 +14,34 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    parent_comment_id: {
-        type: Number,
-        required: false,
-        default: null,
-    },
 });
-
-// Toggle state for the comment bar
-const isOpen = ref(false);
-const toggleOpen = () => {
-    isOpen.value = !isOpen.value;
-};
 </script>
 
 <template>
-    <div class="mt-4">
-        <!-- Iconify comment button to toggle the comment bar -->
-        <button
-            @click="toggleOpen"
-            class="flex items-center space-x-2 focus:outline-none"
-        >
-            <Icon
-                icon="mdi:comment-outline"
-                class="w-6 h-6 text-gray-600 hover:text-gray-800"
+    <div class="p-4 border-b border-gray-200">
+        <!-- User Info -->
+        <div class="flex items-center space-x-2">
+            <img
+                :src="comment.user.profile_photo_url"
+                alt="User Avatar"
+                class="w-8 h-8 rounded-full"
             />
-            <span class="text-sm text-gray-600">Comment</span>
-        </button>
+            <span class="font-semibold text-gray-800">{{
+                comment.user.name
+            }}</span>
+            <span class="text-sm text-gray-500">{{
+                new Date(comment.created_at).toLocaleString()
+            }}</span>
+        </div>
 
-        <CommentForm
-            v-if="isOpen"
-            :commentable_id="commentable_id"
-            :commentable_type="commentable_type"
-            :parent_comment_id="parent_comment_id"
+        <!-- Comment Content -->
+        <p class="mt-2 text-gray-700">{{ comment.content }}</p>
+
+        <!-- Comment Actions Form -->
+        <CommentActionsForm
+            :commentable_id="props.commentable_id"
+            :commentable_type="props.commentable_type"
+            :comment="props.comment"
         />
     </div>
 </template>

@@ -1,7 +1,8 @@
 <script setup>
-import { ref } from "vue";
-import { Icon } from "@iconify/vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
 import SingleComment from "@/Components/Comments/SingleComment.vue";
+import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 
 const props = defineProps({
     commentable_id: {
@@ -14,31 +15,62 @@ const props = defineProps({
     },
 });
 
-// Comment structure is a list of:
-// comments: {
-//  parent_comment_id
-//  content
-// }
+// A reactive list of top-level comments.
+const comments = ref([]);
+// Pagination index for loading additional top-level comments.
+const currentIndex = ref(0);
 
-// The single commment is to handle user name, comment content
-const comments = ref();
-
-async function testFunction() {
+async function loadComments() {
     try {
+        // Call your backend to get a page of comments.
+        // Make sure your backend route accepts { id, type, index }.
         const response = await axios.post(
-            route("comments.show", { id: props.commentable_id, type: props.commentable_type, index: 0 })
+            route("comments.show", {
+                id: props.commentable_id,
+                type: props.commentable_type,
+                index: currentIndex.value,
+            })
         );
-        console.log(response.data);
+        // For index 0, replace; for later pages, append.
+        if (currentIndex.value === 0) {
+            comments.value = response.data;
+        } else {
+            comments.value = comments.value.concat(response.data);
+        }
     } catch (error) {
         console.error("Error fetching comments:", error);
     }
 }
 
-testFunction();
-
+function loadMoreComments() {
+    loadComments();
+    currentIndex.value++;
+}
 </script>
 
 <template>
-    
-    <SingleComment :commentable_id="commentable_id" :commentable_type="commentable_type"></SingleComment>
+    <div class="comments-section">
+        <div
+            v-for="comment in comments"
+            :key="comment.id"
+            class="comment"
+            :style="{ marginLeft: `${comment.depth * 20}px` }"
+        >
+            <!-- Render each comment with indentation based on depth -->
+            <SingleComment
+                :comment="comment"
+                :commentable_id="commentable_id"
+                :commentable_type="commentable_type"
+            />
+        </div>
+        <button @click="loadMoreComments" class="btn btn-link mt-2">
+            View more comments
+        </button>
+
+        <CommentActionsForm
+            label="Comment"
+            :commentable_id="props.commentable_id"
+            :commentable_type="props.commentable_type"
+        />
+    </div>
 </template>

@@ -112,7 +112,9 @@ class CommentController extends Controller
             'commentable_type' => $this->modelResolver->getModelClass($commentableType),
             'commentable_id' => $commentableId,
             'depth' => 0,
-        ])->get();
+        ])
+        ->orderBy('created_at')
+        ->get();
 
         Log::debug("Root comments: " . json_encode($root_comments));
 
@@ -122,28 +124,53 @@ class CommentController extends Controller
         $current_index = 0;
 
         foreach ($root_comments as $comment) {
-            $children_count = $comment->children_count + 1; // Include the root comment itself
-
-            // If adding this comment exceeds the max comments, it's the next index
+            $children_count = $comment->children_count + 1;
+            
+            // Handle comments that exceed MAX when alone in a page
             if ($current_comments_sum + $children_count > $MAX_COMMENT_AT_A_TIME) {
-                // If we are currently on the correct index, break out of the loop
-                if ($current_index == $index) break;
-
-                $current_index += 1;
+                if ($current_comments_sum === 0) {
+                    // Force include oversized comment if it's the first in page
+                    if ($current_index === $index) {
+                        $comments_to_return[] = $comment;
+                        $current_comments_sum += $children_count;
+                    }
+                    $current_index++;
+                    continue;
+                }
+                
+                if ($current_index === $index) break;
+                $current_index++;
                 $current_comments_sum = 0;
-                $comments_to_return = [];
             }
-    
-            // Add the comment to the result
-            $comments_to_return[] = $comment;
+        
+            if ($current_index === $index) {
+                $comments_to_return[] = $comment;
+            }
             $current_comments_sum += $children_count;
+        }
+        
+        Log::debug("Current and requested: " . $current_index  . " , " . $index);
+        if ($current_index > $index)
+        {
+            return []; // The requested index is too high
         }
 
         $comments_to_return = new Collection($comments_to_return);
 
-        // Lazy eager load the 'replies' relationship for the selected comments.
-        $comments_to_return->load('replies');
-    
+        // Lazy eager load the user for the root comment and the user for each reply.
+        $comments_to_return->load(['user', 'replies.user']);
+
+        // Remove the morph columns (e.g. commentable_type and commentable_id)
+        // from the root comments and from each reply.
+        $comments_to_return->each(function ($comment) {
+            $comment->makeHidden(['commentable_type', 'commentable_id']);
+            if ($comment->relationLoaded('replies')) {
+                $comment->replies->each(function ($reply) {
+                    $reply->makeHidden(['commentable_type', 'commentable_id']);
+                });
+            }
+        });
+
         \Log::debug("Comments to return: " . json_encode($comments_to_return));
         return $comments_to_return;
     }
