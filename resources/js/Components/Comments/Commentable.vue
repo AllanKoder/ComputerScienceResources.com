@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import axios from "axios";
 import SingleComment from "@/Components/Comments/SingleComment.vue";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
@@ -15,19 +15,38 @@ const props = defineProps({
     },
 });
 
-// A reactive list of top-level comments.
+// Use Map for faster lookups
 const comments = ref([]);
-// A reactive list for users returned by the API.
-const users = ref([]);
-// Flag indicating if more comments are available.
+const users = ref(new Map());
 const can_load_more_comments = ref(true);
-// Pagination index for loading additional top-level comments.
 const currentIndex = ref(0);
+const isLoading = ref(false);
+const error = ref(null);
+
+// Convert API response users to Map
+const normalizeUsers = (usersArray) => 
+    new Map(usersArray.map(user => [user.id, user]));
+
+// Flatten nested comments for virtual scrolling
+const flattenComments = (comments, depth = 0) => {
+    return comments.reduce((acc, comment) => {
+        acc.push({ ...comment, depth });
+        if (comment.children?.length) {
+            acc.push(...flattenComments(comment.children, depth + 1));
+        }
+        return acc;
+    }, []);
+};
+
+const flattenedComments = computed(() => flattenComments(comments.value));
 
 async function loadComments() {
+    if (isLoading.value || !can_load_more_comments.value) return;
+    
+    isLoading.value = true;
+    error.value = null;
+    
     try {
-        // Call your backend to get a page of comments.
-        // Make sure your backend route accepts { id, type, index }.
         const response = await axios.post(
             route("comments.show", {
                 id: props.commentable_id,
@@ -38,65 +57,76 @@ async function loadComments() {
 
         console.log(response);
 
-        // For index 0, replace; for later pages, append.
         if (currentIndex.value === 0) {
             comments.value = response.data.comments;
-            users.value = response.data.users;
+            users.value = normalizeUsers(response.data.users);
         } else {
-            const newComments = response.data.comments.filter((comment) => {
-                return !comments.value.some(
-                    (existingComment) => existingComment.id === comment.id
-                );
-            });
-            comments.value = comments.value.concat(newComments);
-
-            // Merge users from the new page into the existing ones (deduping by id)
-            response.data.users.forEach((newUser) => {
-                if (!users.value.some((u) => u.id === newUser.id)) {
-                    users.value.push(newUser);
-                }
-            });
+            const existingIds = new Set(comments.value.map(c => c.id));
+            const newComments = response.data.comments.filter(c => 
+                !existingIds.has(c.id)
+            );
+            
+            comments.value = [...comments.value, ...newComments];
+            
+            // Merge users using Map
+            const newUsers = normalizeUsers(response.data.users);
+            users.value = new Map([...users.value, ...newUsers]);
         }
+        
         can_load_more_comments.value = response.data.has_more_comments;
-    } catch (error) {
-        console.error("Error fetching comments:", error);
+        currentIndex.value++;
+    } catch (err) {
+        console.error("Error fetching comments:", err);
+        error.value = "Failed to load comments. Please try again later.";
+    } finally {
+        isLoading.value = false;
     }
 }
 
-function loadMoreComments() {
-    loadComments();
-    currentIndex.value++;
-}
 </script>
 
 <template>
-    <div class="comments-section">
-        <div
-            v-for="comment in comments"
-            :key="comment.id"
-            class="comment"
-            :style="{ marginLeft: `${comment.depth * 20}px` }"
-        >
-            <!-- Render each comment with the user data passed down -->
-            <SingleComment
-                :comment="comment"
-                :commentable_id="commentable_id"
-                :commentable_type="commentable_type"
-                :users="users"
-            />
+    <div class="comments-section p-4">
+        <!-- Error State -->
+        <div v-if="error" class="text-red-500 mb-4">{{ error }}</div>
+
+        <!-- Comments List -->
+        <template v-if="flattenedComments.length">
+            <div 
+                v-for="comment in flattenedComments"
+                :key="comment.id"
+                class="comment-item mb-4 pl-4 border-l border-gray-200"
+                :class="{ 'ml-18': comment.depth > 0 }"
+            >
+                <SingleComment
+                    :comment="comment"
+                    :commentable_id="commentable_id"
+                    :commentable_type="commentable_type"
+                    :users="users"
+                />
+            </div>
+        </template>
+
+        <!-- Loading State -->
+        <div v-if="isLoading" class="text-center text-gray-500 mb-4">
+            Loading comments...
         </div>
+
+        <!-- Load More Button -->
         <button
-            v-if="can_load_more_comments"
-            @click="loadMoreComments"
-            class="btn btn-link mt-2"
+            v-if="can_load_more_comments && !isLoading"
+            @click="loadComments"
+            class="w-full py-2 text-center text-blue-500 hover:bg-gray-50 transition-colors"
         >
             View more comments
         </button>
 
+        <!-- New Comment Form -->
         <CommentActionsForm
-            label="Comment"
+            label="Add Comment"
             :commentable_id="commentable_id"
             :commentable_type="commentable_type"
+            class="mt-4"
         />
     </div>
 </template>

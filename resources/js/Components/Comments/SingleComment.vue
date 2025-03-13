@@ -16,38 +16,60 @@ const props = defineProps({
         required: true,
     },
     users: {
-        type: Array,
+        type: Map, // Changed to Map for faster lookups
         required: true,
     },
 });
 
-// Look up the user data from the passed-in users array.
-const user = computed(() => props.users.find(u => u.id === props.comment.user_id));
+// Convert to Map-based lookup (O(1) instead of O(n))
+const user = computed(() => props.users.get(props.comment.user_id));
+
+// Memoize date formatting
+const formattedDate = computed(() => 
+    new Date(props.comment.created_at).toLocaleString(navigator.language, {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    })
+);
 </script>
 
 <template>
-    <div class="p-4 border-b border-gray-200">
-        <!-- User Info -->
+    <div class="p-4 border-b border-gray-200" :key="comment.id">
+        <!-- User Info with Lazy Loading -->
         <div class="flex items-center space-x-2">
             <img
-                :src="user.profile_photo_url"
-                alt="User Avatar"
+                :src="user?.profile_photo_url"
+                alt="User avatar"
                 class="w-8 h-8 rounded-full"
+                loading="lazy"
+                width="32"
+                height="32"
             />
-            <span class="font-semibold text-gray-800">{{ user.name }}</span>
-            <span class="text-sm text-gray-500">
-                {{ new Date(comment.created_at).toLocaleString() }}
-            </span>
+            <div class="min-w-0">
+                <p class="font-semibold text-gray-800 truncate">{{ user?.name }}</p>
+                <time 
+                    :datetime="comment.created_at"
+                    class="text-sm text-gray-500"
+                    :title="comment.created_at"
+                >
+                    {{ formattedDate }}
+                </time>
+            </div>
         </div>
 
         <!-- Comment Content -->
-        <p class="mt-2 text-gray-700">{{ comment.content }}</p>
+        <p class="mt-2 text-gray-700 break-words">{{ comment.content }}</p>
 
-        <!-- Comment Actions Form -->
+        <!-- Actions Form -->
         <CommentActionsForm
+            :key="`actions-${comment.id}`"
             :commentable_id="commentable_id"
             :commentable_type="commentable_type"
-            :comment="comment"
+            :parent_comment_id="comment.id"
+            class="mt-2"
         />
     </div>
 </template>

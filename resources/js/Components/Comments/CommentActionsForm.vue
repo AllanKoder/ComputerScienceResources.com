@@ -9,7 +9,7 @@ const props = defineProps({
         default: "Reply",
         required: false
     },
-    comment_parent_id: {
+    parent_comment_id: {
         type: Number,
         default: null,
         required: false,
@@ -35,7 +35,7 @@ const form = useForm({
     content: "",
     commentable_id: props.commentable_id,
     commentable_type: props.commentable_type,
-    parent_comment_id: props.comment_parent_id ?? null,
+    parent_comment_id: props.parent_comment_id ?? null,
 });
 
 // Submit form handler
@@ -55,6 +55,7 @@ const submit = () => {
 
 <template>
     <div>
+        {{ props.parent_comment_id }}
         <!-- Comment Actions -->
         <div class="mt-2 flex items-center space-x-4">
             <button @click="toggleOpen" class="text-sm text-blue-500 hover:underline">

@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Comment\StoreCommentRequest;
+use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Services\ModelResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Resources\UserResource;
+use App\Services\CommentService;
 use DB;
 use Auth;
 use Log;
@@ -16,10 +18,12 @@ use Log;
 class CommentController extends Controller
 {
     protected $modelResolver;
+    protected $commentService;
     
-        public function __construct(ModelResolverService $modelResolver)
+        public function __construct(ModelResolverService $modelResolver, CommentService $commentService)
     {
         $this->modelResolver = $modelResolver;
+        $this->commentService = $commentService;
     }
 
 
@@ -72,7 +76,7 @@ class CommentController extends Controller
 
             // Get the parent's root, and set that as this comment's root, unless it is the root itself.
             $root_comment_id = ($parent->depth == 0) ? $parent->id : $parent->root_comment_id;
-            $comment->root_commment_id = $root_comment_id;
+            $comment->root_comment_id = $root_comment_id;
 
             // Set the new depth
             $comment->depth = $parent->depth + 1;
@@ -89,7 +93,7 @@ class CommentController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified comment, with pagination.
      */
     public function show(string $commentableType, int $commentableId, int $index)
     {
@@ -103,104 +107,50 @@ class CommentController extends Controller
                 'commentable_type' => 'required|in:review,comment',
             ]
         )->validate();
-        
-        $MAX_COMMENT_AT_A_TIME = config('comment')['max_comment_query'];
-    
+       
         Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index);
-        
-        // Get the root comments:
-        $root_comments = Comment::where([
-            'commentable_type' => $this->modelResolver->getModelClass($commentableType),
-            'commentable_id' => $commentableId,
-            'depth' => 0,
-        ])
-        ->orderBy('created_at')
-        ->get();
     
-        Log::debug("Root comments: " . json_encode($root_comments));
-    
-        // Initialize variables
-        $current_comments_sum = 0;
-        $comments_to_return = [];
-        $current_index = 0;
-        $has_more_comments = false;
-        
-        foreach ($root_comments as $comment) {
-            $children_count = $comment->children_count + 1;
-            
-            // Handle comments that exceed MAX when alone in a page
-            if ($current_comments_sum + $children_count > $MAX_COMMENT_AT_A_TIME) {
-                if ($current_comments_sum === 0) {
-                    // Force include oversized comment if it's the first in page
-                    if ($current_index === $index) {
-                        $comments_to_return[] = $comment;
-                        $current_comments_sum += $children_count;
-                    }
-                    $current_index++;
-                    continue;
-                }
-                
-                $current_index++;
-                $current_comments_sum = 0;
-            }
-            
-            // Now we know that there exists more comments to load later
-            if ($current_index > $index)    
-            {
-                $has_more_comments = true;
-                break;
-            }
-            // Only add comments for the desired index
-            else if ($current_index === $index) {
-                $comments_to_return[] = $comment;
-            }
-            $current_comments_sum += $children_count;
-        }
-        
-        Log::debug("Current and requested: " . $current_index  . " , " . $index);
-    
-        $comments_to_return = new Collection($comments_to_return);
+        $paginatedResults = $this->commentService->getPaginatedComments($this->modelResolver->getModelClass($commentableType), $commentableId, $index);
+
+        $nestedComments = new Collection($paginatedResults['comments']);
     
         // Lazy eager load the user for the root comment and for each reply.
-        $comments_to_return->load(['user', 'replies.user']);
-    
-        // Remove the morph columns from the root comments and from each reply.
-        $comments_to_return->each(function ($comment) {
-            $comment->makeHidden(['commentable_type', 'commentable_id']);
+        $nestedComments->load(['user', 'replies.user']);
+            
+        // Flatten the comments and replies into the desired format.
+        $flattenedComments = collect();
+
+        foreach ($nestedComments as $comment) {
+            // Transform the root comment.
+            $flattenedComments->push(
+                new CommentResource($comment)
+            );
+
+            // Transform any loaded replies.
             if ($comment->relationLoaded('replies')) {
-                $comment->replies->each(function ($reply) {
-                    $reply->makeHidden(['commentable_type', 'commentable_id']);
-                });
+                foreach ($comment->replies as $reply) {
+                    $flattenedComments->push(
+                        new CommentResource($reply)
+                    );
+                }
             }
-        });
-    
+        }
+
         // Extract unique users into a separate collection.
         $users = collect();
-    
-        // Iterate over each comment and its replies.
-        $comments_to_return->each(function ($comment) use (&$users) {
+
+        foreach ($flattenedComments as $comment) {
             if ($comment->relationLoaded('user') && $comment->user) {
-                $users->put($comment->user->id,  new UserResource($comment->user));
-                // Remove the loaded relation
-                $comment->unsetRelation('user');
+                $users->put($comment->user->id, new UserResource($comment->user));
             }
-            if ($comment->relationLoaded('replies')) {
-                $comment->replies->each(function ($reply) use (&$users) {
-                    if ($reply->relationLoaded('user') && $reply->user) {
-                        $users->put($reply->user->id, new UserResource($reply->user));
-                        // Remove the loaded relation
-                        $reply->unsetRelation('user');
-                    }
-                });
-            }
-        });
+        }
     
-        \Log::debug("Comments to return: " . json_encode($comments_to_return));
+        \Log::debug("Comments to return: " . json_encode($flattenedComments));
         
         return [
-            'comments' => $comments_to_return,
+            'comments' => $flattenedComments,
             'users' => $users->values(),
-            'has_more_comments' => $has_more_comments,
+            'has_more_comments' => $paginatedResults['has_more_comments'],
         ];
     }
 
