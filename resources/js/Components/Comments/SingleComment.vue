@@ -1,4 +1,5 @@
 <script setup>
+import { computed } from "vue";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 
 const props = defineProps({
@@ -14,7 +15,14 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    users: {
+        type: Array,
+        required: true,
+    },
 });
+
+// Look up the user data from the passed-in users array.
+const user = computed(() => props.users.find(u => u.id === props.comment.user_id));
 </script>
 
 <template>
@@ -22,16 +30,14 @@ const props = defineProps({
         <!-- User Info -->
         <div class="flex items-center space-x-2">
             <img
-                :src="comment.user.profile_photo_url"
+                :src="user.profile_photo_url"
                 alt="User Avatar"
                 class="w-8 h-8 rounded-full"
             />
-            <span class="font-semibold text-gray-800">{{
-                comment.user.name
-            }}</span>
-            <span class="text-sm text-gray-500">{{
-                new Date(comment.created_at).toLocaleString()
-            }}</span>
+            <span class="font-semibold text-gray-800">{{ user.name }}</span>
+            <span class="text-sm text-gray-500">
+                {{ new Date(comment.created_at).toLocaleString() }}
+            </span>
         </div>
 
         <!-- Comment Content -->
@@ -39,9 +45,9 @@ const props = defineProps({
 
         <!-- Comment Actions Form -->
         <CommentActionsForm
-            :commentable_id="props.commentable_id"
-            :commentable_type="props.commentable_type"
-            :comment="props.comment"
+            :commentable_id="commentable_id"
+            :commentable_type="commentable_type"
+            :comment="comment"
         />
     </div>
 </template>

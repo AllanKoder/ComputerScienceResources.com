@@ -3,19 +3,10 @@ import { defineProps } from "vue";
 import { ratingLabels } from "@/Helpers/constants";
 import Rating from "primevue/rating";
 import Commentable from "@/Components/Comments/Commentable.vue";
-import { ref } from 'vue'
 
 const props = defineProps({
     review: Object,
 });
-
-
-// Track which reviews are expanded
-const expandedReviews = ref({});
-
-const toggleExpand = (id) => {
-    expandedReviews.value[id] = !expandedReviews.value[id];
-};
 
 // Convert ratingLabels object to array for iteration in template
 const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
@@ -61,30 +52,19 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
             </ul>
         </div>
     </div>
-    <!-- Toggle for Detailed Ratings -->
-    <div class="mt-4">
-        <button
-            @click="toggleExpand(review.id)"
-            class="text-blue-500 underline"
-        >
-            {{ expandedReviews[review.id] ? "Hide Details" : "Show Details" }}
-        </button>
-    </div>
     <!-- Detailed Ratings in Flex Layout -->
-    <div v-if="expandedReviews[review.id]" class="mt-4 border-t pt-4">
-        <div class="flex flex-wrap gap-4 justify-between">
-            <div
-                v-for="feature in ratingFeatures"
-                :key="feature.key"
-                class="flex flex-col items-center"
-            >
-                <span class="font-semibold mb-1">{{ feature.label }}</span>
-                <Rating
-                    :modelValue="review[feature.key]"
-                    readonly
-                    :cancel="false"
-                />
-            </div>
+    <div class="flex flex-wrap gap-4 mt-4 justify-between">
+        <div
+            v-for="feature in ratingFeatures"
+            :key="feature.key"
+            class="flex flex-col items-center"
+        >
+            <span class="font-semibold mb-1">{{ feature.label }}</span>
+            <Rating
+                :modelValue="review[feature.key]"
+                readonly
+                :cancel="false"
+            />
         </div>
     </div>
 

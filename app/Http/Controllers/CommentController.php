@@ -7,6 +7,7 @@ use App\Models\Comment;
 use App\Services\ModelResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
+use App\Http\Resources\UserResource;
 use DB;
 use Auth;
 use Log;
@@ -104,7 +105,7 @@ class CommentController extends Controller
         )->validate();
         
         $MAX_COMMENT_AT_A_TIME = config('comment')['max_comment_query'];
-
+    
         Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index);
         
         // Get the root comments:
@@ -115,14 +116,15 @@ class CommentController extends Controller
         ])
         ->orderBy('created_at')
         ->get();
-
+    
         Log::debug("Root comments: " . json_encode($root_comments));
-
+    
         // Initialize variables
         $current_comments_sum = 0;
         $comments_to_return = [];
         $current_index = 0;
-
+        $has_more_comments = false;
+        
         foreach ($root_comments as $comment) {
             $children_count = $comment->children_count + 1;
             
@@ -138,30 +140,31 @@ class CommentController extends Controller
                     continue;
                 }
                 
-                if ($current_index === $index) break;
                 $current_index++;
                 $current_comments_sum = 0;
             }
-        
-            if ($current_index === $index) {
+            
+            // Now we know that there exists more comments to load later
+            if ($current_index > $index)    
+            {
+                $has_more_comments = true;
+                break;
+            }
+            // Only add comments for the desired index
+            else if ($current_index === $index) {
                 $comments_to_return[] = $comment;
             }
             $current_comments_sum += $children_count;
         }
         
         Log::debug("Current and requested: " . $current_index  . " , " . $index);
-        if ($current_index > $index)
-        {
-            return []; // The requested index is too high
-        }
-
+    
         $comments_to_return = new Collection($comments_to_return);
-
-        // Lazy eager load the user for the root comment and the user for each reply.
+    
+        // Lazy eager load the user for the root comment and for each reply.
         $comments_to_return->load(['user', 'replies.user']);
-
-        // Remove the morph columns (e.g. commentable_type and commentable_id)
-        // from the root comments and from each reply.
+    
+        // Remove the morph columns from the root comments and from each reply.
         $comments_to_return->each(function ($comment) {
             $comment->makeHidden(['commentable_type', 'commentable_id']);
             if ($comment->relationLoaded('replies')) {
@@ -170,11 +173,37 @@ class CommentController extends Controller
                 });
             }
         });
-
-        \Log::debug("Comments to return: " . json_encode($comments_to_return));
-        return $comments_to_return;
-    }
     
+        // Extract unique users into a separate collection.
+        $users = collect();
+    
+        // Iterate over each comment and its replies.
+        $comments_to_return->each(function ($comment) use (&$users) {
+            if ($comment->relationLoaded('user') && $comment->user) {
+                $users->put($comment->user->id,  new UserResource($comment->user));
+                // Remove the loaded relation
+                $comment->unsetRelation('user');
+            }
+            if ($comment->relationLoaded('replies')) {
+                $comment->replies->each(function ($reply) use (&$users) {
+                    if ($reply->relationLoaded('user') && $reply->user) {
+                        $users->put($reply->user->id, new UserResource($reply->user));
+                        // Remove the loaded relation
+                        $reply->unsetRelation('user');
+                    }
+                });
+            }
+        });
+    
+        \Log::debug("Comments to return: " . json_encode($comments_to_return));
+        
+        return [
+            'comments' => $comments_to_return,
+            'users' => $users->values(),
+            'has_more_comments' => $has_more_comments,
+        ];
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
