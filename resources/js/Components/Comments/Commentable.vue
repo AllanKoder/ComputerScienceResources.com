@@ -1,7 +1,6 @@
 <script setup>
-import { ref, computed, watchEffect } from "vue";
+import { ref } from "vue";
 import axios from "axios";
-import SingleComment from "@/Components/Comments/SingleComment.vue";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import CommentList from "./CommentList.vue";
 
@@ -16,7 +15,6 @@ const props = defineProps({
     },
 });
 
-const comments = ref([]);
 const users = ref(new Map());
 const can_load_more_comments = ref(true);
 const currentIndex = ref(0);
@@ -26,17 +24,6 @@ const error = ref(null);
 // Convert API response users to Map
 const normalizeUsers = (usersArray) => 
     new Map(usersArray.map(user => [user.id, user]));
-
-// Flatten nested comments for virtual scrolling
-const flattenComments = (comments, depth = 0) => {
-    return comments.reduce((acc, comment) => {
-        acc.push({ ...comment, depth });
-        if (comment.children?.length) {
-            acc.push(...flattenComments(comment.children, depth + 1));
-        }
-        return acc;
-    }, []);
-};
 
 const idToChildren = ref(new Map());
 function updateCommentHierarchy(newComments) {
@@ -62,8 +49,6 @@ function updateCommentHierarchy(newComments) {
     };
 }
 
-const flattenedComments = computed(() => flattenComments(comments.value));
-
 async function loadComments() {
     if (isLoading.value || !can_load_more_comments.value) return;
     
@@ -81,16 +66,11 @@ async function loadComments() {
 
         console.log(response);
 
-
-        const newComments = response.data.comments.filter(
-            c => !comments.value.some(existing => existing.id === c.id)
-        );
+        const newComments = response.data.comments;
 
         if (currentIndex.value === 0) {
-            comments.value = newComments;
             users.value = normalizeUsers(response.data.users);
         } else {
-            comments.value = [...comments.value, ...newComments];
             users.value = new Map([...users.value, ...normalizeUsers(response.data.users)]);
         }
 
