@@ -7,22 +7,19 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    commentable_id: {
+    commentableId: {
         type: Number,
         required: true,
     },
-    commentable_type: {
+    commentableType: {
         type: String,
         required: true,
     },
     users: {
-        type: Map, // Changed to Map for faster lookups
+        type: Map, 
         required: true,
     },
 });
-
-// Convert to Map-based lookup (O(1) instead of O(n))
-const user = computed(() => props.users.get(props.comment.user_id));
 
 // Memoize date formatting
 const formattedDate = computed(() => 
@@ -41,7 +38,7 @@ const formattedDate = computed(() =>
         <!-- User Info with Lazy Loading -->
         <div class="flex items-center space-x-2">
             <img
-                :src="user?.profile_photo_url"
+                :src="props.users.get(comment.user_id)?.profile_photo_url"
                 alt="User avatar"
                 class="w-8 h-8 rounded-full"
                 loading="lazy"
@@ -49,7 +46,7 @@ const formattedDate = computed(() =>
                 height="32"
             />
             <div class="min-w-0">
-                <p class="font-semibold text-gray-800 truncate">{{ user?.name }}</p>
+                <p class="font-semibold text-gray-800 truncate">{{ props.users.get(comment.id)?.name }}</p>
                 <time 
                     :datetime="comment.created_at"
                     class="text-sm text-gray-500"
@@ -66,9 +63,9 @@ const formattedDate = computed(() =>
         <!-- Actions Form -->
         <CommentActionsForm
             :key="`actions-${comment.id}`"
-            :commentable_id="commentable_id"
-            :commentable_type="commentable_type"
-            :parent_comment_id="comment.id"
+            :commentableId="props.commentableId"
+            :commentableType="props.commentableType"
+            :parentCommentId="comment.id"
             class="mt-2"
         />
     </div>

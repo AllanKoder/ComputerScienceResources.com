@@ -4,23 +4,23 @@ import { useForm } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 
 const props = defineProps({
-    label: {
-        type: String,
-        default: "Reply",
-        required: false
+    commentableId: {
+        type: Number,
+        required: true,
     },
-    parent_comment_id: {
+    commentableType: {
+        type: String,
+        required: true,
+    },
+    parentCommentId: {
         type: Number,
         default: null,
         required: false,
     },
-    commentable_id: {
-        type: Number,
-        required: true,
-    },
-    commentable_type: {
+    label: {
         type: String,
-        required: true,
+        default: "Reply",
+        required: false,
     },
 });
 
@@ -33,9 +33,9 @@ const toggleOpen = () => {
 // Setup form with Inertia
 const form = useForm({
     content: "",
-    commentable_id: props.commentable_id,
-    commentable_type: props.commentable_type,
-    parent_comment_id: props.parent_comment_id ?? null,
+    commentable_id: props.commentableId,
+    commentable_type: props.commentableType,
+    parent_comment_id: props.parentCommentId ?? null,
 });
 
 // Submit form handler
@@ -55,7 +55,6 @@ const submit = () => {
 
 <template>
     <div>
-        {{ props.parent_comment_id }}
         <!-- Comment Actions -->
         <div class="mt-2 flex items-center space-x-4">
             <button @click="toggleOpen" class="text-sm text-blue-500 hover:underline">
