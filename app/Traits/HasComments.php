@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Models\CommentsCount;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait HasComments
@@ -12,7 +13,7 @@ trait HasComments
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function commentsCount(): HasOne
+    public function commentsCountRelationship(): HasOne
     {
         return $this->hasOne(CommentsCount::class, 'commentable_id', 'id')
             ->where('commentable_type', static::class);
@@ -23,8 +24,12 @@ trait HasComments
      *
      * @return int
      */
-    public function getCommentsCountAttribute(): int
+    protected function commentsCount(): Attribute
     {
-        return $this->commentsCount?->count ?? 0;
+        return Attribute::make(
+            get: function () {
+                return $this->commentsCountRelationship?->count ?? 0;
+            }
+        );
     }
 }

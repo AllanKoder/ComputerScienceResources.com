@@ -68,5 +68,9 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
         </div>
     </div>
 
-    <Commentable :commentableId="review.id" :commentableType="'review'"></Commentable>
+    <Commentable 
+        :commentableId="review.id" 
+        :commentableType="'review'"
+        :commentsCount="review.comments_count"
+    />
 </template>

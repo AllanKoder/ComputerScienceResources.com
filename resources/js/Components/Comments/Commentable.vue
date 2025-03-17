@@ -13,6 +13,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    commentsCount: {
+        type: Number,
+        required: true,
+    },
 });
 
 const users = ref(new Map());
@@ -20,17 +24,20 @@ const can_load_more_comments = ref(true);
 const currentIndex = ref(0);
 const isLoading = ref(false);
 const error = ref(null);
+const commentsLeft = ref(props.commentsCount);
 
 // Convert API response users to Map
-const normalizeUsers = (usersArray) => 
-    new Map(usersArray.map(user => [user.id, user]));
+const normalizeUsers = (usersArray) =>
+    new Map(usersArray.map((user) => [user.id, user]));
 
 const idToChildren = ref(new Map());
-function updateCommentHierarchy(ewComments) {
+function updateCommentHierarchy(newComments) {
     const hierarchyUpdates = {};
-    
-    newComments.forEach(comment => {
-        const parentId = comment.parent_comment_id; 
+
+    commentsLeft.value -= newComments.length;
+
+    newComments.forEach((comment) => {
+        const parentId = comment.parent_comment_id;
         if (!hierarchyUpdates[parentId]) {
             hierarchyUpdates[parentId] = [];
         }
@@ -43,18 +50,18 @@ function updateCommentHierarchy(ewComments) {
         ...Object.fromEntries(
             Object.entries(hierarchyUpdates).map(([parentId, children]) => [
                 parentId,
-                [...(idToChildren.value[parentId] || []), ...children]
+                [...(idToChildren.value[parentId] || []), ...children],
             ])
-        )
+        ),
     };
 }
 
 async function loadComments() {
     if (isLoading.value || !can_load_more_comments.value) return;
-    
+
     isLoading.value = true;
     error.value = null;
-    
+
     try {
         const response = await axios.post(
             route("comments.show", {
@@ -71,12 +78,15 @@ async function loadComments() {
         if (currentIndex.value === 0) {
             users.value = normalizeUsers(response.data.users);
         } else {
-            users.value = new Map([...users.value, ...normalizeUsers(response.data.users)]);
+            users.value = new Map([
+                ...users.value,
+                ...normalizeUsers(response.data.users),
+            ]);
         }
 
         // Update comment hierarchy for both new and existing comments
         updateCommentHierarchy(newComments);
-        
+
         can_load_more_comments.value = response.data.has_more_comments;
         currentIndex.value++;
     } catch (err) {
@@ -86,7 +96,6 @@ async function loadComments() {
         isLoading.value = false;
     }
 }
-
 </script>
 
 <template>
@@ -95,7 +104,7 @@ async function loadComments() {
         <div v-if="error" class="text-red-500 mb-4">{{ error }}</div>
 
         <!-- Comments List -->
-        <CommentList 
+        <CommentList
             :id-to-children="idToChildren"
             :commentableId="props.commentableId"
             :commentableType="props.commentableType"
@@ -108,13 +117,20 @@ async function loadComments() {
         </div>
 
         <!-- Load More Button -->
-        <button
-            v-if="can_load_more_comments && !isLoading"
-            @click="loadComments"
-            class="w-full py-2 text-center text-blue-500 hover:bg-gray-50 transition-colors"
-        >
-            View more comments
-        </button>
+        <div v-if="commentsLeft > 0">
+            <button
+                v-if="can_load_more_comments && !isLoading"
+                @click="loadComments"
+                class="w-full py-2 text-center text-blue-500 hover:bg-gray-50 transition-colors"
+            >
+                View {{ commentsLeft }} Comments
+            </button>
+        </div>
+        <div v-else>
+            <p class="w-full py-2 text-center text-blue-500">
+                No Comments (Yes this is ugly)
+            </p>
+        </div>
 
         <!-- New Comment Form -->
         <CommentActionsForm

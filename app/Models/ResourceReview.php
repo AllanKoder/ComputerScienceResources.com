@@ -16,7 +16,7 @@ class ResourceReview extends Model
     use HasComments;
 
     protected $guarded = [];
-    protected $with = ['votes', 'commentsCount'];
+    protected $with = ['votes', 'commentsCountRelationship'];
 
     /**
      * Get the average review score.

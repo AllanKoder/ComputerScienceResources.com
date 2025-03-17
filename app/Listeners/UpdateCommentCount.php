@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 
-class UpdateCommentCount
+class UpdateCommentsCount
 {
     /**
      * Create the event listener.
@@ -25,7 +25,7 @@ class UpdateCommentCount
     {
         Log::debug("Handling comment created: " . json_encode($event));
 
-        $commentCount = CommentsCount::firstOrNew(
+        $commentsCount = CommentsCount::firstOrNew(
             [
                 'commentable_type' => $event->commentable_type, 
                 'commentable_id' => $event->commentable_id
@@ -33,8 +33,8 @@ class UpdateCommentCount
         );
         
         // Add 1
-        $commentCount->count = $commentCount->count + 1;
+        $commentsCount->count = $commentsCount->count + 1;
 
-        $commentCount->save();
+        $commentsCount->save();
     }
 }
