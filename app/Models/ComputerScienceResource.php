@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Tags\HasTags;
+use Auth;
 
 class ComputerScienceResource extends Model
 {
@@ -90,7 +91,7 @@ class ComputerScienceResource extends Model
     protected function userVote(): Attribute
     {
         return Attribute::make(
-            get: fn() => auth()->check() ? $this->getVoteValue(auth()->id()) : 0
+            get: fn() => Auth::check() ? $this->getVoteValue(Auth::id()) : 0
         );
     }
 

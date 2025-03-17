@@ -52,7 +52,11 @@ class ResourceReviewFactory extends Factory
     {
         return $this->afterCreating(function ($resourceReview) {
             // Dispatch the event after creating the resource review
-            ResourceReviewProcessed::dispatch($resourceReview->computer_science_resource_id, null, $resourceReview->attributesToArray());
+            ResourceReviewProcessed::dispatch(
+                $resourceReview->computer_science_resource_id,
+                null,
+                $resourceReview->attributesToArray()
+            );
         });
     }
 }

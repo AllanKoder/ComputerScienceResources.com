@@ -26,7 +26,7 @@ const normalizeUsers = (usersArray) =>
     new Map(usersArray.map(user => [user.id, user]));
 
 const idToChildren = ref(new Map());
-function updateCommentHierarchy(newComments) {
+function updateCommentHierarchy(ewComments) {
     const hierarchyUpdates = {};
     
     newComments.forEach(comment => {

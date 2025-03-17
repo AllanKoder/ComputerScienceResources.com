@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\HasComments;
+use App\Traits\HasVotes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -10,8 +12,11 @@ class ResourceReview extends Model
 {
     /** @use HasFactory<\Database\Factories\ResourceReviewFactory> */
     use HasFactory;
+    use HasVotes;
+    use HasComments;
 
     protected $guarded = [];
+    protected $with = ['votes', 'commentsCount'];
 
     /**
      * Get the average review score.
@@ -41,5 +46,5 @@ class ResourceReview extends Model
         );
     }
 
-    protected $appends = ['average_score'];
+    protected $appends = ['average_score', 'comments_count'];
 }

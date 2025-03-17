@@ -4,7 +4,6 @@ namespace App\Listeners;
 
 use App\Events\ResourceReviewProcessed;
 use App\Models\ResourceReviewSummary;
-use App\Models\UpvoteSummary;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;

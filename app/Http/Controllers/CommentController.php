@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CommentCreated;
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
@@ -9,6 +10,7 @@ use App\Services\ModelResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Resources\UserResource;
+use App\Models\CommentsCount;
 use App\Services\CommentService;
 use DB;
 use Auth;
@@ -19,8 +21,8 @@ class CommentController extends Controller
 {
     protected $modelResolver;
     protected $commentService;
-    
-        public function __construct(ModelResolverService $modelResolver, CommentService $commentService)
+
+    public function __construct(ModelResolverService $modelResolver, CommentService $commentService)
     {
         $this->modelResolver = $modelResolver;
         $this->commentService = $commentService;
@@ -57,8 +59,11 @@ class CommentController extends Controller
         $comment->user_id = Auth::id();
 
         // Set the commentable type
-        $comment->commentable_type = $this->modelResolver->getModelClass($validatedData['commentable_type']);
-        $comment->commentable_id = $validatedData['commentable_id'];
+        $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_type']);
+        $commentableId = $validatedData['commentable_id'];
+        
+        $comment->commentable_type = $commentableType;
+        $comment->commentable_id = $commentableId;
 
         // Top level comment
         $parentCommentId = $validatedData['parent_comment_id'];
@@ -87,6 +92,10 @@ class CommentController extends Controller
         }
 
         $comment->save();
+        CommentCreated::dispatch(
+            $commentableId,
+            $commentableType
+        );
 
         Log::debug("New saved comment is " . json_encode($comment));
         return back();
@@ -107,16 +116,15 @@ class CommentController extends Controller
                 'commentable_type' => 'required|in:review,comment',
             ]
         )->validate();
-       
-        Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index);
-    
-        $paginatedResults = $this->commentService->getPaginatedComments($this->modelResolver->getModelClass($commentableType), $commentableId, $index);
 
+        Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index);
+
+        $paginatedResults = $this->commentService->getPaginatedComments($this->modelResolver->getModelClass($commentableType), $commentableId, $index);
         $nestedComments = new Collection($paginatedResults['comments']);
-    
+        
         // Lazy eager load the user for the root comment and for each reply.
         $nestedComments->load(['user', 'replies.user']);
-            
+
         // Flatten the comments and replies into the desired format.
         $flattenedComments = collect();
 
@@ -144,9 +152,8 @@ class CommentController extends Controller
                 $users->put($comment->user->id, new UserResource($comment->user));
             }
         }
-    
-        \Log::debug("Comments to return: " . json_encode($flattenedComments));
-        
+
+        \Log::debug("Returned comments: " . json_encode($flattenedComments));
         return [
             'comments' => $flattenedComments,
             'users' => $users->values(),

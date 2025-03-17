@@ -40,9 +40,9 @@ class CommentService
 
         // Initialize variables
         $currentCommentsSum = 0;
-        $commentsToReturn   = [];
-        $currentIndex       = 0;
-        $hasMoreComments    = false;
+        $commentsToReturn = [];
+        $currentIndex = 0;
+        $hasMoreComments = false;
 
         foreach ($rootComments as $comment) {
             $childrenCount = $comment->children_count + 1;
@@ -51,6 +51,7 @@ class CommentService
             if ($currentCommentsSum + $childrenCount > $this->maxPerPage) {
                 if ($currentCommentsSum === 0) {
                     // Force include oversized comment if it's the first in page
+                    Log::warning("Had to force include for oversized comment tree. Should consider increasing the max commentx in config or lowering the replies size limit.");
                     if ($currentIndex === $index) {
                         $commentsToReturn[] = $comment;
                         $currentCommentsSum += $childrenCount;

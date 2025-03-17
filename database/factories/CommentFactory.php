@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Events\CommentCreated;
 use App\Models\ComputerScienceResource;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
@@ -90,6 +91,8 @@ class CommentFactory extends Factory
                 Comment::where('id', $comment->root_comment_id)
                     ->increment('children_count');
             }
+
+            CommentCreated::dispatch($comment->commentable_id, $comment->commentable_type);
         });
     }
 }
