@@ -1,6 +1,6 @@
 <script setup>
 import { Icon } from "@iconify/vue";
-import UpvoteResource from "./UpvoteResource.vue";
+import Upvotable from "@/Components/Upvote/Upvotable.vue";
 
 defineProps({
     resource: {
@@ -16,11 +16,12 @@ const emit = defineEmits(["upvote", "downvote"]);
 <template>
     <tr class="mb-8 border-b p-12">
         <td class="align-top pr-6">
-            <UpvoteResource
-                :resourceId="resource.id"
+            <Upvotable
+                :upvotableId="resource.id"
+                :upvotableType="'resource'"
                 :initialVotes="resource.total_votes"
                 :userVote="resource.user_vote"
-            ></UpvoteResource>
+            ></Upvotable>
         </td>
 
         <td class="align-top pr-6 w-32">

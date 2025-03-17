@@ -10,12 +10,28 @@ use Illuminate\Support\Facades\Log;
 
 class UpvoteController extends Controller
 {
+    protected $modelResolver;
+
+    function __construct(ModelResolverService $modelResolver)
+    {
+        $this->modelResolver = $modelResolver;
+    }
+
     /**
      * Upvote a Model (type, id)
      */
-    public function upvote(ModelResolverService $resolver, $type, $id)
+    public function upvote($type, $id)
     {
-        $model = $resolver->resolve($type, $id);
+        validator(
+            [
+                'type' => $type,
+            ],
+            [
+                'type' => 'required|in:review,resource,comment',
+            ]
+        )->validate(); 
+
+        $model = $this->modelResolver->resolve($type, $id);
 
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);
@@ -33,9 +49,18 @@ class UpvoteController extends Controller
     /**
      * Downvote a Model (type, id)
      */
-    public function downvote(ModelResolverService $resolver, $type, $id)
+    public function downvote($type, $id)
     {
-        $model = $resolver->resolve($type, $id);
+        validator(
+            [
+                'type' => $type,
+            ],
+            [
+                'type' => 'required|in:review,resource,comment',
+            ]
+        )->validate(); 
+
+        $model = $this->modelResolver->resolve($type, $id);
 
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);

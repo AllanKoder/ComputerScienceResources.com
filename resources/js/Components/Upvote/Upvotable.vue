@@ -4,7 +4,11 @@ import axios from "axios";
 import { Icon } from "@iconify/vue";
 
 const props = defineProps({
-    resourceId: {
+    upvotableType: {
+        type: String,
+        required: true,
+    },
+    upvotableId: {
         type: Number,
         required: true,
     },
@@ -37,7 +41,7 @@ async function handleUpvote() {
     upvoteLoading.value = true;
     try {
         const response = await axios.post(
-            route("upvote", { id: props.resourceId, type: "resource" })
+            route("upvote", { id: props.upvotableId, type: props.upvotableType })
         );
         userVote.value = response.data.userVote;
         votes.value += response.data.changeFromVote;
@@ -53,7 +57,7 @@ async function handleDownvote() {
     downvoteLoading.value = true;
     try {
         const response = await axios.post(
-            route("downvote", { id: props.resourceId, type: "resource" })
+            route("downvote", { id: props.upvotableId, type: props.upvotableType })
         );
         userVote.value = response.data.userVote;
         votes.value += response.data.changeFromVote;

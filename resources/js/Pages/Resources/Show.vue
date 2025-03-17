@@ -3,8 +3,8 @@ import { Head } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { computed } from "vue";
 import Tag from "primevue/tag";
-import UpvoteResource from "@/Components/Resources/UpvoteResource.vue";
-import {pricingLabels, difficultyLabels} from "@/Helpers/constants.js";
+import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
+import { pricingLabels, difficultyLabels } from "@/Helpers/constants.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
 
 const props = defineProps({
@@ -14,7 +14,7 @@ const props = defineProps({
     },
     reviews: {
         type: Object,
-        required: true
+        required: true,
     },
     user: {
         type: Object,
@@ -60,7 +60,8 @@ const platformList = computed(() => {
                                 class="flex flex-col items-center mr-4 mb-4 md:mb-0"
                             >
                                 <UpvoteResource
-                                    :resourceId="resource.id"
+                                    :upvotableId="resource.id"
+                                    :upvotableType="'resource'"
                                     :initialVotes="props.resource.total_votes"
                                     :userVote="props.resource.user_vote"
                                 ></UpvoteResource>
@@ -172,7 +173,10 @@ const platformList = computed(() => {
 
                     <!-- Reviews -->
 
-                    <ResourceReviews :reviews="props.reviews" :resourceId="resource.id"></ResourceReviews>
+                    <ResourceReviews
+                        :reviews="props.reviews"
+                        :resourceId="resource.id"
+                    ></ResourceReviews>
                 </div>
             </div>
         </main>
