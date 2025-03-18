@@ -24,7 +24,7 @@ const formattedDate = computed(() =>
 </script>
 
 <template>
-    <div class="p-4 border-b border-gray-200" :key="comment.id">
+    <div class="p-4 border-b border-gray-200" :key="comment.id" :id="'comment_'+comment.id">
         <!-- User Info with Lazy Loading -->
         <div class="flex items-center space-x-2">
             <img

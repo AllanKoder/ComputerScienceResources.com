@@ -1,5 +1,5 @@
 <script setup>
-import { ref, provide, readonly } from "vue";
+import { ref, provide, readonly, nextTick } from "vue";
 import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import CommentList from "./CommentList.vue";
@@ -19,7 +19,6 @@ const props = defineProps({
     },
 });
 
-
 const users = ref(new Map());
 const can_load_more_comments = ref(true);
 const currentIndex = ref(0);
@@ -29,15 +28,29 @@ const commentsLeft = ref(props.commentsCount);
 const idToChildren = ref(new Map());
 
 const createdNewComment = (newComment, userData) => {
-    console.log('Parent function called with:', newComment, userData);
+    console.log("Created a new comment!", newComment, userData);
     updateUsers([userData]);
     updateCommentHierarchy([newComment]);
-}
 
-provide('commentableId', props.commentableId);
-provide('commentableType', props.commentableType);
-provide('users', readonly(users));
-provide('createdNewComment', createdNewComment);
+    // Ensure DOM updates are complete, then scroll to the new comment
+    nextTick(() => {
+        const newCommentElement = document.getElementById(
+            "comment_" + newComment.id
+        );
+        if (newCommentElement) {
+            newCommentElement.scrollIntoView({
+                behavior: "smooth",
+                block: "center",
+                inline: "nearest",
+            });
+        }
+    });
+};
+
+provide("commentableId", props.commentableId);
+provide("commentableType", props.commentableType);
+provide("users", readonly(users));
+provide("createdNewComment", createdNewComment);
 
 function updateUsers(newUsers) {
     // Convert API response users to Map
@@ -46,12 +59,9 @@ function updateUsers(newUsers) {
 
     // Setting the map to a new value
     if (currentIndex.value === 0) {
-            users.value = normalizeUsers(newUsers);
+        users.value = normalizeUsers(newUsers);
     } else {
-        users.value = new Map([
-            ...users.value,
-            ...normalizeUsers(newUsers),
-        ]);
+        users.value = new Map([...users.value, ...normalizeUsers(newUsers)]);
     }
 }
 
@@ -98,7 +108,7 @@ async function loadComments() {
         console.log(response);
 
         // Update the users
-        updateUsers(response.data.users)
+        updateUsers(response.data.users);
         // Update comment hierarchy for both new and existing comments
         updateCommentHierarchy(response.data.comments);
 
@@ -119,9 +129,7 @@ async function loadComments() {
         <div v-if="error" class="text-red-500 mb-4">{{ error }}</div>
 
         <!-- Comments List -->
-        <CommentList
-            :id-to-children="idToChildren"
-        />
+        <CommentList :id-to-children="idToChildren" />
 
         <!-- Loading State -->
         <div v-if="isLoading" class="text-center text-gray-500 mb-4">
@@ -145,9 +153,6 @@ async function loadComments() {
         </div>
 
         <!-- New Comment Form -->
-        <CommentActionsForm
-            label="Add Comment"
-            class="mt-4"
-        />
+        <CommentActionsForm label="Add Comment" class="mt-4" />
     </div>
 </template>
