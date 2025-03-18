@@ -63,7 +63,7 @@ const toggleCollapse = () => {
         </div>
 
         <!-- Comments -->
-        <div :class="{'pl-4': parentId != null}">
+        <div :class="{'pl-[1vw]': parentId != null}">
             <div v-if="!isCollapsed">
                 <div v-for="comment in idToChildren[parentId] || []" :key="comment.id">
                     <SingleComment
