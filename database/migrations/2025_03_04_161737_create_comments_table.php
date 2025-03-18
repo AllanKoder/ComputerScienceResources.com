@@ -25,7 +25,7 @@ return new class extends Migration
             
             $table->smallInteger("depth")->index();
             // Only root comment uses this
-            $table->integer("children_count")->default(0);
+            $table->unsignedInteger("children_count")->default(0);
         });
     }
 

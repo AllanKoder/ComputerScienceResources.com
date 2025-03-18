@@ -76,22 +76,28 @@ class CommentController extends Controller
         // Is reply to a comment
         else {
             $parent = Comment::find($parentCommentId);
+            $new_comment_depth = $parent->depth + 1;
+            
+            // Check if the parent is the root comment
+            if ($parent->depth == 0) {
+                $root_comment = $parent;
+                $root_comment_id = $parent->id;
+            } else {
+                // If not, fetch the root comment
+                $root_comment_id = $parent->root_comment_id;
+                $root_comment = Comment::find($root_comment_id);
+            }
 
-            // Set the parent id
-            $comment->parent_comment_id = $parentCommentId;
-
-            // Get the parent's root, and set that as this comment's root, unless it is the root itself.
-            $root_comment_id = ($parent->depth == 0) ? $parent->id : $parent->root_comment_id;
-            $comment->root_comment_id = $root_comment_id;
-
-            // Set the new depth
-            $comment->depth = $parent->depth + 1;
+            $replies_count = $root_comment->children_count ?? 0;
 
             // Ensure that they are commenting to the same root
+            // And the depth is not exceeded
             validator(
                 [
                     'commentable_id' => $commentableId,
                     'commentable_type' => $commentableType,
+                    'depth' => $new_comment_depth,
+                    'replies_count' => $replies_count
                 ],
                 [
                     'commentable_id' => [
@@ -102,12 +108,33 @@ class CommentController extends Controller
                         'required',
                         Rule::in([$parent->commentable_type]),
                     ],
+                    // Cannot exceed the max depth
+                    'depth' => [
+                        'required',
+                        'integer',
+                        'lte:' . (config('comment.max_depth'))
+                    ],
+                    // Cannot exceed max replies
+                    'replies_count' => [
+                        'required',
+                        'integer',
+                        'lt:' . (config('comment.max_replies'))
+                    ]
                 ]
             )->validate();
 
-            DB::table('comments')
-                ->where('id', $root_comment_id)
-                ->update(['children_count' => DB::raw('children_count + 1')]);
+            // Set the parent id
+            $comment->parent_comment_id = $parentCommentId;
+            
+            // Set the parent's root as this comment's root, unless it is the root itself.
+            $comment->root_comment_id = $root_comment_id;
+            
+            // Set the new depth
+            $comment->depth = $new_comment_depth;
+
+            // Update the children count for root
+            $root_comment->children_count = $root_comment->children_count + 1;
+            $root_comment->save();
         }
 
         $comment->save();
