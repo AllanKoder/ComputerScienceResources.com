@@ -1,6 +1,7 @@
 <script setup>
 import { computed, inject } from "vue";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
+import Upvotable from "../Upvote/Upvotable.vue";
 
 const props = defineProps({
     comment: {
@@ -25,6 +26,14 @@ const formattedDate = computed(() =>
 
 <template>
     <div class="p-4 border-b border-gray-200" :key="comment.id" :id="'comment_'+comment.id">
+
+        <Upvotable
+            :upvotableType="'comment'"
+            :upvotableId="comment.id"
+            :initialVotes="comment.total_votes"
+            :userVote="comment.user_vote"
+        ></Upvotable>
+
         <!-- User Info with Lazy Loading -->
         <div class="flex items-center space-x-2">
             <img

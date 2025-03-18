@@ -70,30 +70,5 @@ class ComputerScienceResource extends Model
         );
     }
 
-    /**
-     * Accessor to get vote count.
-     *
-     * @return Attribute
-     */
-    protected function totalVotes(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => $this->upvoteSummary ?
-                $this->upvoteSummary->value() : 0,
-        );
-    }
-
-    /**
-     * Accessor to get the current user's vote.
-     *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
-     */
-    protected function userVote(): Attribute
-    {
-        return Attribute::make(
-            get: fn() => Auth::check() ? $this->getVoteValue(Auth::id()) : 0
-        );
-    }
-
     protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'total_votes', 'user_vote'];
 }

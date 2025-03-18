@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasVotes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -11,6 +12,9 @@ class Comment extends Model
 {
     /** @use HasFactory<\Database\Factories\CommentFactory> */
     use HasFactory;
+    use HasVotes;
+
+    protected $with = ['votes', 'upvoteSummary'];
 
     public function replies(): HasMany
     {
@@ -21,4 +25,6 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    protected $appends = ['total_votes', 'user_vote'];
 }

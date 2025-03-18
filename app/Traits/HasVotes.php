@@ -5,12 +5,38 @@ namespace App\Traits;
 use App\Models\Upvote;
 use App\Events\UpvoteProcessed;
 use App\Models\UpvoteSummary;
+use Auth;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 trait HasVotes
 {
+    /**
+     * Accessor to get the current user's vote.
+     *
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+     */
+    protected function userVote(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Auth::check() ? $this->getVoteValue(Auth::id()) : 0
+        );
+    }
+
+    /**
+     * Accessor to get vote count.
+     *
+     * @return Attribute
+     */
+    protected function totalVotes(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->upvoteSummary ?
+                $this->upvoteSummary->value() : 0,
+        );
+    }
 
     /**
      * Get all of the model's votes.
@@ -108,7 +134,7 @@ trait HasVotes
         $vote = $this->votes->where('user_id', $userId)->first();
         return $vote ? $vote->value : 0;
     }
-
+ 
     /**
      * Vote on the model.
      */
