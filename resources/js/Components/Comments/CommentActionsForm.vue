@@ -20,6 +20,7 @@ const isOpen = ref(false);
 
 const commentableType = inject('commentableType');
 const commentableId = inject('commentableId');
+const createdNewComment = inject('createdNewComment');
 
 const toggleOpen = () => {
   isOpen.value = !isOpen.value;
@@ -39,9 +40,13 @@ const submit = () => {
   form.errors = {};
 
   axios.post(route("comments.store"), form)
-    .then(() => {
-      form.content = "";
-      console.log("Successful comment post!");
+    .then((response) => {
+        console.log("Successful comment post!");
+        
+        // Notify the parent that a comment is made
+        createdNewComment(response.data.new_comment, response.data.user);
+
+        form.content = "";
       isOpen.value = false;
     })
     .catch((error) => {

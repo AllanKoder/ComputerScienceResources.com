@@ -26,16 +26,35 @@ const currentIndex = ref(0);
 const isLoading = ref(false);
 const error = ref(null);
 const commentsLeft = ref(props.commentsCount);
+const idToChildren = ref(new Map());
+
+const createdNewComment = (newComment, userData) => {
+    console.log('Parent function called with:', newComment, userData);
+    updateUsers([userData]);
+    updateCommentHierarchy([newComment]);
+}
 
 provide('commentableId', props.commentableId);
 provide('commentableType', props.commentableType);
 provide('users', readonly(users));
+provide('createdNewComment', createdNewComment);
 
-// Convert API response users to Map
-const normalizeUsers = (usersArray) =>
-    new Map(usersArray.map((user) => [user.id, user]));
+function updateUsers(newUsers) {
+    // Convert API response users to Map
+    const normalizeUsers = (usersArray) =>
+        new Map(usersArray.map((user) => [user.id, user]));
 
-const idToChildren = ref(new Map());
+    // Setting the map to a new value
+    if (currentIndex.value === 0) {
+            users.value = normalizeUsers(newUsers);
+    } else {
+        users.value = new Map([
+            ...users.value,
+            ...normalizeUsers(newUsers),
+        ]);
+    }
+}
+
 function updateCommentHierarchy(newComments) {
     const hierarchyUpdates = {};
 
@@ -78,19 +97,10 @@ async function loadComments() {
 
         console.log(response);
 
-        const newComments = response.data.comments;
-
-        if (currentIndex.value === 0) {
-            users.value = normalizeUsers(response.data.users);
-        } else {
-            users.value = new Map([
-                ...users.value,
-                ...normalizeUsers(response.data.users),
-            ]);
-        }
-
+        // Update the users
+        updateUsers(response.data.users)
         // Update comment hierarchy for both new and existing comments
-        updateCommentHierarchy(newComments);
+        updateCommentHierarchy(response.data.comments);
 
         can_load_more_comments.value = response.data.has_more_comments;
         currentIndex.value++;

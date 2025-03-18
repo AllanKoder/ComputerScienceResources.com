@@ -118,7 +118,8 @@ class CommentController extends Controller
 
         Log::debug("New saved comment is " . json_encode($comment));
         return response()->json([
-            'response' => 'success',
+            'new_comment' => new CommentResource($comment),
+            'user' => new UserResource(Auth::user()),
         ]);;
     }
 
