@@ -14,6 +14,7 @@ use App\Models\CommentsCount;
 use App\Services\CommentService;
 use DB;
 use Auth;
+use Illuminate\Validation\Rule;
 use Log;
 
 
@@ -61,7 +62,7 @@ class CommentController extends Controller
         // Set the commentable type
         $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_type']);
         $commentableId = $validatedData['commentable_id'];
-        
+
         $comment->commentable_type = $commentableType;
         $comment->commentable_id = $commentableId;
 
@@ -86,6 +87,24 @@ class CommentController extends Controller
             // Set the new depth
             $comment->depth = $parent->depth + 1;
 
+            // Ensure that they are commenting to the same root
+            validator(
+                [
+                    'commentable_id' => $commentableId,
+                    'commentable_type' => $commentableType,
+                ],
+                [
+                    'commentable_id' => [
+                        'required',
+                        Rule::in([$parent->commentable_id]),
+                    ],
+                    'commentable_type' => [
+                        'required',
+                        Rule::in([$parent->commentable_type]),
+                    ],
+                ]
+            )->validate();
+
             DB::table('comments')
                 ->where('id', $root_comment_id)
                 ->update(['children_count' => DB::raw('children_count + 1')]);
@@ -98,7 +117,9 @@ class CommentController extends Controller
         );
 
         Log::debug("New saved comment is " . json_encode($comment));
-        return back();
+        return response()->json([
+            'response' => 'success',
+        ]);;
     }
 
     /**
@@ -121,7 +142,7 @@ class CommentController extends Controller
 
         $paginatedResults = $this->commentService->getPaginatedComments($this->modelResolver->getModelClass($commentableType), $commentableId, $index);
         $nestedComments = new Collection($paginatedResults['comments']);
-        
+
         // Lazy eager load the user for the root comment and for each reply.
         $nestedComments->load(['user', 'replies.user']);
 

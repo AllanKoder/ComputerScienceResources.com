@@ -80,16 +80,6 @@ class ComputerScienceResourceController extends Controller
         $reviews = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id)
             ->orderByDesc('created_at')->get();
 
-        Log::debug(
-            "Resource loaded: "
-            . json_encode($computerScienceResource)
-        );
-
-        Log::debug(
-            "Reviews loaded: "
-            . json_encode($reviews)
-        );
-
         return Inertia::render('Resources/Show', [
             'resource' => fn() => $computerScienceResource,
             'reviews' => $reviews
