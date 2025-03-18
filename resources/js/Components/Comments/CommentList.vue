@@ -8,18 +8,6 @@ const props = defineProps({
         required: true,
         type: Object,
     },
-    commentableId: {
-        type: Number,
-        required: true,
-    },
-    commentableType: {
-        type: String,
-        required: true,
-    },
-    users: {
-        type: Map,
-        required: true,
-    },
     parentId: {
         default: null,
         type: Number,
@@ -80,9 +68,6 @@ const toggleCollapse = () => {
                 <div v-for="comment in idToChildren[parentId] || []" :key="comment.id">
                     <SingleComment
                         :comment="comment"
-                        :commentableId="props.commentableId"
-                        :commentableType="props.commentableType"
-                        :users="props.users"
                     />
 
                     <CommentList
@@ -90,9 +75,6 @@ const toggleCollapse = () => {
                         :depth="depth + 1"
                         :parentId="comment.id"
                         :idToChildren="idToChildren"
-                        :commentableId="props.commentableId"
-                        :commentableType="props.commentableType"
-                        :users="props.users"
                     />
                 </div>
             </div>

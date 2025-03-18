@@ -1,17 +1,9 @@
 <script setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, inject } from "vue";
 import { Icon } from "@iconify/vue";
 import axios from "axios";
 
 const props = defineProps({
-  commentableId: {
-    type: Number,
-    required: true,
-  },
-  commentableType: {
-    type: String,
-    required: true,
-  },
   parentCommentId: {
     type: Number,
     default: null,
@@ -26,14 +18,17 @@ const props = defineProps({
 
 const isOpen = ref(false);
 
+const commentableType = inject('commentableType');
+const commentableId = inject('commentableId');
+
 const toggleOpen = () => {
   isOpen.value = !isOpen.value;
 };
 
 const form = reactive({
   content: "",
-  commentable_id: props.commentableId,
-  commentable_type: props.commentableType,
+  commentable_id: commentableId,
+  commentable_type: commentableType,
   parent_comment_id: props.parentCommentId ?? null,
   errors: {},
   processing: false,

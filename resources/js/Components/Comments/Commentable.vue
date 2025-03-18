@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, provide, readonly } from "vue";
 import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import CommentList from "./CommentList.vue";
@@ -19,12 +19,17 @@ const props = defineProps({
     },
 });
 
+
 const users = ref(new Map());
 const can_load_more_comments = ref(true);
 const currentIndex = ref(0);
 const isLoading = ref(false);
 const error = ref(null);
 const commentsLeft = ref(props.commentsCount);
+
+provide('commentableId', props.commentableId);
+provide('commentableType', props.commentableType);
+provide('users', readonly(users));
 
 // Convert API response users to Map
 const normalizeUsers = (usersArray) =>
@@ -106,9 +111,6 @@ async function loadComments() {
         <!-- Comments List -->
         <CommentList
             :id-to-children="idToChildren"
-            :commentableId="props.commentableId"
-            :commentableType="props.commentableType"
-            :users="users"
         />
 
         <!-- Loading State -->
@@ -135,8 +137,6 @@ async function loadComments() {
         <!-- New Comment Form -->
         <CommentActionsForm
             label="Add Comment"
-            :commentableId="props.commentableId"
-            :commentableType="props.commentableType"
             class="mt-4"
         />
     </div>
