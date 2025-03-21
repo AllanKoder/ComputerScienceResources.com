@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Spatie\Tags\HasTags;
 use Auth;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ComputerScienceResource extends Model
 {
@@ -29,6 +30,14 @@ class ComputerScienceResource extends Model
     public function reviewSummary(): HasOne
     {
         return $this->hasOne(ResourceReviewSummary::class);
+    }
+    
+    /**
+     * Get all the reviews.
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ResourceReview::class);
     }
     
     /**

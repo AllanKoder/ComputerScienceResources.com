@@ -77,8 +77,7 @@ class ComputerScienceResourceController extends Controller
      */
     public function show(ComputerScienceResource $computerScienceResource)
     {
-        $reviews = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id)
-            ->orderByDesc('created_at')->get();
+        $reviews = $computerScienceResource->reviews()->orderByDesc('created_at')->get();
 
         return Inertia::render('Resources/Show', [
             'resource' => fn() => $computerScienceResource,

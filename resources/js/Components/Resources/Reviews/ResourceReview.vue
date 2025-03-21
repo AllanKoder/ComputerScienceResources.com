@@ -3,6 +3,7 @@ import { defineProps } from "vue";
 import { ratingLabels } from "@/Helpers/constants";
 import Rating from "primevue/rating";
 import Commentable from "@/Components/Comments/Commentable.vue";
+import Upvotable from "@/Components/Upvote/Upvotable.vue";
 
 const props = defineProps({
     review: Object,
@@ -16,6 +17,13 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 </script>
 
 <template>
+    <Upvotable
+        :upvotableType="'review'"
+        :upvotableId="props.review.id"
+        :initialVotes="props.review.total_votes"
+        :userVote="props.review.user_vote"
+    ></Upvotable>
+
     <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-semibold">{{ review.title }}</h3>
         <div class="flex items-center">

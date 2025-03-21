@@ -23,6 +23,7 @@ const props = defineProps({
         <CreateResourceReview
             :resourceId="props.resourceId"
         ></CreateResourceReview>
+
         <div class="space-y-6">
             <div
                 v-for="review in reviews"

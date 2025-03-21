@@ -16,7 +16,7 @@ class ResourceReview extends Model
     use HasComments;
 
     protected $guarded = [];
-    protected $with = ['votes', 'commentsCountRelationship'];
+    protected $with = ['votes', 'upvoteSummary', 'commentsCountRelationship'];
 
     /**
      * Get the average review score.
@@ -46,5 +46,5 @@ class ResourceReview extends Model
         );
     }
 
-    protected $appends = ['average_score', 'comments_count'];
+    protected $appends = ['average_score', 'comments_count', 'total_votes', 'user_vote'];
 }
