@@ -22,7 +22,7 @@ class ComputerScienceResource extends Model
 
     protected $guarded = [];
 
-    protected $with = ['tags', 'votes', 'upvoteSummary'];
+    protected $with = ['tags', 'votes', 'upvoteSummary', 'reviewSummary'];
 
     /**
      * Get the review summary relationship.

@@ -36,7 +36,10 @@ const form = useForm({
 const schema = object({
     title: string().required("Title is required."),
     description: string().required("Description is required."),
-    community: string().required("Community is required."),
+    community: number()
+        .required("Community is required.")
+        .min(1, "Minimum is 1.")
+        .max(5, "Maximum is 5."),
     teaching_clarity: number()
         .required("Teaching clarity is required.")
         .min(1, "Minimum is 1.")
@@ -140,11 +143,11 @@ const submitReview = () => {
         <!-- Community Field -->
         <FormField v-slot="$field" name="community" class="flex flex-col gap-1">
             <label class="block text-sm font-medium text-gray-700"
-                >Community</label
+                >Community (1-5)</label
             >
             <InputText
                 v-model="form.community"
-                placeholder="Enter community name"
+                placeholder="Rate community"
                 class="mt-1 w-full border border-gray-300 rounded-md"
             />
             <PrimeVueFormError v-if="$field?.invalid" :errors="$field.errors" />

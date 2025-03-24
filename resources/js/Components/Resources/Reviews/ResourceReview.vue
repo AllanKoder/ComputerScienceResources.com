@@ -23,12 +23,11 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
         :initialVotes="props.review.total_votes"
         :userVote="props.review.user_vote"
     ></Upvotable>
-
     <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-semibold">{{ review.title }}</h3>
         <div class="flex items-center">
             <span class="mr-2 font-medium">Rating:</span>
-            <Rating :modelValue="4.5" readonly :cancel="false" />
+            <Rating :modelValue="review.average_score" readonly :cancel="false" />
         </div>
     </div>
     <p class="text-gray-700 mb-4 whitespace-pre-line">

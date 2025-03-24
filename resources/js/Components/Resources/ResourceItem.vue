@@ -14,7 +14,7 @@ const emit = defineEmits(["upvote", "downvote"]);
 </script>
 
 <template>
-    <tr class="mb-8 border-b p-12">
+<tr class="mb-8 border-b p-12">
         <td class="align-top pr-6">
             <Upvotable
                 :upvotableId="resource.id"
