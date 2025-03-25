@@ -3,6 +3,10 @@ import { ref, defineProps, defineEmits, watch } from "vue";
 import TagSelector from "@/Components/Form/TagSelector.vue";
 import Message from "primevue/message";
 import Button from "primevue/button";
+import { yupResolver } from "@primevue/forms/resolvers/yup";
+import { mandatoryTags } from "@/Helpers/validation";
+import { Form, FormField } from "@primevue/forms";
+import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 
 const props = defineProps({
     form: {
@@ -16,6 +20,10 @@ const emit = defineEmits(["change", "next", "back"]);
 // Reactive reference for form data
 const formData = ref({ ...props.form });
 
+const schema = mandatoryTags;
+// PrimeVue Resolver
+const resolver = ref(yupResolver(schema));
+
 // Update change
 watch(
     formData,
@@ -25,19 +33,18 @@ watch(
     { deep: true }
 );
 
-const validate = () => {
-    return formData.value.topic_tags && formData.value.topic_tags.length >= 3;
-};
-
-const validationError = ref("");
 // Function to handle form submission
 const validateAndNext = async () => {
-    if (validate()) {
-        emit("next");
-    } else {
-        console.error("Validation failed");
-        validationError.value = "Must have at least 3 topics";
-    }
+    schema
+        .validate(formData.value)
+        .then((_) => {
+            console.log("validated");
+            emit("next");
+        })
+        .catch((error) => {
+            console.error("Validation failed:", error.errors);
+        });
+        console.log(formData);
 };
 </script>
 
@@ -45,37 +52,35 @@ const validateAndNext = async () => {
     <h2 class="text-2xl font-bold mb-4 text-center">
         What topics does this resource cover?
     </h2>
-
-    <!-- Show error message if validation fails -->
-    <Message
-        v-if="validationError"
-        severity="error"
-        size="small"
-        variant="simple"
+    <Form
+        :resolver="resolver"
+        :initialValues="formData"
+        class="flex flex-col gap-4 w-full"
     >
-        {{ validationError }}
-    </Message>
+        <FormField v-slot="$field" name="topic_tags" class="flex flex-col gap-1">
+            <!-- Tag Selector for topics -->
+            <TagSelector
+                :initial="formData.topic_tags ?? []"
+                @changed="(tags) => (formData.topic_tags = tags)"
+            ></TagSelector>
+            <PrimeVueFormError v-if="$field?.invalid" :errors="$field.errors" />
+        </FormField>
 
-    <!-- Tag Selector for topics -->
-    <TagSelector
-        :initial="formData.topic_tags ?? []"
-        @changed="(tags) => (formData.topic_tags = tags)"
-    ></TagSelector>
+        <!-- Prev/Next Button -->
+        <div class="flex pt-6 justify-between">
+            <Button
+                label="Back"
+                severity="secondary"
+                icon="pi pi-arrow-left"
+                @click="() => emit('back')"
+            />
 
-    <!-- Prev/Next Button -->
-    <div class="flex pt-6 justify-between">
-        <Button
-            label="Back"
-            severity="secondary"
-            icon="pi pi-arrow-left"
-            @click="() => emit('back')"
-        />
-
-        <Button
-            label="Next"
-            icon="pi pi-arrow-right"
-            iconPos="right"
-            @click="validateAndNext"
-        />
-    </div>
+            <Button
+                label="Next"
+                icon="pi pi-arrow-right"
+                iconPos="right"
+                @click="validateAndNext"
+            />
+        </div>
+    </Form>
 </template>

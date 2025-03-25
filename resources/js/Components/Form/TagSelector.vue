@@ -6,9 +6,14 @@ import AutoComplete from "primevue/autocomplete";
 import { defineEmits, defineProps } from "vue";
 
 const props = defineProps({
-    initial: Array,
-    queryUrl: String,
-    parentTags: Array,
+    initial: {
+        type: Array,
+        required: true,
+    },
+    queryUrl: {
+        type: String,
+        required: false,
+    }
 });
 
 const emit = defineEmits(["changed"]);

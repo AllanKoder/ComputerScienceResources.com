@@ -4,6 +4,7 @@ use App\Http\Controllers\CommentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComputerScienceResourceController;
+use App\Http\Controllers\ResourceEditsController;
 use App\Http\Controllers\ResourceReviewController;
 use App\Http\Controllers\UpvoteController;
 use Inertia\Inertia;
@@ -44,6 +45,11 @@ Route::middleware([
     // CompSci Resource Reviews
     Route::controller(ResourceReviewController::class)->group(function () {
         Route::post('/reviews/{computerScienceResource}', 'store')->name('reviews.store');
+    });
+
+    // Resource Edits
+    Route::controller(ResourceEditsController::class)->group(function () {
+        Route::get('/resource/{computerScienceResource}/edit/create', 'create')->name('resource_edits.create');
     });
 
     // Comments

@@ -5,7 +5,6 @@ import MultiSelect from "primevue/multiselect";
 import { Button } from "primevue";
 import { Form, FormField } from "@primevue/forms";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
-import { object, string, array } from "yup";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 
 import Select from "primevue/select";
@@ -16,6 +15,7 @@ import {
     difficulties,
 } from "@/Helpers/constants";
 import { reactive } from "vue";
+import { mandatoryFields } from "@/Helpers/validation";
 
 const props = defineProps({
     form: {
@@ -32,18 +32,7 @@ const formData = reactive({
 });
 
 // The validation schema
-const schema = object({
-    name: string().required("Name is required").max(100, "Max 100 chars"),
-    page_url: string().url("Must be a valid URL").required("URL is required"),
-    image_url: string().url("Must be a valid image URL"),
-    platforms: array()
-        .of(string())
-        .min(1, "At least one platform is required"),
-    description: string().required("Description is required").max(4000),
-    difficulty: string().required("Difficulty level is required"),
-    pricing: string().required("Pricing information is required"),
-});
-
+const schema = mandatoryFields;
 // PrimeVue Resolver
 const resolver = ref(yupResolver(schema));
 
