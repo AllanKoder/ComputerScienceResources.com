@@ -11,12 +11,12 @@ class ResourceReviewSummary extends Model
 {
     use HasVotes;
     use HasComments;
-
+    
     protected $fillable = ['computer_science_resource_id'];
-
+    
     protected $primaryKey = 'computer_science_resource_id';
-    public $incrementing = false;
-    public $timestamps = false;
+
+    protected $appends = ['average_reviews_score'];
 
     /**
      * Get the average reviews score.
@@ -48,6 +48,4 @@ class ResourceReviewSummary extends Model
             }
         );
     }
-    
-    protected $appends = ['average_reviews_score'];
 }

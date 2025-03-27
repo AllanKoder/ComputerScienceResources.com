@@ -16,6 +16,8 @@ class Comment extends Model
 
     protected $with = ['votes', 'upvoteSummary'];
 
+    protected $appends = ['total_votes', 'user_vote'];
+
     public function replies(): HasMany
     {
         return $this->hasMany(Comment::class, 'root_comment_id');
@@ -25,6 +27,4 @@ class Comment extends Model
     {
         return $this->belongsTo(User::class);
     }
-
-    protected $appends = ['total_votes', 'user_vote'];
 }

@@ -72,8 +72,8 @@ class ResourceEditsController extends Controller
         
         return Inertia::render('ResourceEdits/Show', [
             'resourceId' => $resourceEdits->id,
-            'originalResource' => $resourceEdits,
-            'editedResource' => $resourceEdits->resource,
+            'originalResource' => $resourceEdits->resource,
+            'editedResource' => $resourceEdits,
         ]);
     }
 }

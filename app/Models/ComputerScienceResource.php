@@ -22,8 +22,10 @@ class ComputerScienceResource extends Model
     protected $table = "computer_science_resources";
 
     protected $guarded = [];
-
+    
     protected $with = ['tags', 'votes', 'upvoteSummary', 'reviewSummary'];
+    
+    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'total_votes', 'user_vote'];
 
     public function user(): BelongsTo
     {
@@ -89,6 +91,4 @@ class ComputerScienceResource extends Model
             set: fn(array $value) => $this->syncTagsWithType($value, 'general_tags')
         );
     }
-
-    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'total_votes', 'user_vote'];
 }

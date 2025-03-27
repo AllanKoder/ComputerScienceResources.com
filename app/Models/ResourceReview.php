@@ -14,10 +14,13 @@ class ResourceReview extends Model
     use HasFactory;
     use HasVotes;
     use HasComments;
-
+    
     protected $guarded = [];
+
     protected $with = ['votes', 'upvoteSummary', 'commentsCountRelationship'];
 
+    protected $appends = ['average_score', 'comments_count', 'total_votes', 'user_vote'];
+    
     /**
      * Get the average review score.
      *
@@ -45,6 +48,4 @@ class ResourceReview extends Model
             },
         );
     }
-
-    protected $appends = ['average_score', 'comments_count', 'total_votes', 'user_vote'];
 }

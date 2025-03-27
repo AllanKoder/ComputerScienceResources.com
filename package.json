@@ -24,6 +24,7 @@
     "dependencies": {
         "@primevue/forms": "^4.2.5",
         "@primevue/themes": "^4.2.5",
+        "diff": "^7.0.0",
         "primevue": "^4.2.5",
         "yup": "^1.6.1"
     }

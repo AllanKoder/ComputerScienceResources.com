@@ -19,10 +19,16 @@ class ResourceEdits extends Model
 
     protected $with = ['votes','upvoteSummary'];
 
+    protected $appends = ['user_vote', 'total_votes'];
+
+    protected $casts = [
+        'topic_tags' => 'array',
+        'programming_language_tags' => 'array',
+        'general_tags' => 'array',
+    ];
+
     public function resource(): BelongsTo
     {
         return $this->belongsTo(ComputerScienceResource::class, 'computer_science_resource_id', 'id');
     }
-
-    protected $appends = ['user_vote', 'total_votes'];
 }
