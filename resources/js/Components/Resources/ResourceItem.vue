@@ -1,6 +1,7 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
+import { Link } from "@inertiajs/vue3";
 
 defineProps({
     resource: {
@@ -34,7 +35,7 @@ const emit = defineEmits(["upvote", "downvote"]);
 
         <td class="align-top pr-6">
             <div class="flex justify-between items-start mb-3">
-                <a
+                <Link
                     :href="
                         route('resources.show', {
                             computerScienceResource: resource.id,
@@ -42,7 +43,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                     "
                 >
                     <h2 class="text-xl font-semibold">{{ resource.name }}</h2>
-                </a>
+                </Link>
                 <time class="text-sm text-gray-500">{{
                     resource.resource_created_on
                 }}</time>

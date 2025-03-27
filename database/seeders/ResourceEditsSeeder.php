@@ -12,6 +12,6 @@ class ResourceEditsSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        
     }
 }

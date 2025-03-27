@@ -22,27 +22,31 @@ return new class extends Migration
             // The user who created the edit
             $table->foreignIdFor(User::class);
 
+            // Reasoning behind the edit
+            $table->string('edit_title');
+            $table->text('edit_description');
+
             // Copied Schema of Computer Science Resource
-            $table->string('new_name')->fulltext();
-            $table->text('new_description')->fulltext();
-            $table->string('new_image_url');
+            $table->string('name')->fulltext();
+            $table->text('description')->fulltext();
+            $table->string('image_url');
             
             // TODO: Have a url for each platform the resource is on.
-            $table->string('new_page_url');
+            $table->string('page_url');
 
-            $table->set('new_platforms', ['book', 'podcast', 'youtube_channel', 'blog', 'website', 'organization', 'bootcamp', 'newsletter', 'workshop', 'course', 'forum', 'mobile_app', 'desktop_app', 'magazine'])
+            $table->set('platforms', ['book', 'podcast', 'youtube_channel', 'blog', 'website', 'organization', 'bootcamp', 'newsletter', 'workshop', 'course', 'forum', 'mobile_app', 'desktop_app', 'magazine'])
                 ->index();
-            $table->enum('new_difficulty', ['beginner', 'industry_simple', 'industry_standard', 'industry_professional', 'academic'])
+            $table->enum('difficulty', ['beginner', 'industry_simple', 'industry_standard', 'industry_professional', 'academic'])
                 ->index();
-            $table->enum('new_pricing', ['free', 'premium', 'paid', 'freemium'])
+            $table->enum('pricing', ['free', 'premium', 'paid', 'freemium'])
                 ->index();
 
 
             // Handle Tags:
             // 'topic_tags', 'programming_language_tags', 'general_tags'
-            $table->array('new_topic_tags');
-            $table->array('new_programming_language_tags');
-            $table->array('new_general_tags');
+            $table->json('topic_tags');
+            $table->json('programming_language_tags');
+            $table->json('general_tags');
         });
     }
 

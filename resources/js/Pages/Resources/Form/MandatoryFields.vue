@@ -15,7 +15,7 @@ import {
     difficulties,
 } from "@/Helpers/constants";
 import { reactive } from "vue";
-import { mandatoryFields } from "@/Helpers/validation";
+import { resourceMandatoryFields } from "@/Helpers/validation";
 
 const props = defineProps({
     form: {
@@ -32,7 +32,7 @@ const formData = reactive({
 });
 
 // The validation schema
-const schema = mandatoryFields;
+const schema = resourceMandatoryFields;
 // PrimeVue Resolver
 const resolver = ref(yupResolver(schema));
 

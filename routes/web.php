@@ -50,6 +50,7 @@ Route::middleware([
     // Resource Edits
     Route::controller(ResourceEditsController::class)->group(function () {
         Route::get('/resource/{computerScienceResource}/edit/create', 'create')->name('resource_edits.create');
+        Route::post('/resource/{computerScienceResource}/edit/', 'store')->name('resource_edits.store');
     });
 
     // Comments
@@ -58,7 +59,9 @@ Route::middleware([
     });
 });
 
+// -----------------------
 // Public
+// -----------------------
 Route::controller(ComputerScienceResourceController::class)->group(function () {
     Route::get('/resources', 'index')->name('resources');
     Route::get('/resources/{computerScienceResource}', 'show')->name('resources.show');
@@ -66,6 +69,11 @@ Route::controller(ComputerScienceResourceController::class)->group(function () {
 
 Route::controller(CommentController::class)->group(function () {
     Route::post('/comments/show/{type}/{id}/{index}', 'show')->name('comments.show');
+});
+
+// Resource Edits
+Route::controller(ResourceEditsController::class)->group(function () {
+    Route::get('/resource/{computerScienceResource}/edit', 'index')->name('resource_edits.index');
 });
 
 require __DIR__.'/socialstream.php';

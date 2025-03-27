@@ -3,7 +3,6 @@ import { Head, Link, useForm } from "@inertiajs/vue3";
 import { computed, ref } from "vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
-import { object, string, array } from "yup";
 
 // PrimeVue Components
 import InputText from "primevue/inputtext";
@@ -12,7 +11,6 @@ import MultiSelect from "primevue/multiselect";
 import Select from "primevue/select";
 import { Button } from "primevue";
 import { Form, FormField } from "@primevue/forms";
-import Tag from "primevue/tag";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 
 // Custom Components
@@ -20,6 +18,11 @@ import TagSelector from "@/Components/Form/TagSelector.vue";
 
 // Helpers and Constants
 import { platforms, pricings, difficulties } from "@/Helpers/constants";
+import {
+    resourceEditsMandatoryFields,
+    resourceMandatoryFields,
+    resourceMandatoryTags,
+} from "@/Helpers/validation";
 
 const props = defineProps({
     resource: {
@@ -28,19 +31,17 @@ const props = defineProps({
     },
 });
 
-// Validation Schema
-const schema = object({
-    name: string().required("Name is required").max(100, "Max 100 chars"),
-    description: string().required("Description is required").max(4000),
-    page_url: string().url("Must be a valid URL").required("URL is required"),
-    image_url: string().url("Must be a valid image URL"),
-    platforms: array().of(string()).min(1, "At least one platform is required"),
-    difficulty: string().required("Difficulty level is required"),
-    pricing: string().required("Pricing information is required"),
-});
+// Validation Schema for name
+const schema = resourceMandatoryFields.concat(resourceMandatoryTags).concat(resourceEditsMandatoryFields);
+// PrimeVue Resolver
+const resolver = ref(yupResolver(schema));
 
 // Create a form with initial values taken from the resource prop
-const form = useForm({
+const formData = useForm({
+    // Related to the edit
+    edit_title: "",
+    edit_description: "",
+    // The resource
     name: props.resource.name,
     description: props.resource.description,
     page_url: props.resource.page_url,
@@ -50,6 +51,7 @@ const form = useForm({
     platforms: props.resource.platforms
         ? props.resource.platforms.split(",").map((p) => p.trim())
         : [],
+    topic_tags: props.resource.topic_tags || [],
     programming_language_tags: props.resource.programming_language_tags || [],
     general_tags: props.resource.general_tags || [],
 });
@@ -57,44 +59,62 @@ const form = useForm({
 // Function to handle form submission
 const submit = () => {
     // Prepare the form data
-    const submitData = {
-        ...form,
-        platforms: form.platforms.join(","),
-    };
-
-    form.patch(route("resources.update", props.resource.id));
-};
-
-// Platform color mapping
-const platformColors = {
-    book: "blue",
-    podcast: "green",
-    youtube_channel: "red",
-    blog: "orange",
-    website: "purple",
-    organization: "cyan",
-    bootcamp: "pink",
-    newsletter: "indigo",
-    workshop: "teal",
-    course: "yellow",
-    forum: "gray",
-    mobile_app: "lime",
-    desktop_app: "amber",
-    magazine: "rose",
+    schema.validate(formData.data).then((validData) => {
+        console.log("Posted: " + validData);
+        formData.post(
+            route("resource_edits.store", {
+                computerScienceResource: props.resource.id,
+            }),
+            validData
+        );
+    });
 };
 </script>
 
 <template>
-    <AppLayout :title="form.name">
-        <Head :title="form.name" />
+    <AppLayout :title="formData.name">
+        <Head :title="formData.name" />
         <main class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <Form
-                    :resolver="yupResolver(schema)"
-                    :initialValues="form"
-                    @submit.prevent="submit"
+                    :resolver="resolver"
+                    :initialValues="formData"
+                    @submit="submit"
                     class="bg-white overflow-hidden shadow-xl sm:rounded-lg"
                 >
+                    <!-- Edit title and description (reasoning for the edit) -->
+                    <div class="p-3 m-3">
+                        <!-- title Field -->
+                        <FormField v-slot="$field" name="edit_title" class="mb-4">
+                            <InputText
+                                v-model="formData.edit_title"
+                                placeholder="Title of your Edit"
+                                class="w-full text-3xl font-bold border-b border-gray-300 focus:outline-none focus:border-blue-500"
+                            />
+                            <PrimeVueFormError
+                                v-if="$field?.invalid"
+                                :errors="$field.errors"
+                            />
+                        </FormField>
+
+                        <!-- Description Field -->
+                        <FormField
+                            v-slot="$field"
+                            name="edit_description"
+                            class="mb-4"
+                        >
+                            <Textarea
+                                v-model="formData.edit_description"
+                                placeholder="Reason for the changes"
+                                class="w-full border border-gray-300 rounded"
+                                rows="4"
+                            />
+                            <PrimeVueFormError
+                                v-if="$field?.invalid"
+                                :errors="$field.errors"
+                            />
+                        </FormField>
+                    </div>
                     <div class="p-6 sm:p-8">
                         <div class="relative">
                             <div
@@ -108,7 +128,7 @@ const platformColors = {
                                         class="mb-4"
                                     >
                                         <InputText
-                                            v-model="form.name"
+                                            v-model="formData.name"
                                             placeholder="Resource Name"
                                             class="w-full text-3xl font-bold border-b border-gray-300 focus:outline-none focus:border-blue-500"
                                         />
@@ -125,7 +145,7 @@ const platformColors = {
                                         class="mb-4"
                                     >
                                         <Textarea
-                                            v-model="form.description"
+                                            v-model="formData.description"
                                             placeholder="Describe the resource..."
                                             class="w-full border border-gray-300 rounded"
                                             rows="4"
@@ -143,7 +163,7 @@ const platformColors = {
                                         class="mb-4"
                                     >
                                         <InputText
-                                            v-model="form.page_url"
+                                            v-model="formData.page_url"
                                             placeholder="Resource URL"
                                             class="w-full border border-gray-300 rounded"
                                         />
@@ -160,7 +180,7 @@ const platformColors = {
                                         class="mb-4"
                                     >
                                         <InputText
-                                            v-model="form.image_url"
+                                            v-model="formData.image_url"
                                             placeholder="Image URL"
                                             class="w-full border border-gray-300 rounded"
                                         />
@@ -177,7 +197,7 @@ const platformColors = {
                                         class="mb-4"
                                     >
                                         <MultiSelect
-                                            v-model="form.platforms"
+                                            v-model="formData.platforms"
                                             :options="platforms"
                                             option-label="label"
                                             option-value="value"
@@ -200,7 +220,7 @@ const platformColors = {
                                         >
                                             <Select
                                                 :options="difficulties"
-                                                v-model="form.difficulty"
+                                                v-model="formData.difficulty"
                                                 option-label="label"
                                                 option-value="value"
                                                 placeholder="Select Difficulty"
@@ -218,7 +238,7 @@ const platformColors = {
                                         >
                                             <Select
                                                 :options="pricings"
-                                                v-model="form.pricing"
+                                                v-model="formData.pricing"
                                                 option-label="label"
                                                 option-value="value"
                                                 placeholder="Select Pricing"
@@ -235,18 +255,29 @@ const platformColors = {
 
                             <!-- Tag Selectors -->
                             <div class="mb-4">
-                                <p class="font-bold mb-4 text-center">
-                                    Topics?
-                                </p>
-                                <TagSelector
-                                    :initial="form.programming_language_tags"
-                                    :queryUrl="''"
-                                    @changed="
-                                        (tags) =>
-                                            (form.programming_language_tags =
-                                                tags)
-                                    "
-                                />
+                                <FormField
+                                    v-slot="$field"
+                                    name="topic_tags"
+                                    class="mb-4"
+                                >
+                                    <p class="font-bold mb-4 text-center">
+                                        Topics?
+                                    </p>
+
+                                    <TagSelector
+                                        :initial="formData.topic_tags"
+                                        :queryUrl="''"
+                                        @changed="
+                                            (tags) =>
+                                                (formData.topic_tags = tags)
+                                        "
+                                    />
+
+                                    <PrimeVueFormError
+                                        v-if="$field?.invalid"
+                                        :errors="$field.errors"
+                                    />
+                                </FormField>
                             </div>
 
                             <div class="mb-4">
@@ -255,11 +286,13 @@ const platformColors = {
                                     any)?
                                 </p>
                                 <TagSelector
-                                    :initial="form.programming_language_tags"
+                                    :initial="
+                                        formData.programming_language_tags
+                                    "
                                     :queryUrl="''"
                                     @changed="
                                         (tags) =>
-                                            (form.programming_language_tags =
+                                            (formData.programming_language_tags =
                                                 tags)
                                     "
                                 />
@@ -270,10 +303,10 @@ const platformColors = {
                                     What else is it related to?
                                 </h2>
                                 <TagSelector
-                                    :initial="form.general_tags"
+                                    :initial="formData.general_tags"
                                     :queryUrl="''"
                                     @changed="
-                                        (tags) => (form.general_tags = tags)
+                                        (tags) => (formData.general_tags = tags)
                                     "
                                 />
                             </div>

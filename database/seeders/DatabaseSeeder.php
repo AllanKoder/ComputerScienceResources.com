@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ResourceEdits;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Database\Seeders\ComputerScienceResourceSeeder;

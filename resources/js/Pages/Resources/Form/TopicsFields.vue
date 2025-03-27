@@ -4,7 +4,7 @@ import TagSelector from "@/Components/Form/TagSelector.vue";
 import Message from "primevue/message";
 import Button from "primevue/button";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
-import { mandatoryTags } from "@/Helpers/validation";
+import { resourceMandatoryTags } from "@/Helpers/validation";
 import { Form, FormField } from "@primevue/forms";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 
@@ -20,7 +20,7 @@ const emit = defineEmits(["change", "next", "back"]);
 // Reactive reference for form data
 const formData = ref({ ...props.form });
 
-const schema = mandatoryTags;
+const schema = resourceMandatoryTags;
 // PrimeVue Resolver
 const resolver = ref(yupResolver(schema));
 

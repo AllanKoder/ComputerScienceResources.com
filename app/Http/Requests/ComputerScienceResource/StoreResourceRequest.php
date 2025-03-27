@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\ComputerScienceResource;
 
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -12,7 +13,7 @@ class StoreResourceRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return auth()->check();
+        return Auth::check();
     }
 
     /**
@@ -24,7 +25,7 @@ class StoreResourceRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:100'],
-            'description' => ['required', 'string', 'max:4000'],
+            'description' => ['required', 'string', 'max:10000'],
             'platforms' => ['required', 'array'],
             'platforms.*' => ['distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
             'page_url' => ['required', 'string', 'url:http,https', 'max:255'],

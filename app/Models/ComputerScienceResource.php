@@ -45,6 +45,11 @@ class ComputerScienceResource extends Model
     {
         return $this->hasMany(ResourceReview::class);
     }
+
+    public function edits(): HasMany
+    {
+        return $this->hasMany(ResourceEdits::class);
+    }
     
     /**
      * Accessor to get topic tags.

@@ -15,6 +15,8 @@ class ResourceEdits extends Model
     use HasComments;
     use HasVotes;
 
+    protected $guarded = [];
+
     public function resource() : BelongsTo
     {
         return $this->belongsTo(ComputerScienceResource::class);

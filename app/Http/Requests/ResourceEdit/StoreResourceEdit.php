@@ -1,8 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\ResourceEdit;
 
+use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Log;
 
 class StoreResourceEdit extends FormRequest
 {
@@ -11,7 +14,7 @@ class StoreResourceEdit extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return Auth::check();
     }
 
     /**
@@ -21,9 +24,12 @@ class StoreResourceEdit extends FormRequest
      */
     public function rules(): array
     {
-        // TODO: Fill in this long long validation rules, copy and paste from the computer science resources rules
-        return [
-            //
-        ];
+        // Have the same validation rules as a resource
+        $storeResourceRequest = new StoreResourceRequest();
+
+        return array_merge([
+            'edit_title' => ['required', 'string', 'max:100'],
+            'edit_description' => ['required', 'string', 'max:10000'],
+        ], $storeResourceRequest->rules());
     }
 }

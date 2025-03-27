@@ -1,12 +1,12 @@
 <script setup>
 import { Head, Link } from "@inertiajs/vue3";
-import { Icon } from "@iconify/vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { computed } from "vue";
 import Tag from "primevue/tag";
 import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
 import { pricingLabels, difficultyLabels } from "@/Helpers/constants.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
+import ResourceTab from "@/Components/Resources/ResourceEdit/resourceTab.vue";
 
 const props = defineProps({
     resource: {
@@ -50,20 +50,9 @@ const platformList = computed(() => {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 sm:p-8">
-                        <div class="relative">
-                            <!-- Propose Edits Button -->
-                            <Link
-                                class="absolute top-0 right-0 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
-                                :href="
-                                    route('resource_edits.create', {
-                                        computerScienceResource: props.resource.id,
-                                    })
-                                "
-                            >
-                                <Icon icon="mdi:pencil" class="w-5 h-5" />
-                                <span>Propose Edits</span>
-                            </Link>
 
+                        <ResourceTab :resource-id="props.resource.id" />
+                        <div class="relative">
                             <div
                                 class="flex flex-col md:flex-row items-start mb-6"
                             >

@@ -48,7 +48,7 @@ const toggleCollapse = () => {
 
             <!-- Visible line -->
             <div 
-                class="w-0.5 h-full bg-gray-300 transition-colors duration-200"
+                class="w-[1.2px] h-full bg-gray-300 transition-colors duration-200"
                 :class="{'bg-gray-500': isNearCollapsing}"
             ></div>
         </div>
