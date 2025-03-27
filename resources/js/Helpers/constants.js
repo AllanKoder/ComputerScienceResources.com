@@ -52,3 +52,21 @@ export const ratingLabels = {
     updates: "Updates",
   };
   
+
+// Aesthetics
+export const platformColors = {
+    book: "blue",
+    podcast: "green",
+    youtube_channel: "red",
+    blog: "orange",
+    website: "purple",
+    organization: "cyan",
+    bootcamp: "pink",
+    newsletter: "indigo",
+    workshop: "teal",
+    course: "yellow",
+    forum: "gray",
+    mobile_app: "lime",
+    desktop_app: "amber",
+    magazine: "rose",
+};

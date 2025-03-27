@@ -18,7 +18,7 @@ return new class extends Migration
             $table->timestamps();
             
             // The resource we are editting
-            $table->foreignIdFor(ComputerScienceResource::class);
+            $table->foreignIdFor(ComputerScienceResource::class)->constrained()->cascadeOnDelete();
             // The user who created the edit
             $table->foreignIdFor(User::class);
 

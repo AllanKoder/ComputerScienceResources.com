@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Log;
 class UpvoteController extends Controller
 {
     protected $modelResolver;
+    protected $upvotableTypes = 'review,resource,comment,edit';
 
     function __construct(ModelResolverService $modelResolver)
     {
@@ -27,7 +28,7 @@ class UpvoteController extends Controller
                 'type' => $type,
             ],
             [
-                'type' => 'required|in:review,resource,comment',
+                'type' => 'required|in:' . $this->upvotableTypes,
             ]
         )->validate(); 
 
@@ -56,7 +57,7 @@ class UpvoteController extends Controller
                 'type' => $type,
             ],
             [
-                'type' => 'required|in:review,resource,comment',
+                'type' => 'required|in:' . $this->upvotableTypes,
             ]
         )->validate(); 
 

@@ -73,6 +73,7 @@ Route::controller(CommentController::class)->group(function () {
 
 // Resource Edits
 Route::controller(ResourceEditsController::class)->group(function () {
+    Route::get('/resource/edit/{resourceEdits}', 'show')->name('resource_edits.show');
     Route::get('/resource/{computerScienceResource}/edit', 'index')->name('resource_edits.index');
 });
 

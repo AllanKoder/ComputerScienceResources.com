@@ -17,8 +17,12 @@ class ResourceEdits extends Model
 
     protected $guarded = [];
 
-    public function resource() : BelongsTo
+    protected $with = ['votes','upvoteSummary'];
+
+    public function resource(): BelongsTo
     {
-        return $this->belongsTo(ComputerScienceResource::class);
+        return $this->belongsTo(ComputerScienceResource::class, 'computer_science_resource_id', 'id');
     }
+
+    protected $appends = ['user_vote', 'total_votes'];
 }

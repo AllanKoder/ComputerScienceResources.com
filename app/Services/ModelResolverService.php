@@ -8,6 +8,7 @@ class ModelResolverService
         'resource' => \App\Models\ComputerScienceResource::class,
         'review' => \App\Models\ResourceReview::class,
         'comment' => \App\Models\Comment::class,
+        'edit' => \App\Models\ResourceEdits::class,
         // Add other model types here
     ];
 

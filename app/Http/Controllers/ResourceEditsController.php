@@ -6,10 +6,8 @@ use App\Http\Requests\ResourceEdit\StoreResourceEdit;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use Auth;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Log;
-use Redirect;
 
 class ResourceEditsController extends Controller
 {
@@ -66,5 +64,16 @@ class ResourceEditsController extends Controller
         ]);
 
         return redirect()->back();
+    }
+
+    public function show(ResourceEdits $resourceEdits)
+    {
+        $resourceEdits->load('resource');
+        
+        return Inertia::render('ResourceEdits/Show', [
+            'resourceId' => $resourceEdits->id,
+            'originalResource' => $resourceEdits,
+            'editedResource' => $resourceEdits->resource,
+        ]);
     }
 }

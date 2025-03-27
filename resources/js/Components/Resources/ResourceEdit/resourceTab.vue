@@ -21,6 +21,7 @@ const props = defineProps({
                     <Link
                         class="flex items-center justify-center w-full px-0 py-2 text-sm mb-0 transition-all ease-in-out border-0 rounded-md cursor-pointer text-slate-600 bg-inherit"
                         :class="{ 'bg-slate-200': $page.component.startsWith('Resources') }"
+                        :except="['resource', 'reviews']"
                         :href="route('resources.show', { id: resourceId })"
                     >
                         Resource

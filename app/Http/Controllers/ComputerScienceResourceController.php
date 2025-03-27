@@ -78,28 +78,11 @@ class ComputerScienceResourceController extends Controller
     public function show(ComputerScienceResource $computerScienceResource)
     {
         $reviews = $computerScienceResource->reviews()->orderByDesc('created_at')->get();
-        $computerScienceResource->load('user');
 
         return Inertia::render('Resources/Show', [
-            'resource' => fn() => $computerScienceResource,
-            'reviews' => $reviews
+            'resource' => fn() => $computerScienceResource->load('user'),
+            'reviews' => fn () => $reviews,
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(ComputerScienceResource $computerScienceResource)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, ComputerScienceResource $computerScienceResource)
-    {
-        //
     }
 
     /**

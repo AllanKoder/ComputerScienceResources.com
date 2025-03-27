@@ -3,6 +3,7 @@ import Tabs from "@/Components/Resources/ResourceEdit/resourceTab.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
+import Upvotable from "@/Components/Upvote/Upvotable.vue";
 
 const props = defineProps({
     resourceId: {
@@ -14,7 +15,6 @@ const props = defineProps({
         required: true,
     },
 });
-
 </script>
 
 <template>
@@ -34,7 +34,8 @@ const props = defineProps({
                                 class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
                                 :href="
                                     route('resource_edits.create', {
-                                        computerScienceResource: props.resourceId,
+                                        computerScienceResource:
+                                            props.resourceId,
                                     })
                                 "
                             >
@@ -52,8 +53,18 @@ const props = defineProps({
                                     class="mb-4"
                                 >
                                     <div class="flex flex-col bg-slate-100">
+                                        <Upvotable
+                                            :upvotableType="'edit'"
+                                            :upvotableId="edit.id"
+                                            :initialVotes="edit.total_votes"
+                                            :userVote="edit.user_vote"
+                                        ></Upvotable>
                                         <div class="font-bold">Edit Title:</div>
-                                        <div>{{ edit.edit_title }}</div>
+                                        <Link
+                                            :href="route('resource_edits.show', {'resourceEdits': edit.id})"
+                                        >
+                                            <div>{{ edit.edit_title }}</div>
+                                        </Link>
                                         <div class="font-bold mt-2">
                                             Edit Description:
                                         </div>
