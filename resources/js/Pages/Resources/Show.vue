@@ -38,9 +38,6 @@ const platformColors = {
     magazine: "rose",
 };
 
-const platformList = computed(() => {
-    return props.resource.platforms.split(",").map((platform) => platform.trim());
-});
 </script>
 
 <template>
@@ -103,7 +100,7 @@ const platformList = computed(() => {
                                     </div>
                                     <div class="flex flex-wrap gap-2 mb-2">
                                         <Tag
-                                            v-for="platform in platformList"
+                                            v-for="platform in props.resource.platforms"
                                             :key="platform"
                                             :value="platform"
                                             :severity="platformColors[platform]"

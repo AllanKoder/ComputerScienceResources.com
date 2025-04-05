@@ -48,9 +48,7 @@ const formData = useForm({
     image_url: props.resource.image_url,
     difficulty: props.resource.difficulty,
     pricing: props.resource.pricing,
-    platforms: props.resource.platforms
-        ? props.resource.platforms.split(",").map((p) => p.trim())
-        : [],
+    platforms: props.resource.platforms,
     topic_tags: props.resource.topic_tags || [],
     programming_language_tags: props.resource.programming_language_tags || [],
     general_tags: props.resource.general_tags || [],

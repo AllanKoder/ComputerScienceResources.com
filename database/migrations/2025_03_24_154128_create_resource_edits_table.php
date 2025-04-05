@@ -31,7 +31,6 @@ return new class extends Migration
             $table->text('description')->fulltext();
             $table->string('image_url');
             
-            // TODO: Have a url for each platform the resource is on.
             $table->string('page_url');
 
             $table->set('platforms', ['book', 'podcast', 'youtube_channel', 'blog', 'website', 'organization', 'bootcamp', 'newsletter', 'workshop', 'course', 'forum', 'mobile_app', 'desktop_app', 'magazine'])

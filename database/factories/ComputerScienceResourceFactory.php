@@ -32,10 +32,7 @@ class ComputerScienceResourceFactory extends Factory
             'image_url' => 'https://cdn.iconscout.com/icon/free/png-256/free-leetcode-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-vol-1-pack-logos-icons-3030025.png',
             'page_url' => fake()->url(),
 
-            'platforms' => implode(
-                ',',
-                fake()->randomElements($platforms, rand(1, 3))
-            ),
+            'platforms' => fake()->randomElements($platforms, rand(1, 3)),
             'difficulty' => fake()->randomElement($difficulties),
             'pricing' => fake()->randomElement($pricings),
         ];

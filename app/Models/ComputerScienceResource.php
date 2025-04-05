@@ -52,7 +52,20 @@ class ComputerScienceResource extends Model
     {
         return $this->hasMany(ResourceEdits::class);
     }
-    
+
+    /**
+     * Attribute to get and set platforms as an array
+     * 
+     * @return Attribute
+     */
+    protected function platforms(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => explode(',', $value),
+            set: fn($value) => implode(',', $value)
+        );
+    }
+
     /**
      * Accessor to get topic tags.
      *

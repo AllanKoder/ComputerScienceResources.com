@@ -7,7 +7,7 @@ import Tag from "primevue/tag";
 import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import { pricingLabels, difficultyLabels } from "@/Helpers/constants.js";
+import { pricingLabels, difficultyLabels, platformColors } from "@/Helpers/constants.js";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 
 const props = defineProps({
@@ -26,32 +26,6 @@ const props = defineProps({
 });
 
 const emit = defineEmits(["approveChanges", "rejectChanges"]);
-
-const platformColors = {
-    book: "blue",
-    podcast: "green",
-    youtube_channel: "red",
-    blog: "orange",
-    website: "purple",
-    organization: "cyan",
-    bootcamp: "pink",
-    newsletter: "indigo",
-    workshop: "teal",
-    course: "yellow",
-    forum: "gray",
-    mobile_app: "lime",
-    desktop_app: "amber",
-    magazine: "rose",
-};
-
-const originalPlatformList = computed(() =>
-    props.originalResource.platforms
-        .split(",")
-        .map((platform) => platform.trim())
-);
-const editedPlatformList = computed(() =>
-    props.editedResource.platforms.split(",").map((platform) => platform.trim())
-);
 
 const compareFields = [
     {
@@ -114,7 +88,7 @@ const tagDiffs = computed(() => ({
 
 // Compute diffs for platforms
 const platformDiffs = computed(() =>
-    Diff.diffArrays(originalPlatformList.value, editedPlatformList.value)
+    Diff.diffArrays(props.originalResource.platforms, props.editedResource.platforms)
 );
 
 // Computed flags to check if there are differences
@@ -129,8 +103,8 @@ const hasTextDiffs = computed(
 
 const hasPlatformDiff = computed(
     () =>
-        JSON.stringify(originalPlatformList.value) !==
-        JSON.stringify(editedPlatformList.value)
+        props.originalResource.platforms !==
+        props.editedResource.platforms
 );
 
 const tagDiffKeys = ["topic_tags", "programming_language_tags", "general_tags"];
@@ -151,8 +125,6 @@ const renderDiffSpan = (part) => {
 </script>
 
 <template>
-    {{typeof props.editedResource.general_tags }}
-    {{ typeof props.originalResource.general_tags }}
     <AppLayout :title="`Compare Versions: ${props.originalResource.name}`">
         <Head :title="`Compare Versions: ${props.originalResource.name}`" />
 
@@ -224,19 +196,13 @@ const renderDiffSpan = (part) => {
                                         </div>
                                         <div class="flex flex-wrap gap-2">
                                             <Tag
-                                                v-for="platform in editedPlatformList"
+                                                v-for="platform in props.editedResource.platforms"
                                                 :key="platform"
                                                 :value="platform"
                                                 :severity="
                                                     platformColors[platform]
                                                 "
                                                 class="capitalize"
-                                                :class="{
-                                                    'bg-yellow-50':
-                                                        !originalPlatformList.includes(
-                                                            platform
-                                                        ),
-                                                }"
                                             />
                                         </div>
                                     </div>
@@ -322,7 +288,7 @@ const renderDiffSpan = (part) => {
                                         </div>
                                         <div class="flex flex-wrap gap-2">
                                             <Tag
-                                                v-for="platform in originalPlatformList"
+                                                v-for="platform in props.originalResource.platforms"
                                                 :key="platform"
                                                 :value="platform"
                                                 :severity="

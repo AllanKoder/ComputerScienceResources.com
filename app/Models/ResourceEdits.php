@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -30,5 +31,18 @@ class ResourceEdits extends Model
     public function resource(): BelongsTo
     {
         return $this->belongsTo(ComputerScienceResource::class, 'computer_science_resource_id', 'id');
+    }
+
+    /**
+     * Attribute to get and set platforms as an array
+     * 
+     * @return Attribute
+     */
+    protected function platforms(): Attribute
+    {
+        return Attribute::make(
+            get: fn($value) => explode(',', $value),
+            set: fn($value) => implode(',', $value)
+        );
     }
 }
