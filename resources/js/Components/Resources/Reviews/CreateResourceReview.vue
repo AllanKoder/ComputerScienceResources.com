@@ -9,8 +9,8 @@ import InputTextarea from "primevue/textarea";
 import Button from "primevue/button";
 import ListInput from "@/Components/ListInput.vue";
 
-import { object, string, number } from "yup";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
+import { resourceReviewFields } from "@/Helpers/validation";
 
 const props = defineProps({
     resourceId: {
@@ -28,59 +28,12 @@ const form = useForm({
     practicality: "1",
     user_friendliness: "1",
     updates: "1",
-    pros: "[]",
-    cons: "[]",
+    pros: [],
+    cons: [],
 });
 
-// Define the Yup schema. For the pros and cons fields we expect a valid JSON string representing an array.
-const schema = object({
-    title: string().required("Title is required."),
-    description: string().required("Description is required."),
-    community: number()
-        .required("Community is required.")
-        .min(1, "Minimum is 1.")
-        .max(5, "Maximum is 5."),
-    teaching_clarity: number()
-        .required("Teaching clarity is required.")
-        .min(1, "Minimum is 1.")
-        .max(5, "Maximum is 5."),
-    engagement: number()
-        .required("Engagement is required.")
-        .min(1, "Minimum is 1.")
-        .max(5, "Maximum is 5."),
-    practicality: number()
-        .required("Practicality is required.")
-        .min(1, "Minimum is 1.")
-        .max(5, "Maximum is 5."),
-    user_friendliness: number()
-        .required("User friendliness is required.")
-        .min(1, "Minimum is 1.")
-        .max(5, "Maximum is 5."),
-    updates: number()
-        .required("Updates rating is required.")
-        .min(1, "Minimum is 1.")
-        .max(5, "Maximum is 5."),
-    pros: string()
-        .required("Pros are required.")
-        .test(
-            "json-format",
-            "Pros must have 200 characters or less.",
-            (value) => {
-                if (value.length > 200) return false;
-                return true;
-            }
-        ),
-    cons: string()
-        .required("Cons are required.")
-        .test(
-            "json-format",
-            "Cons must have 200 characters or less.",
-            (value) => {
-                if (value.length > 200) return false;
-                return true;
-            }
-        ),
-});
+// Define the Yup schema.
+const schema = resourceReviewFields;
 
 // Create the Yup resolver instance.
 const resolver = ref(yupResolver(schema));
@@ -239,8 +192,8 @@ const submitReview = () => {
             <label class="block text-sm font-medium text-gray-700">Pros</label>
             <ListInput
                 :maxSize="10"
-                :initialValues="form.pros ? JSON.parse(form.pros) : []"
-                @update="(value) => (form.pros = value)"
+                :initialValues="form.pros"
+                @change="(value) => (form.pros = value)"
             />
             <PrimeVueFormError v-if="$field?.invalid" :errors="$field.errors" />
         </FormField>
@@ -250,8 +203,8 @@ const submitReview = () => {
             <label class="block text-sm font-medium text-gray-700">Cons</label>
             <ListInput
                 :maxSize="10"
-                :initialValues="form.cons ? JSON.parse(form.cons) : []"
-                @update="(value) => (form.cons = value)"
+                :initialValues="form.cons"
+                @change="(value) => (form.cons = value)"
             />
             <PrimeVueFormError v-if="$field?.invalid" :errors="$field.errors" />
         </FormField>

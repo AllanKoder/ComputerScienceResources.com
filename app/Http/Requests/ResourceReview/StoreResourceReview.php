@@ -32,37 +32,10 @@ class StoreResourceReview extends FormRequest
             'user_friendliness' => ['required', 'integer', 'min:1', 'max:5'],
             'updates' => ['required', 'integer', 'min:1', 'max:5'],
             // Validate pros and cons as JSON arrays with a maximum of 10 items each and 200 chars max
-            'pros' => ['nullable', 'json', function ($attribute, $value, $fail) {
-                $array = json_decode($value, true);
-                if (is_array($array)) {
-                    // Check for max items
-                    if (count($array) > 10) {
-                        $fail('The pros array must not have more than 10 items.');
-                    }
-                    // Check length of each item
-                    foreach ($array as $item) {
-                        if (strlen($item) > 200) {
-                            $fail('Each pro must be 200 characters or less.');
-                        }
-                    }
-                }
-            }],
-            // Validate cons similarly
-            'cons' => ['nullable', 'json', function ($attribute, $value, $fail) {
-                $array = json_decode($value, true);
-                if (is_array($array)) {
-                    // Check for max items
-                    if (count($array) > 10) {
-                        $fail('The cons array must not have more than 10 items.');
-                    }
-                    // Check length of each item
-                    foreach ($array as $item) {
-                        if (strlen($item) > 200) {
-                            $fail('Each con must be 200 characters or less.');
-                        }
-                    }
-                }
-            }],
+            'pros' => ['nullable', 'array', 'max:10'],
+            'pros.*' => ['string', 'max:200'],
+            'cons' => ['nullable', 'array', 'max:10'],
+            'cons.*' => ['string', 'max:200'],
         ];
     }
 }

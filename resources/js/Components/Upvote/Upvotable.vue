@@ -20,6 +20,10 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    flexRow: {
+        type: Boolean,
+        default: false
+    }
 });
 
 const votes = ref(props.initialVotes);
@@ -41,7 +45,10 @@ async function handleUpvote() {
     upvoteLoading.value = true;
     try {
         const response = await axios.post(
-            route("upvote", { id: props.upvotableId, type: props.upvotableType })
+            route("upvote", {
+                id: props.upvotableId,
+                type: props.upvotableType,
+            })
         );
         userVote.value = response.data.userVote;
         votes.value += response.data.changeFromVote;
@@ -57,7 +64,10 @@ async function handleDownvote() {
     downvoteLoading.value = true;
     try {
         const response = await axios.post(
-            route("downvote", { id: props.upvotableId, type: props.upvotableType })
+            route("downvote", {
+                id: props.upvotableId,
+                type: props.upvotableType,
+            })
         );
         userVote.value = response.data.userVote;
         votes.value += response.data.changeFromVote;
@@ -70,19 +80,29 @@ async function handleDownvote() {
 </script>
 
 <template>
-    <div class="flex flex-col items-center">
+    <div class="flex items-center"
+    :class="{ 'flex-row-reverse': flexRow, 'flex-col': !flexRow}">
+        <!-- Upvote Slot -->
         <button
             @click="handleUpvote"
             :disabled="upvoteLoading"
-            :class="{ 'opacity-50': upvoteLoading,
-                                'text-red-500': userVote > 0,
-
-             }"
+            :class="{
+                'opacity-50': upvoteLoading,
+                'text-red-500': userVote > 0,
+            }"
             class="cursor-pointer"
         >
-            <Icon icon="mdi:chevron-up" width="24" height="24" />
+            <slot name="upvoteIcon">
+                <Icon icon="mdi:chevron-up" width="24" height="24" />
+            </slot>
         </button>
-        <span class="text-lg font-bold">{{ votes }}</span>
+
+        <!-- Vote count Slot -->
+        <slot :votes="votes" name="votes">
+            <span class="text-lg font-bold">{{ votes }}</span>
+        </slot>
+
+        <!-- Downvote Slot -->
         <button
             @click="handleDownvote"
             :disabled="downvoteLoading"
@@ -92,7 +112,9 @@ async function handleDownvote() {
             }"
             class="cursor-pointer"
         >
-            <Icon icon="mdi:chevron-down" width="24" height="24" />
+            <slot name="downvoteIcon">
+                <Icon icon="mdi:chevron-down" width="24" height="24" />
+            </slot>
         </button>
     </div>
 </template>

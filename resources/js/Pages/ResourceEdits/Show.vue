@@ -8,6 +8,7 @@ import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import { pricingLabels, difficultyLabels } from "@/Helpers/constants.js";
+import Upvotable from "@/Components/Upvote/Upvotable.vue";
 
 const props = defineProps({
     originalResource: {
@@ -43,42 +44,13 @@ const platformColors = {
     magazine: "rose",
 };
 
-// Helper function to parse tags safely
-const parseTags = (tags) => {
-    if (Array.isArray(tags)) return tags;
-
-    if (typeof tags === "string") {
-        try {
-            return JSON.parse(tags);
-        } catch {
-            return tags
-                .replace(/[\[\]"]/g, "")
-                .split(",")
-                .map((tag) => tag.trim());
-        }
-    }
-
-    return [];
-};
-
 const originalPlatformList = computed(() =>
-    props.originalResource.platforms.split(",").map((platform) => platform.trim())
-);
-
-const editedPlatformList = computed(() =>
-    props.editedResource.platforms
+    props.originalResource.platforms
         .split(",")
         .map((platform) => platform.trim())
 );
-
-const originalTopicTags = computed(() =>
-    parseTags(props.originalResource.topic_tags)
-);
-const originalProgrammingTags = computed(() =>
-    parseTags(props.originalResource.programming_language_tags)
-);
-const originalGeneralTags = computed(() =>
-    parseTags(props.originalResource.general_tags)
+const editedPlatformList = computed(() =>
+    props.editedResource.platforms.split(",").map((platform) => platform.trim())
 );
 
 const compareFields = [
@@ -127,15 +99,15 @@ const textDiffs = computed(() => {
 // Compute diffs for tags
 const tagDiffs = computed(() => ({
     topic_tags: Diff.diffArrays(
-        originalTopicTags.value,
+        props.originalResource.topic_tags || [],
         props.editedResource.topic_tags || []
     ),
     programming_language_tags: Diff.diffArrays(
-        originalProgrammingTags.value,
+        props.originalResource.programming_language_tags || [],
         props.editedResource.programming_language_tags || []
     ),
     general_tags: Diff.diffArrays(
-        originalGeneralTags.value,
+        props.originalResource.general_tags || [],
         props.editedResource.general_tags || []
     ),
 }));
@@ -145,13 +117,30 @@ const platformDiffs = computed(() =>
     Diff.diffArrays(originalPlatformList.value, editedPlatformList.value)
 );
 
-const handleApprove = () => {
-    emit("approveChanges", props.resourceId);
-};
+// Computed flags to check if there are differences
+const hasTextDiffs = computed(
+    () =>
+        compareFields.filter(
+            (f) =>
+                f.type !== "select" &&
+                props.editedResource[f.key] !== props.originalResource[f.key]
+        ).length > 0
+);
 
-const handleReject = () => {
-    emit("rejectChanges", props.resourceId);
-};
+const hasPlatformDiff = computed(
+    () =>
+        JSON.stringify(originalPlatformList.value) !==
+        JSON.stringify(editedPlatformList.value)
+);
+
+const tagDiffKeys = ["topic_tags", "programming_language_tags", "general_tags"];
+const hasTagDiffs = computed(() => {
+    return tagDiffKeys.some((tagType) => {
+        const original = props.originalResource[tagType] || [];
+        const edited = props.editedResource[tagType] || [];
+        return JSON.stringify(original) !== JSON.stringify(edited);
+    });
+});
 
 // Helper to render diff spans
 const renderDiffSpan = (part) => {
@@ -162,6 +151,8 @@ const renderDiffSpan = (part) => {
 </script>
 
 <template>
+    {{typeof props.editedResource.general_tags }}
+    {{ typeof props.originalResource.general_tags }}
     <AppLayout :title="`Compare Versions: ${props.originalResource.name}`">
         <Head :title="`Compare Versions: ${props.originalResource.name}`" />
 
@@ -201,14 +192,7 @@ const renderDiffSpan = (part) => {
                                         <div
                                             class="text-gray-800"
                                             :class="{
-                                                'bg-yellow-50':
-                                                    props.originalResource[
-                                                        field.key
-                                                    ] !==
-                                                    props.editedResource[
-                                                        field.key
-                                                    ],
-                                                'p-1 rounded':
+                                                'bg-yellow-50 p-1 rounded':
                                                     props.originalResource[
                                                         field.key
                                                     ] !==
@@ -220,8 +204,7 @@ const renderDiffSpan = (part) => {
                                             {{
                                                 field.formatter
                                                     ? field.formatter(
-                                                          props
-                                                              .editedResource[
+                                                          props.editedResource[
                                                               field.key
                                                           ]
                                                       )
@@ -268,18 +251,11 @@ const renderDiffSpan = (part) => {
                                         <div class="flex flex-wrap gap-1">
                                             <Tag
                                                 v-for="tag in props
-                                                    .editedResource
-                                                    .topic_tags"
+                                                    .editedResource.topic_tags"
                                                 :key="tag"
                                                 :value="tag"
                                                 severity="info"
                                                 class="text-xs mr-1 mb-1"
-                                                :class="{
-                                                    'bg-yellow-50':
-                                                        !originalTopicTags.includes(
-                                                            tag
-                                                        ),
-                                                }"
                                             />
                                             <Tag
                                                 v-for="tag in props
@@ -289,12 +265,6 @@ const renderDiffSpan = (part) => {
                                                 :value="tag"
                                                 severity="success"
                                                 class="text-xs mr-1 mb-1"
-                                                :class="{
-                                                    'bg-yellow-50':
-                                                        !originalProgrammingTags.includes(
-                                                            tag
-                                                        ),
-                                                }"
                                             />
                                             <Tag
                                                 v-for="tag in props
@@ -304,12 +274,6 @@ const renderDiffSpan = (part) => {
                                                 :value="tag"
                                                 severity="warning"
                                                 class="text-xs mr-1 mb-1"
-                                                :class="{
-                                                    'bg-yellow-50':
-                                                        !originalGeneralTags.includes(
-                                                            tag
-                                                        ),
-                                                }"
                                             />
                                         </div>
                                     </div>
@@ -337,7 +301,8 @@ const renderDiffSpan = (part) => {
                                             {{
                                                 field.formatter
                                                     ? field.formatter(
-                                                          props.originalResource[
+                                                          props
+                                                              .originalResource[
                                                               field.key
                                                           ]
                                                       )
@@ -377,21 +342,21 @@ const renderDiffSpan = (part) => {
                                         </div>
                                         <div class="flex flex-wrap gap-1">
                                             <Tag
-                                                v-for="tag in originalTopicTags"
+                                                v-for="tag in props.originalResource.general_tags"
                                                 :key="tag"
                                                 :value="tag"
                                                 severity="info"
                                                 class="text-xs mr-1 mb-1"
                                             />
                                             <Tag
-                                                v-for="tag in originalProgrammingTags"
+                                                v-for="tag in props.originalResource.programming_language_tags"
                                                 :key="tag"
                                                 :value="tag"
                                                 severity="success"
                                                 class="text-xs mr-1 mb-1"
                                             />
                                             <Tag
-                                                v-for="tag in originalGeneralTags"
+                                                v-for="tag in props.originalResource.topic_tags"
                                                 :key="tag"
                                                 :value="tag"
                                                 severity="warning"
@@ -405,37 +370,54 @@ const renderDiffSpan = (part) => {
 
                         <!-- Diff View Tab -->
                         <TabPanel header="Detailed Diff">
-                            <div class="space-y-6">
+                            <!-- Only display diff sections if there are changes -->
+                            <div
+                                v-if="
+                                    hasTextDiffs ||
+                                    hasPlatformDiff ||
+                                    hasTagDiffs
+                                "
+                                class="space-y-6"
+                            >
                                 <!-- Text Field Diffs -->
-                                <div
-                                    v-for="field in compareFields.filter(
-                                        (f) => f.type !== 'select'
-                                    )"
-                                    :key="field.key"
-                                    class="mb-4"
-                                >
-                                    <h3 class="text-lg font-semibold mb-2">
-                                        {{ field.label }} Diff:
-                                    </h3>
+                                <div v-if="hasTextDiffs">
                                     <div
-                                        class="bg-gray-50 p-3 rounded-lg font-mono text-sm"
-                                        v-html="
-                                            textDiffs[field.key]
-                                                .map(renderDiffSpan)
-                                                .join('')
-                                        "
-                                    ></div>
+                                        v-for="field in compareFields.filter(
+                                            (f) =>
+                                                f.type !== 'select' &&
+                                                props.editedResource[f.key] !==
+                                                    props.originalResource[
+                                                        f.key
+                                                    ]
+                                        )"
+                                        :key="field.key"
+                                        class="mb-4"
+                                    >
+                                        <h3 class="text-lg font-semibold mb-2">
+                                            {{ field.label }} Diff:
+                                        </h3>
+                                        <div
+                                            class="bg-gray-50 p-3 rounded-lg font-mono text-sm"
+                                            v-html="
+                                                textDiffs[field.key]
+                                                    .map(renderDiffSpan)
+                                                    .join('')
+                                            "
+                                        ></div>
+                                    </div>
                                 </div>
 
                                 <!-- Platform Diffs -->
-                                <div class="mb-4">
+                                <div v-if="hasPlatformDiff" class="mb-4">
                                     <h3 class="text-lg font-semibold mb-2">
                                         Platforms Diff:
                                     </h3>
                                     <div class="bg-gray-50 p-3 rounded-lg">
                                         <div
-                                            v-for="part in platformDiffs"
-                                            :key="part.value"
+                                            v-for="(
+                                                part, index
+                                            ) in platformDiffs"
+                                            :key="index"
                                             :class="{
                                                 'bg-green-100': part.added,
                                                 'bg-red-100': part.removed,
@@ -443,16 +425,28 @@ const renderDiffSpan = (part) => {
                                                     part.added || part.removed,
                                             }"
                                         >
-                                            {{ part.value.join(", ") }}
+                                            {{
+                                                Array.isArray(part.value)
+                                                    ? part.value.join(", ")
+                                                    : part.value
+                                            }}
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Tag Diffs -->
-                                <div class="space-y-4">
+                                <div v-if="hasTagDiffs" class="space-y-4">
                                     <div
                                         v-for="(diff, tagType) in tagDiffs"
                                         :key="tagType"
+                                        v-if="
+                                            JSON.stringify(
+                                                props.editedResource[tagType]
+                                            ) !==
+                                            JSON.stringify(
+                                                props.originalResource[tagType]
+                                            )
+                                        "
                                     >
                                         <h3 class="text-lg font-semibold mb-2">
                                             {{
@@ -467,8 +461,8 @@ const renderDiffSpan = (part) => {
                                         </h3>
                                         <div class="bg-gray-50 p-3 rounded-lg">
                                             <div
-                                                v-for="part in diff"
-                                                :key="part.value"
+                                                v-for="(part, index) in diff"
+                                                :key="index"
                                                 :class="{
                                                     'bg-green-100': part.added,
                                                     'bg-red-100': part.removed,
@@ -487,21 +481,51 @@ const renderDiffSpan = (part) => {
                                     </div>
                                 </div>
                             </div>
+                            <!-- If no diff exists, show a friendly message -->
+                            <div v-else class="p-4 text-gray-500">
+                                No differences found.
+                            </div>
                         </TabPanel>
                     </TabView>
 
                     <!-- Approval Actions -->
-                    <div class="mt-6 flex justify-end space-x-4">
-                        <Button
-                            label="Reject Changes"
-                            severity="danger"
-                            @click="handleReject"
-                        />
-                        <Button
-                            label="Approve Changes"
-                            severity="success"
-                            @click="handleApprove"
-                        />
+                    <div class="mt-8 flex justify-center">
+                        <Upvotable
+                            :flexRow="true"
+                            :upvotableType="'edit'"
+                            :upvotableId="resourceId"
+                            :initialVotes="editedResource.total_votes"
+                            :userVote="editedResource.user_vote"
+                            class="flex items-center gap-6"
+                        >
+                            <!-- Downvote (Reject) Button -->
+                            <template #downvoteIcon>
+                                <Tag
+                                    severity="danger"
+                                    value="Reject Changes"
+                                    rounded
+                                />
+                            </template>
+
+                            <!-- Vote Count -->
+                            <template #votes="{ votes }">
+                                <Tag
+                                    severity="secondary"
+                                    rounded
+                                >
+                                    {{ votes }} Approval{{ votes === 1 ? "" : "s" }}
+                                </Tag>
+                            </template>
+
+                            <!-- Upvote (Approve) Button -->
+                            <template #upvoteIcon>
+                                <Tag
+                                    severity="success"
+                                    value="Approve Changes"
+                                    rounded
+                                />
+                            </template>
+                        </Upvotable>
                     </div>
                 </div>
             </div>

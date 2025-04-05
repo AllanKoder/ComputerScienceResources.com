@@ -20,7 +20,12 @@ class ResourceReview extends Model
     protected $with = ['votes', 'upvoteSummary', 'commentsCountRelationship'];
 
     protected $appends = ['average_score', 'comments_count', 'total_votes', 'user_vote'];
-    
+
+    protected $casts = [
+        'pros' => 'array',
+        'cons' => 'array',
+    ];
+
     /**
      * Get the average review score.
      *

@@ -43,8 +43,7 @@ class ResourceEditsController extends Controller
     public function store(ComputerScienceResource $computerScienceResource, StoreResourceEdit $request) {
         $validatedData = $request->validated();
         Log::debug("Creating a resource edit: " . json_encode($validatedData));
-        
-
+       
         $resourceEdit = ResourceEdits::create([
             'user_id' => Auth::id(),
             'computer_science_resource_id' => $computerScienceResource->id,
@@ -58,12 +57,12 @@ class ResourceEditsController extends Controller
             'platforms' => implode(',', $validatedData['platforms']),
             'difficulty' => $validatedData['difficulty'],
             'pricing' => $validatedData['pricing'],
-            'topic_tags' => json_encode($validatedData['topic_tags']),
-            'programming_language_tags' => json_encode($validatedData['programming_language_tags']),
-            'general_tags' => json_encode($validatedData['general_tags']),
+            'topic_tags' => $validatedData['topic_tags'],
+            'programming_language_tags' => $validatedData['programming_language_tags'],
+            'general_tags' => $validatedData['general_tags'],
         ]);
 
-        return redirect()->back();
+        return redirect()->route('resource_edits.show', ['resourceEdits'=>$resourceEdit->id]);
     }
 
     public function show(ResourceEdits $resourceEdits)

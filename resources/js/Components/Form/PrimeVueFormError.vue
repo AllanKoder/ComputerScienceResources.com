@@ -10,7 +10,12 @@ const props = defineProps({
 });
 
 // Helper function to remove "ValidationError:" prefix
-const formatError = (error) => error.replace(/^ValidationError:/, "");
+function formatError(error) {
+    return error
+        .replace(/^ValidationError:\s*/, '') // Remove prefix and optional space
+        .replace(/_/g, ' '); // Replace all underscores with spaces
+}
+
 </script>
 
 <template>
@@ -21,7 +26,9 @@ const formatError = (error) => error.replace(/^ValidationError:/, "");
         variant="simple"
     >
         <template v-for="error in errors" :key="error">
-            {{ formatError(error.toString()) }}
+            <p>
+                {{ formatError(error.toString()) }}
+            </p>
         </template>
     </Message>
 </template>

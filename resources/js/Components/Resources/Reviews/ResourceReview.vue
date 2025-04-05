@@ -38,8 +38,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
             <h4 class="font-semibold mb-2">Pros</h4>
             <ul class="list-disc pl-5">
                 <li
-                    v-for="(pro, index) in JSON.parse(review.pros)"
-                    :key="index"
+                    v-for="pro in review.pros"
                     class="text-gray-600"
                 >
                     {{ pro }}
@@ -50,8 +49,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
             <h4 class="font-semibold mb-2">Cons</h4>
             <ul class="list-disc pl-5">
                 <li
-                    v-for="(con, index) in JSON.parse(review.cons)"
-                    :key="index"
+                    v-for="con in review.cons"
                     class="text-gray-600"
                 >
                     {{ con }}

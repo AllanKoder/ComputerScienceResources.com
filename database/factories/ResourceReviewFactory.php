@@ -38,8 +38,8 @@ class ResourceReviewFactory extends Factory
             'practicality' => $this->faker->numberBetween(1, 5),
             'user_friendliness' => $this->faker->numberBetween(1, 5),
             'updates' => $this->faker->numberBetween(1, 5),
-            'pros' => json_encode($this->faker->words(mt_rand(1, 5))),
-            'cons' => json_encode($this->faker->words(mt_rand(1, 5))),
+            'pros' => $this->faker->words(mt_rand(1, 5)),
+            'cons' => $this->faker->words(mt_rand(1, 5)),
         ];
     }
 

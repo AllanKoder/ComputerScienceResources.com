@@ -3,7 +3,7 @@ import { ref, watch } from 'vue';
 import InputText from 'primevue/inputtext';
 import { Icon } from "@iconify/vue";
 
-const emit = defineEmits(['update']);
+const emit = defineEmits(['change']);
 
 const props = defineProps({
   maxSize: {
@@ -19,12 +19,11 @@ const props = defineProps({
 // Initialize the items array from initialValues (do not auto-add an empty field)
 const items = ref([...props.initialValues]);
 
-// Watch for changes in items and emit the JSON string of non-empty values.
+// Watch for changes in items and emit object of non-empty values.
 watch(
   items,
   (newItems) => {
-    const jsonOutput = JSON.stringify(newItems.filter((item) => item !== ""));
-    emit("update", jsonOutput);
+    emit("change", newItems.filter((item) => item !== ""));
   },
   { deep: true, immediate: true }
 );
@@ -36,7 +35,7 @@ const addItem = () => {
   }
 };
 
-// Optional: Remove an item from the list.
+// Remove an item from the list.
 const removeItem = (index) => {
   items.value.splice(index, 1);
 };
@@ -66,6 +65,7 @@ const removeItem = (index) => {
       type="button"
       @click="addItem"
       class="flex items-center gap-1 text-blue-500 focus:outline-none"
+      :disabled="items.length >= maxSize"
     >
       <Icon icon="mdi:plus" />
       <span>Add</span>
