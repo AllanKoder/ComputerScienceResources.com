@@ -28,10 +28,10 @@ const formattedDate = computed(() =>
     <div class="p-4 border-b border-gray-200" :key="comment.id" :id="'comment_'+comment.id">
 
         <Upvotable
-            :upvotableType="'comment'"
-            :upvotableId="comment.id"
-            :initialVotes="comment.total_votes"
-            :userVote="comment.user_vote"
+            :upvotable-type="'comment'"
+            :upvotable-id="comment.id"
+            :initial-votes="comment.total_votes"
+            :user-vote="comment.user_vote"
         ></Upvotable>
 
         <!-- User Info with Lazy Loading -->
@@ -62,7 +62,7 @@ const formattedDate = computed(() =>
         <!-- Actions Form -->
         <CommentActionsForm
             :key="`actions-${comment.id}`"
-            :parentCommentId="comment.id"
+            :parent-comment-id="comment.id"
             class="mt-2"
         />
     </div>

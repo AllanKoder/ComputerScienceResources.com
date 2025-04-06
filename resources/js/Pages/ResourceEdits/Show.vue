@@ -473,10 +473,10 @@ const renderDiffSpan = (part) => {
                     <div class="mt-8 flex justify-center">
                         <Upvotable
                             :flexRow="true"
-                            :upvotableType="'edit'"
-                            :upvotableId="resourceId"
-                            :initialVotes="editedResource.total_votes"
-                            :userVote="editedResource.user_vote"
+                            :upvotable-type="'edit'"
+                            :upvotable-id="resourceId"
+                            :initial-votes="editedResource.total_votes"
+                            :user-vote="editedResource.user_vote"
                             class="flex items-center gap-6"
                         >
                             <!-- Downvote (Reject) Button -->

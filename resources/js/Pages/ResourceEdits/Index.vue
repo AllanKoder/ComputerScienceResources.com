@@ -54,10 +54,10 @@ const props = defineProps({
                                 >
                                     <div class="flex flex-col bg-slate-100">
                                         <Upvotable
-                                            :upvotableType="'edit'"
-                                            :upvotableId="edit.id"
-                                            :initialVotes="edit.total_votes"
-                                            :userVote="edit.user_vote"
+                                            :upvotable-type="'edit'"
+                                            :upvotable-id="edit.id"
+                                            :initial-votes="edit.total_votes"
+                                            :user-vote="edit.user_vote"
                                         ></Upvotable>
                                         <div class="font-bold">Edit Title:</div>
                                         <Link

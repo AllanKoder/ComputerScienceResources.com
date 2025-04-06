@@ -73,8 +73,8 @@ const toggleCollapse = () => {
                     <CommentList
                         v-if="depth <= 7 && comment"
                         :depth="depth + 1"
-                        :parentId="comment.id"
-                        :idToChildren="idToChildren"
+                        :parent-id="comment.id"
+                        :id-to-children="idToChildren"
                     />
                 </div>
             </div>

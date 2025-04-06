@@ -38,12 +38,12 @@ const emit = defineEmits(["upvote", "downvote"]);
                                     class="flex flex-col items-center mr-4 mb-4 md:mb-0"
                                 >
                                     <UpvoteResource
-                                        :upvotableId="props.resource.id"
-                                        :upvotableType="'resource'"
-                                        :initialVotes="
+                                        :upvotable-id="props.resource.id"
+                                        :upvotable-type="'resource'"
+                                        :initial-votes="
                                             props.resource.total_votes
                                         "
-                                        :userVote="props.resource.user_vote"
+                                        :user-vote="props.resource.user_vote"
                                     ></UpvoteResource>
                                 </div>
                                 <img

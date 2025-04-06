@@ -18,10 +18,10 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 
 <template>
     <Upvotable
-        :upvotableType="'review'"
-        :upvotableId="props.review.id"
-        :initialVotes="props.review.total_votes"
-        :userVote="props.review.user_vote"
+        :upvotable-type="'review'"
+        :upvotable-id="props.review.id"
+        :initial-votes="props.review.total_votes"
+        :user-vote="props.review.user_vote"
     ></Upvotable>
     <div class="flex justify-between items-center mb-4">
         <h3 class="text-xl font-semibold">{{ review.title }}</h3>
