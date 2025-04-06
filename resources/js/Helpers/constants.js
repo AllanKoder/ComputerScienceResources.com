@@ -1,3 +1,16 @@
+/**
+ * 
+ * Contants used throughout the application
+ * 
+ * Related to vital operations of the frontend
+ */
+export const MAX_COMMENT_DEPTH = 7;
+
+
+/**
+ * Constants on the more visual end of things
+ * 
+ */
 export const platforms = [
     { label: "Website", value: "website" },
     { label: "Book", value: "book" },

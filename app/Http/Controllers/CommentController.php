@@ -53,7 +53,7 @@ class CommentController extends Controller
         $parentCommentId = $validatedData['parent_comment_id'];
         if (!$parentCommentId) {
             $comment->parent_comment_id = null;
-            $comment->depth = 0;
+            $comment->depth = 1;
             $comment->children_count = 0;
         }
         // Is reply to a comment
@@ -62,7 +62,7 @@ class CommentController extends Controller
             $new_comment_depth = $parent->depth + 1;
             
             // Check if the parent is the root comment
-            if ($parent->depth == 0) {
+            if ($parent->depth == 1) {
                 $root_comment = $parent;
                 $root_comment_id = $parent->id;
             } else {

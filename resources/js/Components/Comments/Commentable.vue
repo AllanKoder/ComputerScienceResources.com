@@ -146,11 +146,6 @@ async function loadComments() {
                 View {{ commentsLeft }} Comments
             </button>
         </div>
-        <div v-else>
-            <p class="w-full py-2 text-center text-blue-500">
-                No Comments (Yes this is ugly)
-            </p>
-        </div>
 
         <!-- New Comment Form -->
         <CommentActionsForm label="Add Comment" class="mt-4" />

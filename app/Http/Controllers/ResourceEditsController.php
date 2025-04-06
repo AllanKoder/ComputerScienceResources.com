@@ -54,7 +54,7 @@ class ResourceEditsController extends Controller
             'description' => $validatedData['description'],
             'image_url' => $validatedData['image_url'] ?? null,
             'page_url' => $validatedData['page_url'],
-            'platforms' => implode(',', $validatedData['platforms']),
+            'platforms' => $validatedData['platforms'],
             'difficulty' => $validatedData['difficulty'],
             'pricing' => $validatedData['pricing'],
             'topic_tags' => $validatedData['topic_tags'],

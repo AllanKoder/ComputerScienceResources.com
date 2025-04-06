@@ -2,6 +2,7 @@
 import { defineProps, ref } from "vue";
 import { Icon } from "@iconify/vue";
 import SingleComment from "./SingleComment.vue";
+import { MAX_COMMENT_DEPTH } from "@/Helpers/constants";
 
 const props = defineProps({
     idToChildren: {
@@ -13,7 +14,7 @@ const props = defineProps({
         type: Number,
     },
     depth: {
-        default: 0,
+        default: 1,
         type: Number,
     },
 });
@@ -68,10 +69,11 @@ const toggleCollapse = () => {
                 <div v-for="comment in idToChildren[parentId] || []" :key="comment.id">
                     <SingleComment
                         :comment="comment"
+                        :depth="depth + 1"
                     />
 
                     <CommentList
-                        v-if="depth <= 7 && comment"
+                        v-if="depth < MAX_COMMENT_DEPTH && comment"
                         :depth="depth + 1"
                         :parent-id="comment.id"
                         :id-to-children="idToChildren"

@@ -23,7 +23,7 @@ return new class extends Migration
             
             $table->text("content");
             
-            $table->smallInteger("depth")->index();
+            $table->smallInteger("depth")->default(1)->index();
             // Only root comment uses this
             $table->unsignedInteger("children_count")->default(0);
         });
