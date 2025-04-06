@@ -7,8 +7,13 @@ import Tag from "primevue/tag";
 import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import { pricingLabels, difficultyLabels, platformColors } from "@/Helpers/constants.js";
+import {
+    pricingLabels,
+    difficultyLabels,
+    platformColors,
+} from "@/Helpers/constants.js";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
+import Commentable from "@/Components/Comments/Commentable.vue";
 
 const props = defineProps({
     originalResource: {
@@ -88,7 +93,10 @@ const tagDiffs = computed(() => ({
 
 // Compute diffs for platforms
 const platformDiffs = computed(() =>
-    Diff.diffArrays(props.originalResource.platforms, props.editedResource.platforms)
+    Diff.diffArrays(
+        props.originalResource.platforms,
+        props.editedResource.platforms
+    )
 );
 
 // Computed flags to check if there are differences
@@ -103,8 +111,8 @@ const hasTextDiffs = computed(
 
 const hasPlatformDiff = computed(
     () =>
-        props.originalResource.platforms !==
-        props.editedResource.platforms
+        JSON.stringify(props.originalResource.platforms) !==
+        JSON.stringify(props.editedResource.platforms)
 );
 
 const tagDiffKeys = ["topic_tags", "programming_language_tags", "general_tags"];
@@ -127,7 +135,6 @@ const renderDiffSpan = (part) => {
 <template>
     <AppLayout :title="`Compare Versions: ${props.originalResource.name}`">
         <Head :title="`Compare Versions: ${props.originalResource.name}`" />
-
         <main class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
@@ -196,7 +203,8 @@ const renderDiffSpan = (part) => {
                                         </div>
                                         <div class="flex flex-wrap gap-2">
                                             <Tag
-                                                v-for="platform in props.editedResource.platforms"
+                                                v-for="platform in props
+                                                    .editedResource.platforms"
                                                 :key="platform"
                                                 :value="platform"
                                                 :severity="
@@ -288,7 +296,8 @@ const renderDiffSpan = (part) => {
                                         </div>
                                         <div class="flex flex-wrap gap-2">
                                             <Tag
-                                                v-for="platform in props.originalResource.platforms"
+                                                v-for="platform in props
+                                                    .originalResource.platforms"
                                                 :key="platform"
                                                 :value="platform"
                                                 :severity="
@@ -308,21 +317,27 @@ const renderDiffSpan = (part) => {
                                         </div>
                                         <div class="flex flex-wrap gap-1">
                                             <Tag
-                                                v-for="tag in props.originalResource.general_tags"
+                                                v-for="tag in props
+                                                    .originalResource
+                                                    .topic_tags"
                                                 :key="tag"
                                                 :value="tag"
                                                 severity="info"
                                                 class="text-xs mr-1 mb-1"
                                             />
                                             <Tag
-                                                v-for="tag in props.originalResource.programming_language_tags"
+                                                v-for="tag in props
+                                                    .originalResource
+                                                    .programming_language_tags"
                                                 :key="tag"
                                                 :value="tag"
                                                 severity="success"
                                                 class="text-xs mr-1 mb-1"
                                             />
                                             <Tag
-                                                v-for="tag in props.originalResource.topic_tags"
+                                                v-for="tag in props
+                                                    .originalResource
+                                                    .general_tags"
                                                 :key="tag"
                                                 :value="tag"
                                                 severity="warning"
@@ -465,34 +480,54 @@ const renderDiffSpan = (part) => {
                             class="flex items-center gap-6"
                         >
                             <!-- Downvote (Reject) Button -->
+                            <template #alreadyDownvotedIcon>
+                                <span
+                                    class="bg-red-700 text-white px-3 py-1 rounded-full text-sm"
+                                >
+                                    Rejected
+                                </span>
+                            </template>
                             <template #downvoteIcon>
-                                <Tag
-                                    severity="danger"
-                                    value="Reject Changes"
-                                    rounded
-                                />
+                                <span
+                                    class="bg-red-100 text-red-900 px-3 py-1 rounded-full text-sm"
+                                >
+                                    Reject Changes
+                                </span>
                             </template>
 
                             <!-- Vote Count -->
                             <template #votes="{ votes }">
-                                <Tag
-                                    severity="secondary"
-                                    rounded
-                                >
-                                    {{ votes }} Approval{{ votes === 1 ? "" : "s" }}
+                                <Tag severity="secondary" rounded>
+                                    {{ votes }} Approval{{
+                                        votes === 1 ? "" : "s"
+                                    }}
                                 </Tag>
                             </template>
 
                             <!-- Upvote (Approve) Button -->
-                            <template #upvoteIcon>
-                                <Tag
-                                    severity="success"
-                                    value="Approve Changes"
-                                    rounded
-                                />
+                            <template #alreadyUpvotedIcon>
+                                <span
+                                    class="bg-green-600 text-white px-3 py-1 rounded-full text-sm"
+                                >
+                                    Approved!
+                                </span>
                             </template>
+                            <template #upvoteIcon>
+                                <span
+                                    class="bg-green-100 text-green-900 px-3 py-1 rounded-full text-sm"
+                                >
+                                    Approve Changes
+                                </span>
+                            </template>
+
                         </Upvotable>
                     </div>
+
+                    <Commentable
+                        :commentable-id="props.editedResource.id"
+                        :commentable-type="'edit'"
+                        :comments-count="props.editedResource.comments_count"
+                    ></Commentable>
                 </div>
             </div>
         </main>

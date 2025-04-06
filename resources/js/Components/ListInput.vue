@@ -1,74 +1,80 @@
 <script setup>
-import { ref, watch } from 'vue';
-import InputText from 'primevue/inputtext';
+import { ref, watch } from "vue";
+import InputText from "primevue/inputtext";
 import { Icon } from "@iconify/vue";
 
-const emit = defineEmits(['change']);
+const emit = defineEmits(["change"]);
 
 const props = defineProps({
-  maxSize: {
-    type: Number,
-    default: 10,
-  },
-  initialValues: {
-    type: Array,
-    default: () => [],
-  },
+    maxSize: {
+        type: Number,
+        default: 10,
+    },
+    initialValues: {
+        type: Array,
+        default: () => [],
+    },
 });
 
-// Initialize the items array from initialValues (do not auto-add an empty field)
 const items = ref([...props.initialValues]);
 
-// Watch for changes in items and emit object of non-empty values.
 watch(
-  items,
-  (newItems) => {
-    emit("change", newItems.filter((item) => item !== ""));
-  },
-  { deep: true, immediate: true }
+    items,
+    (newItems) => {
+        emit(
+            "change",
+            newItems.filter((item) => item !== "")
+        );
+    },
+    { deep: true, immediate: true }
 );
 
-// Add a new (empty) item if maxSize hasn't been reached.
 const addItem = () => {
-  if (items.value.length < props.maxSize) {
-    items.value.push("");
-  }
+    if (items.value.length < props.maxSize) {
+        items.value.push("");
+    }
 };
 
-// Remove an item from the list.
 const removeItem = (index) => {
-  items.value.splice(index, 1);
+    items.value.splice(index, 1);
+};
+
+const updateItem = (index, value) => {
+    items.value = [...items.value]; // Force reactivity
+    items.value[index] = value;
 };
 </script>
 
 <template>
-  <div class="flex flex-col gap-2">
-    <!-- Render each list item input -->
-    <div v-for="(item, index) in items" :key="index" class="flex items-center gap-2">
-      <InputText
-        v-model="items[index]"
-        placeholder="Enter an item"
-        class="flex-grow"
-      />
-      <!-- Show a remove button if more than one item exists -->
-      <button
-        v-if="items.length > 1"
-        type="button"
-        @click="removeItem(index)"
-        class="text-red-500 focus:outline-none"
-      >
-        <Icon icon="mdi:close" />
-      </button>
+    <div class="flex flex-col gap-2">
+        <div
+            v-for="(item, index) in items"
+            :key="index"
+            class="flex items-center gap-2"
+        >
+            <InputText
+                :value="item"
+                @input="(event) => updateItem(index, event.target.value)"
+                placeholder="Enter an item"
+                class="flex-grow"
+            />
+            <button
+                type="button"
+                @click="removeItem(index)"
+                class="text-red-500 focus:outline-none"
+            >
+                <Icon icon="mdi:close" />
+            </button>
+        </div>
+
+        <button
+            type="button"
+            @click="addItem"
+            class="flex items-center gap-1 text-blue-500 focus:outline-none"
+            :disabled="items.length >= maxSize"
+        >
+            <Icon icon="mdi:plus" />
+            <span>Add</span>
+        </button>
     </div>
-    <!-- Add button -->
-    <button
-      type="button"
-      @click="addItem"
-      class="flex items-center gap-1 text-blue-500 focus:outline-none"
-      :disabled="items.length >= maxSize"
-    >
-      <Icon icon="mdi:plus" />
-      <span>Add</span>
-    </button>
-  </div>
 </template>

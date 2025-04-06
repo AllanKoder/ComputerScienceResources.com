@@ -60,7 +60,6 @@ export const resourceReviewFields = object({
                 .required("Each pro is required.")
         )
         .required("Pros are required."),
-
     cons: array()
         .of(
             string()

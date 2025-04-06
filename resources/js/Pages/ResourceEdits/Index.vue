@@ -1,5 +1,5 @@
 <script setup>
-import Tabs from "@/Components/Resources/ResourceEdit/resourceTab.vue";
+import Tabs from "@/Components/Resources/ResourceEdit/ResourceTab.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Head, Link } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";

@@ -38,7 +38,7 @@ class StoreCommentRequest extends FormRequest
                 'required',
                 'string',
                 function (string $_attribute, mixed $value, Closure $fail) {
-                    if (!in_array($value, array('review', 'comment')))
+                    if (!in_array($value, array('review', 'comment', 'edit')))
                     {
                         $fail("Not a valid commentable type");
                     }

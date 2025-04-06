@@ -80,39 +80,55 @@ async function handleDownvote() {
 </script>
 
 <template>
-    <div class="flex items-center"
-    :class="{ 'flex-row-reverse': flexRow, 'flex-col': !flexRow}">
-        <!-- Upvote Slot -->
+    <div class="flex items-center" 
+        :class="{ 'flex-row-reverse': flexRow, 'flex-col': !flexRow }">
+        <!-- Upvote Section -->
         <button
             @click="handleUpvote"
             :disabled="upvoteLoading"
             :class="{
                 'opacity-50': upvoteLoading,
-                'text-red-500': userVote > 0,
             }"
             class="cursor-pointer"
         >
-            <slot name="upvoteIcon">
+            <!-- Already Upvoted Icon -->
+            <slot v-if="userVote > 0" name="alreadyUpvotedIcon">
+                <span class="text-red-500">
+                    <!-- Default to original upvote icon with active state -->
+                    <Icon icon="mdi:chevron-up" width="24" height="24" />
+                </span>
+            </slot>
+            
+            <!-- Regular Upvote Icon -->
+            <slot v-else name="upvoteIcon">
                 <Icon icon="mdi:chevron-up" width="24" height="24" />
             </slot>
         </button>
 
-        <!-- Vote count Slot -->
+        <!-- Vote Count -->
         <slot :votes="votes" name="votes">
             <span class="text-lg font-bold">{{ votes }}</span>
         </slot>
 
-        <!-- Downvote Slot -->
+        <!-- Downvote Section -->
         <button
             @click="handleDownvote"
             :disabled="downvoteLoading"
             :class="{
                 'opacity-50': downvoteLoading,
-                'text-blue-500': userVote < 0,
             }"
             class="cursor-pointer"
         >
-            <slot name="downvoteIcon">
+            <!-- Already Downvoted Icon -->
+            <slot v-if="userVote < 0" name="alreadyDownvotedIcon">
+                <span class="text-blue-500">
+                    <!-- Default to original downvote icon with active state -->
+                    <Icon icon="mdi:chevron-down" width="24" height="24" />
+                </span>
+            </slot>
+            
+            <!-- Regular Downvote Icon -->
+            <slot v-else name="downvoteIcon">
                 <Icon icon="mdi:chevron-down" width="24" height="24" />
             </slot>
         </button>

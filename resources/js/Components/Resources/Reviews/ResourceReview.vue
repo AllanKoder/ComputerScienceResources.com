@@ -27,7 +27,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
         <h3 class="text-xl font-semibold">{{ review.title }}</h3>
         <div class="flex items-center">
             <span class="mr-2 font-medium">Rating:</span>
-            <Rating :modelValue="review.average_score" readonly :cancel="false" />
+            <Rating :model-value="review.average_score" readonly :cancel="false" />
         </div>
     </div>
     <p class="text-gray-700 mb-4 whitespace-pre-line">
@@ -66,7 +66,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
         >
             <span class="font-semibold mb-1">{{ feature.label }}</span>
             <Rating
-                :modelValue="review[feature.key]"
+                :model-value="review[feature.key]"
                 readonly
                 :cancel="false"
             />
@@ -74,8 +74,8 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
     </div>
 
     <Commentable 
-        :commentableId="review.id" 
-        :commentableType="'review'"
-        :commentsCount="review.comments_count"
+        :commentable-id="review.id" 
+        :commentable-type="'review'"
+        :comments-count="review.comments_count"
     />
 </template>

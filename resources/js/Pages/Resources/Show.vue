@@ -1,12 +1,11 @@
 <script setup>
 import { Head, Link } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { computed } from "vue";
 import Tag from "primevue/tag";
 import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
-import { pricingLabels, difficultyLabels } from "@/Helpers/constants.js";
+import { pricingLabels, difficultyLabels, platformColors } from "@/Helpers/constants.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
-import ResourceTab from "@/Components/Resources/ResourceEdit/resourceTab.vue";
+import ResourceTab from "@/Components/Resources/ResourceEdit/ResourceTab.vue";
 
 const props = defineProps({
     resource: {
@@ -21,23 +20,6 @@ const props = defineProps({
 
 const emit = defineEmits(["upvote", "downvote"]);
 
-const platformColors = {
-    book: "blue",
-    podcast: "green",
-    youtube_channel: "red",
-    blog: "orange",
-    website: "purple",
-    organization: "cyan",
-    bootcamp: "pink",
-    newsletter: "indigo",
-    workshop: "teal",
-    course: "yellow",
-    forum: "gray",
-    mobile_app: "lime",
-    desktop_app: "amber",
-    magazine: "rose",
-};
-
 </script>
 
 <template>
@@ -47,7 +29,6 @@ const platformColors = {
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 sm:p-8">
-
                         <ResourceTab :resource-id="props.resource.id" />
                         <div class="relative">
                             <div
