@@ -20,7 +20,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
     <Upvotable
         :upvotable-type="'review'"
         :upvotable-id="props.review.id"
-        :initial-votes="props.review.total_votes"
+        :initial-votes="props.review.vote_score"
         :user-vote="props.review.user_vote"
     ></Upvotable>
     <div class="flex justify-between items-center mb-4">

@@ -26,15 +26,28 @@ trait HasVotes
     }
 
     /**
-     * Accessor to get vote count.
+     * Accessor to get vote sum.
      *
      * @return Attribute
      */
-    protected function totalVotes(): Attribute
+    protected function voteScore(): Attribute
     {
         return Attribute::make(
             get: fn() => $this->upvoteSummary ?
                 $this->upvoteSummary->value() : 0,
+        );
+    }
+
+    /**
+     * Accessor to get vote count.
+     *
+     * @return Attribute
+     */
+    protected function votesCount(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => $this->upvoteSummary ?
+                $this->upvoteSummary->upvotes() + $this->upvoteSummary->downvotes() : 0,
         );
     }
 

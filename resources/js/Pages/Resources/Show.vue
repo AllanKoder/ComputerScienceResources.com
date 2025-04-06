@@ -41,7 +41,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                                         :upvotable-id="props.resource.id"
                                         :upvotable-type="'resource'"
                                         :initial-votes="
-                                            props.resource.total_votes
+                                            props.resource.vote_score
                                         "
                                         :user-vote="props.resource.user_vote"
                                     ></UpvoteResource>

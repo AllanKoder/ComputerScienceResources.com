@@ -475,7 +475,7 @@ const renderDiffSpan = (part) => {
                             :flexRow="true"
                             :upvotable-type="'edit'"
                             :upvotable-id="resourceId"
-                            :initial-votes="editedResource.total_votes"
+                            :initial-votes="editedResource.vote_score"
                             :user-vote="editedResource.user_vote"
                             class="flex items-center gap-6"
                         >

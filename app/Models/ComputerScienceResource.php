@@ -25,7 +25,7 @@ class ComputerScienceResource extends Model
     
     protected $with = ['tags', 'votes', 'upvoteSummary', 'reviewSummary'];
     
-    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'total_votes', 'user_vote'];
+    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'vote_score', 'user_vote'];
 
     public function user(): BelongsTo
     {

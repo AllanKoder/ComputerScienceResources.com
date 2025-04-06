@@ -17,14 +17,14 @@ class ResourceEditsService
      * total votes of resource) -- Dont want to require more votes than the resource's votes
      * )
      */
-    public function requiredVotes(int $totalVotes)
+    public function requiredVotes(int $vote_score)
     {
         // So little votes, so we only need 1 vote to approve
-        if ($totalVotes <= 1) return 1;
+        if ($vote_score <= 1) return 1;
 
         // Dropoff
-        return min($totalVotes,
-            log($totalVotes, 1.25) + 1
+        return min($vote_score,
+            log($vote_score, 1.25) + 1
         );
     }
 
@@ -34,7 +34,7 @@ class ResourceEditsService
      */
     public function canMergeEdits(ResourceEdits $edits)
     {
-       $totalVotes = $edits->resource->vote_score;
+       $vote_score = $edits->resource->vote_score;
         $approvals = $edits->upvoteSummary
     }
 

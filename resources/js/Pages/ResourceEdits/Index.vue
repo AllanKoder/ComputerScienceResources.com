@@ -56,7 +56,7 @@ const props = defineProps({
                                         <Upvotable
                                             :upvotable-type="'edit'"
                                             :upvotable-id="edit.id"
-                                            :initial-votes="edit.total_votes"
+                                            :initial-votes="edit.vote_score"
                                             :user-vote="edit.user_vote"
                                         ></Upvotable>
                                         <div class="font-bold">Edit Title:</div>

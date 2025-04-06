@@ -20,7 +20,7 @@ class ResourceEdits extends Model
 
     protected $with = ['votes','upvoteSummary'];
 
-    protected $appends = ['user_vote', 'total_votes', 'comments_count'];
+    protected $appends = ['user_vote', 'vote_score', 'comments_count'];
 
     protected $casts = [
         'topic_tags' => 'array',

@@ -16,7 +16,7 @@ class Comment extends Model
 
     protected $with = ['votes', 'upvoteSummary'];
 
-    protected $appends = ['total_votes', 'user_vote'];
+    protected $appends = ['vote_score', 'user_vote'];
 
     public function replies(): HasMany
     {

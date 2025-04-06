@@ -11,6 +11,16 @@ class UpvoteSummary extends Model
 
     public function value(): int
     {
-        return $this->upvotes - $this->downvotes;
+        return $this->upvotesCount() - $this->downvotesCount();
+    }
+
+    public function upvotesCount(): int
+    {
+        return $this->upvotes;
+    }
+
+    public function downvotesCount(): int
+    {
+        return $this->downvotes;
     }
 }
