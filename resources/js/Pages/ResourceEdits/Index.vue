@@ -25,7 +25,7 @@ const props = defineProps({
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 sm:p-8">
                         <!-- Use the Tabs component here -->
-                        <Tabs :resourceId="resourceId" />
+                        <Tabs :resource-id="resourceId" />
 
                         <!-- Display all resource edits -->
                         <div class="mt-6">

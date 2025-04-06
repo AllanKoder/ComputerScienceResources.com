@@ -264,7 +264,7 @@ const submit = () => {
 
                                     <TagSelector
                                         :initial="formData.topic_tags"
-                                        :queryUrl="''"
+                                        :query-url="''"
                                         @changed="
                                             (tags) =>
                                                 (formData.topic_tags = tags)
@@ -287,7 +287,7 @@ const submit = () => {
                                     :initial="
                                         formData.programming_language_tags
                                     "
-                                    :queryUrl="''"
+                                    :query-url="''"
                                     @changed="
                                         (tags) =>
                                             (formData.programming_language_tags =
@@ -302,7 +302,7 @@ const submit = () => {
                                 </h2>
                                 <TagSelector
                                     :initial="formData.general_tags"
-                                    :queryUrl="''"
+                                    :query-url="''"
                                     @changed="
                                         (tags) => (formData.general_tags = tags)
                                     "

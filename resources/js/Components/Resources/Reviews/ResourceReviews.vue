@@ -21,7 +21,7 @@ const props = defineProps({
 
         <!-- Create a review -->
         <CreateResourceReview
-            :resourceId="props.resourceId"
+            :resource-id="props.resourceId"
         ></CreateResourceReview>
 
         <div class="space-y-6">

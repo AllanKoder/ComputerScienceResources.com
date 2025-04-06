@@ -156,7 +156,7 @@ const emit = defineEmits(["upvote", "downvote"]);
 
                     <ResourceReviews
                         :reviews="props.reviews"
-                        :resourceId="props.resource.id"
+                        :resource-id="props.resource.id"
                     ></ResourceReviews>
                 </div>
             </div>
