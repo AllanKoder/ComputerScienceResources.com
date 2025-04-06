@@ -40,7 +40,6 @@ return new class extends Migration
             $table->enum('pricing', ['free', 'premium', 'paid', 'freemium'])
                 ->index();
 
-
             // Handle Tags:
             // 'topic_tags', 'programming_language_tags', 'general_tags'
             $table->json('topic_tags');

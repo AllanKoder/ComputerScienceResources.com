@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, router } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { computed, ref } from "vue";
 import * as Diff from "diff";
@@ -61,6 +61,8 @@ const compareFields = [
         formatter: (value) => pricingLabels[value],
     },
 ];
+
+// TODO: FIx the diff, so it actually shows the diff
 
 // Compute diffs for text fields
 const textDiffs = computed(() => {
@@ -130,6 +132,12 @@ const renderDiffSpan = (part) => {
     if (part.removed) return `<span class="bg-red-100">${part.value}</span>`;
     return part.value;
 };
+
+
+function mergeEdits(id) {
+    router.post(route('resource_edits.merge', { resourceEdits: id }))
+}
+
 </script>
 
 <template>
@@ -140,11 +148,26 @@ const renderDiffSpan = (part) => {
                 <div
                     class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6"
                 >
-                    <h1 class="text-2xl font-bold mb-6">
-                        {{ editedResource.edit_title }}
-                    </h1>
-                    <span>Reasoning for Edit: </span>
-                    <p>{{ editedResource.edit_description }}</p>
+
+                    <!-- Viewing title and decription-->
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <h1 class="text-2xl font-bold mb-2">
+                                {{ editedResource.edit_title }}
+                            </h1>
+                            <p>{{ editedResource.edit_description }}</p>
+                        </div>
+                        <div v-if="editedResource.can_merge_edits">
+                            <!-- Merge button -->
+                            <button
+                                @click="mergeEdits(editedResource.id)"
+                                class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
+                            >
+                                Merge
+                            </button>
+                        </div>
+                    </div>
+
                     <TabView>
                         <!-- Side-by-Side Comparison Tab -->
                         <TabPanel header="Side-by-Side View">

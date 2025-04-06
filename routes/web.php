@@ -51,6 +51,7 @@ Route::middleware([
     Route::controller(ResourceEditsController::class)->group(function () {
         Route::get('/resource/{computerScienceResource}/edit/create', 'create')->name('resource_edits.create');
         Route::post('/resource/{computerScienceResource}/edit/', 'store')->name('resource_edits.store');
+        Route::post('/resourceEdits/{resourceEdits}/merge/', 'merge')->name('resource_edits.merge');
     });
 
     // Comments
@@ -63,7 +64,7 @@ Route::middleware([
 // Public
 // -----------------------
 Route::controller(ComputerScienceResourceController::class)->group(function () {
-    Route::get('/resources', 'index')->name('resources');
+    Route::get('/resources', 'index')->name('resources.index');
     Route::get('/resources/{computerScienceResource}', 'show')->name('resources.show');
 });
 

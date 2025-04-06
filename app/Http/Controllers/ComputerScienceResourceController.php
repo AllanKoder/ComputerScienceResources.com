@@ -20,7 +20,7 @@ class ComputerScienceResourceController extends Controller
     public function index()
     {
         // Eager load topic tags and other tag types as needed
-        $resources = ComputerScienceResource::with('votes','reviewSummary')->paginate(10);
+        $resources = ComputerScienceResource::paginate(10);
         return Inertia::render('Resources/Index', [
             'resources' => $resources,
         ]);
@@ -43,7 +43,6 @@ class ComputerScienceResourceController extends Controller
         Log::debug("Called store resource with data " . json_encode($request));
 
         $resource = ComputerScienceResource::create([
-            'user_id' => Auth::id(),
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
             'image_url' => $validatedData['image_url'] ?? null,
@@ -52,6 +51,9 @@ class ComputerScienceResourceController extends Controller
             'difficulty' => $validatedData['difficulty'],
             'pricing' => $validatedData['pricing'],
         ]);
+
+        // Guarded
+        $resource->user_id = Auth::id();
 
         // Add topics as tags
         $resource->topic_tags = $validatedData['topic_tags'];
@@ -68,7 +70,7 @@ class ComputerScienceResourceController extends Controller
 
         Log::debug("Created resource " . json_encode($resource));
 
-        return to_route('resources')
+        return redirect(route('resources.show', ['computerScienceResource'=>$resource->id]))
             ->with('success', 'Created Resource Succesfully!');
     }
 

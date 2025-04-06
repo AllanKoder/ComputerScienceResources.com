@@ -21,7 +21,7 @@ class ComputerScienceResource extends Model
 
     protected $table = "computer_science_resources";
 
-    protected $guarded = [];
+    protected $guarded = ['user_id'];
     
     protected $with = ['tags', 'votes', 'upvoteSummary', 'reviewSummary'];
     

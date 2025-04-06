@@ -1,12 +1,13 @@
 <script setup>
-import { ref } from "vue";
-import { Head, Link, router } from "@inertiajs/vue3";
+import { onMounted, ref } from "vue";
+import { Head, Link, router, usePage } from "@inertiajs/vue3";
 import ApplicationMark from "@/Components/ApplicationMark.vue";
 import Banner from "@/Components/Banner.vue";
 import { Icon } from "@iconify/vue";
 import UserDropdown from "@/Components/Navbar/UserDropdown.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
+import { useToast } from 'primevue/usetoast'
 
 defineProps({
     title: String,
@@ -17,6 +18,24 @@ const showingNavigationDropdown = ref(false);
 const logout = () => {
     router.post(route("logout"));
 };
+
+// Handling toast messages
+const flash = usePage().props.flash
+const toast = useToast()
+onMounted(() => {
+    if (!flash) return;
+
+    if (flash.success) {
+        toast.add({ severity: 'success', summary: 'Success', detail: flash.success, life: 5000 });
+    }
+    else if (flash.warning) {
+        toast.add({ severity: 'warn', summary: 'Warning', detail: flash.warning, life: 5000 });
+    }
+    else if (flash.error) {
+        toast.add({ severity: 'error', summary: 'Error', detail: flash.error, life: 5000 });
+    }
+});
+
 </script>
 
 <template>
@@ -24,6 +43,9 @@ const logout = () => {
         <Head :title="title" />
 
         <Banner />
+
+        <!-- Handle Toasts -->
+        <Toast /> 
 
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav
@@ -56,8 +78,8 @@ const logout = () => {
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
                                 <NavLink
-                                    :href="route('resources')"
-                                    :active="route().current('resources')"
+                                    :href="route('resources.index')"
+                                    :active="route().current('resources.index')"
                                 >
                                     Resources
                                 </NavLink>
@@ -143,8 +165,8 @@ const logout = () => {
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink
-                            :href="route('resources')"
-                            :active="route().current('resources')"
+                            :href="route('resources.index')"
+                            :active="route().current('resources.index')"
                         >
                             Resources
                         </ResponsiveNavLink>

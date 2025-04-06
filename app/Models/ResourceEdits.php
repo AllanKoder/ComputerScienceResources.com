@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\ResourceEditsService;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -18,9 +19,9 @@ class ResourceEdits extends Model
 
     protected $guarded = [];
 
-    protected $with = ['votes','upvoteSummary'];
+    protected $with = ['votes','upvoteSummary', 'commentsCountRelationship'];
 
-    protected $appends = ['user_vote', 'vote_score', 'comments_count'];
+    protected $appends = ['user_vote', 'vote_score', 'comments_count', 'can_merge_edits'];
 
     protected $casts = [
         'topic_tags' => 'array',
@@ -43,6 +44,18 @@ class ResourceEdits extends Model
         return Attribute::make(
             get: fn($value) => explode(',', $value),
             set: fn($value) => implode(',', $value)
+        );
+    }
+
+    /**
+     * Attribute to know if the edit can be merged
+     * 
+     * @return Attribute
+     */
+    protected function canMergeEdits(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => app(ResourceEditsService::class)->canMergeEdits($this),
         );
     }
 }

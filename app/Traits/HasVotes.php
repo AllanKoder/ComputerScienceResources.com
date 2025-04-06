@@ -47,7 +47,7 @@ trait HasVotes
     {
         return Attribute::make(
             get: fn() => $this->upvoteSummary ?
-                $this->upvoteSummary->upvotes() + $this->upvoteSummary->downvotes() : 0,
+                $this->upvoteSummary->upvotesCount() + $this->upvoteSummary->downvotesCount() : 0,
         );
     }
 

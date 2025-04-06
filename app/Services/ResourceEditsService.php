@@ -3,9 +3,6 @@
 namespace App\Services;
 
 use App\Models\ResourceEdits;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Log;
-use PDO;
 
 class ResourceEditsService
 {
@@ -17,7 +14,7 @@ class ResourceEditsService
      * total votes of resource) -- Dont want to require more votes than the resource's votes
      * )
      */
-    public function requiredVotes(int $totalVotes)
+    public function requiredVotes(int $totalVotes): int
     {
         // So little votes, so we only need 1 vote to approve
         if ($totalVotes <= 1) return 1;
@@ -32,10 +29,14 @@ class ResourceEditsService
      * Handles determining if a resource edit is mergeable, by getting the upvotes for the resource edit
      * 
      */
-    public function canMergeEdits(ResourceEdits $edits)
+    public function canMergeEdits(ResourceEdits $edits) : bool
     {
-       $totalVotes = $edits->resource->vote_score;
-        $approvals = $edits->upvoteSummary
-    }
+        $totalVotes = $edits->resource->votes_count;
+        $neededApprovals = $this->requiredVotes($totalVotes);
+        
+        $approvals = $edits->vote_score;
 
+        //return $approvals >= $neededApprovals;
+        return true;
+    }
 }
