@@ -151,7 +151,8 @@ class CommentController extends Controller
 
         Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index);
 
-        $paginatedResults = $this->commentService->getPaginatedComments($this->modelResolver->getModelClass($commentableType), $commentableId, $index);
+        $commentableType = $this->modelResolver->getModelClass($commentableType);
+        $paginatedResults = $this->commentService->getPaginatedComments($commentableType, $commentableId, $index);
         $nestedComments = new Collection($paginatedResults['comments']);
 
         // Lazy eager load the user for the root comment and for each reply.

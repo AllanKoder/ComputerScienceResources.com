@@ -31,7 +31,7 @@ class CommentService
         $rootComments = Comment::where([
             'commentable_type' => $commentableType,
             'commentable_id'   => $commentableId,
-            'depth'            => 0,
+            'depth'            => 1,
         ])
             ->orderBy('created_at')
             ->get();
@@ -77,7 +77,7 @@ class CommentService
         }
 
         return [
-            'comments'          => new Collection($commentsToReturn),
+            'comments' => new Collection($commentsToReturn),
             'has_more_comments' => $hasMoreComments,
         ];
     }

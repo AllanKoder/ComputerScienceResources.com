@@ -133,11 +133,9 @@ const renderDiffSpan = (part) => {
     return part.value;
 };
 
-
 function mergeEdits(id) {
-    router.post(route('resource_edits.merge', { resourceEdits: id }))
+    router.post(route("resource_edits.merge", { resourceEdits: id }));
 }
-
 </script>
 
 <template>
@@ -148,7 +146,6 @@ function mergeEdits(id) {
                 <div
                     class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6"
                 >
-
                     <!-- Viewing title and decription-->
                     <div class="flex items-start justify-between">
                         <div>
@@ -443,45 +440,64 @@ function mergeEdits(id) {
                                     <div
                                         v-for="(diff, tagType) in tagDiffs"
                                         :key="tagType"
-                                        v-if="
-                                            JSON.stringify(
-                                                props.editedResource[tagType]
-                                            ) !==
-                                            JSON.stringify(
-                                                props.originalResource[tagType]
-                                            )
-                                        "
                                     >
-                                        <h3 class="text-lg font-semibold mb-2">
-                                            {{
-                                                tagType === "topic_tags"
-                                                    ? "Topic"
-                                                    : tagType ===
-                                                      "programming_language_tags"
-                                                    ? "Programming Language"
-                                                    : "General"
-                                            }}
-                                            Tags Diff:
-                                        </h3>
-                                        <div class="bg-gray-50 p-3 rounded-lg">
-                                            <div
-                                                v-for="(part, index) in diff"
-                                                :key="index"
-                                                :class="{
-                                                    'bg-green-100': part.added,
-                                                    'bg-red-100': part.removed,
-                                                    'p-1 rounded':
-                                                        part.added ||
-                                                        part.removed,
-                                                }"
+                                        <template
+                                            v-if="
+                                                JSON.stringify(
+                                                    props.editedResource[
+                                                        tagType
+                                                    ]
+                                                ) !==
+                                                JSON.stringify(
+                                                    props.originalResource[
+                                                        tagType
+                                                    ]
+                                                )
+                                            "
+                                        >
+                                            <h3
+                                                class="text-lg font-semibold mb-2"
                                             >
                                                 {{
-                                                    Array.isArray(part.value)
-                                                        ? part.value.join(", ")
-                                                        : part.value
+                                                    tagType === "topic_tags"
+                                                        ? "Topic"
+                                                        : tagType ===
+                                                          "programming_language_tags"
+                                                        ? "Programming Language"
+                                                        : "General"
                                                 }}
+                                                Tags Diff:
+                                            </h3>
+                                            <div
+                                                class="bg-gray-50 p-3 rounded-lg"
+                                            >
+                                                <div
+                                                    v-for="(
+                                                        part, index
+                                                    ) in diff"
+                                                    :key="index"
+                                                    :class="{
+                                                        'bg-green-100':
+                                                            part.added,
+                                                        'bg-red-100':
+                                                            part.removed,
+                                                        'p-1 rounded':
+                                                            part.added ||
+                                                            part.removed,
+                                                    }"
+                                                >
+                                                    {{
+                                                        Array.isArray(
+                                                            part.value
+                                                        )
+                                                            ? part.value.join(
+                                                                  ", "
+                                                              )
+                                                            : part.value
+                                                    }}
+                                                </div>
                                             </div>
-                                        </div>
+                                        </template>
                                     </div>
                                 </div>
                             </div>
@@ -542,7 +558,6 @@ function mergeEdits(id) {
                                     Approve Changes
                                 </span>
                             </template>
-
                         </Upvotable>
                     </div>
 
