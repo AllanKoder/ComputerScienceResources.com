@@ -510,12 +510,14 @@ function mergeEdits(id) {
 
                     <!-- Approval Actions -->
                     <div class="mt-8 flex justify-center">
+                        <!-- TODO: Add partial reload to the refresh -->
                         <Upvotable
                             :flexRow="true"
                             :upvotable-type="'edit'"
                             :upvotable-id="resourceId"
                             :initial-votes="editedResource.vote_score"
                             :user-vote="editedResource.user_vote"
+                            :refresh="true"
                             class="flex items-center gap-6"
                         >
                             <!-- Downvote (Reject) Button -->

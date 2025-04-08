@@ -2,6 +2,7 @@
 import { defineProps, ref, watch } from "vue";
 import axios from "axios";
 import { Icon } from "@iconify/vue";
+import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
     upvotableType: {
@@ -21,6 +22,10 @@ const props = defineProps({
         required: true,
     },
     flexRow: {
+        type: Boolean,
+        default: false
+    },
+    refresh: {
         type: Boolean,
         default: false
     }
@@ -52,6 +57,12 @@ async function handleUpvote() {
         );
         userVote.value = response.data.userVote;
         votes.value += response.data.changeFromVote;
+
+        if (props.refresh)
+        {
+            router.reload({preserveScroll: true});
+        }
+
     } catch (error) {
         console.error("Error upvoting:", error);
     } finally {
@@ -71,6 +82,11 @@ async function handleDownvote() {
         );
         userVote.value = response.data.userVote;
         votes.value += response.data.changeFromVote;
+        
+        if (props.refresh)
+        {
+            router.reload({preserveScroll: true});
+        }
     } catch (error) {
         console.error("Error downvoting:", error);
     } finally {

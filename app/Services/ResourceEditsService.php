@@ -36,7 +36,6 @@ class ResourceEditsService
         
         $approvals = $edits->vote_score;
 
-        //return $approvals >= $neededApprovals;
-        return true;
+        return $approvals >= $neededApprovals;
     }
 }
