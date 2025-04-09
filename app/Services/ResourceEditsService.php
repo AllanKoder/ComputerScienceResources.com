@@ -21,7 +21,7 @@ class ResourceEditsService
 
         // Dropoff
         return min($totalVotes,
-            log($totalVotes, 1.25) + 1
+            floor(log($totalVotes, 1.25)) + 1
         );
     }
 
