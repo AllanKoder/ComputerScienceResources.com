@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 
 class UpvoteSummary extends Model
@@ -9,18 +10,17 @@ class UpvoteSummary extends Model
     public $timestamps = false;
     protected $fillable = ['upvotable_id', 'upvotable_type'];
 
-    public function value(): int
+    public function voteScore(): Attribute
     {
-        return $this->upvotesCount() - $this->downvotesCount();
+        return Attribute::make(
+            get: fn() => $this->upvotes - $this->downvotes
+        );
     }
 
-    public function upvotesCount(): int
+    protected function votesCount(): Attribute
     {
-        return $this->upvotes;
-    }
-
-    public function downvotesCount(): int
-    {
-        return $this->downvotes;
+        return Attribute::make(
+            get: fn() => $this->upvotes + $this->downvotes,
+        );
     }
 }

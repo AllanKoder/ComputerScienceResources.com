@@ -34,7 +34,7 @@ trait HasVotes
     {
         return Attribute::make(
             get: fn() => $this->upvoteSummary ?
-                $this->upvoteSummary->value() : 0,
+                $this->upvoteSummary->vote_score : 0,
         );
     }
 
@@ -46,8 +46,7 @@ trait HasVotes
     protected function votesCount(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->upvoteSummary ?
-                $this->upvoteSummary->upvotesCount() + $this->upvoteSummary->downvotesCount() : 0,
+            get: fn() => $this->upvoteSummary ? $this->upvoteSummary->votes_count : 0
         );
     }
 
