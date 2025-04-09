@@ -43,6 +43,7 @@ class ComputerScienceResourceController extends Controller
         Log::debug("Called store resource with data " . json_encode($request));
 
         $resource = ComputerScienceResource::create([
+            'user_id' => Auth::id(),
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
             'image_url' => $validatedData['image_url'] ?? null,
@@ -51,9 +52,6 @@ class ComputerScienceResourceController extends Controller
             'difficulty' => $validatedData['difficulty'],
             'pricing' => $validatedData['pricing'],
         ]);
-
-        // Guarded
-        $resource->user_id = Auth::id();
 
         // Add topics as tags
         $resource->topic_tags = $validatedData['topic_tags'];

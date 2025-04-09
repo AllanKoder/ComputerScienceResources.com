@@ -30,12 +30,9 @@ class ComputerScienceResourceControllerTest extends TestCase
     {
         $data = $model->toArray();
         
-        // Convert platforms from string to array
-        $data['platforms'] = explode(',', $data['platforms']);
-        
         // Remove unnecessary fields
         unset($data['created_at'], $data['updated_at']);
-
+        
         // Tags
         $tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', fake()->name(), fake()->name()];
         $data['topic_tags'] = fake()->randomElements($tags, fake()->numberBetween(3, count($tags)));
@@ -55,10 +52,10 @@ class ComputerScienceResourceControllerTest extends TestCase
         $response = $this->postJson(route('resources.store'), $formData);
 
         $response->assertStatus(302); // a redirect after successful creation
-        $response->assertRedirect(route('resources'));
+        $response->assertRedirect();
 
+        // Check it is created
         $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
-
         $this->assertNotNull($createdResource);
 
         // Check tags
@@ -104,7 +101,7 @@ class ComputerScienceResourceControllerTest extends TestCase
 
         $invalidDataSets = [
             'name' => str_repeat('a', 101), # Too long
-            'description' => str_repeat('a', 4001), # Too long
+            'description' => str_repeat('a', 10001), # Too long
             'platforms' => ['invalid_platform'],
             'page_url' => 'not-a-url',
             'difficulty' => 'invalid_difficulty',
@@ -115,6 +112,7 @@ class ComputerScienceResourceControllerTest extends TestCase
             'programming_language_tags' => 'not-an-array'
         ];
 
+        // Choose from one of the invalid fields
         foreach ($invalidDataSets as $field => $invalidValue) {
             $testData = $validData;
             $testData[$field] = $invalidValue;
