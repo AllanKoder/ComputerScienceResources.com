@@ -8,6 +8,7 @@ use Database\Factories\ComputerScienceResourceFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Tests\TestCase;
+use Tests\TestResources\ComputerScienceResourceTestResource;
 
 class ComputerScienceResourceControllerTest extends TestCase
 {
@@ -21,33 +22,11 @@ class ComputerScienceResourceControllerTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-    /**
-     * Convert the ComputerScienceResource's fields to the form request variant.
-     *
-     * @return array
-     */
-    private function toFormRequestArray(ComputerScienceResource $model): array
-    {
-        $data = $model->toArray();
-        
-        // Remove unnecessary fields
-        unset($data['created_at'], $data['updated_at']);
-        
-        // Tags
-        $tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', fake()->name(), fake()->name()];
-        $data['topic_tags'] = fake()->randomElements($tags, fake()->numberBetween(3, count($tags)));
-        $data['programming_language_tags'] = fake()->randomElements($tags);
-        $data['general_tags'] = fake()->randomElements($tags);
-        
-        return $data;
-    }
-
     public function test_can_post_resource()
     {
         $this->actingAs($this->user);
 
-        $resourceData = ComputerScienceResource::factory()->make();
-        $formData = $this->toFormRequestArray($resourceData);
+        $formData = ComputerScienceResourceTestResource::fake();
 
         $response = $this->postJson(route('resources.store'), $formData);
 
@@ -66,8 +45,7 @@ class ComputerScienceResourceControllerTest extends TestCase
 
     public function test_cannot_post_resource_unauthed()
     {
-        $resourceData = ComputerScienceResource::factory()->make();
-        $formData = $this->toFormRequestArray($resourceData);
+        $formData = ComputerScienceResourceTestResource::fake();
 
         $response = $this->postJson(route('resources.store'), $formData);
 
@@ -81,9 +59,9 @@ class ComputerScienceResourceControllerTest extends TestCase
     public function test_cannot_post_resource_with_long_name()
     {
         $this->actingAs($this->user);
+        $formData = ComputerScienceResourceTestResource::fake();
 
-        $resourceData = ComputerScienceResource::factory()->make();
-        $formData = $this->toFormRequestArray($resourceData);
+        // Set to invalid name
         $formData['name'] = str_repeat('0', 101);
 
         $response = $this->postJson(route('resources.store'), $formData);
@@ -95,9 +73,7 @@ class ComputerScienceResourceControllerTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        $resource = ComputerScienceResource::factory()->make();
-        $validData = $this->toFormRequestArray($resource);
-
+        $validData = ComputerScienceResourceTestResource::fake();
 
         $invalidDataSets = [
             'name' => str_repeat('a', 101), # Too long

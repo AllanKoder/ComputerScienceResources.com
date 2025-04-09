@@ -39,9 +39,9 @@ class ComputerScienceResourceFactory extends Factory
     }
 
     /**
-     * Add tags to the model 
+     * Configure the tags
      */
-    public function addTags(): Factory
+    public function configure(): Factory
     {
         // Define your tags here
         $tags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', fake()->name(), fake()->name()];
