@@ -3,11 +3,10 @@
 namespace Database\Factories;
 
 use App\Events\CommentCreated;
-use App\Models\ComputerScienceResource;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\Comment;
-use App\Models\ResourceReview;
+use App\Services\ModelResolverService;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
@@ -19,55 +18,44 @@ class CommentFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+     // TODO: Double check this logic
     public function definition(): array
     {
-        // Set the random commentable type.
-        $commentableType = $this->faker->randomElement([
-            ResourceReview::class,
-            Comment::class,
-            ComputerScienceResource::class,
-        ]);
-        
-        // Create the commented type
-        $commenting = isset($models[$commentableType])
-        ? $models[$commentableType]::inRandomOrder()->first() ?? $models[$commentableType]::factory()->create()
-        : null;
+        // Pick a random commentable type from config.
+        $commentableName = $this->faker->randomElement(['comment', 'resource']);
+        $modelResolver = app(ModelResolverService::class);
+        $modelClass = $modelResolver->getModelClass($commentableName);
     
-        
-        $commentableId = $commenting->id;
+        // Use an existing user or create one.
+        $user = User::inRandomOrder()->first() ?? User::factory()->create();
+    
+        // If the commentable type is a Comment, it means this new comment is a reply.
+        if ($modelClass === Comment::class) {
+            // Get an existing comment or create one if none exists.
+            $existingComment = Comment::inRandomOrder()->first() ?? Comment::factory()->create();
 
-        // Get a random user (or create one if necessary).
-        $user = User::inRandomOrder()->first()
-            ?? User::factory()->create();
-
-        // Randomly decide if this is a reply comment.
-        $isReply = $this->faker->boolean;
-
-        $parent = null;
-        if ($isReply) {
-            // Try to find an existing comment on the same resource.
-            $parent = Comment::where('commentable_type', $commentableType)
-                ->where('commentable_id', $commentableId)
-                ->inRandomOrder()
-                ->first();
-        }
-
-        if ($parent) {
-            // Set the parent comment id.
+            $commentableId = $existingComment->commentable_id;
+            $commentableType = $existingComment->commentable_type;
+    
+            // Since it's a recursive comment, the existing comment becomes the parent.
+            $parent = $existingComment;
             $parentCommentId = $parent->id;
-
-            // Get the parent's root, and set that as this comment's root, unless it is the root itself.
-            $rootCommentId = ($parent->depth == 0) ? $parent->id : $parent->root_comment_id;
-
-            // Set the new depth.
+            // If parent's depth is 1, it is the root; otherwise, use its stored root.
+            $rootCommentId = ($parent->depth == 1) ? $parent->id : $parent->root_comment_id;
             $depth = $parent->depth + 1;
         } else {
-            // Top-level comment.
+            // For non-comment targets, fetch or create the commentable model.
+            $commenting = $modelClass::inRandomOrder()->first() ?? $modelClass::factory()->create();
+            $commentableId = $commenting->id;
+            $commentableType = $modelClass;
+    
+            // For non-comment targets we always create a top-level comment.
             $parentCommentId = null;
             $rootCommentId = null;
-            $depth = 0;
+            $depth = 1;
         }
-
+    
         return [
             'user_id' => $user->id,
             'content' => $this->faker->paragraph,
@@ -79,7 +67,7 @@ class CommentFactory extends Factory
             'children_count' => 0,
         ];
     }
-
+        
     public function configure()
     {
         return $this->afterCreating(function (Comment $comment) {

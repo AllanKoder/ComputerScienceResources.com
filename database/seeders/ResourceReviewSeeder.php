@@ -13,6 +13,6 @@ class ResourceReviewSeeder extends Seeder
      */
     public function run(): void
     {
-        ResourceReview::factory(50)->create();
+        ResourceReview::factory(5)->create();
     }
 }

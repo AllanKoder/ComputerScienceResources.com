@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ResourceEdits;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,6 @@ class ResourceEditsSeeder extends Seeder
      */
     public function run(): void
     {
-        
+        ResourceEdits::factory(10)->create();
     }
 }

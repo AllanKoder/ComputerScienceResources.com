@@ -7,12 +7,9 @@ use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Services\ModelResolverService;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Collection;
 use App\Http\Resources\UserResource;
-use App\Models\CommentsCount;
 use App\Services\CommentService;
-use DB;
 use Auth;
 use Illuminate\Validation\Rule;
 use Log;
@@ -42,10 +39,17 @@ class CommentController extends Controller
         $comment->content = $validatedData['content'];
         $comment->user_id = Auth::id();
 
-        // Set the commentable type
         $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_type']);
         $commentableId = $validatedData['commentable_id'];
+        
+        // Ensure that the model exists
+        $model = $this->modelResolver->resolve($validatedData['commentable_type'], $commentableId);
+        if (!$model) {
+            return response()->json(['message' => 'Model not found'], 404);
+        }    
+        Log::debug("Resolved model class: " . $commentableType);
 
+        // Set the commentable type
         $comment->commentable_type = $commentableType;
         $comment->commentable_id = $commentableId;
 

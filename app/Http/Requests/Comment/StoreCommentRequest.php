@@ -5,7 +5,7 @@ namespace App\Http\Requests\Comment;
 use App\Services\ModelResolverService;
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
-use Closure;
+use Illuminate\Validation\Rule;
 
 class StoreCommentRequest extends FormRequest
 {
@@ -37,20 +37,7 @@ class StoreCommentRequest extends FormRequest
             "commentable_type" => [
                 'required',
                 'string',
-                function (string $_attribute, mixed $value, Closure $fail) {
-                    if (!in_array($value, config('comment.commentable_types')))
-                    {
-                        $fail("Not a valid commentable type");
-                    }
-
-                    $id = request('commentable_id');
-                    $model = $this->modelResolver->resolve($value, $id);
-                    
-                    if ($model == null)
-                    {
-                        $fail("commentable id and type does not exist.");
-                    }
-                },
+                Rule::in(config('comment.commentable_types')),
             ],
             "content" => ["required", "string", "max:4000"],
             "parent_comment_id" => ["nullable", "exists:App\Models\Comment,id"]
