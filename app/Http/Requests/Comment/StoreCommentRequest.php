@@ -5,6 +5,7 @@ namespace App\Http\Requests\Comment;
 use App\Services\ModelResolverService;
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
+use Illuminate\Validation\Rule;
 
 class StoreCommentRequest extends FormRequest
 {
@@ -36,6 +37,7 @@ class StoreCommentRequest extends FormRequest
             "commentable_type" => [
                 'required',
                 'string',
+                Rule::in(config('comment.commentable_types')),
             ],
             "content" => ["required", "string", "max:4000"],
             "parent_comment_id" => ["nullable", "exists:App\Models\Comment,id"]

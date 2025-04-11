@@ -47,7 +47,8 @@ class CommentController extends Controller
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);
         }    
-        
+        Log::debug("Resolved model class: " . $commentableType);
+
         // Set the commentable type
         $comment->commentable_type = $commentableType;
         $comment->commentable_id = $commentableId;

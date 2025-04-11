@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Comment;
 use App\Models\User;
 use App\Models\ComputerScienceResource;
+use App\Services\ModelResolverService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -78,6 +79,42 @@ class CommentsTest extends TestCase
 
         $response = $this->postJson(route('comments.store'), $payload);
         $response->assertStatus(404);
+    }
+
+    /**
+     * Test that commenting works on all commentable types defined in config.
+     */
+    // TODO:
+    public function test_can_comment_all_commentable_types()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        foreach (config('comment.commentable_types') as $typeKey) {
+            $modelClass = app(ModelResolverService::class)->getModelClass($typeKey);
+
+            // Skip comments
+            if ($modelClass === Comment::class) {
+                continue;
+            }
+
+            $commentable = $modelClass::factory()->create();
+            $payload = [
+                'content' => 'top level comment',
+                'commentable_type' => $typeKey,
+                'commentable_id' => $commentable->id,
+                'parent_comment_id' => null,
+            ];
+
+            $response = $this->postJson(route('comments.store'), $payload);
+            $response->assertStatus(200, "Failed to comment on type {$typeKey}");
+
+            $this->assertDatabaseHas('comments', [
+                'content' => $payload['content'],
+                'commentable_type' => $modelClass,
+                'commentable_id' => $payload['commentable_id'],
+            ]);
+        }
     }
 
     /**

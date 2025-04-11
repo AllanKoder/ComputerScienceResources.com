@@ -18,6 +18,8 @@ class CommentFactory extends Factory
      *
      * @return array<string, mixed>
      */
+
+     // TODO: Double check this logic
     public function definition(): array
     {
         // Pick a random commentable type from config.
@@ -32,7 +34,9 @@ class CommentFactory extends Factory
         if ($modelClass === Comment::class) {
             // Get an existing comment or create one if none exists.
             $existingComment = Comment::inRandomOrder()->first() ?? Comment::factory()->create();
-            $commentableId = $existingComment->id;
+
+            $commentableId = $existingComment->commentable_id;
+            $commentableType = $existingComment->commentable_type;
     
             // Since it's a recursive comment, the existing comment becomes the parent.
             $parent = $existingComment;
@@ -44,6 +48,7 @@ class CommentFactory extends Factory
             // For non-comment targets, fetch or create the commentable model.
             $commenting = $modelClass::inRandomOrder()->first() ?? $modelClass::factory()->create();
             $commentableId = $commenting->id;
+            $commentableType = $modelClass;
     
             // For non-comment targets we always create a top-level comment.
             $parentCommentId = null;
@@ -54,7 +59,7 @@ class CommentFactory extends Factory
         return [
             'user_id' => $user->id,
             'content' => $this->faker->paragraph,
-            'commentable_type' => $modelClass,
+            'commentable_type' => $commentableType,
             'commentable_id' => $commentableId,
             'parent_comment_id' => $parentCommentId,
             'root_comment_id' => $rootCommentId,
