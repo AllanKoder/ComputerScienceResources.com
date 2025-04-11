@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\ComputerScienceResource;
 use App\Models\User;
+use App\Services\ModelResolverService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,6 +22,47 @@ class UpvoteTest extends TestCase
 
         $response = $this->postJson(route('upvote', ['type' => 'invalid_type', 'id' => 1]));
         $response->assertStatus(422);
+    }
+
+    /**
+     * Test upvote can only be done on an existing upvotable type and id.
+     */
+    public function test_upvote_on_non_existing_type_returns_422()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $response = $this->postJson(route('upvote', ['type' => 'resource', 'id' => 1]));
+        $response->assertStatus(404);
+    }
+
+    /**
+     * Test that upvoting works on all upvotable types defined in config.
+     */
+    public function test_can_upvote_all_upvotable_types()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        foreach (config('upvotes.upvotable_types') as $typeKey) {
+            // Resolve the model class.
+            $modelClass = app(ModelResolverService::class)->getModelClass($typeKey);
+
+            $model = $modelClass::factory()->create();
+
+            $response = $this->postJson(route('upvote', [
+                'type' => $typeKey,
+                'id' => $model->id,
+            ]));
+
+            $response->assertStatus(200);
+            $this->assertDatabaseHas('upvotes', [
+                'user_id' => $user->id,
+                'upvotable_type' => $modelClass,
+                'upvotable_id' => $model->id,
+                'value' => 1,
+            ]);
+        }
     }
 
     /**
@@ -171,7 +213,7 @@ class UpvoteTest extends TestCase
         }
 
         // Check if the final score is zero
-        $this->assertEquals(3, $resource->upvoteSummary->upvotes); 
+        $this->assertEquals(3, $resource->upvoteSummary->upvotes);
         $this->assertEquals(3, $resource->upvoteSummary->downvotes);
         $this->assertEquals(0, $resource->upvoteSummary->voteScore);
     }

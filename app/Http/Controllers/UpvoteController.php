@@ -7,11 +7,11 @@ use App\Services\ModelResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 
 class UpvoteController extends Controller
 {
     protected $modelResolver;
-    protected $upvotableTypes = 'review,resource,comment,edit';
 
     function __construct(ModelResolverService $modelResolver)
     {
@@ -28,7 +28,7 @@ class UpvoteController extends Controller
                 'type' => $type,
             ],
             [
-                'type' => 'required|in:' . $this->upvotableTypes,
+                'type' => ['required', Rule::in(config('upvotes.upvotable_types'))]
             ]
         )->validate(); 
 
@@ -57,7 +57,7 @@ class UpvoteController extends Controller
                 'type' => $type,
             ],
             [
-                'type' => 'required|in:' . $this->upvotableTypes,
+                'type' => ['required', Rule::in(config('upvotes.upvotable_types'))]
             ]
         )->validate(); 
 

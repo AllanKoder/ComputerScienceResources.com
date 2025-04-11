@@ -77,7 +77,7 @@ class CommentsTest extends TestCase
         ];
 
         $response = $this->postJson(route('comments.store'), $payload);
-        $response->assertStatus(422);
+        $response->assertStatus(404);
     }
 
     /**
@@ -97,7 +97,7 @@ class CommentsTest extends TestCase
         ];
 
         $response = $this->postJson(route('comments.store'), $payload);
-        $response->assertStatus(422);
+        $response->assertStatus(404);
     }
 
     /**

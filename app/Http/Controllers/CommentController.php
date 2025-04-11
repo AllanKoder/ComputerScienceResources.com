@@ -42,10 +42,16 @@ class CommentController extends Controller
         $comment->content = $validatedData['content'];
         $comment->user_id = Auth::id();
 
-        // Set the commentable type
         $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_type']);
         $commentableId = $validatedData['commentable_id'];
-
+        
+        // Ensure that the model exists
+        $model = $this->modelResolver->resolve($validatedData['commentable_type'], $commentableId);
+        if (!$model) {
+            return response()->json(['message' => 'Model not found'], 404);
+        }    
+        
+        // Set the commentable type
         $comment->commentable_type = $commentableType;
         $comment->commentable_id = $commentableId;
 

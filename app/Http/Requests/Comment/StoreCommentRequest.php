@@ -37,20 +37,6 @@ class StoreCommentRequest extends FormRequest
             "commentable_type" => [
                 'required',
                 'string',
-                function (string $_attribute, mixed $value, Closure $fail) {
-                    if (!in_array($value, config('comment.commentable_types')))
-                    {
-                        $fail("Not a valid commentable type");
-                    }
-
-                    $id = request('commentable_id');
-                    $model = $this->modelResolver->resolve($value, $id);
-                    
-                    if ($model == null)
-                    {
-                        $fail("commentable id and type does not exist.");
-                    }
-                },
             ],
             "content" => ["required", "string", "max:4000"],
             "parent_comment_id" => ["nullable", "exists:App\Models\Comment,id"]
