@@ -12,7 +12,7 @@ class CommentService
 
     public function __construct()
     {
-        $this->maxPerPage = config('comment.max_comment_query', 10);
+        $this->maxPerPage = config('comment.pagination_limit', 10);
     }
 
     /**

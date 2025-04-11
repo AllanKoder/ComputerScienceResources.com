@@ -5,7 +5,6 @@ namespace App\Http\Requests\ResourceEdit;
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
-use Log;
 
 class StoreResourceEdit extends FormRequest
 {

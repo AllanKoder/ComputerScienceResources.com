@@ -25,18 +25,14 @@ class CommentFactory extends Factory
         $commentableType = $this->faker->randomElement([
             ResourceReview::class,
             Comment::class,
+            ComputerScienceResource::class,
         ]);
         
         // Create the commented type
-        $commenting = null;
-        if ($commentableType == ResourceReview::class) {
-            $commenting = ResourceReview::inRandomOrder()->first()
-                ?? ResourceReview::factory()->create();
-        } elseif ($commentableType == Comment::class)
-        {
-            $commenting = Comment::inRandomOrder()->first()
-                ?? Comment::factory()->create();
-        }
+        $commenting = isset($models[$commentableType])
+        ? $models[$commentableType]::inRandomOrder()->first() ?? $models[$commentableType]::factory()->create()
+        : null;
+    
         
         $commentableId = $commenting->id;
 

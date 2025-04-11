@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasComments;
 use App\Traits\HasVotes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -17,15 +18,16 @@ class ComputerScienceResource extends Model
     /** @use HasFactory<\Database\Factories\ComputerScienceResourceFactory> */
     use HasFactory;
     use HasTags;
+    use HasComments;
     use HasVotes;
 
     protected $table = "computer_science_resources";
 
     protected $guarded = [];
     
-    protected $with = ['tags', 'votes', 'upvoteSummary', 'reviewSummary'];
-    
-    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'vote_score', 'user_vote'];
+    protected $with = ['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship'];
+
+    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'vote_score', 'user_vote', 'comments_count'];
 
     public function user(): BelongsTo
     {

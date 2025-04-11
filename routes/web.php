@@ -68,8 +68,9 @@ Route::controller(ComputerScienceResourceController::class)->group(function () {
     Route::get('/resources/{computerScienceResource}', 'show')->name('resources.show');
 });
 
+// Comments
 Route::controller(CommentController::class)->group(function () {
-    Route::post('/comments/show/{type}/{id}/{index}', 'show')->name('comments.show');
+    Route::get('/comments/show/{type}/{id}/{index}', 'show')->name('comments.show');
 });
 
 // Resource Edits

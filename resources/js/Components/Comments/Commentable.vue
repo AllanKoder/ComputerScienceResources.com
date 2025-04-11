@@ -1,5 +1,5 @@
 <script setup>
-import { ref, provide, readonly, nextTick } from "vue";
+import { ref, provide, readonly, nextTick, onMounted } from "vue";
 import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import CommentList from "./CommentList.vue";
@@ -17,6 +17,10 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    loadOnMount: {
+        type: Boolean,
+        default: false,
+    }
 });
 
 const users = ref(new Map());
@@ -97,7 +101,7 @@ async function loadComments() {
     error.value = null;
 
     try {
-        const response = await axios.post(
+        const response = await axios.get(
             route("comments.show", {
                 id: props.commentableId,
                 type: props.commentableType,
@@ -121,6 +125,14 @@ async function loadComments() {
         isLoading.value = false;
     }
 }
+
+onMounted(() => {
+    if (props.loadOnMount)
+    {
+        console.log('loaded');
+        loadComments();
+    }
+});
 </script>
 
 <template>
