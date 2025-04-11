@@ -45,8 +45,8 @@ class UpvoteTest extends TestCase
         $this->actingAs($user);
 
         foreach (config('upvotes.upvotable_types') as $typeKey) {
-            // Resolve the model class.
-            $modelClass = app(ModelResolverService::class)->getModelClass($typeKey);
+            // Get the Model service with app
+            $modelClass = app(ModelResolverService::class)->getModelClass($typeKey); // Resolve the model class.
 
             $model = $modelClass::factory()->create();
 

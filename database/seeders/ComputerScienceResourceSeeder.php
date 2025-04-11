@@ -15,6 +15,6 @@ class ComputerScienceResourceSeeder extends Seeder
     public function run(): void
     {
         Log::info('Running ComputerScienceResourceSeeder');
-        ComputerScienceResource::factory(50)->create();
+        ComputerScienceResource::factory(1)->create();
     }
 }

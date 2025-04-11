@@ -5,7 +5,6 @@ namespace App\Http\Requests\Comment;
 use App\Services\ModelResolverService;
 use Illuminate\Foundation\Http\FormRequest;
 use Auth;
-use Closure;
 
 class StoreCommentRequest extends FormRequest
 {

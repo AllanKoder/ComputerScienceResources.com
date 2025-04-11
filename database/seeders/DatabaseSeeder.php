@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\ResourceEdits;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Database\Seeders\ComputerScienceResourceSeeder;
 use Database\Seeders\UserSeeder;
 use Database\Seeders\ResourceReviewSeeder;
+use Database\Seeders\ResourceEditsSeeder;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ComputerScienceResourceSeeder::class,
             ResourceReviewSeeder::class,
+            ResourceEditsSeeder::class,
             CommentSeeder::class,
         ]);
     }
