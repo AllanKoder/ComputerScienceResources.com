@@ -8,12 +8,22 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      - name: Set up Docker
-        run: docker --version
-
+    
+      - name: Set up PHP & Composer
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: mbstring, pdo, mysql, bcmath, tokenizer
+          tools: composer
+    
       - name: Copy .env
         run: cp .env.example .env
+    
+      - name: Install Composer dependencies
+        run: composer install
+    
+      - name: Generate app key
+        run: php artisan key:generate
 
       - name: Start Sail (MySQL will be included)
         run: |
