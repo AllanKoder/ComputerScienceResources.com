@@ -145,7 +145,7 @@ class CommentController extends Controller
             ],
             [
                 'index' => 'required|integer|min:0',
-                'commentable_type' => 'required|in:review,comment,edit',
+                'commentable_type' => ['required', Rule::in(config('comment.commentable_types'))]
             ]
         )->validate();
 

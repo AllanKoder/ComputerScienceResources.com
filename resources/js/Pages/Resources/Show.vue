@@ -6,6 +6,8 @@ import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
 import { pricingLabels, difficultyLabels, platformColors } from "@/Helpers/constants.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
 import ResourceTab from "@/Components/Resources/ResourceEdit/ResourceTab.vue";
+import Commentable from "@/Components/Comments/Commentable.vue";
+import { Tabs, TabPanel, Tab, TabPanels, TabList } from "primevue";
 
 const props = defineProps({
     resource: {
@@ -151,13 +153,33 @@ const emit = defineEmits(["upvote", "downvote"]);
                             </div>
                         </div>
                     </div>
+                    
+                    <!-- Tabs-->
+                    <Tabs value="0">
+                        <TabList>
+                            <Tab value="0">Reviews</Tab>
+                            <Tab value="1">Discussion</Tab>
+                        </TabList>
+                        <TabPanels>
+                            <TabPanel value="0">
+                                <!-- Reviews -->
+                                <ResourceReviews
+                                    :reviews="props.reviews"
+                                    :resource-id="props.resource.id"
+                                ></ResourceReviews>
+                            </TabPanel>
 
-                    <!-- Reviews -->
-
-                    <ResourceReviews
-                        :reviews="props.reviews"
-                        :resource-id="props.resource.id"
-                    ></ResourceReviews>
+                            <TabPanel value="1">
+                                <!-- Reviews -->
+                                <Commentable
+                                    :commentable-id="props.resource.id"
+                                    :commentable-type="'resource'"
+                                    :comments-count="props.resource.comments_count"
+                                    :load-on-mount="true"
+                                ></Commentable>
+                            </TabPanel>
+                        </TabPanels>
+                    </Tabs>
                 </div>
             </div>
         </main>
