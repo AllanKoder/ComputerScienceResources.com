@@ -70,6 +70,7 @@ class CommentFactory extends Factory
         
     public function configure()
     {
+        // TODO: Consider making the increment part of the dispatch event?
         return $this->afterCreating(function (Comment $comment) {
             if ($comment->root_comment_id) {
                 Comment::where('id', $comment->root_comment_id)
