@@ -84,7 +84,6 @@ class CommentsTest extends TestCase
     /**
      * Test that commenting works on all commentable types defined in config.
      */
-    // TODO:
     public function test_can_comment_all_commentable_types()
     {
         $user = User::factory()->create();
