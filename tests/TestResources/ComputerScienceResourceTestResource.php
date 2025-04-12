@@ -3,7 +3,6 @@
 namespace Tests\TestResources;
 
 use App\Models\ComputerScienceResource;
-use Event;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,7 +27,7 @@ class ComputerScienceResourceTestResource extends JsonResource
     public static function fake(): array
     {
         // Create the model with disabled events
-        $model = Event::fakeFor(fn() => ComputerScienceResource::factory()->create());
+        $model = ComputerScienceResource::factory()->create();
     
         // Transform it to API form
         $formData = (new self($model))->toArray(request());
