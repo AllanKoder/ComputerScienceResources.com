@@ -21,7 +21,7 @@ return new class extends Migration
 
                 $table->string('name')->fulltext();
                 $table->text('description')->fulltext();
-                $table->string('image_url')->default('');
+                $table->string('image_url')->nullable();
 
                 // TODO: Have a url for each platform the resource is on.
                 $table->string('page_url');

@@ -31,7 +31,7 @@ return new class extends Migration
             $table->text('description')->fulltext();
 
             // TODO: have it be nullable or something
-            $table->string('image_url');
+            $table->string('image_url')->nullable();
             
             $table->string('page_url');
 

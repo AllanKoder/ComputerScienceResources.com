@@ -2,11 +2,13 @@
 
 namespace Tests\Feature;
 
+use App\Http\Resources\ComputerScienceResourceResource;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Models\User;
 use App\Services\ResourceEditsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Log;
 use Mockery;
 use Mockery\MockInterface;
 use Tests\TestCase;
@@ -80,38 +82,49 @@ class ResourceEditsTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        // Create the original resource.
-        $resource = ComputerScienceResource::factory()->create();
+        $times = 7;
 
-        // Create valid edit payload, then set fields to exactly match the resource.
-
-        $editData = array();
-        $editData['name'] = $resource->name;
-        $editData['description'] = $resource->description;
-        $editData['page_url'] = $resource->page_url;
-        $editData['image_url'] = $resource->image_url;
-        $editData['platforms'] = $resource->platforms;
-        $editData['difficulty'] = $resource->difficulty;
-        $editData['pricing'] = $resource->pricing;
-        $editData['topic_tags'] = $resource->topic_tags;
-        $editData['programming_language_tags'] = $resource->programming_language_tags;
-        $editData['general_tags'] = $resource->general_tags;
-
-        // Add required edit-specific fields.
-        $editData['edit_title'] = 'Proposed edit with no changes';
-        $editData['edit_description'] = 'This edit does nothing.';
-
-        $response = $this->postJson(route('resource_edits.store', $resource), $editData);
-        
-        if ($response->status() !== 422) {
-            dump('Unexpected response status: ' . $response->status());
-            dump('Response:', $response);
+        for ($i = 0; $i < $times; $i++)
+        {
+            // Create the original resource.
+            $resource = ComputerScienceResource::factory()->create();
+            
+            // Create valid edit payload, then set fields to exactly match the resource.
+            
+            $editData = array();
+            $editData['name'] = $resource->name;
+            $editData['description'] = $resource->description;
+            $editData['page_url'] = $resource->page_url;
+            
+            if ($resource->image_url)
+            {
+                $editData['image_url'] = $resource->image_url;
+            }
+            
+            $editData['platforms'] = $resource->platforms;
+            $editData['difficulty'] = $resource->difficulty;
+            $editData['pricing'] = $resource->pricing;
+            $editData['topic_tags'] = $resource->topic_tags;
+            $editData['programming_language_tags'] = $resource->programming_language_tags;
+            $editData['general_tags'] = $resource->general_tags;
+            
+            // Add required edit-specific fields.
+            $editData['edit_title'] = 'Proposed edit with no changes';
+            $editData['edit_description'] = 'This edit does nothing.';
+            
+            $response = $this->postJson(route('resource_edits.store', $resource), $editData);
+            
+            if ($response->status() !== 422) {
+                Log::debug("here");
+                Log::debug('editData:'. json_encode($editData));
+                Log::debug('resource:'. json_encode(new ComputerScienceResourceResource($resource)));
+            }
+            
+            $response->assertStatus(422);
         }
-
-        $response->assertStatus(422);
     }
-
-    /**
+        
+        /**
      * Test that a valid resource edit can be posted.
      */
     public function test_can_post_valid_resource_edit(): void

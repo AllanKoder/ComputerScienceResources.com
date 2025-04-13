@@ -46,7 +46,6 @@ class ComputerScienceResourceController extends Controller
             'user_id' => Auth::id(),
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
-            'image_url' => $validatedData['image_url'],
             'page_url' => $validatedData['page_url'],
             'platforms' => $validatedData['platforms'],
             'difficulty' => $validatedData['difficulty'],
@@ -55,6 +54,11 @@ class ComputerScienceResourceController extends Controller
 
         // Add topics as tags
         $resource->topic_tags = $validatedData['topic_tags'];
+        
+        // Add optional image url
+        if (isset($validatedData['image_url'])) {
+            $resource->image_url = $validatedData['image_url'];
+        }
 
         // Add programming languages as tags (if provided)
         if (isset($validatedData['programming_language_tags'])) {

@@ -41,6 +41,18 @@ class ResourceEditsController extends Controller
         ]);
     }
 
+
+    // TODO: Make an array facade
+    function normalize($array) {
+        ksort($array);
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                sort($value); // Assumes it's a flat array of values
+            }
+        }
+        return $array;
+    }
+
     /**
      * Store the edits request.
      */
@@ -50,10 +62,10 @@ class ResourceEditsController extends Controller
         Log::debug("Creating a resource edit: " . json_encode($validatedData));
 
         // Ensure that they are not the same
-        $originalData = (new ComputerScienceResourceResource($computerScienceResource))->resolve();
-        $editData = Arr::only($validatedData, array_keys($originalData));
-
-        // Compare the two arrays.
+        $originalData = $this->normalize((new ComputerScienceResourceResource($computerScienceResource))->resolve());
+        $editData = $this->normalize($validatedData);
+        unset($editData['edit_title'], $editData['edit_description']);
+        
         if ($originalData == $editData) {
             return response()->json(['message' => 'No changes detected'], 422);
         }
@@ -65,7 +77,6 @@ class ResourceEditsController extends Controller
             'edit_description' => $validatedData['edit_description'],
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
-            'image_url' => $validatedData['image_url'],
             'page_url' => $validatedData['page_url'],
             'platforms' => $validatedData['platforms'],
             'difficulty' => $validatedData['difficulty'],
@@ -74,6 +85,11 @@ class ResourceEditsController extends Controller
             'programming_language_tags' => $validatedData['programming_language_tags'],
             'general_tags' => $validatedData['general_tags'],
         ]);
+
+        // Add optional image url
+        if (isset($validatedData['image_url'])) {
+            $resourceEdit->image_url = $validatedData['image_url'];
+        }
 
         return redirect()->route('resource_edits.show', ['resourceEdits' => $resourceEdit->id])
             ->with('success', 'The proposed edits were created. Other\'s can now view it.');
