@@ -11,8 +11,8 @@ trait ComputerScienceResourceRequest
         return [
             'name' => ['required', 'string', 'max:100'],
             'description' => ['required', 'string', 'max:10000'],
-            'platforms' => ['required', 'array'],
-            'platforms.*' => ['distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
+            'platforms' => ['required', 'array', 'min:1'],
+            'platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
             'page_url' => ['required', 'string', 'url:http,https', 'max:255'],
             'image_url' => ['nullable', 'string', 'url:http,https', 'max:255'],
             'difficulty' => ['required', 'string', Rule::in(config('computerScienceResource.difficulties'))],
