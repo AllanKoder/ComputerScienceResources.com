@@ -190,7 +190,7 @@ class CommentController extends Controller
             }
         }
 
-        \Log::debug("Returned comments: " . json_encode($flattenedComments));
+        Log::debug("Returned comments: " . json_encode($flattenedComments));
         return [
             'comments' => $flattenedComments,
             'users' => $users->values(),

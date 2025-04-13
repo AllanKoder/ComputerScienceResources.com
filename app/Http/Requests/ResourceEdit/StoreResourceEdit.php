@@ -2,12 +2,13 @@
 
 namespace App\Http\Requests\ResourceEdit;
 
-use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
+use App\Http\Requests\Shared\ComputerScienceResourceRequest;
 use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreResourceEdit extends FormRequest
 {
+    use ComputerScienceResourceRequest;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -23,12 +24,14 @@ class StoreResourceEdit extends FormRequest
      */
     public function rules(): array
     {
-        // Have the same validation rules as a resource
-        $storeResourceRequest = new StoreResourceRequest();
-
-        return array_merge([
+        return array_merge($this->baseResourceRules(), [
             'edit_title' => ['required', 'string', 'max:100'],
             'edit_description' => ['required', 'string', 'max:10000'],
-        ], $storeResourceRequest->rules());
+
+            'general_tags' => ['required', 'array'],
+            'general_tags.*' => ['required', 'string', 'max:50'],
+            'programming_language_tags' => ['required', 'array'],
+            'programming_language_tags.*' => ['distinct', 'string', 'max:50'],
+        ]);
     }
 }

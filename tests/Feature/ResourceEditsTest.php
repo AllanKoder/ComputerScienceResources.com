@@ -7,6 +7,8 @@ use App\Models\ResourceEdits;
 use App\Models\User;
 use App\Services\ResourceEditsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Mockery;
+use Mockery\MockInterface;
 use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 
@@ -31,8 +33,12 @@ class ResourceEditsTest extends TestCase
     {
         $this->actingAs($this->user);
 
+        $resource = ComputerScienceResource::factory()->create();
         $validData = ComputerScienceResourceTestResource::fake();
-
+        
+        $validData['edit_title'] = 'title';
+        $validData['edit_description'] = 'description';
+        
         $invalidDataSets = [
             'name' => str_repeat('a', 101), // Too long
             'description' => str_repeat('a', 10001), // Too long
@@ -51,7 +57,7 @@ class ResourceEditsTest extends TestCase
             $testData[$field] = $invalidValue;
 
             $response = $this->postJson(route('resource_edits.store', [
-                'computerScienceResource' => $validData['id'],
+                'computerScienceResource' => $resource->id,
             ]), $testData);
 
             $this->assertTrue(
@@ -78,22 +84,30 @@ class ResourceEditsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
 
         // Create valid edit payload, then set fields to exactly match the resource.
-        $editData = ComputerScienceResourceTestResource::fake();
+
+        $editData = array();
         $editData['name'] = $resource->name;
         $editData['description'] = $resource->description;
         $editData['page_url'] = $resource->page_url;
+        $editData['image_url'] = $resource->image_url;
         $editData['platforms'] = $resource->platforms;
         $editData['difficulty'] = $resource->difficulty;
         $editData['pricing'] = $resource->pricing;
         $editData['topic_tags'] = $resource->topic_tags;
         $editData['programming_language_tags'] = $resource->programming_language_tags;
         $editData['general_tags'] = $resource->general_tags;
+
         // Add required edit-specific fields.
         $editData['edit_title'] = 'Proposed edit with no changes';
         $editData['edit_description'] = 'This edit does nothing.';
 
         $response = $this->postJson(route('resource_edits.store', $resource), $editData);
         
+        if ($response->status() !== 422) {
+            dump('Unexpected response status: ' . $response->status());
+            dump('Response JSON:', $response->json());
+        }
+
         $response->assertStatus(422);
     }
 
@@ -109,10 +123,11 @@ class ResourceEditsTest extends TestCase
 
         // Create valid edit payload and change at least one attribute.
         $editData = ComputerScienceResourceTestResource::fake();
-        $editData['name'] = $resource->name . ' Updated';
         $editData['edit_title'] = 'Proposed Update';
         $editData['edit_description'] = 'Proposing an update to the resource';
-
+        
+        $editData['name'] = $resource->name . ' Updated';
+        
         $response = $this->post(route('resource_edits.store', $resource), $editData);
         
         // Expect redirection to the edit show page with a success message.
@@ -132,59 +147,81 @@ class ResourceEditsTest extends TestCase
     public function test_merged_edit_reflects_changes_on_original_resource(): void
     {
         // Create a resource.
-        $resource = ComputerScienceResource::factory()->create([
-            'name' => 'Original Resource',
-            'description' => 'Original description',
-            'image_url' => 'http://example.com/original.png',
-            'page_url' => 'http://example.com',
-            'platforms' => ['web'],
-            'difficulty' => 'beginner',
-            'pricing' => 'free',
-            'topic_tags' => ['laravel', 'php', 'testing'],
-            'programming_language_tags' => ['php'],
-            'general_tags' => ['resource']
-        ]);
-
+        $resource = ComputerScienceResource::factory()->create();
+    
         // Stub the ResourceEditsService to always allow merging.
-        $this->instance(ResourceEditsService::class, new class {
-            public function canMergeEdits($resourceEdits)
-            {
-                return true;
-            }
-        });
+        $this->instance(
+            ResourceEditsService::class,
+            Mockery::mock(ResourceEditsService::class, function (MockInterface $mock) {
+                $mock->shouldReceive('canMergeEdits')
+                     ->andReturnTrue();
+            })
+        );
 
         $mergeAttempts = 3;
-
+    
         for ($i = 0; $i < $mergeAttempts; $i++) {
+            // Create a fresh copy of the resource every loop to avoid stale values.
+            $resource->refresh();
+    
             // Create a unique edit for the same resource.
             $editData = ComputerScienceResourceTestResource::fake();
-            $editData['name'] = $resource->name . ' Edited ' . $i;
-            $editData['description'] = $resource->description . ' Now with change ' . $i;
+            // Required for edit
             $editData['edit_title'] = "Edit #$i";
-            $editData['edit_description'] = "This is change number $i.";
+            $editData['edit_description'] = "This is edit number $i.";
+ 
+            // Change all the fields
+            $editData['name'] = $resource->name . " Edited {$i}";
+            $editData['description'] = $resource->description . " Changed {$i}";
+            $editData['platforms'] = ['course', 'bootcamp'];
+            $editData['page_url'] = "https://example.com/edited-url-{$i}";
+            $editData['image_url'] = "https://example.com/edited-url-{$i}";
+            $editData['difficulty'] = 'beginner';
+            $editData['pricing'] = 'free';
+            $editData['topic_tags'] = ["Tag {$i}-A", "Tag {$i}-B", "Tag {$i}-C"];
 
-            // Post the edit.
-            $this->actingAs($this->user)->post(route('resource_edits.store', $resource), $editData);
-            // Retrieve the edit record.
-            $resourceEdit = ResourceEdits::latest()->first();
-
-            // Simulate merging the edit.
-            $mergeResponse = $this->post(route('resource_edits.merge', $resourceEdit));
-
-            $mergeResponse->assertRedirect(route('resources.show', ['computerScienceResource' => $resource->id]))
+            $editData['general_tags'] = ["Tag {$i}-A", "Tag {$i}-B", "Tag {$i}-C"];
+            $editData['programming_language_tags'] = ["Tag {$i}-A", "Tag {$i}-B", "Tag {$i}-C"];
+     
+            // Randomly unset optional fields
+            if (rand(0, 1)) $editData['image_url'] = '';
+            if (rand(0, 1)) $editData['general_tags'] = [];
+            if (rand(0, 1)) $editData['programming_language_tags'] = [];
+    
+            // Post the edit
+            $response = $this->actingAs($this->user)->post(route('resource_edits.store', ['computerScienceResource' => $resource->id]), $editData);
+            $response->assertStatus(302);
+    
+            // Retrieve the edit
+            $resourceEdits = ResourceEdits::latest()->first();
+            $this->assertNotNull($resourceEdits);
+    
+            // Merge the edit
+            $mergeResponse = $this->post(route('resource_edits.merge', ['resourceEdits' => $resourceEdits->id]));
+    
+            $mergeResponse
+                ->assertRedirect(route('resources.show', ['computerScienceResource' => $resource->id]))
                 ->assertSessionHas('success', 'Successfully merged new changed!');
-            
-            // Refresh the original resource
+    
+            // Refresh and assert that changes took effect
             $resource->refresh();
-
-            // Assert that the original resource reflects the changes from the merged edit.
+            // Check all required fields
             $this->assertEquals($editData['name'], $resource->name);
             $this->assertEquals($editData['description'], $resource->description);
+            $this->assertEquals($editData['platforms'], $resource->platforms);
+            $this->assertEquals($editData['page_url'], $resource->page_url);
+            $this->assertEquals($editData['difficulty'], $resource->difficulty);
+            $this->assertEquals($editData['pricing'], $resource->pricing);
+            $this->assertEquals($editData['topic_tags'], $resource->topic_tags);
 
-            // Check that the edit was deleted.
-            $this->assertDatabaseMissing('resource_edits', [
-                'id' => $resourceEdit->id,
-            ]);
+            // Check optional fields
+            $this->assertEquals($editData['image_url'], $resource->image_url);
+            $this->assertEquals($editData['general_tags'], $resource->general_tags);
+            $this->assertEquals($editData['programming_language_tags'], $resource->programming_language_tags);
+
+            $this->assertDatabaseMissing('resource_edits', ['id' => $resourceEdits->id]);
+
         }
     }
+    
 }

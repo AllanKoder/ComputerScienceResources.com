@@ -19,7 +19,7 @@ class ComputerScienceResourceTestResource extends JsonResource
             'difficulty' => $this->difficulty,
             'pricing' => $this->pricing,
             'topic_tags' => $this->topic_tags,
-            'programming_language_tags' =>  $this->programming_language_tags,
+            'programming_language_tags' => $this->programming_language_tags,
             'general_tags' =>  $this->general_tags,
         ];
     }

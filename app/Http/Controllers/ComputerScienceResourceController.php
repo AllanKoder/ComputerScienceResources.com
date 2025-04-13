@@ -46,7 +46,7 @@ class ComputerScienceResourceController extends Controller
             'user_id' => Auth::id(),
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
-            'image_url' => $validatedData['image_url'] ?? null,
+            'image_url' => $validatedData['image_url'],
             'page_url' => $validatedData['page_url'],
             'platforms' => $validatedData['platforms'],
             'difficulty' => $validatedData['difficulty'],

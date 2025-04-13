@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ResourceEdit\StoreResourceEdit;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
+use App\Http\Requests\ResourceEdit\StoreResourceEdit;
 use Auth;
 use Inertia\Inertia;
 use Log;
@@ -52,10 +52,9 @@ class ResourceEditsController extends Controller
             'computer_science_resource_id' => $computerScienceResource->id,
             'edit_title' => $validatedData['edit_title'],
             'edit_description' => $validatedData['edit_description'],
-
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
-            'image_url' => $validatedData['image_url'] ?? null,
+            'image_url' => $validatedData['image_url'],
             'page_url' => $validatedData['page_url'],
             'platforms' => $validatedData['platforms'],
             'difficulty' => $validatedData['difficulty'],
