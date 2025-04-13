@@ -6,6 +6,8 @@ use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
 use App\Http\Requests\ResourceEdit\StoreResourceEdit;
+use App\Http\Resources\ComputerScienceResourceResource;
+use Arr;
 use Auth;
 use Inertia\Inertia;
 use Log;
@@ -46,6 +48,15 @@ class ResourceEditsController extends Controller
     {
         $validatedData = $request->validated();
         Log::debug("Creating a resource edit: " . json_encode($validatedData));
+
+        // Ensure that they are not the same
+        $originalData = (new ComputerScienceResourceResource($computerScienceResource))->resolve();
+        $editData = Arr::only($validatedData, array_keys($originalData));
+
+        // Compare the two arrays.
+        if ($originalData == $editData) {
+            return response()->json(['message' => 'No changes detected'], 422);
+        }
 
         $resourceEdit = ResourceEdits::create([
             'user_id' => Auth::id(),

@@ -18,7 +18,7 @@ class ComputerScienceResourceResource extends JsonResource
             'name' => $this->name,
             'description' => $this->description,
             'page_url' => $this->page_url,
-            'image_url' => $this->image_url ?? '',
+            'image_url' => $this->image_url,
             'platforms' => $this->platforms,
             'difficulty' => $this->difficulty,
             'pricing' => $this->pricing,
