@@ -95,12 +95,7 @@ class ResourceEditsTest extends TestCase
             $editData['name'] = $resource->name;
             $editData['description'] = $resource->description;
             $editData['page_url'] = $resource->page_url;
-            
-            if ($resource->image_url)
-            {
-                $editData['image_url'] = $resource->image_url;
-            }
-            
+            $editData['image_url'] = $resource->image_url;
             $editData['platforms'] = $resource->platforms;
             $editData['difficulty'] = $resource->difficulty;
             $editData['pricing'] = $resource->pricing;
@@ -157,6 +152,9 @@ class ResourceEditsTest extends TestCase
      * Test that merging an edit updates the original resource.
      * We run multiple merges to simulate multiple edit merges.
      */
+
+     // TODO: Handle null images
+     // TODO: Handle all fields and attributes
     public function test_merged_edit_reflects_changes_on_original_resource(): void
     {
         $resource = ComputerScienceResource::factory()->create();
@@ -169,7 +167,7 @@ class ResourceEditsTest extends TestCase
             })
         );
 
-        $mergeAttempts = 3;
+        $mergeAttempts = 10;
 
         for ($i = 0; $i < $mergeAttempts; $i++) {
             $resource->refresh();
@@ -181,7 +179,16 @@ class ResourceEditsTest extends TestCase
 
             $editData['name'] = "Resource Name Edited {$i}";
             $editData['description'] = "Resource Description Changed {$i}";
-            
+            $editData['image_url'] = fake()->randomElement(["http://{$i}.com", null]);
+            $editData['page_url'] = "http://{$i}.com";
+            $editData['difficulty'] = fake()->randomElement(config('computerScienceResource.difficulties'));
+            $editData['platforms'] = fake()->randomElements(config('computerScienceResource.platforms'), fake()->numberBetween(1, 3));
+            $editData['pricing'] = fake()->randomElement(config('computerScienceResource.pricings'));
+            $editData['topic_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"];
+
+            $editData['programming_language_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"];
+            $editData['general_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"]; 
+
             // Submit the edit
             $this->actingAs($this->user);
             $response = $this->post(
@@ -202,22 +209,80 @@ class ResourceEditsTest extends TestCase
             // Refresh and assert
             $resource->refresh();
 
-            $this->assertEquals($editData['name'], $resource->name, "Name did not update");
-            $this->assertEquals($editData['description'], $resource->description, "Description did not update");
-
-            $this->assertEquals(
-                $editData['general_tags'],
-                $resource->general_tags,
-                "General tags did not update (expected " . json_encode($editData['general_tags']) . ", got " . json_encode($resource->general_tags) . ")"
-            );
-
-            $this->assertEquals(
-                $editData['programming_language_tags'],
-                $resource->programming_language_tags,
-                "Programming language tags did not update (expected " . json_encode($editData['programming_language_tags']) . ", got " . json_encode($resource->programming_language_tags) . ")"
-            );
+            $this->assertEquals($editData['name'], $resource->name);
+            $this->assertEquals($editData['description'], $resource->description);
+            $this->assertEquals($editData['image_url'], $resource->image_url);
+            $this->assertEquals($editData['page_url'], $resource->page_url);
+            $this->assertEquals($editData['difficulty'], $resource->difficulty);
+            $this->assertEquals($editData['pricing'], $resource->pricing);
+            
+            // Arrays
+            $this->assertEqualsCanonicalizing($editData['platforms'], $resource->platforms);
+            $this->assertEqualsCanonicalizing($editData['topic_tags'], $resource->topic_tags);
+            $this->assertEqualsCanonicalizing($editData['programming_language_tags'], $resource->programming_language_tags);
+            $this->assertEqualsCanonicalizing($editData['general_tags'], $resource->general_tags);
 
             $this->assertDatabaseMissing('resource_edits', ['id' => $edit->id]);
         }
+    }
+
+    public function test_merged_delete_edit_reflects_changes_on_original_resource(): void
+    {
+        $resource = ComputerScienceResource::factory()->create();
+
+        // Stub the ResourceEditsService to always allow merging
+        $this->instance(
+            ResourceEditsService::class,
+            Mockery::mock(ResourceEditsService::class, function (MockInterface $mock) {
+                $mock->shouldReceive('canMergeEdits')->andReturnTrue();
+            })
+        );
+
+        $editData = (new ComputerScienceResourceTestResource($resource))->resolve();
+
+        $editData['edit_title'] = "Edit";
+        $editData['edit_description'] = "This is edit";
+
+        $editData['name'] = "Resource Name Edited";
+        $editData['description'] = "Resource Description Changed";
+        $editData['image_url'] = null; // Delete operation
+        $editData['topic_tags'] = ['1', '2', '3'];
+        $editData['programming_language_tags'] = [];
+        $editData['general_tags'] = [];
+            
+        // Submit the edit
+        $this->actingAs($this->user);
+        $response = $this->post(
+            route('resource_edits.store', ['computerScienceResource' => $resource->id]),
+            $editData
+        );
+        $response->assertStatus(302);
+
+        $edit = ResourceEdits::latest()->first();
+        $this->assertNotNull($edit, 'Failed to create resource edit');
+
+        // Merge the edit
+        $mergeResponse = $this->post(route('resource_edits.merge', ['resourceEdits' => $edit->id]));
+        $mergeResponse
+            ->assertRedirect(route('resources.show', ['computerScienceResource' => $resource->id]))
+            ->assertSessionHas('success', 'Successfully merged new changed!');
+
+        // Refresh and assert
+        $resource->refresh();
+
+        $this->assertEquals("Resource Name Edited", $resource->name);
+        $this->assertEquals("Resource Description Changed", $resource->description);
+        $this->assertNull($resource->image_url); // Since we unset it
+        $this->assertEquals($editData['page_url'], $resource->page_url);
+        $this->assertEquals($editData['difficulty'], $resource->difficulty);
+        $this->assertEquals($editData['pricing'], $resource->pricing);
+        
+        // Arrays
+        $this->assertEqualsCanonicalizing($editData['platforms'], $resource->platforms);
+        $this->assertEqualsCanonicalizing($editData['topic_tags'], $resource->topic_tags);
+        $this->assertEqualsCanonicalizing($editData['programming_language_tags'], $resource->programming_language_tags);
+        $this->assertEqualsCanonicalizing($editData['general_tags'], $resource->general_tags);
+        
+        $this->assertDatabaseMissing('resource_edits', ['id' => $edit->id]);
     }
 }

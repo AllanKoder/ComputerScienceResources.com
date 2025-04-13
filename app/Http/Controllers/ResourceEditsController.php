@@ -75,6 +75,7 @@ class ResourceEditsController extends Controller
             'computer_science_resource_id' => $computerScienceResource->id,
             'edit_title' => $validatedData['edit_title'],
             'edit_description' => $validatedData['edit_description'],
+            'image_url' => $validatedData['image_url'],
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
             'page_url' => $validatedData['page_url'],
@@ -85,11 +86,6 @@ class ResourceEditsController extends Controller
             'programming_language_tags' => $validatedData['programming_language_tags'],
             'general_tags' => $validatedData['general_tags'],
         ]);
-
-        // Add optional image url
-        if (isset($validatedData['image_url'])) {
-            $resourceEdit->image_url = $validatedData['image_url'];
-        }
 
         return redirect()->route('resource_edits.show', ['resourceEdits' => $resourceEdit->id])
             ->with('success', 'The proposed edits were created. Other\'s can now view it.');

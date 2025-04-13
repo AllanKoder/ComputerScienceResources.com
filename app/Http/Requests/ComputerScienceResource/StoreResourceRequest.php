@@ -25,11 +25,6 @@ class StoreResourceRequest extends FormRequest
      */
     public function rules(): array
     {
-        return array_merge($this->baseResourceRules(), [
-            'general_tags' => ['nullable', 'array'],
-            'general_tags.*' => ['distinct', 'string', 'max:50'],
-            'programming_language_tags' => ['nullable', 'array'],
-            'programming_language_tags.*' => ['distinct', 'string', 'max:50'],
-        ]);
+        return $this->baseResourceRules();
     }
 }

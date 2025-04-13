@@ -80,6 +80,8 @@ class ComputerScienceResourceControllerTest extends TestCase
             'pricing' => 'invalid_pricing',
             'topic_tags' => ['tag1', 'tag2'], // Less than required minimum of 3
             'image_url' => 'not-a-url',
+            'programming_language_tags' => null,
+            'general_tags' => ['a','a','a'], // Not distinct
         ];
 
         // Choose from one of the invalid fields

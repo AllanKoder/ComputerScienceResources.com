@@ -27,11 +27,6 @@ class StoreResourceEdit extends FormRequest
         return array_merge($this->baseResourceRules(), [
             'edit_title' => ['required', 'string', 'max:100'],
             'edit_description' => ['required', 'string', 'max:10000'],
-
-            'general_tags' => ['required', 'array'],
-            'general_tags.*' => ['required', 'string', 'max:50'],
-            'programming_language_tags' => ['required', 'array'],
-            'programming_language_tags.*' => ['distinct', 'string', 'max:50'],
         ]);
     }
 }
