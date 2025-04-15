@@ -17,6 +17,11 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(User::class)->index();
             $table->foreignIdFor(ComputerScienceResource::class)->index();
+            
+            $table->unique([
+                'user_id',
+                'computer_science_resource_id'
+            ]);
 
             // Text
             $table->string('title');

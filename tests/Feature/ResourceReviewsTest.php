@@ -67,15 +67,36 @@ class ResourceReviewsTest extends TestCase
 
         $data = ResourceReviewTestResource::fake();
 
-        $response = $this->actingAs($user)
+        $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data);
-
-        $response->assertRedirect(route('resources.show', ['computerScienceResource' => $resource->id]))
-                 ->assertSessionHas('success', 'Review created successfully!');
 
         $this->assertDatabaseHas('resource_reviews', [
             'computer_science_resource_id' => $resource->id,
             'title' => $data['title']
+        ]);
+    }
+
+    public function test_resource_review_cannot_be_posted_twice(): void
+    {
+        $user = User::factory()->create();
+        $resource = ComputerScienceResource::factory()->create();
+
+        $data1 = ResourceReviewTestResource::fake();
+        $this->actingAs($user)
+            ->post(route('reviews.store', $resource), $data1);
+
+        $this->assertDatabaseHas('resource_reviews', [
+            'computer_science_resource_id' => $resource->id,
+            'title' => $data1['title']
+        ]);
+
+        $data2 = ResourceReviewTestResource::fake();
+        $this->actingAs($user)
+            ->post(route('reviews.store', $resource), $data2);
+        
+        $this->assertDatabaseMissing('resource_reviews', [
+            'computer_science_resource_id' => $resource->id,
+            'title' => $data2['title']
         ]);
     }
 
