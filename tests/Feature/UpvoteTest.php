@@ -150,6 +150,42 @@ class UpvoteTest extends TestCase
     }
 
     /**
+     * Test two upvotes from the same user is actually deleting the original vote.
+     */
+    public function test_same_user_double_upvotes()
+    {
+        $user = User::factory()->create();
+        $resource = ComputerScienceResource::factory()->create();
+
+        // Upvote twice
+        $this->actingAs($user);
+        $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+
+        // Check if the votes have been deleted correctly
+        $this->assertEquals(0, $resource->upvoteSummary->upvotes); // No upvotes
+        $this->assertEquals(0, $resource->upvoteSummary->downvotes); // No downvotes
+    }
+
+    /**
+     * Test two upvotes from the same user is actually deleting the original vote.
+     */
+    public function test_same_user_double_downvotes()
+    {
+        $user = User::factory()->create();
+        $resource = ComputerScienceResource::factory()->create();
+
+        // Upvote twice
+        $this->actingAs($user);
+        $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+
+        // Check if the votes have been deleted correctly
+        $this->assertEquals(0, $resource->upvoteSummary->upvotes); // No upvotes
+        $this->assertEquals(0, $resource->upvoteSummary->downvotes); // No downvotes
+    }
+
+    /**
      * Test upvote after downvote makes the score 0.
      */
     public function test_upvote_after_downvote_resets_to_zero()
