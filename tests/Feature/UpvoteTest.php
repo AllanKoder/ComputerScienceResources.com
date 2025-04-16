@@ -186,9 +186,9 @@ class UpvoteTest extends TestCase
     }
 
     /**
-     * Test upvote after downvote makes the score 0.
+     * Test upvote after downvote makes the score 1.
      */
-    public function test_upvote_after_downvote_resets_to_zero()
+    public function test_upvote_after_downvote_is_1()
     {
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
@@ -207,9 +207,9 @@ class UpvoteTest extends TestCase
     }
 
     /**
-     * Test downvote after upvote makes the score 0.
+     * Test downvote after upvote makes the score -1.
      */
-    public function test_downvote_after_upvote_resets_to_zero()
+    public function test_downvote_after_upvote_is_negative_1()
     {
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
