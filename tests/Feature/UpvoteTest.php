@@ -150,9 +150,45 @@ class UpvoteTest extends TestCase
     }
 
     /**
-     * Test upvote after downvote makes the score 0.
+     * Test two upvotes from the same user is actually deleting the original vote.
      */
-    public function test_upvote_after_downvote_resets_to_zero()
+    public function test_same_user_double_upvotes()
+    {
+        $user = User::factory()->create();
+        $resource = ComputerScienceResource::factory()->create();
+
+        // Upvote twice
+        $this->actingAs($user);
+        $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+
+        // Check if the votes have been deleted correctly
+        $this->assertEquals(0, $resource->upvoteSummary->upvotes); // No upvotes
+        $this->assertEquals(0, $resource->upvoteSummary->downvotes); // No downvotes
+    }
+
+    /**
+     * Test two upvotes from the same user is actually deleting the original vote.
+     */
+    public function test_same_user_double_downvotes()
+    {
+        $user = User::factory()->create();
+        $resource = ComputerScienceResource::factory()->create();
+
+        // Upvote twice
+        $this->actingAs($user);
+        $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+
+        // Check if the votes have been deleted correctly
+        $this->assertEquals(0, $resource->upvoteSummary->upvotes); // No upvotes
+        $this->assertEquals(0, $resource->upvoteSummary->downvotes); // No downvotes
+    }
+
+    /**
+     * Test upvote after downvote makes the score 1.
+     */
+    public function test_upvote_after_downvote_is_1()
     {
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
@@ -171,9 +207,9 @@ class UpvoteTest extends TestCase
     }
 
     /**
-     * Test downvote after upvote makes the score 0.
+     * Test downvote after upvote makes the score -1.
      */
-    public function test_downvote_after_upvote_resets_to_zero()
+    public function test_downvote_after_upvote_is_negative_1()
     {
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();

@@ -29,7 +29,9 @@ return new class extends Migration
             // Copied Schema of Computer Science Resource
             $table->string('name')->fulltext();
             $table->text('description')->fulltext();
-            $table->string('image_url');
+
+            // TODO: have it be nullable or something
+            $table->string('image_url')->nullable();
             
             $table->string('page_url');
 

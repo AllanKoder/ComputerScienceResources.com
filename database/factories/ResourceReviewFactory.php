@@ -20,11 +20,7 @@ class ResourceReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => function () {
-                return User::inRandomOrder()->firstOr(function () {
-                    return User::factory()->create();
-                })->id;
-            },
+            'user_id' => User::factory()->create()->id, // Is creating a new user since we need users to be unique per review
             'computer_science_resource_id' => function () {
                 return ComputerScienceResource::firstOr(function () {
                     return ComputerScienceResource::factory()->create();

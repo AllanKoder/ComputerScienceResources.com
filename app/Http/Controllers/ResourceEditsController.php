@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ResourceEdit\StoreResourceEdit;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
+use App\Http\Requests\ResourceEdit\StoreResourceEdit;
+use App\Http\Resources\ComputerScienceResourceResource;
+use Arr;
 use Auth;
 use Inertia\Inertia;
 use Log;
@@ -39,6 +41,18 @@ class ResourceEditsController extends Controller
         ]);
     }
 
+
+    // TODO: Make an array facade
+    function normalize($array) {
+        ksort($array);
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                sort($value); // Assumes it's a flat array of values
+            }
+        }
+        return $array;
+    }
+
     /**
      * Store the edits request.
      */
@@ -47,15 +61,23 @@ class ResourceEditsController extends Controller
         $validatedData = $request->validated();
         Log::debug("Creating a resource edit: " . json_encode($validatedData));
 
+        // Ensure that they are not the same
+        $originalData = $this->normalize((new ComputerScienceResourceResource($computerScienceResource))->resolve());
+        $editData = $this->normalize($validatedData);
+        unset($editData['edit_title'], $editData['edit_description']);
+        
+        if ($originalData == $editData) {
+            return response()->json(['message' => 'No changes detected'], 422);
+        }
+
         $resourceEdit = ResourceEdits::create([
             'user_id' => Auth::id(),
             'computer_science_resource_id' => $computerScienceResource->id,
             'edit_title' => $validatedData['edit_title'],
             'edit_description' => $validatedData['edit_description'],
-
+            'image_url' => $validatedData['image_url'],
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
-            'image_url' => $validatedData['image_url'] ?? null,
             'page_url' => $validatedData['page_url'],
             'platforms' => $validatedData['platforms'],
             'difficulty' => $validatedData['difficulty'],

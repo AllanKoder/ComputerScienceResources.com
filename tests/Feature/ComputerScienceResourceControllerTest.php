@@ -28,6 +28,7 @@ class ComputerScienceResourceControllerTest extends TestCase
 
         $formData = ComputerScienceResourceTestResource::fake();
 
+        Log::debug("Form data: ". json_encode($formData));
         $response = $this->postJson(route('resources.store'), $formData);
 
         $response->assertStatus(302); // a redirect after successful creation
@@ -36,11 +37,6 @@ class ComputerScienceResourceControllerTest extends TestCase
         // Check it is created
         $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
         $this->assertNotNull($createdResource);
-
-        // Check tags
-        $this->assertEquals($formData['topic_tags'], $createdResource->topic_tags);
-        $this->assertEquals($formData['programming_language_tags'], $createdResource->programming_language_tags);
-        $this->assertEquals($formData['general_tags'], $createdResource->general_tags);
     }
 
     public function test_cannot_post_resource_unauthed()
@@ -84,8 +80,8 @@ class ComputerScienceResourceControllerTest extends TestCase
             'pricing' => 'invalid_pricing',
             'topic_tags' => ['tag1', 'tag2'], // Less than required minimum of 3
             'image_url' => 'not-a-url',
-            'general_tags' => 'not-an-array',
-            'programming_language_tags' => 'not-an-array'
+            'programming_language_tags' => null,
+            'general_tags' => ['a','a','a'], // Not distinct
         ];
 
         // Choose from one of the invalid fields

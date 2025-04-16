@@ -21,9 +21,16 @@ class ResourceEditsFactory extends Factory
         $pricings = config('computerScienceResource.pricings');
 
         return [
-            'computer_science_resource_id' => ComputerScienceResource::factory(),
-            'user_id' => User::factory(),
-
+            'computer_science_resource_id' => function () {
+                return ComputerScienceResource::inRandomOrder()->firstOr(function () {
+                    return ComputerScienceResource::factory()->create();
+                })->id;
+            },
+            'user_id' => function () {
+                return User::inRandomOrder()->firstOr(function () {
+                    return User::factory()->create();
+                })->id;
+            },
             'edit_title' => $this->faker->sentence,
             'edit_description' => $this->faker->paragraph,
 

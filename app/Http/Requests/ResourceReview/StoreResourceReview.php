@@ -3,7 +3,6 @@
 namespace App\Http\Requests\ResourceReview;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class StoreResourceReview extends FormRequest
 {

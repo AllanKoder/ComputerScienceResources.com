@@ -2,6 +2,7 @@
 
 namespace Tests\TestResources;
 
+use App\Events\ResourceReviewProcessed;
 use App\Models\ResourceReview;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -27,13 +28,15 @@ class ResourceReviewTestResource extends JsonResource
 
     public static function fake(): array
     {
-        // Create the model with disabled events
-        $model = Event::fakeFor(fn() => ResourceReview::factory()->create());
-    
+        // Fake all events except the ones you still want to fire
+        $model = Event::fakeFor(function () {
+            return ResourceReview::factory()->create();
+        }, [ResourceReviewProcessed::class]);
+
         // Transform it to API form
         $formData = (new self($model))->toArray(request());
     
-        // Delete after getting the array to avoid polluting the DB
+        // Delete after getting the array
         $model->delete();
     
         return $formData;
