@@ -2,6 +2,7 @@
 import { Head, Deferred } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Tag from "primevue/tag";
+import { router } from '@inertiajs/vue3';
 import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
 import {
     pricingLabels,
@@ -10,10 +11,13 @@ import {
 } from "@/Helpers/constants.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
-import { Tabs, TabPanel, Tab, TabPanels, TabList } from "primevue";
 import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
 
 const props = defineProps({
+    tab: {
+        type: String,
+        required: true,
+    },
     resource: {
         type: Object,
         required: true,
@@ -25,10 +29,30 @@ const props = defineProps({
     resourceEdits: {
         type: Array,
         required: false,
-    }
+    },
 });
 
 const emit = defineEmits(["upvote", "downvote"]);
+
+const tabs = [
+    { label: "Reviews", value: "reviews" },
+    { label: "Discussion", value: "discussion" },
+    { label: "Proposed Edits", value: "edits" },
+];
+
+function navigateToTab(tab) {
+    router.visit(
+        route("resources.show", {
+            computerScienceResource: props.resource.id,
+            tab,
+        }),
+        {
+            preserveScroll: true,
+            preserveState: true,
+            except: ['resource'],
+        }
+    );
+}
 </script>
 
 <template>
@@ -169,54 +193,58 @@ const emit = defineEmits(["upvote", "downvote"]);
                         </div>
                     </div>
 
-                    <!-- Tabs-->
-                    <Tabs value="0">
-                        <TabList>
-                            <Tab value="0">Reviews</Tab>
-                            <Tab value="1">Discussion</Tab>
-                            <Tab value="2">Proposed Edits</Tab>
-                        </TabList>
-                        <TabPanels>
-                            <TabPanel value="0">
-                                <Deferred data="reviews">
-                                    <template #fallback>
-                                        <div>Loading...</div>
-                                    </template>
-                                    <!-- Reviews -->
-                                    <ResourceReviews
-                                        :reviews="reviews"
-                                        :resource-id="props.resource.id"
-                                    ></ResourceReviews>
-                                </Deferred>
-                            </TabPanel>
+                    <!-- Custom Tab Navigation -->
+                    <div class="flex border-b mb-4 space-x-6 px-6">
+                        <button
+                            v-for="tab in tabs"
+                            :key="tab.value"
+                            @click="navigateToTab(tab.value)"
+                            :class="[
+                                'py-2 border-b-2 font-medium transition-all duration-200',
+                                props.tab === tab.value
+                                    ? 'border-blue-600 text-blue-600'
+                                    : 'border-transparent text-gray-600 hover:text-blue-600 hover:border-blue-600',
+                            ]"
+                        >
+                            {{ tab.label }}
+                        </button>
+                    </div>
 
-                            <TabPanel value="1">
-                                <!-- Reviews -->
-                                <Commentable
-                                    :commentable-id="props.resource.id"
-                                    :commentable-type="'resource'"
-                                    :comments-count="
-                                        props.resource.comments_count
-                                    "
-                                    :load-on-mount="true"
-                                ></Commentable>
-                            </TabPanel>
+                    <!-- Tab Panels -->
+                    <div class="px-6 pb-6">
+                        <div v-if="props.tab === 'reviews'">
+                            <Deferred data="reviews">
+                                <template #fallback>
+                                    <div>Loading...</div>
+                                </template>
+                                <ResourceReviews
+                                    :reviews="reviews"
+                                    :resource-id="props.resource.id"
+                                />
+                            </Deferred>
+                        </div>
 
-                            <TabPanel value="2">
-                                <Deferred data="resourceEdits">
-                                    <template #fallback>
-                                        <div>Loading...</div>
-                                    </template>
+                        <div v-else-if="props.tab === 'discussion'">
+                            <Commentable
+                                :commentable-id="props.resource.id"
+                                :commentable-type="'resource'"
+                                :comments-count="props.resource.comments_count"
+                                :load-on-mount="true"
+                            />
+                        </div>
 
-                                    <!-- Edits -->
-                                    <ResourceEdits
-                                        :resource-id="props.resource.id"
-                                        :resource-edits="resourceEdits"
-                                    ></ResourceEdits>
-                                </Deferred>
-                            </TabPanel>
-                        </TabPanels>
-                    </Tabs>
+                        <div v-else-if="props.tab === 'edits'">
+                            <Deferred data="resourceEdits">
+                                <template #fallback>
+                                    <div>Loading...</div>
+                                </template>
+                                <ResourceEdits
+                                    :resource-id="props.resource.id"
+                                    :resource-edits="resourceEdits"
+                                />
+                            </Deferred>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

@@ -19,7 +19,7 @@ class ResourceEdits extends Model
 
     protected $guarded = [];
 
-    protected $with = ['votes','upvoteSummary', 'commentsCountRelationship'];
+    protected $with = ['votes','upvoteSummary', 'commentsCountRelationship', 'resource'];
 
     protected $appends = ['user_vote', 'vote_score', 'comments_count', 'can_merge_edits'];
 

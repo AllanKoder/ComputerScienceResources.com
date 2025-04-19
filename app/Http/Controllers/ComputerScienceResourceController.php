@@ -16,7 +16,8 @@ class ComputerScienceResourceController extends Controller
     public function index()
     {
         // Eager load topic tags and other tag types as needed
-        $resources = ComputerScienceResource::paginate(10);
+        $resources = ComputerScienceResource::with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship'])
+            ->paginate(10);
         return Inertia::render('Resources/Index', [
             'resources' => $resources,
         ]);
@@ -71,14 +72,38 @@ class ComputerScienceResourceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ComputerScienceResource $computerScienceResource)
+    public function show(ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
     {
-        return Inertia::render('Resources/Show', [
-            'resource' => fn() => $computerScienceResource->load('user'),
-            'reviews' => Inertia::defer(fn () => $computerScienceResource->reviews()->orderByDesc('created_at')->get()),
-            'resourceEdits' => Inertia::defer(fn () => $computerScienceResource->edits),
-        ]);
+        $validTabs = ['reviews', 'discussion', 'edits'];
+       
+        if (!in_array($tab, $validTabs)) {
+            // Redirect to default if invalid
+            return redirect()->route('resources.show', [
+                'computerScienceResource' => $computerScienceResource->id,
+                'tab' => 'reviews',
+            ]);
+        }
+    
+        // Load the resource
+        $data = [
+            'tab' => $tab,
+            'resource' => $computerScienceResource,
+        ];
+    
+        // Load only the necessary tab data
+        if ($tab === 'reviews') {
+            $data['reviews'] = Inertia::defer(fn () =>
+                $computerScienceResource->reviews()->orderByDesc('created_at')->get()
+            );
+        } elseif ($tab === 'edits') {
+            $data['resourceEdits'] = Inertia::defer(fn () =>
+                $computerScienceResource->edits
+            );
+        }
+    
+        return Inertia::render('Resources/Show', $data);
     }
+    
 
     /**
      * Remove the specified resource from storage.
