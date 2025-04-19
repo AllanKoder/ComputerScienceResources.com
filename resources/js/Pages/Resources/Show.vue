@@ -1,8 +1,7 @@
 <script setup>
-import { Head, Deferred } from "@inertiajs/vue3";
+import { Head, Deferred, Link } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Tag from "primevue/tag";
-import { router } from '@inertiajs/vue3';
 import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
 import {
     pricingLabels,
@@ -39,20 +38,6 @@ const tabs = [
     { label: "Discussion", value: "discussion" },
     { label: "Proposed Edits", value: "edits" },
 ];
-
-function navigateToTab(tab) {
-    router.visit(
-        route("resources.show", {
-            computerScienceResource: props.resource.id,
-            tab,
-        }),
-        {
-            preserveScroll: true,
-            preserveState: true,
-            except: ['resource'],
-        }
-    );
-}
 </script>
 
 <template>
@@ -195,10 +180,8 @@ function navigateToTab(tab) {
 
                     <!-- Custom Tab Navigation -->
                     <div class="flex border-b mb-4 space-x-6 px-6">
-                        <button
+                        <div
                             v-for="tab in tabs"
-                            :key="tab.value"
-                            @click="navigateToTab(tab.value)"
                             :class="[
                                 'py-2 border-b-2 font-medium transition-all duration-200',
                                 props.tab === tab.value
@@ -206,8 +189,23 @@ function navigateToTab(tab) {
                                     : 'border-transparent text-gray-600 hover:text-blue-600 hover:border-blue-600',
                             ]"
                         >
-                            {{ tab.label }}
-                        </button>
+                            <Link
+                                :except="['resource']"
+                                preserve-scroll
+                                preserve-state
+                                prefetch
+                                cache-for="10s"
+                                :href="
+                                    route('resources.show', {
+                                        computerScienceResource:
+                                            props.resource.id,
+                                        tab: tab.value,
+                                    })
+                                "
+                            >
+                                {{ tab.label }}
+                            </Link>
+                        </div>
                     </div>
 
                     <!-- Tab Panels -->
