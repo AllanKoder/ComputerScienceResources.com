@@ -2,7 +2,7 @@
 import { defineProps, ref } from "vue";
 import { Icon } from "@iconify/vue";
 import SingleComment from "./SingleComment.vue";
-import { MAX_COMMENT_DEPTH } from "@/Helpers/constants";
+import { configData } from "@/Helpers/config";
 
 const props = defineProps({
     idToChildren: {
@@ -73,7 +73,7 @@ const toggleCollapse = () => {
                     />
 
                     <CommentList
-                        v-if="depth < MAX_COMMENT_DEPTH && comment"
+                        v-if="depth < configData().COMMENT_MAX_DEPTH && comment"
                         :depth="depth + 1"
                         :parent-id="comment.id"
                         :id-to-children="idToChildren"

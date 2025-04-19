@@ -70,7 +70,7 @@ Route::controller(ComputerScienceResourceController::class)->group(function () {
 
 // Comments
 Route::controller(CommentController::class)->group(function () {
-    Route::get('/comments/show/{type}/{id}/{index}', 'show')->name('comments.show');
+    Route::get('/comments/show/{type}/{id}/{paginationLimit}/{index}', 'show')->name('comments.show');
 });
 
 // Resource Edits

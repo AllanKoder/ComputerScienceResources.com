@@ -139,23 +139,25 @@ class CommentController extends Controller
     /**
      * Display the specified comment, with pagination.
      */
-    public function show(string $commentableType, int $commentableId, int $index)
+    public function show(string $commentableType, int $commentableId, int $paginationLimit, int $index)
     {
         validator(
             [
                 'index' => $index,
                 'commentable_type' => $commentableType,
+                'paginationLimit' => $paginationLimit,
             ],
             [
-                'index' => 'required|integer|min:0',
-                'commentable_type' => ['required', Rule::in(config('comment.commentable_types'))]
+                'index' => ['required', 'integer', 'min:0'],
+                'commentable_type' => ['required', Rule::in(config('comment.commentable_types'))],
+                'paginationLimit' => ['required', 'integer', 'max:'.config('comment.pagination_limit')],
             ]
         )->validate();
 
         Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index);
 
         $commentableType = $this->modelResolver->getModelClass($commentableType);
-        $paginatedResults = $this->commentService->getPaginatedComments($commentableType, $commentableId, $index);
+        $paginatedResults = $this->commentService->getPaginatedComments($commentableType, $commentableId, $index, $paginationLimit);
         
         return $paginatedResults;
     }

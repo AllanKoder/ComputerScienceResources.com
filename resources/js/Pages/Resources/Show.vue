@@ -7,10 +7,11 @@ import {
     pricingLabels,
     difficultyLabels,
     platformColors,
-} from "@/Helpers/constants.js";
+} from "@/Helpers/labels.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
+import { configData } from "@/Helpers/config";
 
 const props = defineProps({
     tab: {
@@ -238,7 +239,8 @@ const tabs = [
                                         props.resource.comments_count
                                     "
                                     :loaded-comment-data="discussion"
-                                />
+                                    :pagination-limit="configData().COMMENT_PAGINATION_LIMIT"
+                                    />
                             </Deferred>
                         </div>
 

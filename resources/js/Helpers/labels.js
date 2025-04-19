@@ -1,14 +1,5 @@
 /**
- * 
- * Contants used throughout the application
- * 
- * Related to vital operations of the frontend
- */
-export const MAX_COMMENT_DEPTH = 7;
-
-
-/**
- * Constants on the more visual end of things
+ * Labels on the more visual end of things
  * 
  */
 export const platforms = [

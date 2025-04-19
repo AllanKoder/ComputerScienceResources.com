@@ -37,9 +37,13 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'flash' => [
-                'success' => fn () => $request->session()->get('success'),
-                'warning' => fn () => $request->session()->get('warning'),
-                'error'   => fn () => $request->session()->get('error'),
+                'success' => $request->session()->get('success'),
+                'warning' => $request->session()->get('warning'),
+                'error'   => $request->session()->get('error'),
+            ],
+            'config' => [
+                'COMMENT_MAX_DEPTH' => config('comment.max_depth'),
+                'COMMENT_PAGINATION_LIMIT' => config('comment.pagination_limit'),
             ]
         ];
     }

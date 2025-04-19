@@ -102,7 +102,8 @@ class ComputerScienceResourceController extends Controller
             );
         } elseif ($tab === 'discussion') {
             $data['discussion'] = Inertia::defer(fn () =>
-                $commentService->getPaginatedComments(ComputerScienceResource::class, $computerScienceResource->id, 0)
+            // TODO: Pagination limit
+                $commentService->getPaginatedComments(ComputerScienceResource::class, $computerScienceResource->id, 0, 150)
             );
         }
         

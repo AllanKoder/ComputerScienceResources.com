@@ -1,6 +1,6 @@
 <script setup>
 import { defineProps } from "vue";
-import { ratingLabels } from "@/Helpers/constants";
+import { ratingLabels } from "@/Helpers/labels";
 import Rating from "primevue/rating";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";

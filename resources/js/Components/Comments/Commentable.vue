@@ -21,9 +21,14 @@ const props = defineProps({
         type: Object,
         required: false,
         default: null,
+    },
+    paginationLimit: {
+        type: Number,
+        default: 5
     }
 });
 
+const hasLoadedCommentData = props.loadedCommentData != null;
 const usersMap = ref(new Map());
 const canLoadMoreComments = ref(true);
 const currentIndex = ref(0);
@@ -125,6 +130,7 @@ async function loadComments() {
                 id: props.commentableId,
                 type: props.commentableType,
                 index: currentIndex.value,
+                paginationLimit: props.paginationLimit
             })
         );
 
@@ -142,7 +148,7 @@ async function loadComments() {
 }
 
 onMounted(() => {
-    if (props.loadedCommentData)
+    if (hasLoadedCommentData)
     {
         addCommentData(props.loadedCommentData);
     }

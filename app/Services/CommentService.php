@@ -10,12 +10,7 @@ use Illuminate\Support\Facades\Log;
 
 class CommentService
 {
-    protected $maxPerPage;
-
-    public function __construct()
-    {
-        $this->maxPerPage = config('comment.pagination_limit', 10);
-    }
+    public function __construct() { }
 
     /**
      * Get paginated comments with custom logic.
@@ -25,8 +20,12 @@ class CommentService
      * @param int    $index
      * @return array
      */
-    public function getPaginatedComments(string $commentableType, int $commentableId, int $index): array
+    public function getPaginatedComments(string $commentableType, int $commentableId, int $index, int $paginationLimit = -1): array
     {
+        if ($paginationLimit == -1)
+        {
+            $paginationLimit = config('comment.default_pagination_limit');
+        }
         Log::debug("Request is, commentable_type: {$commentableType}. id: {$commentableId}. index: {$index}");
 
         // Get the root comments:
@@ -50,7 +49,7 @@ class CommentService
             $childrenCount = $comment->children_count + 1;
 
             // Handle comments that exceed MAX when alone in a page
-            if ($currentCommentsSum + $childrenCount > $this->maxPerPage) {
+            if ($currentCommentsSum + $childrenCount > $paginationLimit) {
                 if ($currentCommentsSum === 0) {
                     // Force include oversized comment if it's the first in page
                     Log::warning("Had to force include for oversized comment tree. Should consider increasing the max commentx in config or lowering the replies size limit.");
