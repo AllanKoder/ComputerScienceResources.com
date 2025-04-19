@@ -7,7 +7,7 @@
     },
     "devDependencies": {
         "@iconify/vue": "^4.3.0",
-        "@inertiajs/vue3": "^1.0.14",
+        "@inertiajs/vue3": "^2.0.8",
         "@tailwindcss/forms": "^0.5.7",
         "@tailwindcss/typography": "^0.5.10",
         "@vitejs/plugin-vue": "^5.0.0",
