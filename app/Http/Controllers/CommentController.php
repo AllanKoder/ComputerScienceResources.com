@@ -7,7 +7,6 @@ use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Services\ModelResolverService;
-use Illuminate\Database\Eloquent\Collection;
 use App\Http\Resources\UserResource;
 use App\Services\CommentService;
 use Auth;
@@ -157,44 +156,7 @@ class CommentController extends Controller
 
         $commentableType = $this->modelResolver->getModelClass($commentableType);
         $paginatedResults = $this->commentService->getPaginatedComments($commentableType, $commentableId, $index);
-        $nestedComments = new Collection($paginatedResults['comments']);
-
-        // Lazy eager load the user for the root comment and for each reply.
-        $nestedComments->load(['user', 'replies.user']);
-
-        // Flatten the comments and replies into the desired format.
-        $flattenedComments = collect();
-
-        foreach ($nestedComments as $comment) {
-            // Transform the root comment.
-            $flattenedComments->push(
-                new CommentResource($comment)
-            );
-
-            // Transform any loaded replies.
-            if ($comment->relationLoaded('replies')) {
-                foreach ($comment->replies as $reply) {
-                    $flattenedComments->push(
-                        new CommentResource($reply)
-                    );
-                }
-            }
-        }
-
-        // Extract unique users into a separate collection.
-        $users = collect();
-
-        foreach ($flattenedComments as $comment) {
-            if ($comment->relationLoaded('user') && $comment->user) {
-                $users->put($comment->user->id, new UserResource($comment->user));
-            }
-        }
-
-        Log::debug("Returned comments: " . json_encode($flattenedComments));
-        return [
-            'comments' => $flattenedComments,
-            'users' => $users->values(),
-            'has_more_comments' => $paginatedResults['has_more_comments'],
-        ];
+        
+        return $paginatedResults;
     }
 }

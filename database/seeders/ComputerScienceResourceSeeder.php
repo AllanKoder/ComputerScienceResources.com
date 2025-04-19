@@ -14,6 +14,6 @@ class ComputerScienceResourceSeeder extends Seeder
      */
     public function run(): void
     {
-        ComputerScienceResource::factory(1)->create();
+        ComputerScienceResource::factory(5)->create();
     }
 }

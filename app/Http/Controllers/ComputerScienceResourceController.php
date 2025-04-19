@@ -4,11 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
-use App\Models\ResourceReview;
-use Illuminate\Database\Console\DumpCommand;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Auth;
 
@@ -77,11 +73,9 @@ class ComputerScienceResourceController extends Controller
      */
     public function show(ComputerScienceResource $computerScienceResource)
     {
-        $reviews = $computerScienceResource->reviews()->orderByDesc('created_at')->get();
-
         return Inertia::render('Resources/Show', [
             'resource' => fn() => $computerScienceResource->load('user'),
-            'reviews' => fn () => $reviews,
+            'reviews' => Inertia::defer(fn () => $computerScienceResource->reviews()->orderByDesc('created_at')->get()),
         ]);
     }
 

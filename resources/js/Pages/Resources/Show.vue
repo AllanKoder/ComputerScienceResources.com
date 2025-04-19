@@ -1,9 +1,13 @@
 <script setup>
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Deferred } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Tag from "primevue/tag";
 import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
-import { pricingLabels, difficultyLabels, platformColors } from "@/Helpers/constants.js";
+import {
+    pricingLabels,
+    difficultyLabels,
+    platformColors,
+} from "@/Helpers/constants.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
 import ResourceTab from "@/Components/Resources/ResourceEdit/ResourceTab.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
@@ -14,14 +18,9 @@ const props = defineProps({
         type: Object,
         required: true,
     },
-    reviews: {
-        type: Object,
-        required: true,
-    },
 });
 
 const emit = defineEmits(["upvote", "downvote"]);
-
 </script>
 
 <template>
@@ -77,13 +76,16 @@ const emit = defineEmits(["upvote", "downvote"]);
                                                 >Pricing:</span
                                             >
                                             <span class="text-gray-600 ml-1">{{
-                                                pricingLabels[props.resource.pricing]
+                                                pricingLabels[
+                                                    props.resource.pricing
+                                                ]
                                             }}</span>
                                         </div>
                                     </div>
                                     <div class="flex flex-wrap gap-2 mb-2">
                                         <Tag
-                                            v-for="platform in props.resource.platforms"
+                                            v-for="platform in props.resource
+                                                .platforms"
                                             :key="platform"
                                             :value="platform"
                                             :severity="platformColors[platform]"
@@ -92,21 +94,24 @@ const emit = defineEmits(["upvote", "downvote"]);
                                     </div>
                                     <div class="flex flex-wrap gap-1">
                                         <Tag
-                                            v-for="tag in props.resource.topic_tags"
+                                            v-for="tag in props.resource
+                                                .topic_tags"
                                             :key="tag"
                                             :value="tag"
                                             severity="info"
                                             class="text-xs"
                                         />
                                         <Tag
-                                            v-for="tag in props.resource.programming_language_tags"
+                                            v-for="tag in props.resource
+                                                .programming_language_tags"
                                             :key="tag"
                                             :value="tag"
                                             severity="success"
                                             class="text-xs"
                                         />
                                         <Tag
-                                            v-for="tag in props.resource.general_tags"
+                                            v-for="tag in props.resource
+                                                .general_tags"
                                             :key="tag"
                                             :value="tag"
                                             severity="warning"
@@ -132,7 +137,10 @@ const emit = defineEmits(["upvote", "downvote"]);
                             <div class="text-sm text-gray-500">
                                 <p>
                                     Posted by:
-                                    {{ props.resource.user?.name ?? "Unknown User" }}
+                                    {{
+                                        props.resource.user?.name ??
+                                        "Unknown User"
+                                    }}
                                 </p>
                                 <p>
                                     Created:
@@ -153,7 +161,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Tabs-->
                     <Tabs value="0">
                         <TabList>
@@ -162,11 +170,16 @@ const emit = defineEmits(["upvote", "downvote"]);
                         </TabList>
                         <TabPanels>
                             <TabPanel value="0">
-                                <!-- Reviews -->
-                                <ResourceReviews
-                                    :reviews="props.reviews"
-                                    :resource-id="props.resource.id"
-                                ></ResourceReviews>
+                                <Deferred data="reviews">
+                                    <template #fallback>
+                                        <div>Loading...</div>
+                                    </template>
+                                    <!-- Reviews -->
+                                    <ResourceReviews
+                                        :reviews="reviews"
+                                        :resource-id="props.resource.id"
+                                    ></ResourceReviews>
+                                </Deferred>
                             </TabPanel>
 
                             <TabPanel value="1">
@@ -174,7 +187,9 @@ const emit = defineEmits(["upvote", "downvote"]);
                                 <Commentable
                                     :commentable-id="props.resource.id"
                                     :commentable-type="'resource'"
-                                    :comments-count="props.resource.comments_count"
+                                    :comments-count="
+                                        props.resource.comments_count
+                                    "
                                     :load-on-mount="true"
                                 ></Commentable>
                             </TabPanel>

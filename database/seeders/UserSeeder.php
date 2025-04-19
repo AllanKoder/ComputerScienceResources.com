@@ -19,12 +19,14 @@ class UserSeeder extends Seeder
         Log::info('Running UserSeeder');
         User::factory(10)->create();
 
-        User::factory()->create(
-            [
-                'name'=>'Allan Kong',
-                'email'=>'allankong176@gmail.com',
-                'password'=>Hash::make('password'),
-            ]
-        );
+        if (!User::where('name','Allan Kong')->exists()) {
+            User::factory()->create(
+                [
+                    'name' => 'Allan Kong',
+                    'email' => 'allankong176@gmail.com',
+                    'password' => Hash::make('password'),
+                ]
+            );
+        }
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Http\Resources\CommentResource;
+use App\Http\Resources\UserResource;
 use App\Models\Comment;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 
 class CommentService
@@ -30,8 +32,8 @@ class CommentService
         // Get the root comments:
         $rootComments = Comment::where([
             'commentable_type' => $commentableType,
-            'commentable_id'   => $commentableId,
-            'depth'            => 1,
+            'commentable_id' => $commentableId,
+            'depth' => 1,
         ])
             ->orderBy('created_at')
             ->get();
@@ -40,7 +42,7 @@ class CommentService
 
         // Initialize variables
         $currentCommentsSum = 0;
-        $commentsToReturn = [];
+        $resultingPaginatedComments = [];
         $currentIndex = 0;
         $hasMoreComments = false;
 
@@ -53,7 +55,7 @@ class CommentService
                     // Force include oversized comment if it's the first in page
                     Log::warning("Had to force include for oversized comment tree. Should consider increasing the max commentx in config or lowering the replies size limit.");
                     if ($currentIndex === $index) {
-                        $commentsToReturn[] = $comment;
+                        $resultingPaginatedComments[] = $comment;
                         $currentCommentsSum += $childrenCount;
                     }
                     $currentIndex++;
@@ -71,13 +73,47 @@ class CommentService
             }
             // Only add comments for the desired index
             else if ($currentIndex === $index) {
-                $commentsToReturn[] = $comment;
+                $resultingPaginatedComments[] = $comment;
             }
             $currentCommentsSum += $childrenCount;
         }
 
+        $nestedComments = new Collection($resultingPaginatedComments);
+        // Lazy eager load the user for the root comment and for each reply.
+        $nestedComments->load(['user', 'replies.user']);
+
+        // Flatten the comments and replies into the desired format.
+        $flattenedComments = collect();
+
+        foreach ($nestedComments as $comment) {
+            // Transform the root comment.
+            $flattenedComments->push(
+                new CommentResource($comment)
+            );
+
+            // Transform any loaded replies.
+            if ($comment->relationLoaded('replies')) {
+                foreach ($comment->replies as $reply) {
+                    $flattenedComments->push(
+                        new CommentResource($reply)
+                    );
+                }
+            }
+        }
+
+        // Extract unique users into a separate collection.
+        $users = collect();
+
+        foreach ($flattenedComments as $comment) {
+            if ($comment->relationLoaded('user') && $comment->user) {
+                $users->put($comment->user->id, new UserResource($comment->user));
+            }
+        }
+
+        Log::debug("Returned comments: " . json_encode($flattenedComments));
         return [
-            'comments' => new Collection($commentsToReturn),
+            'comments' => $flattenedComments,
+            'users' => $users->values(),
             'has_more_comments' => $hasMoreComments,
         ];
     }
