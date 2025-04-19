@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
+use App\Services\CommentService;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Auth;
@@ -72,7 +73,7 @@ class ComputerScienceResourceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
+    public function show(CommentService $commentService, ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
     {
         $validTabs = ['reviews', 'discussion', 'edits'];
        
@@ -84,7 +85,7 @@ class ComputerScienceResourceController extends Controller
             ]);
         }
     
-        // Load the resource
+        // return the resource and tab
         $data = [
             'tab' => $tab,
             'resource' => $computerScienceResource,
@@ -99,8 +100,12 @@ class ComputerScienceResourceController extends Controller
             $data['resourceEdits'] = Inertia::defer(fn () =>
                 $computerScienceResource->edits
             );
+        } elseif ($tab === 'discussion') {
+            $data['discussion'] = Inertia::defer(fn () =>
+                $commentService->getPaginatedComments(ComputerScienceResource::class, $computerScienceResource->id, 0)
+            );
         }
-    
+        
         return Inertia::render('Resources/Show', $data);
     }
     

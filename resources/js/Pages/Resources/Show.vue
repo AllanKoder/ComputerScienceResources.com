@@ -21,6 +21,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    discussion: {
+        type: Object,
+        required: false,
+    },
     reviews: {
         type: Array,
         required: false,
@@ -223,12 +227,19 @@ const tabs = [
                         </div>
 
                         <div v-else-if="props.tab === 'discussion'">
-                            <Commentable
-                                :commentable-id="props.resource.id"
-                                :commentable-type="'resource'"
-                                :comments-count="props.resource.comments_count"
-                                :load-on-mount="true"
-                            />
+                            <Deferred data="discussion">
+                                <template #fallback>
+                                    <div>Loading...</div>
+                                </template>
+                                <Commentable
+                                    :commentable-id="props.resource.id"
+                                    :commentable-type="'resource'"
+                                    :comments-count="
+                                        props.resource.comments_count
+                                    "
+                                    :loaded-comment-data="discussion"
+                                />
+                            </Deferred>
                         </div>
 
                         <div v-else-if="props.tab === 'edits'">
