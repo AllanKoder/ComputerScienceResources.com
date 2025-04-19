@@ -18,6 +18,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    reviews: {
+        type: Array,
+        required: false,
+    },
 });
 
 const emit = defineEmits(["upvote", "downvote"]);
