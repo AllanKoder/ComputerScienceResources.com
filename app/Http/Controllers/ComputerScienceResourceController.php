@@ -76,6 +76,7 @@ class ComputerScienceResourceController extends Controller
         return Inertia::render('Resources/Show', [
             'resource' => fn() => $computerScienceResource->load('user'),
             'reviews' => Inertia::defer(fn () => $computerScienceResource->reviews()->orderByDesc('created_at')->get()),
+            'resourceEdits' => Inertia::defer(fn () => $computerScienceResource->edits),
         ]);
     }
 

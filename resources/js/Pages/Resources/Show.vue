@@ -9,9 +9,9 @@ import {
     platformColors,
 } from "@/Helpers/constants.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
-import ResourceTab from "@/Components/Resources/ResourceEdit/ResourceTab.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import { Tabs, TabPanel, Tab, TabPanels, TabList } from "primevue";
+import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
 
 const props = defineProps({
     resource: {
@@ -22,6 +22,10 @@ const props = defineProps({
         type: Array,
         required: false,
     },
+    resourceEdits: {
+        type: Array,
+        required: false,
+    }
 });
 
 const emit = defineEmits(["upvote", "downvote"]);
@@ -34,7 +38,6 @@ const emit = defineEmits(["upvote", "downvote"]);
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 sm:p-8">
-                        <ResourceTab :resource-id="props.resource.id" />
                         <div class="relative">
                             <div
                                 class="flex flex-col md:flex-row items-start mb-6"
@@ -171,6 +174,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                         <TabList>
                             <Tab value="0">Reviews</Tab>
                             <Tab value="1">Discussion</Tab>
+                            <Tab value="2">Proposed Edits</Tab>
                         </TabList>
                         <TabPanels>
                             <TabPanel value="0">
@@ -196,6 +200,20 @@ const emit = defineEmits(["upvote", "downvote"]);
                                     "
                                     :load-on-mount="true"
                                 ></Commentable>
+                            </TabPanel>
+
+                            <TabPanel value="2">
+                                <Deferred data="resourceEdits">
+                                    <template #fallback>
+                                        <div>Loading...</div>
+                                    </template>
+
+                                    <!-- Edits -->
+                                    <ResourceEdits
+                                        :resource-id="props.resource.id"
+                                        :resource-edits="resourceEdits"
+                                    ></ResourceEdits>
+                                </Deferred>
                             </TabPanel>
                         </TabPanels>
                     </Tabs>
