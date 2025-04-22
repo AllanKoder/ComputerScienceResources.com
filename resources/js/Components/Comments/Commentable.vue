@@ -1,7 +1,8 @@
 <script setup>
-import { ref, provide, readonly, nextTick, onMounted } from "vue";
+import { ref, provide, readonly, nextTick, onMounted, reactive } from "vue";
 import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
+import SortByDropdown from "@/Components/Comments/SortByDropdown.vue";
 import CommentList from "./CommentList.vue";
 
 const props = defineProps({
@@ -17,21 +18,37 @@ const props = defineProps({
         type: Number,
         required: true,
     },
-    loadOnMount: {
+    paginationLimit: {
+        type: Number,
+        default: 5,
+    },
+    sortByInitialValue: {
+        type: String,
+        default: "top"
+    },
+    loadedCommentData: {
+        type: Object,
+        required: false,
+        default: null,
+    },
+    hasSortByDropdown: {
         type: Boolean,
-        default: false,
-    }
+        default: true,
+    },
 });
 
-const users = ref(new Map());
-const can_load_more_comments = ref(true);
+const hasLoadedCommentData = props.loadedCommentData != null;
+const usersMap = ref(new Map());
+const canLoadMoreComments = ref(true);
 const currentIndex = ref(0);
 const isLoading = ref(false);
 const error = ref(null);
 const commentsLeft = ref(props.commentsCount);
 const idToChildren = ref(new Map());
+const sortBy = ref(props.sortByInitialValue);
+const hasOpenedComments = ref(false);
 
-const createdNewComment = (newComment, userData) => {
+const createdNewCommentCallback = (newComment, userData) => {
     console.log("Created a new comment!", newComment, userData);
     updateUsers([userData]);
     updateCommentHierarchy([newComment]);
@@ -53,52 +70,70 @@ const createdNewComment = (newComment, userData) => {
 
 provide("commentableId", props.commentableId);
 provide("commentableType", props.commentableType);
-provide("users", readonly(users));
-provide("createdNewComment", createdNewComment);
+provide("users", readonly(usersMap));
+provide("createdNewCommentCallback", createdNewCommentCallback);
 
 function updateUsers(newUsers) {
+    //normalize: if it’s a `{ data: { … } }` wrapper, grab `.data`
+    const users = newUsers.map((u) => u.data ?? u);
+
     // Convert API response users to Map
     const normalizeUsers = (usersArray) =>
         new Map(usersArray.map((user) => [user.id, user]));
 
     // Setting the map to a new value
     if (currentIndex.value === 0) {
-        users.value = normalizeUsers(newUsers);
+        usersMap.value = normalizeUsers(users);
     } else {
-        users.value = new Map([...users.value, ...normalizeUsers(newUsers)]);
+        usersMap.value = new Map([...usersMap.value, ...normalizeUsers(users)]);
     }
 }
 
 function updateCommentHierarchy(newComments) {
+    //normalize: if it’s a `{ data: { … } }` wrapper, grab `.data`
+    const comments = newComments.map((c) => c.data ?? c);
+
+    commentsLeft.value -= comments.length;
+
     const hierarchyUpdates = {};
-
-    commentsLeft.value -= newComments.length;
-
-    newComments.forEach((comment) => {
+    comments.forEach((comment) => {
+        // now comment.parent_comment_id is either a number or null
         const parentId = comment.parent_comment_id;
+
         if (!hierarchyUpdates[parentId]) {
             hierarchyUpdates[parentId] = [];
         }
         hierarchyUpdates[parentId].push(comment);
     });
 
-    // Merge updates into idToChildren with reactivity
+    // merge into your reactive map/object
     idToChildren.value = {
         ...idToChildren.value,
         ...Object.fromEntries(
-            Object.entries(hierarchyUpdates).map(([parentId, children]) => [
-                parentId,
-                [...(idToChildren.value[parentId] || []), ...children],
+            Object.entries(hierarchyUpdates).map(([pid, children]) => [
+                pid,
+                [...(idToChildren.value[pid] || []), ...children],
             ])
         ),
     };
 }
 
+function addCommentData(commentData) {
+    // Update the users
+    updateUsers(commentData.users);
+    // Update comment hierarchy for both new and existing comments
+    updateCommentHierarchy(commentData.comments);
+
+    canLoadMoreComments.value = commentData.has_more_comments;
+    currentIndex.value++;
+}
+
 async function loadComments() {
-    if (isLoading.value || !can_load_more_comments.value) return;
+    if (isLoading.value || !canLoadMoreComments.value) return;
 
     isLoading.value = true;
     error.value = null;
+    hasOpenedComments.value = true;
 
     try {
         const response = await axios.get(
@@ -106,18 +141,16 @@ async function loadComments() {
                 id: props.commentableId,
                 type: props.commentableType,
                 index: currentIndex.value,
+                paginationLimit: props.paginationLimit,
+                sort_by: sortBy.value,
             })
         );
 
-        console.log(response);
+        console.log(response.data);
+        console.log(props.loadedCommentData);
 
         // Update the users
-        updateUsers(response.data.users);
-        // Update comment hierarchy for both new and existing comments
-        updateCommentHierarchy(response.data.comments);
-
-        can_load_more_comments.value = response.data.has_more_comments;
-        currentIndex.value++;
+        addCommentData(response.data);
     } catch (err) {
         console.error("Error fetching comments:", err);
         error.value = "Failed to load comments. Please try again later.";
@@ -126,17 +159,36 @@ async function loadComments() {
     }
 }
 
+function handleSortChange(newSortType) {
+    if (newSortType == sortBy.value) return;
+
+    sortBy.value = newSortType;
+
+    usersMap.value = new Map();
+    canLoadMoreComments.value = true;
+    isLoading.value = false;
+    error.value = null;
+    commentsLeft.value = props.commentsCount;
+    idToChildren.value = new Map();
+
+    currentIndex.value = 0;
+    loadComments();
+}
+
 onMounted(() => {
-    if (props.loadOnMount)
-    {
-        console.log('loaded');
-        loadComments();
+    if (hasLoadedCommentData) {
+        addCommentData(props.loadedCommentData);
     }
 });
 </script>
 
 <template>
     <div class="comments-section p-4">
+        <SortByDropdown
+            v-if="props.hasSortByDropdown && hasOpenedComments"
+            @change="handleSortChange"
+        ></SortByDropdown>
+
         <!-- Error State -->
         <div v-if="error" class="text-red-500 mb-4">{{ error }}</div>
 
@@ -151,7 +203,7 @@ onMounted(() => {
         <!-- Load More Button -->
         <div v-if="commentsLeft > 0">
             <button
-                v-if="can_load_more_comments && !isLoading"
+                v-if="canLoadMoreComments && !isLoading"
                 @click="loadComments"
                 class="w-full py-2 text-center text-blue-500 hover:bg-gray-50 transition-colors"
             >

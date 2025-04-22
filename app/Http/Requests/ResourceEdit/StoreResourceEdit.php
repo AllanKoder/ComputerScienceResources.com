@@ -3,7 +3,7 @@
 namespace App\Http\Requests\ResourceEdit;
 
 use App\Http\Requests\Shared\ComputerScienceResourceRequest;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreResourceEdit extends FormRequest

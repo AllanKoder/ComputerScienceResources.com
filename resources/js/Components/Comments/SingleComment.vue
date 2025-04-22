@@ -2,7 +2,7 @@
 import { computed, inject } from "vue";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import Upvotable from "../Upvote/Upvotable.vue";
-import { MAX_COMMENT_DEPTH } from "@/Helpers/constants";
+import { getConfigData } from "@/Helpers/config";
 
 const props = defineProps({
     comment: {
@@ -66,7 +66,7 @@ const formattedDate = computed(() =>
 
         <!-- Actions Form -->
         <CommentActionsForm
-            v-if="depth <= MAX_COMMENT_DEPTH"
+            v-if="depth <= getConfigData().COMMENT_MAX_DEPTH"
             :key="`actions-${comment.id}`"
             :parent-comment-id="comment.id"
             class="mt-2"

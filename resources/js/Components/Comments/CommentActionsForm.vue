@@ -20,7 +20,7 @@ const isOpen = ref(false);
 
 const commentableType = inject("commentableType");
 const commentableId = inject("commentableId");
-const createdNewComment = inject("createdNewComment");
+const createdNewCommentCallback = inject("createdNewCommentCallback");
 
 const toggleOpen = () => {
     isOpen.value = !isOpen.value;
@@ -44,7 +44,7 @@ const submit = () => {
             console.log("Successful comment post!");
 
             // Notify the parent that a comment is made
-            createdNewComment(response.data.new_comment, response.data.user);
+            createdNewCommentCallback(response.data.new_comment, response.data.user);
 
             form.content = "";
             isOpen.value = false;

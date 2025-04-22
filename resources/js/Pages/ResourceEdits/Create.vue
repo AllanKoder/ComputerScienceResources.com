@@ -17,7 +17,7 @@ import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import TagSelector from "@/Components/Form/TagSelector.vue";
 
 // Helpers and Constants
-import { platforms, pricings, difficulties } from "@/Helpers/constants";
+import { platforms, pricings, difficulties } from "@/Helpers/labels";
 import {
     resourceEditsMandatoryFields,
     resourceMandatoryFields,

@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
-use App\Models\ResourceReview;
-use Illuminate\Database\Console\DumpCommand;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Services\CommentService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Auth;
 
 class ComputerScienceResourceController extends Controller
 {
@@ -20,7 +18,8 @@ class ComputerScienceResourceController extends Controller
     public function index()
     {
         // Eager load topic tags and other tag types as needed
-        $resources = ComputerScienceResource::paginate(10);
+        $resources = ComputerScienceResource::with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship'])
+            ->paginate(10);
         return Inertia::render('Resources/Index', [
             'resources' => $resources,
         ]);
@@ -75,15 +74,44 @@ class ComputerScienceResourceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ComputerScienceResource $computerScienceResource)
+    public function show(Request $request, CommentService $commentService, ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
     {
-        $reviews = $computerScienceResource->reviews()->orderByDesc('created_at')->get();
-
-        return Inertia::render('Resources/Show', [
-            'resource' => fn() => $computerScienceResource->load('user'),
-            'reviews' => fn () => $reviews,
-        ]);
+        $validTabs = ['reviews', 'discussion', 'edits'];
+       
+        if (!in_array($tab, $validTabs)) {
+            // Redirect to default if invalid
+            return redirect()->route('resources.show', [
+                'computerScienceResource' => $computerScienceResource->id,
+                'tab' => 'reviews',
+            ]);
+        }
+    
+        // return the resource and tab
+        $data = [
+            'tab' => $tab,
+            'resource' => $computerScienceResource,
+        ];
+    
+        // Load only the necessary tab data
+        if ($tab === 'reviews') {
+            $data['reviews'] = Inertia::defer(fn () =>
+                $computerScienceResource->reviews()->orderByDesc('created_at')->get()
+            );
+        } elseif ($tab === 'edits') {
+            $data['resourceEdits'] = Inertia::defer(fn () =>
+                $computerScienceResource->edits
+            );
+        } elseif ($tab === 'discussion') {
+            $sortBy = $request->query('sort_by', 'top');
+            $data['discussion'] = Inertia::defer(fn () =>
+                $commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
+            );
+            $data['discussionSortByValue'] = $sortBy;
+        }
+ 
+        return Inertia::render('Resources/Show', $data);
     }
+    
 
     /**
      * Remove the specified resource from storage.

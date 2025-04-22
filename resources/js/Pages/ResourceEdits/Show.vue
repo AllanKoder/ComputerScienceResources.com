@@ -11,7 +11,7 @@ import {
     pricingLabels,
     difficultyLabels,
     platformColors,
-} from "@/Helpers/constants.js";
+} from "@/Helpers/labels.js";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 

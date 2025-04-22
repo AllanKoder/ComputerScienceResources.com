@@ -13,7 +13,7 @@ import {
     platforms,
     pricings,
     difficulties,
-} from "@/Helpers/constants";
+} from "@/Helpers/labels";
 import { reactive } from "vue";
 import { resourceMandatoryFields } from "@/Helpers/validation";
 

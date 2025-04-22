@@ -7,28 +7,12 @@ use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
 use App\Http\Requests\ResourceEdit\StoreResourceEdit;
 use App\Http\Resources\ComputerScienceResourceResource;
-use Arr;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Log;
 
 class ResourceEditsController extends Controller
 {
-    /**
-     * Show all the edits for a given index.
-     */
-    public function index(ComputerScienceResource $computerScienceResource)
-    {
-        $edits = $computerScienceResource->edits;
-
-        Log::debug("The edits: " . json_encode($edits));
-
-        return Inertia::render('ResourceEdits/Index', [
-            'resourceId' => $computerScienceResource->id,
-            'resourceEdits' => fn() => $edits,
-        ]);
-    }
-
     /**
      * Return the form to create a edit.
      */

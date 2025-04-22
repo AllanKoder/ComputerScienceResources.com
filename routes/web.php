@@ -65,18 +65,17 @@ Route::middleware([
 // -----------------------
 Route::controller(ComputerScienceResourceController::class)->group(function () {
     Route::get('/resources', 'index')->name('resources.index');
-    Route::get('/resources/{computerScienceResource}', 'show')->name('resources.show');
+    Route::get('/resources/{computerScienceResource}/{tab?}', 'show')->name('resources.show');
 });
 
 // Comments
 Route::controller(CommentController::class)->group(function () {
-    Route::get('/comments/show/{type}/{id}/{index}', 'show')->name('comments.show');
+    Route::get('/comments/show/{type}/{id}/{index}/{paginationLimit?}', 'show')->name('comments.show');
 });
 
 // Resource Edits
 Route::controller(ResourceEditsController::class)->group(function () {
     Route::get('/resource/edit/{resourceEdits}', 'show')->name('resource_edits.show');
-    Route::get('/resource/{computerScienceResource}/edit', 'index')->name('resource_edits.index');
 });
 
 require __DIR__.'/socialstream.php';

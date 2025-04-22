@@ -5,7 +5,7 @@ namespace App\Traits;
 use App\Models\Upvote;
 use App\Events\UpvoteProcessed;
 use App\Models\UpvoteSummary;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;

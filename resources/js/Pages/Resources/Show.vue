@@ -1,27 +1,53 @@
 <script setup>
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Deferred, Link } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Tag from "primevue/tag";
 import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
-import { pricingLabels, difficultyLabels, platformColors } from "@/Helpers/constants.js";
+import {
+    pricingLabels,
+    difficultyLabels,
+    platformColors,
+} from "@/Helpers/labels.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
-import ResourceTab from "@/Components/Resources/ResourceEdit/ResourceTab.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
-import { Tabs, TabPanel, Tab, TabPanels, TabList } from "primevue";
+import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
+import DiscussionSorting from "@/Components/Resources/Discussion/DiscussionSorting.vue";
+import { getConfigData } from "@/Helpers/config";
 
 const props = defineProps({
+    tab: {
+        type: String,
+        required: true,
+    },
     resource: {
         type: Object,
         required: true,
     },
-    reviews: {
+    discussion: {
         type: Object,
-        required: true,
+        required: false,
+    },
+    discussionSortByValue: {
+        type: String,
+        required: false,
+    },
+    reviews: {
+        type: Array,
+        required: false,
+    },
+    resourceEdits: {
+        type: Array,
+        required: false,
     },
 });
 
 const emit = defineEmits(["upvote", "downvote"]);
 
+const tabs = [
+    { label: "Reviews", value: "reviews" },
+    { label: "Discussion", value: "discussion" },
+    { label: "Proposed Edits", value: "edits" },
+];
 </script>
 
 <template>
@@ -31,7 +57,6 @@ const emit = defineEmits(["upvote", "downvote"]);
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 sm:p-8">
-                        <ResourceTab :resource-id="props.resource.id" />
                         <div class="relative">
                             <div
                                 class="flex flex-col md:flex-row items-start mb-6"
@@ -77,13 +102,16 @@ const emit = defineEmits(["upvote", "downvote"]);
                                                 >Pricing:</span
                                             >
                                             <span class="text-gray-600 ml-1">{{
-                                                pricingLabels[props.resource.pricing]
+                                                pricingLabels[
+                                                    props.resource.pricing
+                                                ]
                                             }}</span>
                                         </div>
                                     </div>
                                     <div class="flex flex-wrap gap-2 mb-2">
                                         <Tag
-                                            v-for="platform in props.resource.platforms"
+                                            v-for="platform in props.resource
+                                                .platforms"
                                             :key="platform"
                                             :value="platform"
                                             :severity="platformColors[platform]"
@@ -92,21 +120,24 @@ const emit = defineEmits(["upvote", "downvote"]);
                                     </div>
                                     <div class="flex flex-wrap gap-1">
                                         <Tag
-                                            v-for="tag in props.resource.topic_tags"
+                                            v-for="tag in props.resource
+                                                .topic_tags"
                                             :key="tag"
                                             :value="tag"
                                             severity="info"
                                             class="text-xs"
                                         />
                                         <Tag
-                                            v-for="tag in props.resource.programming_language_tags"
+                                            v-for="tag in props.resource
+                                                .programming_language_tags"
                                             :key="tag"
                                             :value="tag"
                                             severity="success"
                                             class="text-xs"
                                         />
                                         <Tag
-                                            v-for="tag in props.resource.general_tags"
+                                            v-for="tag in props.resource
+                                                .general_tags"
                                             :key="tag"
                                             :value="tag"
                                             severity="warning"
@@ -132,7 +163,10 @@ const emit = defineEmits(["upvote", "downvote"]);
                             <div class="text-sm text-gray-500">
                                 <p>
                                     Posted by:
-                                    {{ props.resource.user?.name ?? "Unknown User" }}
+                                    {{
+                                        props.resource.user?.name ??
+                                        "Unknown User"
+                                    }}
                                 </p>
                                 <p>
                                     Created:
@@ -153,33 +187,87 @@ const emit = defineEmits(["upvote", "downvote"]);
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Tabs-->
-                    <Tabs value="0">
-                        <TabList>
-                            <Tab value="0">Reviews</Tab>
-                            <Tab value="1">Discussion</Tab>
-                        </TabList>
-                        <TabPanels>
-                            <TabPanel value="0">
-                                <!-- Reviews -->
-                                <ResourceReviews
-                                    :reviews="props.reviews"
-                                    :resource-id="props.resource.id"
-                                ></ResourceReviews>
-                            </TabPanel>
 
-                            <TabPanel value="1">
-                                <!-- Reviews -->
+                    <!-- Custom Tab Navigation -->
+                    <div class="flex border-b mb-4 space-x-6 px-6">
+                        <div
+                            v-for="tab in tabs"
+                            :class="[
+                                'py-2 border-b-2 font-medium transition-all duration-200',
+                                props.tab === tab.value
+                                    ? 'border-blue-600 text-blue-600'
+                                    : 'border-transparent text-gray-600 hover:text-blue-600 hover:border-blue-600',
+                            ]"
+                        >
+                            <Link
+                                :except="['resource']"
+                                preserve-scroll
+                                preserve-state
+                                prefetch
+                                cache-for="10s"
+                                :href="
+                                    route('resources.show', {
+                                        computerScienceResource:
+                                            props.resource.id,
+                                        tab: tab.value,
+                                    })
+                                "
+                            >
+                                {{ tab.label }}
+                            </Link>
+                        </div>
+                    </div>
+
+                    <!-- Tab Panels -->
+                    <div class="px-6 pb-6">
+                        <div v-if="props.tab === 'reviews'">
+                            <Deferred data="reviews">
+                                <template #fallback>
+                                    <div>Loading...</div>
+                                </template>
+                                <ResourceReviews
+                                    :reviews="reviews"
+                                    :resource-id="props.resource.id"
+                                />
+                            </Deferred>
+                        </div>
+
+                        <div v-else-if="props.tab === 'discussion'">
+                            <DiscussionSorting
+                                :resource-id="props.resource.id"
+                                :initial-value="props.discussionSortByValue"
+                            ></DiscussionSorting>
+                            
+                            <Deferred data="discussion">
+                                <template #fallback>
+                                    <div>Loading...</div>
+                                </template>
                                 <Commentable
+                                    :sort-by-initial-value="props.discussionSortByValue"
+                                    :has-sort-by-dropdown="false"
                                     :commentable-id="props.resource.id"
                                     :commentable-type="'resource'"
-                                    :comments-count="props.resource.comments_count"
-                                    :load-on-mount="true"
-                                ></Commentable>
-                            </TabPanel>
-                        </TabPanels>
-                    </Tabs>
+                                    :comments-count="
+                                        props.resource.comments_count
+                                    "
+                                    :loaded-comment-data="discussion"
+                                    :pagination-limit="getConfigData().COMMENT_PAGINATION_LIMIT"
+                                    />
+                            </Deferred>
+                        </div>
+
+                        <div v-else-if="props.tab === 'edits'">
+                            <Deferred data="resourceEdits">
+                                <template #fallback>
+                                    <div>Loading...</div>
+                                </template>
+                                <ResourceEdits
+                                    :resource-id="props.resource.id"
+                                    :resource-edits="resourceEdits"
+                                />
+                            </Deferred>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

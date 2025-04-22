@@ -7,13 +7,13 @@ use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
 use App\Services\ModelResolverService;
-use Illuminate\Database\Eloquent\Collection;
 use App\Http\Resources\UserResource;
 use App\Services\CommentService;
-use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Log;
-
 
 class CommentController extends Controller
 {
@@ -79,7 +79,7 @@ class CommentController extends Controller
 
             // Ensure that they are commenting to the same root
             // And the depth is not exceeded
-            validator(
+            Validator::make(
                 [
                     'commentable_id' => $commentableId,
                     'commentable_type' => $commentableType,
@@ -140,61 +140,18 @@ class CommentController extends Controller
     /**
      * Display the specified comment, with pagination.
      */
-    public function show(string $commentableType, int $commentableId, int $index)
+    public function show(Request $request, string $commentableType, int $commentableId, int $index, int $paginationLimit = -1)
     {
-        validator(
-            [
-                'index' => $index,
-                'commentable_type' => $commentableType,
-            ],
-            [
-                'index' => 'required|integer|min:0',
-                'commentable_type' => ['required', Rule::in(config('comment.commentable_types'))]
-            ]
-        )->validate();
-
-        Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index);
-
-        $commentableType = $this->modelResolver->getModelClass($commentableType);
-        $paginatedResults = $this->commentService->getPaginatedComments($commentableType, $commentableId, $index);
-        $nestedComments = new Collection($paginatedResults['comments']);
-
-        // Lazy eager load the user for the root comment and for each reply.
-        $nestedComments->load(['user', 'replies.user']);
-
-        // Flatten the comments and replies into the desired format.
-        $flattenedComments = collect();
-
-        foreach ($nestedComments as $comment) {
-            // Transform the root comment.
-            $flattenedComments->push(
-                new CommentResource($comment)
-            );
-
-            // Transform any loaded replies.
-            if ($comment->relationLoaded('replies')) {
-                foreach ($comment->replies as $reply) {
-                    $flattenedComments->push(
-                        new CommentResource($reply)
-                    );
-                }
-            }
+        if ($paginationLimit == -1)
+        {
+            $paginationLimit = config('comment.default_pagination_limit');
         }
 
-        // Extract unique users into a separate collection.
-        $users = collect();
-
-        foreach ($flattenedComments as $comment) {
-            if ($comment->relationLoaded('user') && $comment->user) {
-                $users->put($comment->user->id, new UserResource($comment->user));
-            }
-        }
-
-        Log::debug("Returned comments: " . json_encode($flattenedComments));
-        return [
-            'comments' => $flattenedComments,
-            'users' => $users->values(),
-            'has_more_comments' => $paginatedResults['has_more_comments'],
-        ];
+        $sortBy = $request->query('sort_by', 'top');
+        
+        Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index . ". Sorting: " . $sortBy);
+        $paginatedResults = $this->commentService->getPaginatedComments($commentableType, $commentableId, $index, $paginationLimit, $sortBy);
+        
+        return $paginatedResults;
     }
 }
