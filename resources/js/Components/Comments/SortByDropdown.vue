@@ -3,13 +3,13 @@ import { ref, defineEmits } from "vue";
 import Dropdown from 'primevue/dropdown';
 
 const props = defineProps({
-    sortType: {
+    initialValue: {
         type: String,
         default: 'top',
     }
 })
 
-const selectedSort = ref(props.sortType || "top");
+const selectedSort = ref(props.initialValue);
 
 const sortOptions = [
     { label: "Latest", value: "latest" },

@@ -2,8 +2,8 @@
 import { ref, provide, readonly, nextTick, onMounted, reactive } from "vue";
 import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
+import SortByDropdown from "@/Components/Comments/SortByDropdown.vue";
 import CommentList from "./CommentList.vue";
-import SortByDropdown from "../Form/SortByDropdown.vue";
 
 const props = defineProps({
     commentableId: {
@@ -18,15 +18,23 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    paginationLimit: {
+        type: Number,
+        default: 5,
+    },
+    sortByInitialValue: {
+        type: String,
+        default: "top"
+    },
     loadedCommentData: {
         type: Object,
         required: false,
         default: null,
     },
-    paginationLimit: {
-        type: Number,
-        default: 5
-    }
+    hasSortByDropdown: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const hasLoadedCommentData = props.loadedCommentData != null;
@@ -37,7 +45,8 @@ const isLoading = ref(false);
 const error = ref(null);
 const commentsLeft = ref(props.commentsCount);
 const idToChildren = ref(new Map());
-const sortBy = ref('top');
+const sortBy = ref(props.sortByInitialValue);
+const hasOpenedComments = ref(false);
 
 const createdNewCommentCallback = (newComment, userData) => {
     console.log("Created a new comment!", newComment, userData);
@@ -66,8 +75,8 @@ provide("createdNewCommentCallback", createdNewCommentCallback);
 
 function updateUsers(newUsers) {
     //normalize: if it’s a `{ data: { … } }` wrapper, grab `.data`
-    const users = newUsers.map(u => (u.data ?? u));
- 
+    const users = newUsers.map((u) => u.data ?? u);
+
     // Convert API response users to Map
     const normalizeUsers = (usersArray) =>
         new Map(usersArray.map((user) => [user.id, user]));
@@ -81,34 +90,33 @@ function updateUsers(newUsers) {
 }
 
 function updateCommentHierarchy(newComments) {
-  //normalize: if it’s a `{ data: { … } }` wrapper, grab `.data`
-  const comments = newComments.map(c => (c.data ?? c));
+    //normalize: if it’s a `{ data: { … } }` wrapper, grab `.data`
+    const comments = newComments.map((c) => c.data ?? c);
 
-  commentsLeft.value -= comments.length;
+    commentsLeft.value -= comments.length;
 
-  const hierarchyUpdates = {};
-  comments.forEach(comment => {
-    // now comment.parent_comment_id is either a number or null
-    const parentId = comment.parent_comment_id;
+    const hierarchyUpdates = {};
+    comments.forEach((comment) => {
+        // now comment.parent_comment_id is either a number or null
+        const parentId = comment.parent_comment_id;
 
-    if (!hierarchyUpdates[parentId]) {
-      hierarchyUpdates[parentId] = [];
-    }
-    hierarchyUpdates[parentId].push(comment);
-  });
+        if (!hierarchyUpdates[parentId]) {
+            hierarchyUpdates[parentId] = [];
+        }
+        hierarchyUpdates[parentId].push(comment);
+    });
 
-  // merge into your reactive map/object
-  idToChildren.value = {
-    ...idToChildren.value,
-    ...Object.fromEntries(
-      Object.entries(hierarchyUpdates).map(([pid, children]) => [
-        pid,
-        [...(idToChildren.value[pid] || []), ...children],
-      ])
-    ),
-  };
+    // merge into your reactive map/object
+    idToChildren.value = {
+        ...idToChildren.value,
+        ...Object.fromEntries(
+            Object.entries(hierarchyUpdates).map(([pid, children]) => [
+                pid,
+                [...(idToChildren.value[pid] || []), ...children],
+            ])
+        ),
+    };
 }
-
 
 function addCommentData(commentData) {
     // Update the users
@@ -125,6 +133,7 @@ async function loadComments() {
 
     isLoading.value = true;
     error.value = null;
+    hasOpenedComments.value = true;
 
     try {
         const response = await axios.get(
@@ -150,9 +159,24 @@ async function loadComments() {
     }
 }
 
+function handleSortChange(newSortType) {
+    if (newSortType == sortBy.value) return;
+
+    sortBy.value = newSortType;
+
+    usersMap.value = new Map();
+    canLoadMoreComments.value = true;
+    isLoading.value = false;
+    error.value = null;
+    commentsLeft.value = props.commentsCount;
+    idToChildren.value = new Map();
+
+    currentIndex.value = 0;
+    loadComments();
+}
+
 onMounted(() => {
-    if (hasLoadedCommentData)
-    {
+    if (hasLoadedCommentData) {
         addCommentData(props.loadedCommentData);
     }
 });
@@ -160,8 +184,11 @@ onMounted(() => {
 
 <template>
     <div class="comments-section p-4">
-        <SortByDropdown @change="(selectedSort) => sortBy = selectedSort"></SortByDropdown>
-        
+        <SortByDropdown
+            v-if="props.hasSortByDropdown && hasOpenedComments"
+            @change="handleSortChange"
+        ></SortByDropdown>
+
         <!-- Error State -->
         <div v-if="error" class="text-red-500 mb-4">{{ error }}</div>
 

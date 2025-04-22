@@ -11,6 +11,7 @@ import {
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
+import DiscussionSorting from "@/Components/Resources/Discussion/DiscussionSorting.vue";
 import { getConfigData } from "@/Helpers/config";
 
 const props = defineProps({
@@ -24,6 +25,10 @@ const props = defineProps({
     },
     discussion: {
         type: Object,
+        required: false,
+    },
+    discussionSortByValue: {
+        type: String,
         required: false,
     },
     reviews: {
@@ -228,11 +233,18 @@ const tabs = [
                         </div>
 
                         <div v-else-if="props.tab === 'discussion'">
+                            <DiscussionSorting
+                                :resource-id="props.resource.id"
+                                :initial-value="props.discussionSortByValue"
+                            ></DiscussionSorting>
+                            
                             <Deferred data="discussion">
                                 <template #fallback>
                                     <div>Loading...</div>
                                 </template>
                                 <Commentable
+                                    :sort-by-initial-value="props.discussionSortByValue"
+                                    :has-sort-by-dropdown="false"
                                     :commentable-id="props.resource.id"
                                     :commentable-type="'resource'"
                                     :comments-count="

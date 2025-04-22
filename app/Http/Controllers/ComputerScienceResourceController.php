@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+
 class ComputerScienceResourceController extends Controller
 {
     /**
@@ -101,11 +102,13 @@ class ComputerScienceResourceController extends Controller
                 $computerScienceResource->edits
             );
         } elseif ($tab === 'discussion') {
+            $sortBy = $request->query('sort_by', 'top');
             $data['discussion'] = Inertia::defer(fn () =>
-                $commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $request->query('sort_by', 'top'))
+                $commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
             );
+            $data['discussionSortByValue'] = $sortBy;
         }
-        
+ 
         return Inertia::render('Resources/Show', $data);
     }
     
