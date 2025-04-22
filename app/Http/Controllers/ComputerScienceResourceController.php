@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
 use App\Services\CommentService;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Auth;
-
 class ComputerScienceResourceController extends Controller
 {
     /**
@@ -73,7 +73,7 @@ class ComputerScienceResourceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(CommentService $commentService, ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
+    public function show(Request $request, CommentService $commentService, ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
     {
         $validTabs = ['reviews', 'discussion', 'edits'];
        
@@ -102,8 +102,7 @@ class ComputerScienceResourceController extends Controller
             );
         } elseif ($tab === 'discussion') {
             $data['discussion'] = Inertia::defer(fn () =>
-            // TODO: Pagination limit
-                $commentService->getPaginatedComments(ComputerScienceResource::class, $computerScienceResource->id, 0, 150)
+                $commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $request->query('sort_by', 'top'))
             );
         }
         

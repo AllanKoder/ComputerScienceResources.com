@@ -9,10 +9,11 @@ use App\Models\Comment;
 use App\Services\ModelResolverService;
 use App\Http\Resources\UserResource;
 use App\Services\CommentService;
-use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Log;
-
 
 class CommentController extends Controller
 {
@@ -78,7 +79,7 @@ class CommentController extends Controller
 
             // Ensure that they are commenting to the same root
             // And the depth is not exceeded
-            validator(
+            Validator::make(
                 [
                     'commentable_id' => $commentableId,
                     'commentable_type' => $commentableType,
@@ -139,25 +140,17 @@ class CommentController extends Controller
     /**
      * Display the specified comment, with pagination.
      */
-    public function show(string $commentableType, int $commentableId, int $paginationLimit, int $index)
+    public function show(Request $request, string $commentableType, int $commentableId, int $index, int $paginationLimit = -1)
     {
-        validator(
-            [
-                'index' => $index,
-                'commentable_type' => $commentableType,
-                'paginationLimit' => $paginationLimit,
-            ],
-            [
-                'index' => ['required', 'integer', 'min:0'],
-                'commentable_type' => ['required', Rule::in(config('comment.commentable_types'))],
-                'paginationLimit' => ['required', 'integer', 'max:'.config('comment.pagination_limit')],
-            ]
-        )->validate();
+        if ($paginationLimit == -1)
+        {
+            $paginationLimit = config('comment.default_pagination_limit');
+        }
 
-        Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index);
-
-        $commentableType = $this->modelResolver->getModelClass($commentableType);
-        $paginatedResults = $this->commentService->getPaginatedComments($commentableType, $commentableId, $index, $paginationLimit);
+        $sortBy = $request->query('sort_by', 'top');
+        
+        Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index . ". Sorting: " . $sortBy);
+        $paginatedResults = $this->commentService->getPaginatedComments($commentableType, $commentableId, $index, $paginationLimit, $sortBy);
         
         return $paginatedResults;
     }

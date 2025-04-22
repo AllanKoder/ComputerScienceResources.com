@@ -7,10 +7,17 @@ use App\Http\Resources\UserResource;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class CommentService
 {
-    public function __construct() { }
+    protected $modelResolver;
+
+    function __construct(ModelResolverService $resolver)
+    {
+        $this->modelResolver = $resolver;
+    }
 
     /**
      * Get paginated comments with custom logic.
@@ -20,25 +27,42 @@ class CommentService
      * @param int    $index
      * @return array
      */
-    public function getPaginatedComments(string $commentableType, int $commentableId, int $index, int $paginationLimit = -1): array
+    // TODO: Refactor commentable types, and commentable types short for all other objects
+    public function getPaginatedComments(string $commentableTypeShort, int $commentableId, int $index, int $paginationLimit = -1, string $sortBy = 'top'): array
     {
         if ($paginationLimit == -1)
         {
             $paginationLimit = config('comment.default_pagination_limit');
         }
+
+        Validator::make([
+            'index' => $index,
+            'commentable_type_short' => $commentableTypeShort,
+            'pagination_limit' => $paginationLimit,
+            'sort_by' => $sortBy,
+        ], [
+            'index' => ['required', 'integer', 'min:0'],
+            'commentable_type_short' => ['required', Rule::in(config('comment.commentable_types_shorthand'))],
+            'pagination_limit' => ['required', 'integer', 'max:' . config('comment.pagination_limit')],
+            'sort_by' => ['required', 'string', Rule::in(config('comment.sortable_options'))],
+        ])->validate();
+
+        $commentableType = $this->modelResolver->getModelClass($commentableTypeShort);   
         Log::debug("Request is, commentable_type: {$commentableType}. id: {$commentableId}. index: {$index}");
 
         // Get the root comments:
-        $rootComments = Comment::where([
+        $query = Comment::where([
             'commentable_type' => $commentableType,
             'commentable_id' => $commentableId,
             'depth' => 1,
-        ])
-            ->orderBy('created_at')
-            ->get();
+        ]);
+        
+        // Apply sorting on the comments
+        app(UpvoteService::class)->applySort($query, $sortBy, Comment::class);
 
+        $rootComments = $query->get();
         Log::debug("Root comments: " . json_encode($rootComments));
-
+            
         // Initialize variables
         $currentCommentsSum = 0;
         $resultingPaginatedComments = [];

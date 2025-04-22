@@ -11,7 +11,7 @@ import {
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
-import { configData } from "@/Helpers/config";
+import { getConfigData } from "@/Helpers/config";
 
 const props = defineProps({
     tab: {
@@ -239,7 +239,7 @@ const tabs = [
                                         props.resource.comments_count
                                     "
                                     :loaded-comment-data="discussion"
-                                    :pagination-limit="configData().COMMENT_PAGINATION_LIMIT"
+                                    :pagination-limit="getConfigData().COMMENT_PAGINATION_LIMIT"
                                     />
                             </Deferred>
                         </div>

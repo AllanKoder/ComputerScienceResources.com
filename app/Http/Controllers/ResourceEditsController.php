@@ -7,8 +7,7 @@ use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
 use App\Http\Requests\ResourceEdit\StoreResourceEdit;
 use App\Http\Resources\ComputerScienceResourceResource;
-use Arr;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Log;
 

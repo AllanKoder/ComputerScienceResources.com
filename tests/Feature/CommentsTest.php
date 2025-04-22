@@ -89,7 +89,7 @@ class CommentsTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        foreach (config('comment.commentable_types') as $typeKey) {
+        foreach (config('comment.commentable_types_shorthand') as $typeKey) {
             $modelClass = app(ModelResolverService::class)->getModelClass($typeKey);
 
             // Skip comments

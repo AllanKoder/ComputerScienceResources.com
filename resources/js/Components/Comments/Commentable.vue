@@ -3,6 +3,7 @@ import { ref, provide, readonly, nextTick, onMounted, reactive } from "vue";
 import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import CommentList from "./CommentList.vue";
+import SortByDropdown from "../Form/SortByDropdown.vue";
 
 const props = defineProps({
     commentableId: {
@@ -36,6 +37,7 @@ const isLoading = ref(false);
 const error = ref(null);
 const commentsLeft = ref(props.commentsCount);
 const idToChildren = ref(new Map());
+const sortBy = ref('top');
 
 const createdNewCommentCallback = (newComment, userData) => {
     console.log("Created a new comment!", newComment, userData);
@@ -87,7 +89,7 @@ function updateCommentHierarchy(newComments) {
   const hierarchyUpdates = {};
   comments.forEach(comment => {
     // now comment.parent_comment_id is either a number or null
-    const parentId = comment.parent_comment_id ?? null;
+    const parentId = comment.parent_comment_id;
 
     if (!hierarchyUpdates[parentId]) {
       hierarchyUpdates[parentId] = [];
@@ -130,7 +132,8 @@ async function loadComments() {
                 id: props.commentableId,
                 type: props.commentableType,
                 index: currentIndex.value,
-                paginationLimit: props.paginationLimit
+                paginationLimit: props.paginationLimit,
+                sort_by: sortBy.value,
             })
         );
 
@@ -157,6 +160,8 @@ onMounted(() => {
 
 <template>
     <div class="comments-section p-4">
+        <SortByDropdown @change="(selectedSort) => sortBy = selectedSort"></SortByDropdown>
+        
         <!-- Error State -->
         <div v-if="error" class="text-red-500 mb-4">{{ error }}</div>
 

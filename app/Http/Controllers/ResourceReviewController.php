@@ -6,7 +6,7 @@ use App\Events\ResourceReviewProcessed;
 use App\Http\Requests\ResourceReview\StoreResourceReview;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceReview;
-use Auth;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Redirect;
 

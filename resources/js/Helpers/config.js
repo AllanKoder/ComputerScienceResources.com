@@ -4,6 +4,6 @@ import { usePage } from "@inertiajs/vue3";
 // - COMMENT_MAX_DEPTH
 // - COMMENT_PAGINATION_LIMIT
 
-export function configData() {
+export function getConfigData() {
   return usePage().props.config;
 }
