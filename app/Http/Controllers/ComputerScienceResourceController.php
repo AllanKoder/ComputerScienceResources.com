@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
+use App\Models\ResourceEdits;
+use App\Models\ResourceReview;
 use App\Services\CommentService;
+use App\Services\UpvoteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -12,6 +15,15 @@ use Inertia\Inertia;
 
 class ComputerScienceResourceController extends Controller
 {
+    protected $commentService;
+    protected $upvoteService;
+
+    function __construct(CommentService $commentService, UpvoteService $upvoteService)
+    {
+        $this->commentService = $commentService;
+        $this->upvoteService = $upvoteService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -54,7 +66,7 @@ class ComputerScienceResourceController extends Controller
 
         // Add topics as tags
         $resource->topic_tags = $validatedData['topic_tags'];
-        
+
         // Add programming languages as tags (if provided)
         if (isset($validatedData['programming_language_tags'])) {
             $resource->programming_language_tags = $validatedData['programming_language_tags'];
@@ -67,17 +79,17 @@ class ComputerScienceResourceController extends Controller
 
         Log::debug("Created resource " . json_encode($resource));
 
-        return redirect(route('resources.show', ['computerScienceResource'=>$resource->id]))
+        return redirect(route('resources.show', ['computerScienceResource' => $resource->id]))
             ->with('success', 'Created Resource Succesfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, CommentService $commentService, ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
+    public function show(Request $request, ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
     {
         $validTabs = ['reviews', 'discussion', 'edits'];
-       
+
         if (!in_array($tab, $validTabs)) {
             // Redirect to default if invalid
             return redirect()->route('resources.show', [
@@ -85,33 +97,41 @@ class ComputerScienceResourceController extends Controller
                 'tab' => 'reviews',
             ]);
         }
-    
+
         // return the resource and tab
         $data = [
             'tab' => $tab,
             'resource' => $computerScienceResource,
         ];
-    
+
+        $sortBy = $request->query('sort_by', 'top');
         // Load only the necessary tab data
         if ($tab === 'reviews') {
-            $data['reviews'] = Inertia::defer(fn () =>
-                $computerScienceResource->reviews()->orderByDesc('created_at')->get()
+            $data['reviews'] = Inertia::defer(
+                function () use ($computerScienceResource, $sortBy) {
+                    $query = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id);
+                    $query = $this->upvoteService->applySort($query, $sortBy, ResourceReview::class);
+                    return $query->get();
+                }
             );
         } elseif ($tab === 'edits') {
-            $data['resourceEdits'] = Inertia::defer(fn () =>
-                $computerScienceResource->edits
+            $data['resourceEdits'] = Inertia::defer(
+                function () use ($computerScienceResource, $sortBy) {
+                    $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
+                    $query = $this->upvoteService->applySort($query, $sortBy, ResourceEdits::class);
+                    return $query->get();
+                }
             );
         } elseif ($tab === 'discussion') {
-            $sortBy = $request->query('sort_by', 'top');
-            $data['discussion'] = Inertia::defer(fn () =>
-                $commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
+            $data['discussion'] = Inertia::defer(
+                fn() =>
+                $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
             );
-            $data['discussionSortByValue'] = $sortBy;
         }
- 
+
         return Inertia::render('Resources/Show', $data);
     }
-    
+
 
     /**
      * Remove the specified resource from storage.

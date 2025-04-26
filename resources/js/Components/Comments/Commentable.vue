@@ -2,7 +2,7 @@
 import { ref, provide, readonly, nextTick, onMounted, reactive } from "vue";
 import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
-import SortByDropdown from "@/Components/Comments/SortByDropdown.vue";
+import SortByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
 import CommentList from "./CommentList.vue";
 
 const props = defineProps({

@@ -11,7 +11,7 @@ import {
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
-import DiscussionSorting from "@/Components/Resources/Discussion/DiscussionSorting.vue";
+import ResourceUpvoteSorting from "@/Components/Resources/ResourceUpvoteSorting.vue";
 import { getConfigData } from "@/Helpers/config";
 
 const props = defineProps({
@@ -25,10 +25,6 @@ const props = defineProps({
     },
     discussion: {
         type: Object,
-        required: false,
-    },
-    discussionSortByValue: {
-        type: String,
         required: false,
     },
     reviews: {
@@ -48,6 +44,9 @@ const tabs = [
     { label: "Discussion", value: "discussion" },
     { label: "Proposed Edits", value: "edits" },
 ];
+
+const urlParams = new URLSearchParams(window.location.search);
+const sortingType = urlParams.get('sort_by') || 'top';
 </script>
 
 <template>
@@ -220,6 +219,12 @@ const tabs = [
 
                     <!-- Tab Panels -->
                     <div class="px-6 pb-6">
+                        <ResourceUpvoteSorting
+                            :resource-id="props.resource.id"
+                            :initial-value="sortingType"
+                            :tab="props.tab"
+                        ></ResourceUpvoteSorting>
+
                         <div v-if="props.tab === 'reviews'">
                             <Deferred data="reviews">
                                 <template #fallback>
@@ -233,11 +238,6 @@ const tabs = [
                         </div>
 
                         <div v-else-if="props.tab === 'discussion'">
-                            <DiscussionSorting
-                                :resource-id="props.resource.id"
-                                :initial-value="props.discussionSortByValue"
-                            ></DiscussionSorting>
-                            
                             <Deferred data="discussion">
                                 <template #fallback>
                                     <div>Loading...</div>
