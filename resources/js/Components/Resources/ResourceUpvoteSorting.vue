@@ -1,7 +1,7 @@
 <script setup>
 import { router } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
-import SortByDropdown from "@/Components/Comments/SortByDropdown.vue";
+import SortByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
 
 const props = defineProps({
     resourceId: {
@@ -10,16 +10,19 @@ const props = defineProps({
     },
     initialValue: {
         type: String,
-        required: true
+        default: 'top',
+    },
+    tab: {
+        type: String,
+        default: 'discussion',
     }
 })
 
 function handleSortChange(newSortType) {
-    if (props.initialValue == newSortType) return;
     // Change the sort_by parameter
     const baseUrl = route('resources.show', {
         computerScienceResource: props.resourceId,
-        tab: 'discussion',
+        tab: props.tab,
     });
 
     // Create a new URL object based on the current location
@@ -39,5 +42,6 @@ function handleSortChange(newSortType) {
 <template>
     <SortByDropdown
         @change="handleSortChange"
+        :initial-value="initialValue"
     ></SortByDropdown>
 </template>
