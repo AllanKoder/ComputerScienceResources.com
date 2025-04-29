@@ -39,11 +39,11 @@ class CommentController extends Controller
         $comment->content = $validatedData['content'];
         $comment->user_id = Auth::id();
 
-        $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_type']);
+        $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_key']);
         $commentableId = $validatedData['commentable_id'];
         
         // Ensure that the model exists
-        $model = $this->modelResolver->resolve($validatedData['commentable_type'], $commentableId);
+        $model = $this->modelResolver->resolve($validatedData['commentable_key'], $commentableId);
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);
         }    
@@ -140,7 +140,7 @@ class CommentController extends Controller
     /**
      * Display the specified comment, with pagination.
      */
-    public function show(Request $request, string $commentableType, int $commentableId, int $index, int $paginationLimit = -1)
+    public function show(Request $request, string $commentableKey, int $commentableId, int $index, int $paginationLimit = -1)
     {
         if ($paginationLimit == -1)
         {
@@ -149,8 +149,8 @@ class CommentController extends Controller
 
         $sortBy = $request->query('sort_by', 'top');
         
-        Log::debug("Request is, commentable_type: " .  $commentableType . ". id: " . $commentableId . ". index: " . $index . ". Sorting: " . $sortBy);
-        $paginatedResults = $this->commentService->getPaginatedComments($commentableType, $commentableId, $index, $paginationLimit, $sortBy);
+        Log::debug("Request is, commentable_type: " .  $commentableKey . ". id: " . $commentableId . ". index: " . $index . ". Sorting: " . $sortBy);
+        $paginatedResults = $this->commentService->getPaginatedComments($commentableKey, $commentableId, $index, $paginationLimit, $sortBy);
         
         return $paginatedResults;
     }

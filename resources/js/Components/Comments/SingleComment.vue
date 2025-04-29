@@ -33,7 +33,7 @@ const formattedDate = computed(() =>
     <div class="p-4 border-b border-gray-200" :key="comment.id" :id="'comment_'+comment.id">
 
         <Upvotable
-            :upvotable-type="'comment'"
+            :upvotable-key="'comment'"
             :upvotable-id="comment.id"
             :initial-votes="comment.vote_score"
             :user-vote="comment.user_vote"

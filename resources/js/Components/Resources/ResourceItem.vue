@@ -19,7 +19,7 @@ const emit = defineEmits(["upvote", "downvote"]);
         <td class="align-top pr-6">
             <Upvotable
                 :upvotable-id="resource.id"
-                :upvotable-type="'resource'"
+                :upvotable-key="'resource'"
                 :initial-votes="resource.vote_score"
                 :user-vote="resource.user_vote"
             ></Upvotable>

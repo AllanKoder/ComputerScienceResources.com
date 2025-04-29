@@ -65,7 +65,7 @@ const sortingType = urlParams.get('sort_by') || 'top';
                                 >
                                     <UpvoteResource
                                         :upvotable-id="props.resource.id"
-                                        :upvotable-type="'resource'"
+                                        :upvotable-key="'resource'"
                                         :initial-votes="
                                             props.resource.vote_score
                                         "
@@ -246,7 +246,7 @@ const sortingType = urlParams.get('sort_by') || 'top';
                                     :sort-by-initial-value="props.discussionSortByValue"
                                     :has-sort-by-dropdown="false"
                                     :commentable-id="props.resource.id"
-                                    :commentable-type="'resource'"
+                                    :commentable-key="'resource'"
                                     :comments-count="
                                         props.resource.comments_count
                                     "

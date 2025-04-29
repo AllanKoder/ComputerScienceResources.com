@@ -23,9 +23,9 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         // Pick a random commentable type from config.
-        $commentableName = $this->faker->randomElement(['comment', 'resource']);
+        $commentableKey = $this->faker->randomElement(['comment', 'resource']);
         $modelResolver = app(ModelResolverService::class);
-        $modelClass = $modelResolver->getModelClass($commentableName);
+        $modelClass = $modelResolver->getModelClass($commentableKey);
     
         // Use an existing user or create one.
         $user = User::inRandomOrder()->first() ?? User::factory()->create();

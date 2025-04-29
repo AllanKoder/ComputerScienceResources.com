@@ -513,7 +513,7 @@ function mergeEdits(id) {
                         <!-- TODO: Add partial reload to the refresh -->
                         <Upvotable
                             :flexRow="true"
-                            :upvotable-type="'edit'"
+                            :upvotable-key="'edit'"
                             :upvotable-id="resourceId"
                             :initial-votes="editedResource.vote_score"
                             :user-vote="editedResource.user_vote"
@@ -565,7 +565,7 @@ function mergeEdits(id) {
 
                     <Commentable
                         :commentable-id="props.editedResource.id"
-                        :commentable-type="'edit'"
+                        :commentable-key="'edit'"
                         :comments-count="props.editedResource.comments_count"
                     ></Commentable>
                 </div>

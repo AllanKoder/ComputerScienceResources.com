@@ -1,5 +1,5 @@
 <script setup>
-import { ref, provide, readonly, nextTick, onMounted, reactive } from "vue";
+import { ref, provide, readonly, nextTick, onMounted } from "vue";
 import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import SortByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
@@ -10,7 +10,7 @@ const props = defineProps({
         type: Number,
         required: true,
     },
-    commentableType: {
+    commentableKey: {
         type: String,
         required: true,
     },
@@ -69,7 +69,7 @@ const createdNewCommentCallback = (newComment, userData) => {
 };
 
 provide("commentableId", props.commentableId);
-provide("commentableType", props.commentableType);
+provide("commentableKey", props.commentableKey);
 provide("users", readonly(usersMap));
 provide("createdNewCommentCallback", createdNewCommentCallback);
 
@@ -139,7 +139,7 @@ async function loadComments() {
         const response = await axios.get(
             route("comments.show", {
                 id: props.commentableId,
-                type: props.commentableType,
+                type: props.commentableKey,
                 index: currentIndex.value,
                 paginationLimit: props.paginationLimit,
                 sort_by: sortBy.value,
