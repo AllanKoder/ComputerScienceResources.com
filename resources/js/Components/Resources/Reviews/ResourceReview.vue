@@ -18,7 +18,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 
 <template>
     <Upvotable
-        :upvotable-type="'review'"
+        :upvotable-key="'review'"
         :upvotable-id="props.review.id"
         :initial-votes="props.review.vote_score"
         :user-vote="props.review.user_vote"
@@ -75,7 +75,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 
     <Commentable 
         :commentable-id="review.id" 
-        :commentable-type="'review'"
+        :commentable-key="'review'"
         :comments-count="review.comments_count"
     />
 </template>

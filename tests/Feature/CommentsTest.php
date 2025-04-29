@@ -25,7 +25,7 @@ class CommentsTest extends TestCase
 
         $payload = [
             'content' => 'This is a top level comment.',
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => null,
         ];
@@ -52,7 +52,7 @@ class CommentsTest extends TestCase
 
         // Omitting the 'content' field should trigger a validation error.
         $payload = [
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => null,
         ];
@@ -72,7 +72,7 @@ class CommentsTest extends TestCase
         // Resource does not exist
         $payload = [
             'content' => 'test',
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => 0, // does not exist
             'parent_comment_id' => null,
         ];
@@ -89,7 +89,7 @@ class CommentsTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        foreach (config('comment.commentable_types_shorthand') as $typeKey) {
+        foreach (config('comment.commentable_keys') as $typeKey) {
             $modelClass = app(ModelResolverService::class)->getModelClass($typeKey);
 
             // Skip comments
@@ -100,7 +100,7 @@ class CommentsTest extends TestCase
             $commentable = $modelClass::factory()->create();
             $payload = [
                 'content' => 'top level comment',
-                'commentable_type' => $typeKey,
+                'commentable_key' => $typeKey,
                 'commentable_id' => $commentable->id,
                 'parent_comment_id' => null,
             ];
@@ -127,7 +127,7 @@ class CommentsTest extends TestCase
         // Comment does not exist
         $payload = [
             'content' => 'test',
-            'commentable_type' => 'comment',
+            'commentable_key' => 'comment',
             'commentable_id' => 0,
             'parent_comment_id' => null,
         ];
@@ -149,7 +149,7 @@ class CommentsTest extends TestCase
         // Create a top-level comment first.
         $parentPayload = [
             'content' => 'Top level comment.',
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => null,
         ];
@@ -160,7 +160,7 @@ class CommentsTest extends TestCase
         // Post a reply to the top-level comment; its depth should be parent's depth + 1.
         $replyPayload = [
             'content' => 'This is a reply.',
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => $parentCommentId,
         ];
@@ -185,7 +185,7 @@ class CommentsTest extends TestCase
         // Create a top-level comment (depth 1).
         $parentPayload = [
             'content' => 'Top level comment.',
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => null,
         ];
@@ -196,7 +196,7 @@ class CommentsTest extends TestCase
         // Create a reply (depth 2) – this is allowed.
         $replyPayload = [
             'content' => 'Reply level 2.',
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => $parentCommentId,
         ];
@@ -207,7 +207,7 @@ class CommentsTest extends TestCase
         // Attempt to post a nested comment (would be depth 3) – should fail.
         $nestedReplyPayload = [
             'content' => 'Reply level 3 exceeds depth limit.',
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => $replyCommentId,
         ];
@@ -231,7 +231,7 @@ class CommentsTest extends TestCase
         // Create a top-level comment.
         $payload = [
             'content' => 'Top level comment for replies limit test.',
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => null,
         ];
@@ -243,7 +243,7 @@ class CommentsTest extends TestCase
         for ($i = 1; $i <= config('comment.max_replies'); $i++) {
             $replyPayload = [
                 'content' => "Reply $i",
-                'commentable_type' => 'resource',
+                'commentable_key' => 'resource',
                 'commentable_id' => $resource->id,
                 'parent_comment_id' => $rootCommentId,
             ];
@@ -254,7 +254,7 @@ class CommentsTest extends TestCase
         // Attempt one more reply, which should be rejected.
         $extraReplyPayload = [
             'content' => 'This reply should fail due to reply limit.',
-            'commentable_type' => 'resource',
+            'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => $rootCommentId,
         ];
@@ -280,7 +280,7 @@ class CommentsTest extends TestCase
         for ($i = 1; $i <= 3; $i++) {
             $topPayload = [
                 'content' => "Top level comment $i",
-                'commentable_type' => 'resource',
+                'commentable_key' => 'resource',
                 'commentable_id' => $resource->id,
                 'parent_comment_id' => null,
             ];
@@ -292,7 +292,7 @@ class CommentsTest extends TestCase
             for ($j = 1; $j <= 2; $j++) {
                 $replyPayload = [
                     'content' => "Reply $j to comment $i",
-                    'commentable_type' => 'resource',
+                    'commentable_key' => 'resource',
                     'commentable_id' => $resource->id,
                     'parent_comment_id' => $topId,
                 ];

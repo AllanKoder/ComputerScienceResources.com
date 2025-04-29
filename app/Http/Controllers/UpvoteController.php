@@ -19,20 +19,20 @@ class UpvoteController extends Controller
     }
 
     /**
-     * Upvote a Model (type, id)
+     * Upvote a Model
      */
-    public function upvote($type, $id)
+    public function upvote($typeKey, $id)
     {
         validator(
             [
-                'type' => $type,
+                'type_key' => $typeKey,
             ],
             [
-                'type' => ['required', Rule::in(config('upvotes.upvotable_types'))]
+                'type_key' => ['required', Rule::in(config('upvotes.upvotable_keys'))]
             ]
         )->validate(); 
 
-        $model = $this->modelResolver->resolve($type, $id);
+        $model = $this->modelResolver->resolve($typeKey, $id);
 
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);
@@ -50,18 +50,18 @@ class UpvoteController extends Controller
     /**
      * Downvote a Model (type, id)
      */
-    public function downvote($type, $id)
+    public function downvote($typeKey, $id)
     {
         validator(
             [
-                'type' => $type,
+                'type_key' => $typeKey,
             ],
             [
-                'type' => ['required', Rule::in(config('upvotes.upvotable_types'))]
+                'type_key' => ['required', Rule::in(config('upvotes.upvotable_keys'))]
             ]
         )->validate(); 
 
-        $model = $this->modelResolver->resolve($type, $id);
+        $model = $this->modelResolver->resolve($typeKey, $id);
 
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);

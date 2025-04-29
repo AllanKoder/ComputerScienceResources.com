@@ -5,7 +5,7 @@ import { Icon } from "@iconify/vue";
 import { router } from '@inertiajs/vue3'
 
 const props = defineProps({
-    upvotableType: {
+    upvotableKey: {
         type: String,
         required: true,
     },
@@ -52,7 +52,7 @@ async function handleUpvote() {
         const response = await axios.post(
             route("upvote", {
                 id: props.upvotableId,
-                type: props.upvotableType,
+                type: props.upvotableKey,
             })
         );
         userVote.value = response.data.userVote;
@@ -77,7 +77,7 @@ async function handleDownvote() {
         const response = await axios.post(
             route("downvote", {
                 id: props.upvotableId,
-                type: props.upvotableType,
+                type: props.upvotableKey,
             })
         );
         userVote.value = response.data.userVote;

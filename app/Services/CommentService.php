@@ -28,7 +28,7 @@ class CommentService
      * @return array
      */
     // TODO: Refactor commentable types, and commentable types short for all other objects
-    public function getPaginatedComments(string $commentableTypeShorthand, int $commentableId, int $index, int $paginationLimit = -1, string $sortBy = 'top'): array
+    public function getPaginatedComments(string $commentableKey, int $commentableId, int $index, int $paginationLimit = -1, string $sortBy = 'top'): array
     {
         if ($paginationLimit == -1)
         {
@@ -37,15 +37,15 @@ class CommentService
 
         Validator::make([
             'index' => $index,
-            'commentable_type_short' => $commentableTypeShorthand,
+            'commentable_key' => $commentableKey,
             'pagination_limit' => $paginationLimit,
         ], [
             'index' => ['required', 'integer', 'min:0'],
-            'commentable_type_short' => ['required', Rule::in(config('comment.commentable_types_shorthand'))],
+            'commentable_key' => ['required', Rule::in(config('comment.commentable_keys'))],
             'pagination_limit' => ['required', 'integer', 'max:' . config('comment.pagination_limit')],
         ])->validate();
 
-        $commentableType = $this->modelResolver->getModelClass($commentableTypeShorthand);   
+        $commentableType = $this->modelResolver->getModelClass($commentableKey);   
         Log::debug("Request is, commentable_type: {$commentableType}. id: {$commentableId}. index: {$index}");
 
         // Get the root comments:

@@ -18,7 +18,7 @@ const props = defineProps({
 
 const isOpen = ref(false);
 
-const commentableType = inject("commentableType");
+const commentableKey = inject("commentableKey");
 const commentableId = inject("commentableId");
 const createdNewCommentCallback = inject("createdNewCommentCallback");
 
@@ -29,7 +29,7 @@ const toggleOpen = () => {
 const form = reactive({
     content: "",
     commentable_id: commentableId,
-    commentable_type: commentableType,
+    commentable_key: commentableKey,
     parent_comment_id: props.parentCommentId ?? null,
     errors: {},
     processing: false,
