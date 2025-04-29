@@ -153,4 +153,43 @@ class ResourceReviewsTest extends TestCase
             'review_count' => $reviewCount,
         ], $total));
     }
+
+    public function test_resource_review_can_be_updated(): void
+    {
+        $resource = ComputerScienceResource::factory()->create();
+        $user = User::factory()->create();
+        $total = [
+            'community' => 0,
+            'teaching_clarity' => 0,
+            'engagement' => 0,
+            'practicality' => 0,
+            'user_friendliness' => 0,
+            'updates' => 0,
+        ];
+
+        $data = ResourceReviewTestResource::fake();
+        foreach (array_keys($total) as $key) {
+            $total[$key] = $data[$key];
+        }
+
+        $this->actingAs($user)->post(route('reviews.store', $resource), $data);
+
+        $this->assertDatabaseHas('resource_review_summaries', array_merge([
+            'computer_science_resource_id' => $resource->id,
+            'review_count' => 1,
+        ], $total));
+
+        // Update to new review
+        $newData = ResourceReviewTestResource::fake();
+        foreach (array_keys($total) as $key) {
+            $total[$key] = $newData[$key];
+        }
+
+        $this->actingAs($user)->put(route('reviews.update', $resource), $newData);
+
+        $this->assertDatabaseHas('resource_review_summaries', array_merge([
+            'computer_science_resource_id' => $resource->id,
+            'review_count' => 1,
+        ], $total));
+    }
 }
