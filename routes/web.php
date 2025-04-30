@@ -45,6 +45,7 @@ Route::middleware([
     // CompSci Resource Reviews
     Route::controller(ResourceReviewController::class)->group(function () {
         Route::post('/reviews/{computerScienceResource}', 'store')->name('reviews.store');
+        Route::put('/reviews/{computerScienceResource}', 'update')->name('reviews.update');
     });
 
     // Resource Edits

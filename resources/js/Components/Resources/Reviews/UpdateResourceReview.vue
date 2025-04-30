@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { router, useForm } from "@inertiajs/vue3";
 
 import { Form, FormField } from "@primevue/forms";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
@@ -12,26 +12,20 @@ import Button from "primevue/button";
 
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import { resourceReviewFields } from "@/Helpers/validation";
+import axios from "axios";
 
 const props = defineProps({
     resourceId: {
         type: Number,
         required: true,
     },
+    resourceReview: {
+        type: Object,
+        required: true,
+    },
 });
 
-const form = useForm({
-    title: "",
-    description: "",
-    community: null,
-    teaching_clarity: null,
-    engagement: null,
-    practicality: null,
-    user_friendliness: null,
-    updates: null,
-    pros: [],
-    cons: [],
-});
+const form = useForm(props.resourceReview);
 
 const resolver = ref(yupResolver(resourceReviewFields));
 
@@ -39,12 +33,22 @@ const submitReview = () => {
     resourceReviewFields
         .validate(form.data, { abortEarly: false })
         .then(() => {
-            form.post(
-                route("reviews.store", {
-                    computerScienceResource: props.resourceId,
-                }),
-                { preserveScroll: true }
-            );
+            axios
+                .put(
+                    route("reviews.update", {
+                        computerScienceResource: props.resourceId,
+                    }),
+                    form
+                )
+                .then(() => {
+                    router.visit(
+                        route("resources.show", {
+                            computerScienceResource: props.resourceId,
+                            tab: 'reviews',
+                            sort_by: 'mine'
+                        })
+                    );
+                });
         })
         .catch((err) => {
             console.error("Validation errors:", err);
@@ -55,7 +59,6 @@ const submitReview = () => {
 <template>
     <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-6">
         <h2 class="text-2xl font-semibold mb-6">Write a Review</h2>
-
         <Form
             :resolver="resolver"
             :initialValues="form"

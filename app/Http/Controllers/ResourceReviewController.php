@@ -49,8 +49,51 @@ class ResourceReviewController extends Controller
 
         ResourceReviewProcessed::dispatch($computerScienceResource->id, null, $review->attributesToArray());
 
-        // Json with success
         return to_route('resources.show', ['computerScienceResource' => $review->computer_science_resource_id])
             ->with('success', 'Review created successfully!');
+    }
+
+    public function update(StoreResourceReview $request, ComputerScienceResource $computerScienceResource)
+    {
+        // Validate the request data
+        $validatedData = $request->validated();
+    
+        $existingReview = ResourceReview::where([
+            'user_id' => Auth::id(),
+            'computer_science_resource_id' => $computerScienceResource->id,
+        ])->first();
+    
+        if (!$existingReview) {
+            Log::debug("User has not already posted a review");
+            // TODO: Make it a json with errors instead
+            return back()->with('warning', 'You need to have a review posted before editing one.');
+        }
+    
+        Log::debug("Updating resource review: " . json_encode($validatedData));
+    
+        // Update the existing review
+        $oldAttributes = $existingReview->attributesToArray(); // Save old attributes
+    
+        $existingReview->update([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'community' => $validatedData['community'],
+            'teaching_clarity' => $validatedData['teaching_clarity'],
+            'engagement' => $validatedData['engagement'],
+            'practicality' => $validatedData['practicality'],
+            'user_friendliness' => $validatedData['user_friendliness'],
+            'updates' => $validatedData['updates'],
+            'pros' => $validatedData['pros'],
+            'cons' => $validatedData['cons'],
+        ]);
+    
+        // Dispatch event with old and new data
+        ResourceReviewProcessed::dispatch(
+            $computerScienceResource->id,
+            $oldAttributes,
+            $existingReview->attributesToArray()
+        );
+    
+        return response()->json();
     }
 }

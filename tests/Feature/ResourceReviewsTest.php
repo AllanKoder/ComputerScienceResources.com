@@ -93,7 +93,7 @@ class ResourceReviewsTest extends TestCase
         $data2 = ResourceReviewTestResource::fake();
         $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data2);
-        
+
         $this->assertDatabaseMissing('resource_reviews', [
             'computer_science_resource_id' => $resource->id,
             'title' => $data2['title']
@@ -151,6 +151,60 @@ class ResourceReviewsTest extends TestCase
         $this->assertDatabaseHas('resource_review_summaries', array_merge([
             'computer_science_resource_id' => $resource->id,
             'review_count' => $reviewCount,
+        ], $total));
+    }
+
+    public function test_resource_review_can_be_updated(): void
+    {
+        $times = 10;
+
+        $resource = ComputerScienceResource::factory()->create();
+        $users = User::factory($times)->create();
+        $total = [
+            'community' => 0,
+            'teaching_clarity' => 0,
+            'engagement' => 0,
+            'practicality' => 0,
+            'user_friendliness' => 0,
+            'updates' => 0,
+        ];
+
+        foreach ($users as $user) {
+            $data = ResourceReviewTestResource::fake();
+            foreach (array_keys($total) as $key) {
+                $total[$key] += $data[$key];
+            }
+
+            $this->actingAs($user)->post(route('reviews.store', $resource), $data);
+        }
+
+        $this->assertDatabaseHas('resource_review_summaries', array_merge([
+            'computer_science_resource_id' => $resource->id,
+            'review_count' => $times,
+        ], $total));
+
+        $total = [
+            'community' => 0,
+            'teaching_clarity' => 0,
+            'engagement' => 0,
+            'practicality' => 0,
+            'user_friendliness' => 0,
+            'updates' => 0,
+        ];
+
+        foreach ($users as $user) {
+            // Update to new review
+            $newData = ResourceReviewTestResource::fake();
+            foreach (array_keys($total) as $key) {
+                $total[$key] += $newData[$key];
+            }
+
+            $this->actingAs($user)->put(route('reviews.update', $resource), $newData);
+        }
+
+        $this->assertDatabaseHas('resource_review_summaries', array_merge([
+            'computer_science_resource_id' => $resource->id,
+            'review_count' => $times,
         ], $total));
     }
 }
