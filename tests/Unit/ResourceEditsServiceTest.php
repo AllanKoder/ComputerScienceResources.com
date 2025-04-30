@@ -17,19 +17,19 @@ class ResourceEditsServiceTest extends TestCase
     }
 
     /**
-     * Zero votes on a resource, so 1 approval is enough to merge
+     * Zero votes on a resource, 3 approval is minimum to merge
      */
     public function test_zero_votes_on_edit(): void
     {
-        $this->assertEquals($this->service->requiredVotes(0), 1);
+        $this->assertEquals($this->service->requiredVotes(0), 3);
     }
 
     /**
-     * 1 vote on a resource, so 1 approval is enough to merge
+     * 1 vote on a resource, 3 approvals is minimum to merge
      */
     public function test_one_vote_on_edit(): void
     {
-        $this->assertEquals($this->service->requiredVotes(1), 1);
+        $this->assertEquals($this->service->requiredVotes(1), 3);
     }
 
 

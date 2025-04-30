@@ -16,13 +16,11 @@ class ResourceEditsService
      */
     public function requiredVotes(int $totalVotes): int
     {
-        // So little votes, so we only need 1 vote to approve
-        if ($totalVotes <= 1) return 1;
-
-        // Dropoff
-        return min($totalVotes,
+        // Either the current votes, or the log equation
+        $votes = min($totalVotes,
             floor(log($totalVotes, 1.25)) + 1
         );
+        return max(3, $votes); // Need to be 3 votes minimum
     }
 
     /**
@@ -31,6 +29,10 @@ class ResourceEditsService
      */
     public function canMergeEdits(ResourceEdits $edits) : bool
     {
+        if (app()->isLocal()) {
+            return true;
+        }
+
         $totalVotes = $edits->resource->votes_count;
         $neededApprovals = $this->requiredVotes($totalVotes);
         

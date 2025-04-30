@@ -104,4 +104,10 @@ class ComputerScienceResource extends Model
             set: fn(array $value) => $this->syncTagsWithType($value, 'general_tags')
         );
     }
+
+    public function tagCounter(): array
+    {
+        $tag_collection = collect([$this->topic_tags, $this->programming_language_tags, $this->general_tags]);
+        return $tag_collection->flatten()->countBy()->toArray();
+    }
 }
