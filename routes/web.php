@@ -6,7 +6,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComputerScienceResourceController;
 use App\Http\Controllers\ResourceEditsController;
 use App\Http\Controllers\ResourceReviewController;
+use App\Http\Controllers\TagFrequencyController;
 use App\Http\Controllers\UpvoteController;
+use App\Models\TagFrequency;
 use Inertia\Inertia;
 
 // Public
@@ -72,6 +74,10 @@ Route::controller(ComputerScienceResourceController::class)->group(function () {
 // Comments
 Route::controller(CommentController::class)->group(function () {
     Route::get('/comments/show/{type}/{id}/{index}/{paginationLimit?}', 'show')->name('comments.show');
+});
+
+Route::controller(TagFrequencyController::class)->group(function () {
+    Route::get('/tags/search/{query?}', 'search')->name('tags.search');
 });
 
 // Resource Edits

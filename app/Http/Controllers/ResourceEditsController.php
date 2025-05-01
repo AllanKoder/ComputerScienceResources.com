@@ -111,7 +111,7 @@ class ResourceEditsController extends Controller
         $resource->general_tags = $resourceEdits->general_tags;
 
         // Get the new tag counter
-        $new_tags = collect([$resourceEdits->topic_tags, $resourceEdits->programming_language_tags, $resourceEdits->general_tags])->flatten()->countBy()->toArray();
+        $new_tags = collect([$resourceEdits->topic_tags, $resourceEdits->programming_language_tags, $resourceEdits->general_tags])->flatten()->unique()->countBy()->toArray();
         // Change tag frequency
         TagFrequencyChanged::dispatch($old_tag_counter, $new_tags);
 

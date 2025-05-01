@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
 use App\Models\User;
 use Illuminate\Support\Facades\Log;
@@ -51,6 +52,8 @@ class ComputerScienceResourceFactory extends Factory
             $resource->topic_tags = fake()->randomElements($tags, fake()->numberBetween(3, count($tags)));
             $resource->programming_language_tags = fake()->randomElements($tags);
             $resource->general_tags = fake()->randomElements($tags);
+
+            TagFrequencyChanged::dispatch(null, $resource->tagCounter());
         });
     }
 }

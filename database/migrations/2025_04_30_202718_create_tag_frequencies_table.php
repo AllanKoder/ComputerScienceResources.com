@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('tag_frequencies', function (Blueprint $table) {
             $table->char('tag', 100)->primary();
             $table->bigInteger('count')->default(0);
-            $table->timestamps();
         });
     }
 

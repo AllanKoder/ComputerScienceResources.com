@@ -4,38 +4,35 @@ import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import AutoComplete from "primevue/autocomplete";
 import { defineEmits, defineProps } from "vue";
+import axios from "axios";
 
 const props = defineProps({
     initial: {
         type: Array,
         required: true,
     },
-    queryUrl: {
-        type: String,
-        required: false,
-    }
 });
 
 const emit = defineEmits(["changed"]);
 
-const tags = ref(new Set(props.initial));
+const selectedTags = ref(new Set(props.initial));
 const searchValue = ref("");
-const allSuggestions = ref(["test1", "test2"]);
-const suggestions = ref([]);
+const tagResult = ref([]);
+const tagCount = ref({});
 const emptySearchMessage = ref("");
 
 const addTag = (tag) => {
-    if (tag && !tags.value.has(tag)) {
-        tags.value.add(tag);
+    if (tag && !selectedTags.value.has(tag)) {
+        selectedTags.value.add(tag);
         searchValue.value = "";
-        emit("changed", Array.from(tags.value));
+        emit("changed", Array.from(selectedTags.value));
     }
 };
 
 const removeTag = (tag) => {
     if (tag) {
-        tags.value.delete(tag);
-        emit("changed", Array.from(tags.value));
+        selectedTags.value.delete(tag);
+        emit("changed", Array.from(selectedTags.value));
     }
 };
 
@@ -45,20 +42,30 @@ const handleSelect = (event) => {
 
 const handleKeydown = (event) => {
     if (event.key === "Enter" && searchValue.value.trim()) {
-        addTag(searchValue.value.trim());
+        addTag(searchValue.value.trim().toLowerCase());
         event.preventDefault();
     }
 };
 
-const filterSuggestions = (event) => {
-    let query = event.query.toLowerCase();
-    suggestions.value = allSuggestions.value.filter((item) =>
-        item.toLowerCase().includes(query)
-    );
+const filterSuggestions = () => {
+    let query = searchValue.value.trim().toLowerCase();
 
-    if (suggestions.value.length == 0) {
-        emptySearchMessage.value = searchValue.value;
-    }
+    axios
+        .get(route("tags.search", { query }))
+        .then((response) => {
+            const tags = response.data.tags;
+
+            tagResult.value = tags.map((tagJson) => tagJson.tag);
+
+            tagCount.value = Object.fromEntries(
+                tags.map((tagJson) => [tagJson.tag, tagJson.count])
+            );
+        })
+        .catch(() => {
+            console.warn("Cannot query server for tags");
+            tagResult.value = [];
+            tagCount.value = {};
+        });
 };
 </script>
 
@@ -67,21 +74,29 @@ const filterSuggestions = (event) => {
         <!-- Search bar to add tags -->
         <AutoComplete
             v-model="searchValue"
-            :suggestions="suggestions"
+            :suggestions="tagResult"
             :empty-search-message="emptySearchMessage"
             @complete="filterSuggestions"
             @item-select="handleSelect"
             @keydown="handleKeydown"
             placeholder="Type to add tags"
+            completeOnFocus
         >
-            <template #option="headerProps">
-                {{ headerProps.option }} -
-                <span class="py-0.5 px-1 rounded-lg bg-gray-100">32</span>
+            <template #option="slotProps">
+                <div class="flex items-center justify-between w-full">
+                    <span>{{ slotProps.option }}</span>
+                    <span
+                        v-if="tagCount[slotProps.option] !== undefined"
+                        class="py-0.5 px-1 rounded-lg bg-gray-100 text-sm text-gray-700"
+                    >
+                        {{ tagCount[slotProps.option] }}
+                    </span>
+                </div>
             </template>
         </AutoComplete>
         <!-- List of tags -->
         <div class="mt-2">
-            <Tag v-for="tag in tags" :key="tag" class="mr-2 mb-2">
+            <Tag v-for="tag in selectedTags" :key="tag" class="mr-2 mb-2">
                 <button @click="() => removeTag(tag)" class="mr-1">
                     <Icon icon="mdi:remove-bold" />
                 </button>
