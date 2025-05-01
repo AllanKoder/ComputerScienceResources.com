@@ -1,7 +1,6 @@
 <script setup>
 import { ref, defineProps, defineEmits, watch } from "vue";
 import TagSelector from "@/Components/Form/TagSelector.vue";
-import Message from "primevue/message";
 import Button from "primevue/button";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import { resourceMandatoryTags } from "@/Helpers/validation";
@@ -19,6 +18,7 @@ const emit = defineEmits(["change", "next", "back"]);
 
 // Reactive reference for form data
 const formData = ref({ ...props.form });
+const errors = ref([]);
 
 const schema = resourceMandatoryTags;
 // PrimeVue Resolver
@@ -43,8 +43,9 @@ const validateAndNext = async () => {
         })
         .catch((error) => {
             console.error("Validation failed:", error.errors);
+            errors.value = error.errors;
         });
-        console.log(formData);
+    console.log(formData);
 };
 </script>
 
@@ -57,14 +58,14 @@ const validateAndNext = async () => {
         :initialValues="formData"
         class="flex flex-col gap-4 w-full"
     >
-        <FormField v-slot="$field" name="topic_tags" class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1">
             <!-- Tag Selector for topics -->
             <TagSelector
                 :initial="formData.topic_tags ?? []"
-                @changed="(tags) => (formData.topic_tags = tags)"
+                v-model="formData.topic_tags"
             ></TagSelector>
-            <PrimeVueFormError v-if="$field?.invalid" :errors="$field.errors" />
-        </FormField>
+            <PrimeVueFormError :errors="errors" />
+        </div>
 
         <!-- Prev/Next Button -->
         <div class="flex pt-6 justify-between">

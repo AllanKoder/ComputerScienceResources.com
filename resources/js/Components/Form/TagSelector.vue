@@ -3,7 +3,7 @@ import { Tag } from "primevue";
 import { Icon } from "@iconify/vue";
 import { ref } from "vue";
 import AutoComplete from "primevue/autocomplete";
-import { defineEmits, defineProps } from "vue";
+import { defineModel, defineProps } from "vue";
 import axios from "axios";
 
 const props = defineProps({
@@ -13,7 +13,7 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["changed"]);
+const model = defineModel()
 
 const selectedTags = ref(new Set(props.initial));
 const searchValue = ref("");
@@ -25,14 +25,14 @@ const addTag = (tag) => {
     if (tag && !selectedTags.value.has(tag)) {
         selectedTags.value.add(tag);
         searchValue.value = "";
-        emit("changed", Array.from(selectedTags.value));
+        model.value = Array.from(selectedTags.value);
     }
 };
 
 const removeTag = (tag) => {
     if (tag) {
         selectedTags.value.delete(tag);
-        emit("changed", Array.from(selectedTags.value));
+        model.value = Array.from(selectedTags.value);
     }
 };
 
