@@ -32,7 +32,7 @@ watch(
     </h2>
     <TagSelector
         :initial="formData.programming_language_tags ?? []"
-        @changed="(tags) => (formData.programming_language_tags = tags)"
+        v-model="formData.programming_language_tags"
     ></TagSelector>
 
     <!-- Tag Selector for Other tags -->
@@ -41,7 +41,7 @@ watch(
     </h2>
     <TagSelector
         :initial="formData.general_tags ?? []"
-        @changed="(tags) => (formData.general_tags = tags)"
+        v-model="formData.general_tags"
     ></TagSelector>
 
     <!-- Prev/Next Button -->

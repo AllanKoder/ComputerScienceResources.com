@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TagFrequencyChanged;
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
@@ -76,6 +77,9 @@ class ComputerScienceResourceController extends Controller
         if (isset($validatedData['general_tags'])) {
             $resource->general_tags = $validatedData['general_tags'];
         }
+
+        // Change tag frequency
+        TagFrequencyChanged::dispatch(null, $resource->tagCounter());
 
         Log::debug("Created resource " . json_encode($resource));
 

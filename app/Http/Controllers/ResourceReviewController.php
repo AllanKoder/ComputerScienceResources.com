@@ -49,8 +49,7 @@ class ResourceReviewController extends Controller
 
         ResourceReviewProcessed::dispatch($computerScienceResource->id, null, $review->attributesToArray());
 
-        return to_route('resources.show', ['computerScienceResource' => $review->computer_science_resource_id])
-            ->with('success', 'Review created successfully!');
+        return response()->json();
     }
 
     public function update(StoreResourceReview $request, ComputerScienceResource $computerScienceResource)

@@ -35,20 +35,18 @@ const form = useForm({
 
 const resolver = ref(yupResolver(resourceReviewFields));
 
-const submitReview = () => {
-    resourceReviewFields
-        .validate(form.data, { abortEarly: false })
-        .then(() => {
-            form.post(
-                route("reviews.store", {
-                    computerScienceResource: props.resourceId,
-                }),
-                { preserveScroll: true }
-            );
-        })
-        .catch((err) => {
-            console.error("Validation errors:", err);
-        });
+const submitReview = (event) => {
+    if (!event.valid) {
+        console.error("Validation errors");
+        return;
+    }
+
+    form.post(
+        route("reviews.store", {
+            computerScienceResource: props.resourceId,
+        }),
+        { preserveScroll: true }
+    );
 };
 </script>
 

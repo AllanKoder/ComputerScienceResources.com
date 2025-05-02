@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
@@ -26,7 +27,7 @@ class ResourceEditsController extends Controller
     }
 
 
-    // TODO: Make an array facade
+    // TODO: Make an array facade or something
     function normalize($array) {
         ksort($array);
         foreach ($array as &$value) {
@@ -93,6 +94,7 @@ class ResourceEditsController extends Controller
         }
 
         $resource = ComputerScienceResource::findOrFail($resourceEdits->computer_science_resource_id);
+        $old_tag_counter = $resource->tagCounter();
 
         $resource->name = $resourceEdits->name;
         $resource->description = $resourceEdits->description;
@@ -107,6 +109,11 @@ class ResourceEditsController extends Controller
         $resource->topic_tags = $resourceEdits->topic_tags;
         $resource->programming_language_tags = $resourceEdits->programming_language_tags;
         $resource->general_tags = $resourceEdits->general_tags;
+
+        // Get the new tag counter
+        $new_tags = collect([$resourceEdits->topic_tags, $resourceEdits->programming_language_tags, $resourceEdits->general_tags])->flatten()->unique()->countBy()->toArray();
+        // Change tag frequency
+        TagFrequencyChanged::dispatch($old_tag_counter, $new_tags);
 
         // Delete the edit since we successfully merged the changes
         $resourceEdits->delete();
