@@ -64,6 +64,7 @@ const validateAndNext = async () => {
                 :initial="formData.topic_tags ?? []"
                 v-model="formData.topic_tags"
             ></TagSelector>
+
             <PrimeVueFormError :errors="errors" />
         </div>
 
