@@ -2,7 +2,9 @@
 
 namespace Tests\TestResources;
 
+use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
+use Event;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,17 +26,20 @@ class ComputerScienceResourceTestResource extends JsonResource
         ];
     }
 
-    public static function fake(): array
+    public static function fake(array $overrides = []): array
     {
         // Create the model with disabled events
-        $model = ComputerScienceResource::factory()->create();
-    
+        $model = Event::fakeFor(function () {
+            return ComputerScienceResource::factory()->create();
+        }, [TagFrequencyChanged::class]);
+
         // Transform it to API form
         $formData = (new self($model))->toArray(request());
     
         // Delete after getting the array to avoid polluting the DB
         $model->delete();
     
-        return $formData;
+        // Merge and return
+        return array_merge($formData, $overrides);
     }
 }
