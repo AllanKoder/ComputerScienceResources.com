@@ -28,7 +28,7 @@ class ResourceReviewTestResource extends JsonResource
 
     public static function fake(): array
     {
-        // Fake all events except the ones you still want to fire
+        // Fake certain events
         $model = Event::fakeFor(function () {
             return ResourceReview::factory()->create();
         }, [ResourceReviewProcessed::class]);

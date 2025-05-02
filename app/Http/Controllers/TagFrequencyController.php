@@ -11,7 +11,7 @@ class TagFrequencyController extends Controller
     {
         if (strlen($query) > 50)
         {
-            return response(422)->json();
+            return response()->json(['message' => 'Query too long.'], 422);
         }
 
         $prefixed_tags = TagFrequency::where('tag', 'like', $query.'%')

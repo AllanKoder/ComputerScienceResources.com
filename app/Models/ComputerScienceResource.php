@@ -108,6 +108,6 @@ class ComputerScienceResource extends Model
     public function tagCounter(): array
     {
         $tag_collection = collect([$this->topic_tags, $this->programming_language_tags, $this->general_tags]);
-        return $tag_collection->flatten()->unique()->countBy()->toArray();
+        return $tag_collection->flatten()->countBy()->toArray();
     }
 }

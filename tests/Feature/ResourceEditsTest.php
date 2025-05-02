@@ -153,8 +153,6 @@ class ResourceEditsTest extends TestCase
      * We run multiple merges to simulate multiple edit merges.
      */
 
-     // TODO: Handle null images
-     // TODO: Handle all fields and attributes
     public function test_merged_edit_reflects_changes_on_original_resource(): void
     {
         $resource = ComputerScienceResource::factory()->create();
