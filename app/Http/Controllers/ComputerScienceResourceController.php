@@ -54,14 +54,14 @@ class ComputerScienceResourceController extends Controller
             });
         }
     
-        // 5.3.4 - Filter by difficulty
+        // Filter by difficulty (array)
         if ($difficulty = $request->query('difficulty')) {
-            $query->where('difficulty', $difficulty);
+            $query->whereIn('difficulty', (array) $difficulty);
         }
     
-        // 5.3.5 - Filter by pricing
+        // Filter by pricing (array)
         if ($pricing = $request->query('pricing')) {
-            $query->where('pricing', $pricing);
+            $query->whereIn('pricing', (array) $pricing);
         }
     
         // Optional: Filter by tags (across any tag type)
@@ -76,7 +76,7 @@ class ComputerScienceResourceController extends Controller
             'resources' => $resources,
         ]);
     }
-    
+        
     /**
      * Show the form for creating a new resource.
      */
