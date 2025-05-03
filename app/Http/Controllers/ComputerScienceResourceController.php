@@ -28,16 +28,55 @@ class ComputerScienceResourceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Eager load topic tags and other tag types as needed
-        $resources = ComputerScienceResource::with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship'])
-            ->paginate(10);
+        $query = ComputerScienceResource::query();
+    
+        // Eager load relations
+        $query->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
+    
+        // Fulltext search on name
+        if ($name = $request->query('name')) {
+            $query->whereFullText('name', $name);
+        }
+    
+        // Fulltext search on description
+        if ($description = $request->query('description')) {
+            $query->whereFullText('description', $description);
+        }
+    
+        // Filter by platforms (array)
+        if ($platforms = $request->query('platforms')) {
+            $query->where(function ($q) use ($platforms) {
+                foreach ((array) $platforms as $platform) {
+                    $q->orWhereRaw('FIND_IN_SET(?, platforms)', [$platform]);
+                }
+            });
+        }
+    
+        // 5.3.4 - Filter by difficulty
+        if ($difficulty = $request->query('difficulty')) {
+            $query->where('difficulty', $difficulty);
+        }
+    
+        // 5.3.5 - Filter by pricing
+        if ($pricing = $request->query('pricing')) {
+            $query->where('pricing', $pricing);
+        }
+    
+        // Optional: Filter by tags (across any tag type)
+        if ($tags = $request->query('tags')) {
+            $query->withAnyTags((array) $tags);
+        }
+    
+        // Paginate and return
+        $resources = $query->paginate(10)->appends($request->query());
+    
         return Inertia::render('Resources/Index', [
             'resources' => $resources,
         ]);
     }
-
+    
     /**
      * Show the form for creating a new resource.
      */
