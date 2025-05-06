@@ -39,7 +39,7 @@ class ComputerScienceResource extends Model
     {
         return $this->hasOne(ResourceReviewSummary::class);
     }
-    
+
     /**
      * Get all the reviews.
      */
@@ -55,7 +55,7 @@ class ComputerScienceResource extends Model
 
     /**
      * Attribute to get and set platforms as an array
-     * 
+     *
      * @return Attribute
      */
     protected function platforms(): Attribute

@@ -31,20 +31,20 @@ class ComputerScienceResourceController extends Controller
     public function index(Request $request)
     {
         $query = ComputerScienceResource::query();
-    
+
         // Eager load relations
         $query->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
-    
+
         // Fulltext search on name
         if ($name = $request->query('name')) {
             $query->whereFullText('name', $name);
         }
-    
+
         // Fulltext search on description
         if ($description = $request->query('description')) {
             $query->whereFullText('description', $description);
         }
-    
+
         // Filter by platforms (array)
         if ($platforms = $request->query('platforms')) {
             $query->where(function ($q) use ($platforms) {
@@ -53,30 +53,42 @@ class ComputerScienceResourceController extends Controller
                 }
             });
         }
-    
+
         // Filter by difficulty (array)
         if ($difficulty = $request->query('difficulty')) {
             $query->whereIn('difficulty', (array) $difficulty);
         }
-    
+
         // Filter by pricing (array)
         if ($pricing = $request->query('pricing')) {
             $query->whereIn('pricing', (array) $pricing);
         }
-    
-        // Optional: Filter by tags (across any tag type)
-        if ($tags = $request->query('tags')) {
-            $query->withAnyTags((array) $tags);
+
+        // Filter by topic tags
+        if ($topics = $request->query('topics')) {
+            $query->withAnyTags((array) $topics, 'topics');
         }
-    
+
+        // Filter by programming languages
+        if ($programmingLanguages = $request->query('programming_languages')) {
+            $query->withAnyTags((array) $programmingLanguages, 'programming_languages');
+        }
+
+        // Filter by general tags
+        if ($generalTags = $request->query('general_tags')) {
+            $query->withAnyTags((array) $generalTags, 'general_tags');
+        }
+
+
+
         // Paginate and return
         $resources = $query->paginate(10)->appends($request->query());
-    
+
         return Inertia::render('Resources/Index', [
             'resources' => $resources,
         ]);
     }
-        
+
     /**
      * Show the form for creating a new resource.
      */

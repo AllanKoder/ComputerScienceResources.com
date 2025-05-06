@@ -1,7 +1,7 @@
 <script setup>
 import { router } from '@inertiajs/vue3';
 import { defineProps } from 'vue';
-import SortByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
+import SortUpvotesByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
 
 const props = defineProps({
     resourceId: {
@@ -40,8 +40,8 @@ function handleSortChange(newSortType) {
 </script>
 
 <template>
-    <SortByDropdown
+    <SortUpvotesByDropdown
         @change="handleSortChange"
         :initial-value="initialValue"
-    ></SortByDropdown>
+    ></SortUpvotesByDropdown>
 </template>

@@ -26,23 +26,24 @@ watch(
 </script>
 
 <template>
-    <!-- Tag Selector for Programming Languages -->
-    <h2 class="text-2xl font-bold mb-4 text-center">
-        What Programming Languages are used (if any)?
-    </h2>
-    <TagSelector
-        :initial="formData.programming_language_tags ?? []"
-        v-model="formData.programming_language_tags"
-    ></TagSelector>
+    <div class="flex flex-col gap-1 justify-center items-center">
+        <!-- Tag Selector for Programming Languages -->
+        <h2 class="text-2xl font-bold mb-4 text-center">
+            What Programming Languages are used (if any)?
+        </h2>
+        <TagSelector
+            v-model="formData.programming_language_tags"
+        ></TagSelector>
 
-    <!-- Tag Selector for Other tags -->
-    <h2 class="text-2xl font-bold mb-4 text-center">
-        What else is it related to?
-    </h2>
-    <TagSelector
-        :initial="formData.general_tags ?? []"
-        v-model="formData.general_tags"
-    ></TagSelector>
+        <!-- Tag Selector for Other tags -->
+        <h2 class="text-2xl font-bold mb-4 text-center">
+            What else is it related to?
+        </h2>
+
+        <TagSelector
+            v-model="formData.general_tags"
+        ></TagSelector>
+    </div>
 
     <!-- Prev/Next Button -->
     <div class="flex pt-6 justify-between">
