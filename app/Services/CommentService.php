@@ -27,7 +27,6 @@ class CommentService
      * @param int    $index
      * @return array
      */
-    // TODO: Refactor commentable types, and commentable types short for all other objects
     public function getPaginatedComments(string $commentableKey, int $commentableId, int $index, int $paginationLimit = -1, string $sortBy = 'top'): array
     {
         if ($paginationLimit == -1)
@@ -35,7 +34,7 @@ class CommentService
             $paginationLimit = config('comment.default_pagination_limit');
         }
 
-        Validator::make([
+        Validator::validate([
             'index' => $index,
             'commentable_key' => $commentableKey,
             'pagination_limit' => $paginationLimit,
@@ -43,9 +42,9 @@ class CommentService
             'index' => ['required', 'integer', 'min:0'],
             'commentable_key' => ['required', Rule::in(config('comment.commentable_keys'))],
             'pagination_limit' => ['required', 'integer', 'max:' . config('comment.pagination_limit')],
-        ])->validate();
+        ]);
 
-        $commentableType = $this->modelResolver->getModelClass($commentableKey);   
+        $commentableType = $this->modelResolver->getModelClass($commentableKey);
         Log::debug("Request is, commentable_type: {$commentableType}. id: {$commentableId}. index: {$index}");
 
         // Get the root comments:
@@ -54,13 +53,13 @@ class CommentService
             'commentable_id' => $commentableId,
             'depth' => 1,
         ]);
-        
+
         // Apply sorting on the comments
         $query = app(UpvoteService::class)->applySort($query, $sortBy, Comment::class);
 
         $rootComments = $query->get();
         Log::debug("Root comments: " . json_encode($rootComments));
-            
+
         // Initialize variables
         $currentCommentsSum = 0;
         $resultingPaginatedComments = [];

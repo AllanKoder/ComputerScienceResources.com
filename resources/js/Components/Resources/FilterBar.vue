@@ -72,6 +72,7 @@ function search() {
             general_tags: selectedGeneralTags.value.length
                 ? selectedGeneralTags.value
                 : undefined,
+            community_rating: 1,
         }),
         { preserveScroll: true }
     );

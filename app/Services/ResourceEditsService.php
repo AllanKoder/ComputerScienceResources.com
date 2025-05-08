@@ -7,10 +7,10 @@ use App\Models\ResourceEdits;
 class ResourceEditsService
 {
     /**
-     * Determines the amount of votes needed to merge the resource edit into the 
-     * 
-     * Policy: The policy is roughly the formula of: 
-     * min(log(total votes of resource)/log(1.25) + 1, -- Log dropoff 
+     * Determines the amount of votes needed to merge the resource edit into the
+     *
+     * Policy: The policy is roughly the formula of:
+     * min(log(total votes of resource)/log(1.25) + 1, -- Log dropoff
      * total votes of resource) -- Dont want to require more votes than the resource's votes
      * )
      */
@@ -25,7 +25,7 @@ class ResourceEditsService
 
     /**
      * Handles determining if a resource edit is mergeable, by getting the upvotes for the resource edit
-     * 
+     *
      */
     public function canMergeEdits(ResourceEdits $edits) : bool
     {
@@ -35,7 +35,7 @@ class ResourceEditsService
 
         $totalVotes = $edits->resource->votes_count;
         $neededApprovals = $this->requiredVotes($totalVotes);
-        
+
         $approvals = $edits->vote_score;
 
         return $approvals >= $neededApprovals;

@@ -8,21 +8,26 @@ use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
 use App\Services\CommentService;
+use App\Services\ResourceReviewService;
 use App\Services\UpvoteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ComputerScienceResourceController extends Controller
 {
     protected $commentService;
     protected $upvoteService;
+    protected $reviewService;
 
-    function __construct(CommentService $commentService, UpvoteService $upvoteService)
+    function __construct(CommentService $commentService, UpvoteService $upvoteService, ResourceReviewService $reviewService)
     {
         $this->commentService = $commentService;
         $this->upvoteService = $upvoteService;
+        $this->reviewService = $reviewService;
     }
 
     /**
@@ -34,6 +39,43 @@ class ComputerScienceResourceController extends Controller
 
         // Eager load relations
         $query->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
+
+        $validator = Validator::make([
+            'name' => $request->query('name'),
+            'description' => $request->query('description'),
+            'platforms' => $request->query('platforms'),
+            'difficulty' => $request->query('difficulty'),
+            'pricing' => $request->query('pricing'),
+            'topics' => $request->query('topics'),
+            'programming_languages' => $request->query('programming_languages'),
+            'general_tags' => $request->query('general_tags'),
+
+            'community_rating' => $request->query('community_rating'),
+        ],
+        [
+            'name' => ['nullable', 'string', 'max:100'],
+            'name' => ['nullable', 'string', 'max:1000'],
+            'platforms' => ['nullable', 'array', 'min:1'],
+            'platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
+            'difficulty' => ['nullable', 'string', Rule::in(config('computerScienceResource.difficulties'))],
+            'pricing' => ['nullable', 'string', Rule::in(config('computerScienceResource.pricings'))],
+
+            'topic_tags' => ['nullable', 'array', 'min:3'],
+            'topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+
+            'general_tags' => ['nullable', 'array'],
+            'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+            'programming_language_tags' => ['nullable', 'array'],
+            'programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+
+            'community_rating' => ['nullable', 'integer', 'between:1,4'],
+        ]);
+
+        if (!$validator->validate())
+        {
+            // TODO: actually show the error, need to flash instead
+            return back()->with('error', 'Invalid query parameters data');
+        }
 
         // Fulltext search on name
         if ($name = $request->query('name')) {
@@ -79,7 +121,10 @@ class ComputerScienceResourceController extends Controller
             $query->withAnyTags((array) $generalTags, 'general_tags');
         }
 
-
+        // Filter by reviews
+        if ($commmunityRating = $request->query('community_rating')) {
+            $query = $this->reviewService->applyRatingFilter($query, 'community', $commmunityRating);
+        }
 
         // Paginate and return
         $resources = $query->paginate(10)->appends($request->query());
