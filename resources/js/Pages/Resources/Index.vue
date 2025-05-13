@@ -61,7 +61,7 @@ const newsItems = [
                 <FilterBar></FilterBar>
 
                 <div class="flex gap-4">
-                    
+
                     <!-- Resources Section -->
                     <section
                         class="w-3/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6"

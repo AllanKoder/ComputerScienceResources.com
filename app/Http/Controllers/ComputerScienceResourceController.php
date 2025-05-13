@@ -51,6 +51,11 @@ class ComputerScienceResourceController extends Controller
             'general_tags' => $request->query('general_tags'),
 
             'community_rating' => $request->query('community_rating'),
+            'teaching_clarity' => $request->query('teaching_clarity'),
+            'engagement' => $request->query('engagement'),
+            'practicality' => $request->query('practicality'),
+            'user_friendliness' => $request->query('user_friendliness'),
+            'updates' => $request->query('updates'),
         ],
         [
             'name' => ['nullable', 'string', 'max:100'],
@@ -69,6 +74,11 @@ class ComputerScienceResourceController extends Controller
             'programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50'],
 
             'community_rating' => ['nullable', 'integer', 'between:1,4'],
+            'teaching_clarity' => ['nullable', 'integer', 'between:1,4'],
+            'engagement' => ['nullable', 'integer', 'between:1,4'],
+            'practicality' => ['nullable', 'integer', 'between:1,4'],
+            'user_friendliness' => ['nullable', 'integer', 'between:1,4'],
+            'updates' => ['nullable', 'integer', 'between:1,4'],
         ]);
 
         if (!$validator->validate())
@@ -121,9 +131,21 @@ class ComputerScienceResourceController extends Controller
             $query->withAnyTags((array) $generalTags, 'general_tags');
         }
 
-        // Filter by reviews
-        if ($commmunityRating = $request->query('community_rating')) {
-            $query = $this->reviewService->applyRatingFilter($query, 'community', $commmunityRating);
+
+        /// Filter by reviews
+        $ratingFilters = [
+            'community_rating' => 'community',
+            'teaching_clarity' => 'teaching',
+            'engagement' => 'engagement',
+            'practicality' => 'practicality',
+            'user_friendliness' => 'usability',
+            'updates' => 'updates',
+        ];
+
+        foreach ($ratingFilters as $param => $ratingType) {
+            if ($rating = $request->query($param)) {
+                $query = $this->reviewService->applyRatingFilter($query, $ratingType, $rating);
+            }
         }
 
         // Paginate and return
