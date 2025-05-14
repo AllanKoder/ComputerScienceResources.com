@@ -7,6 +7,7 @@ import InputText from "primevue/inputtext";
 import MultiSelect from "primevue/multiselect";
 import Button from "primevue/button";
 import Rating from "primevue/rating";
+import Calendar from 'primevue/calendar';
 
 import TagSelector from "@/Components/Form/TagSelector.vue";
 
@@ -30,6 +31,12 @@ const selectedEngagement = ref(null);
 const selectedPracticality = ref(null);
 const selectedUserFriendliness = ref(null);
 const selectedUpdates = ref(null);
+
+// date filters
+const createdFrom = ref(null);
+const createdTo = ref(null);
+const updatedFrom = ref(null);
+const updatedTo = ref(null);
 
 const advancedOpen = ref(false);
 
@@ -62,6 +69,19 @@ onMounted(() => {
         const v = urlParams.get(param);
         refVar.value = v ? parseInt(v, 10) : null;
     }
+
+    createdFrom.value = urlParams.get("created_from")
+        ? new Date(urlParams.get("created_from"))
+        : null;
+    createdTo.value = urlParams.get("created_to")
+        ? new Date(urlParams.get("created_to"))
+        : null;
+    updatedFrom.value = urlParams.get("updated_from")
+        ? new Date(urlParams.get("updated_from"))
+        : null;
+    updatedTo.value = urlParams.get("updated_to")
+        ? new Date(urlParams.get("updated_to"))
+        : null;
 });
 
 function extractIndexedArray(urlParams, base) {
@@ -104,17 +124,26 @@ function search() {
             practicality: selectedPracticality.value || undefined,
             user_friendliness: selectedUserFriendliness.value || undefined,
             updates: selectedUpdates.value || undefined,
+
+            created_from:
+                createdFrom.value?.toISOString().slice(0, 10) || undefined,
+            created_to:
+                createdTo.value?.toISOString().slice(0, 10) || undefined,
+            updated_from:
+                updatedFrom.value?.toISOString().slice(0, 10) || undefined,
+            updated_to:
+                updatedTo.value?.toISOString().slice(0, 10) || undefined,
         }),
         { preserveScroll: true }
     );
 }
 
 function resetFilters() {
-    // text
+    // Text
     name.value = "";
     description.value = "";
 
-    // arrays
+    // Arrays
     selectedPlatforms.value = [];
     selectedDifficulty.value = [];
     selectedPricing.value = [];
@@ -122,7 +151,7 @@ function resetFilters() {
     selectedProgrammingLanguages.value = [];
     selectedGeneralTags.value = [];
 
-    // ratings
+    // Ratings
     selectedOverallRating.value = null;
     selectedCommunityRating.value = null;
     selectedTeachingClarity.value = null;
@@ -130,6 +159,12 @@ function resetFilters() {
     selectedPracticality.value = null;
     selectedUserFriendliness.value = null;
     selectedUpdates.value = null;
+
+    // Dates
+    createdFrom.value = null;
+    createdTo.value = null;
+    updatedFrom.value = null;
+    updatedTo.value = null;
 }
 </script>
 
@@ -237,9 +272,57 @@ function resetFilters() {
                 v-if="advancedOpen"
                 class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full mt-2"
             >
+                <!-- Created Date Range -->
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-medium mb-1"
+                        >Created From</label
+                    >
+                    <Calendar
+                        v-model="createdFrom"
+                        showIcon
+                        dateFormat="yy-mm-dd"
+                        class="w-full"
+                    />
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-medium mb-1"
+                        >Created To</label
+                    >
+                    <Calendar
+                        v-model="createdTo"
+                        showIcon
+                        dateFormat="yy-mm-dd"
+                        class="w-full"
+                    />
+                </div>
+
+                <!-- Updated Date Range -->
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-medium mb-1"
+                        >Updated From</label
+                    >
+                    <Calendar
+                        v-model="updatedFrom"
+                        showIcon
+                        dateFormat="yy-mm-dd"
+                        class="w-full"
+                    />
+                </div>
+                <div class="flex-1 min-w-[200px]">
+                    <label class="block text-sm font-medium mb-1"
+                        >Updated To</label
+                    >
+                    <Calendar
+                        v-model="updatedTo"
+                        showIcon
+                        dateFormat="yy-mm-dd"
+                        class="w-full"
+                    />
+                </div>
+
                 <div>
                     <label class="block text-sm font-medium mb-1"
-                        >Min. Community Rating</label
+                        >Min. Community</label
                     >
                     <Rating
                         v-model="selectedCommunityRating"
@@ -313,7 +396,11 @@ function resetFilters() {
                         @click="advancedOpen = !advancedOpen"
                     >
                         <Icon
-                            :icon="advancedOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+                            :icon="
+                                advancedOpen
+                                    ? 'mdi:chevron-up'
+                                    : 'mdi:chevron-down'
+                            "
                             class="w-4 h-4 transition-transform duration-200"
                         />
                         {{
