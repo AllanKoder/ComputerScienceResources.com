@@ -132,21 +132,31 @@ class ComputerScienceResourceController extends Controller
         }
 
 
-        /// Filter by reviews
+        // Filter by reviews
         $ratingFilters = [
-            'community_rating' => 'community',
-            'teaching_clarity' => 'teaching',
-            'engagement' => 'engagement',
-            'practicality' => 'practicality',
-            'user_friendliness' => 'usability',
-            'updates' => 'updates',
-        ];
+            'community_rating',
+            'teaching_clarity',
+            'engagement',
+            'practicality',
+            'user_friendliness',
+            'updates',
+            'overall_rating',
+            ];
 
-        foreach ($ratingFilters as $param => $ratingType) {
-            if ($rating = $request->query($param)) {
-                $query = $this->reviewService->applyRatingFilter($query, $ratingType, $rating);
+        foreach ($ratingFilters as $field) {
+            if ($rating = $request->query($field)) {
+                $query = $this->reviewService->applyRatingFilter($query, $field, $rating);
             }
         }
+
+        // Filter by Vote score
+
+        // Filter by Date posted
+        // Filter by date updated
+
+        /// Handle Sorting
+
+        // Sort by all of the columns
 
         // Paginate and return
         $resources = $query->paginate(10)->appends($request->query());

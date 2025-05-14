@@ -18,6 +18,8 @@ class ResourceReviewService
         'practicality',
         'user_friendliness',
         'updates',
+        // Special case
+        'overall_rating',
     ];
 
     /**
@@ -32,7 +34,7 @@ class ResourceReviewService
      */
     public function applyRatingFilter(Builder $query, string $field, int $minRating): Builder
     {
-        if (! in_array($field, $this->allowedFields, true)) {
+        if (!in_array($field, $this->allowedFields, true)) {
             throw new InvalidArgumentException("Invalid rating field “{$field}”.");
         }
 

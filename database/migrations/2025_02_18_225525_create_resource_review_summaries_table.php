@@ -23,6 +23,11 @@ return new class extends Migration
             $table->bigInteger('user_friendliness')->default(0);
             $table->bigInteger('updates')->default(0);
 
+            $table->decimal('overall_rating')
+                ->storedAs('(community + teaching_clarity + engagement + practicality
+                    + user_friendliness + updates) / 6')
+                ->index();
+
             $table->integer('review_count')->default(0);
 
             $table->timestamps();

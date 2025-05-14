@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { usePage, router } from "@inertiajs/vue3";
+import { Icon } from "@iconify/vue";
+import { router } from "@inertiajs/vue3";
 import { platforms, pricings, difficulties } from "@/Helpers/labels";
 import InputText from "primevue/inputtext";
 import MultiSelect from "primevue/multiselect";
@@ -22,12 +23,15 @@ const selectedProgrammingLanguages = ref([]);
 const selectedGeneralTags = ref([]);
 
 // rating filters
+const selectedOverallRating = ref(null);
 const selectedCommunityRating = ref(null);
 const selectedTeachingClarity = ref(null);
 const selectedEngagement = ref(null);
 const selectedPracticality = ref(null);
 const selectedUserFriendliness = ref(null);
 const selectedUpdates = ref(null);
+
+const advancedOpen = ref(false);
 
 onMounted(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -46,6 +50,7 @@ onMounted(() => {
     selectedGeneralTags.value = extractIndexedArray(urlParams, "general_tags");
 
     const ratingsMap = {
+        overall_rating: selectedOverallRating,
         community_rating: selectedCommunityRating,
         teaching_clarity: selectedTeachingClarity,
         engagement: selectedEngagement,
@@ -92,6 +97,7 @@ function search() {
             general_tags: selectedGeneralTags.value.length
                 ? selectedGeneralTags.value
                 : undefined,
+            overall_rating: selectedOverallRating.value || undefined,
             community_rating: selectedCommunityRating.value || undefined,
             teaching_clarity: selectedTeachingClarity.value || undefined,
             engagement: selectedEngagement.value || undefined,
@@ -117,6 +123,7 @@ function resetFilters() {
     selectedGeneralTags.value = [];
 
     // ratings
+    selectedOverallRating.value = null;
     selectedCommunityRating.value = null;
     selectedTeachingClarity.value = null;
     selectedEngagement.value = null;
@@ -135,7 +142,7 @@ function resetFilters() {
             <!-- Name -->
             <div class="flex-1 min-w-[200px]">
                 <label class="block text-sm font-medium mb-1">Name</label>
-                <InputText v-model="name" class="w-full" />
+                <InputText v-model="name" placeholder="Title" class="w-full" />
             </div>
 
             <!-- Description -->
@@ -143,7 +150,11 @@ function resetFilters() {
                 <label class="block text-sm font-medium mb-1"
                     >Description</label
                 >
-                <InputText v-model="description" class="w-full" />
+                <InputText
+                    v-model="description"
+                    placeholder="Enter Keywords"
+                    class="w-full"
+                />
             </div>
 
             <!-- Platforms -->
@@ -211,86 +222,120 @@ function resetFilters() {
             <!-- Star-rating filters -->
             <div class="flex-1 min-w-[200px]">
                 <label class="block text-sm font-medium mb-1"
-                    >Min. Community Rating</label
+                    >Min. Overall Rating</label
                 >
                 <Rating
-                    v-model="selectedCommunityRating"
+                    v-model="selectedOverallRating"
                     :stars="4"
                     cancel
                     class="text-yellow-400"
                 />
             </div>
 
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Teaching Clarity</label
-                >
-                <Rating
-                    v-model="selectedTeachingClarity"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
+            <!-- Advanced Filters Section -->
+            <div
+                v-if="advancedOpen"
+                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full mt-2"
+            >
+                <div>
+                    <label class="block text-sm font-medium mb-1"
+                        >Min. Community Rating</label
+                    >
+                    <Rating
+                        v-model="selectedCommunityRating"
+                        :stars="4"
+                        cancel
+                        class="text-yellow-400"
+                    />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1"
+                        >Min. Teaching Clarity</label
+                    >
+                    <Rating
+                        v-model="selectedTeachingClarity"
+                        :stars="4"
+                        cancel
+                        class="text-yellow-400"
+                    />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1"
+                        >Min. Engagement</label
+                    >
+                    <Rating
+                        v-model="selectedEngagement"
+                        :stars="4"
+                        cancel
+                        class="text-yellow-400"
+                    />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1"
+                        >Min. Practicality</label
+                    >
+                    <Rating
+                        v-model="selectedPracticality"
+                        :stars="4"
+                        cancel
+                        class="text-yellow-400"
+                    />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1"
+                        >Min. User Friendliness</label
+                    >
+                    <Rating
+                        v-model="selectedUserFriendliness"
+                        :stars="4"
+                        cancel
+                        class="text-yellow-400"
+                    />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1"
+                        >Min. Updates</label
+                    >
+                    <Rating
+                        v-model="selectedUpdates"
+                        :stars="4"
+                        cancel
+                        class="text-yellow-400"
+                    />
+                </div>
             </div>
+            <div class="flex items-end flex-wrap gap-4 w-full">
+                <!-- Advanced Filters Toggle (now on the left) -->
+                <div>
+                    <button
+                        type="button"
+                        class="flex items-center gap-1 text-sm text-blue-600 underline focus:outline-none"
+                        @click="advancedOpen = !advancedOpen"
+                    >
+                        <Icon
+                            :icon="advancedOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+                            class="w-4 h-4 transition-transform duration-200"
+                        />
+                        {{
+                            advancedOpen
+                                ? "Hide Advanced Filters"
+                                : "Show Advanced Filters"
+                        }}
+                    </button>
+                </div>
 
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Engagement</label
-                >
-                <Rating
-                    v-model="selectedEngagement"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
+                <!-- Reset & Filter Buttons (now on the right) -->
+                <div class="flex gap-4 ml-auto">
+                    <Button
+                        label="Reset"
+                        icon="pi pi-refresh"
+                        type="button"
+                        class="p-button-secondary"
+                        @click="resetFilters"
+                    />
 
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Practicality</label
-                >
-                <Rating
-                    v-model="selectedPracticality"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Min. User Friendliness</label
-                >
-                <Rating
-                    v-model="selectedUserFriendliness"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Updates</label
-                >
-                <Rating
-                    v-model="selectedUpdates"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-
-            <!-- Action Buttons -->
-            <div class="flex items-end gap-5">
-                <Button
-                    label="Reset"
-                    icon="pi pi-refresh"
-                    type="button"
-                    class="p-button-secondary"
-                    @click="resetFilters"
-                />
-                <Button label="Filter" icon="pi pi-search" type="submit" />
+                    <Button label="Filter" icon="pi pi-search" type="submit" />
+                </div>
             </div>
         </div>
     </form>
