@@ -149,14 +149,27 @@ class ComputerScienceResourceController extends Controller
             }
         }
 
-        // Filter by Vote score
-
         // Filter by Date posted
-        // Filter by date updated
+        if ($createdFrom = $request->query('created_from')) {
+            $query->whereDate('created_at', '>=', $createdFrom);
+        }
+
+        if ($createdTo = $request->query('created_to')) {
+            $query->whereDate('created_at', '<=', $createdTo);
+        }
+
+        // Filter by Date updated
+        if ($updatedFrom = $request->query('updated_from')) {
+            $query->whereDate('updated_at', '>=', $updatedFrom);
+        }
+
+        if ($updatedTo = $request->query('updated_to')) {
+            $query->whereDate('updated_at', '<=', $updatedTo);
+        }
 
         /// Handle Sorting
 
-        // Sort by all of the columns
+        // Sort by votes
 
         // Paginate and return
         $resources = $query->paginate(10)->appends($request->query());

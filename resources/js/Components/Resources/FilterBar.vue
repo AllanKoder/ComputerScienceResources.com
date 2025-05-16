@@ -10,6 +10,7 @@ import Rating from "primevue/rating";
 import Calendar from 'primevue/calendar';
 
 import TagSelector from "@/Components/Form/TagSelector.vue";
+import SortUpvotesByDropdown from "../Comments/SortUpvotesByDropdown.vue";
 
 // text filters
 const name = ref("");
@@ -58,7 +59,7 @@ onMounted(() => {
 
     const ratingsMap = {
         overall_rating: selectedOverallRating,
-        community_rating: selectedCommunityRating,
+        community: selectedCommunityRating,
         teaching_clarity: selectedTeachingClarity,
         engagement: selectedEngagement,
         practicality: selectedPracticality,
@@ -71,17 +72,34 @@ onMounted(() => {
     }
 
     createdFrom.value = urlParams.get("created_from")
-        ? new Date(urlParams.get("created_from"))
+        ? new Date(urlParams.get("created_from") + "T00:00:00")
         : null;
     createdTo.value = urlParams.get("created_to")
-        ? new Date(urlParams.get("created_to"))
+        ? new Date(urlParams.get("created_to") + "T00:00:00")
         : null;
     updatedFrom.value = urlParams.get("updated_from")
-        ? new Date(urlParams.get("updated_from"))
+        ? new Date(urlParams.get("updated_from") + "T00:00:00")
         : null;
     updatedTo.value = urlParams.get("updated_to")
-        ? new Date(urlParams.get("updated_to"))
+        ? new Date(urlParams.get("updated_to") + "T00:00:00")
         : null;
+
+    function isAnyAdvancedFilterSet() {
+        return (
+            selectedCommunityRating.value !== null ||
+            selectedTeachingClarity.value !== null ||
+            selectedEngagement.value !== null ||
+            selectedPracticality.value !== null ||
+            selectedUserFriendliness.value !== null ||
+            selectedUpdates.value !== null ||
+            createdFrom.value !== null ||
+            createdTo.value !== null ||
+            updatedFrom.value !== null ||
+            updatedTo.value !== null
+        );
+    }
+
+    advancedOpen.value = isAnyAdvancedFilterSet()
 });
 
 function extractIndexedArray(urlParams, base) {
@@ -118,7 +136,7 @@ function search() {
                 ? selectedGeneralTags.value
                 : undefined,
             overall_rating: selectedOverallRating.value || undefined,
-            community_rating: selectedCommunityRating.value || undefined,
+            community: selectedCommunityRating.value || undefined,
             teaching_clarity: selectedTeachingClarity.value || undefined,
             engagement: selectedEngagement.value || undefined,
             practicality: selectedPracticality.value || undefined,
@@ -266,163 +284,171 @@ function resetFilters() {
                     class="text-yellow-400"
                 />
             </div>
-
-            <!-- Advanced Filters Section -->
-            <div
-                v-if="advancedOpen"
-                class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 w-full mt-2"
-            >
-                <!-- Created Date Range -->
-                <div class="flex-1 min-w-[200px]">
-                    <label class="block text-sm font-medium mb-1"
-                        >Created From</label
-                    >
-                    <Calendar
-                        v-model="createdFrom"
-                        showIcon
-                        dateFormat="yy-mm-dd"
-                        class="w-full"
-                    />
-                </div>
-                <div class="flex-1 min-w-[200px]">
-                    <label class="block text-sm font-medium mb-1"
-                        >Created To</label
-                    >
-                    <Calendar
-                        v-model="createdTo"
-                        showIcon
-                        dateFormat="yy-mm-dd"
-                        class="w-full"
-                    />
-                </div>
-
-                <!-- Updated Date Range -->
-                <div class="flex-1 min-w-[200px]">
-                    <label class="block text-sm font-medium mb-1"
-                        >Updated From</label
-                    >
-                    <Calendar
-                        v-model="updatedFrom"
-                        showIcon
-                        dateFormat="yy-mm-dd"
-                        class="w-full"
-                    />
-                </div>
-                <div class="flex-1 min-w-[200px]">
-                    <label class="block text-sm font-medium mb-1"
-                        >Updated To</label
-                    >
-                    <Calendar
-                        v-model="updatedTo"
-                        showIcon
-                        dateFormat="yy-mm-dd"
-                        class="w-full"
-                    />
-                </div>
-
-                <div>
-                    <label class="block text-sm font-medium mb-1"
-                        >Min. Community</label
-                    >
-                    <Rating
-                        v-model="selectedCommunityRating"
-                        :stars="4"
-                        cancel
-                        class="text-yellow-400"
-                    />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1"
-                        >Min. Teaching Clarity</label
-                    >
-                    <Rating
-                        v-model="selectedTeachingClarity"
-                        :stars="4"
-                        cancel
-                        class="text-yellow-400"
-                    />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1"
-                        >Min. Engagement</label
-                    >
-                    <Rating
-                        v-model="selectedEngagement"
-                        :stars="4"
-                        cancel
-                        class="text-yellow-400"
-                    />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1"
-                        >Min. Practicality</label
-                    >
-                    <Rating
-                        v-model="selectedPracticality"
-                        :stars="4"
-                        cancel
-                        class="text-yellow-400"
-                    />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1"
-                        >Min. User Friendliness</label
-                    >
-                    <Rating
-                        v-model="selectedUserFriendliness"
-                        :stars="4"
-                        cancel
-                        class="text-yellow-400"
-                    />
-                </div>
-                <div>
-                    <label class="block text-sm font-medium mb-1"
-                        >Min. Updates</label
-                    >
-                    <Rating
-                        v-model="selectedUpdates"
-                        :stars="4"
-                        cancel
-                        class="text-yellow-400"
-                    />
-                </div>
+        </div>
+        <!-- Advanced Filters Section -->
+        <div
+            v-if="advancedOpen"
+            class="flex flex-wrap gap-4 mb-4"
+        >
+            <div>
+                <label class="block text-sm font-medium mb-1"
+                    >Min. Community</label
+                >
+                <Rating
+                    v-model="selectedCommunityRating"
+                    :stars="4"
+                    cancel
+                    class="text-yellow-400"
+                />
             </div>
-            <div class="flex items-end flex-wrap gap-4 w-full">
-                <!-- Advanced Filters Toggle (now on the left) -->
-                <div>
-                    <button
-                        type="button"
-                        class="flex items-center gap-1 text-sm text-blue-600 underline focus:outline-none"
-                        @click="advancedOpen = !advancedOpen"
-                    >
-                        <Icon
-                            :icon="
-                                advancedOpen
-                                    ? 'mdi:chevron-up'
-                                    : 'mdi:chevron-down'
-                            "
-                            class="w-4 h-4 transition-transform duration-200"
-                        />
-                        {{
+            <div>
+                <label class="block text-sm font-medium mb-1"
+                    >Min. Teaching Clarity</label
+                >
+                <Rating
+                    v-model="selectedTeachingClarity"
+                    :stars="4"
+                    cancel
+                    class="text-yellow-400"
+                />
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1"
+                    >Min. Engagement</label
+                >
+                <Rating
+                    v-model="selectedEngagement"
+                    :stars="4"
+                    cancel
+                    class="text-yellow-400"
+                />
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1"
+                    >Min. Practicality</label
+                >
+                <Rating
+                    v-model="selectedPracticality"
+                    :stars="4"
+                    cancel
+                    class="text-yellow-400"
+                />
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1"
+                    >Min. User Friendliness</label
+                >
+                <Rating
+                    v-model="selectedUserFriendliness"
+                    :stars="4"
+                    cancel
+                    class="text-yellow-400"
+                />
+            </div>
+            <div>
+                <label class="block text-sm font-medium mb-1"
+                    >Min. Updates</label
+                >
+                <Rating
+                    v-model="selectedUpdates"
+                    :stars="4"
+                    cancel
+                    class="text-yellow-400"
+                />
+            </div>
+
+            <!-- Created Date Range -->
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-medium mb-1"
+                    >Created From</label
+                >
+                <Calendar
+                    v-model="createdFrom"
+                    showIcon
+                    dateFormat="yy-mm-dd"
+                    class="w-full"
+                />
+            </div>
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-medium mb-1"
+                    >Created To</label
+                >
+                <Calendar
+                    v-model="createdTo"
+                    :min-date="createdFrom"
+                    showIcon
+                    dateFormat="yy-mm-dd"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- Updated Date Range -->
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-medium mb-1"
+                    >Updated From</label
+                >
+                <Calendar
+                    v-model="updatedFrom"
+                    showIcon
+                    dateFormat="yy-mm-dd"
+                    class="w-full"
+                />
+            </div>
+            <div class="flex-1 min-w-[200px]">
+                <label class="block text-sm font-medium mb-1"
+                    >Updated To</label
+                >
+                <Calendar
+                    v-model="updatedTo"
+                    :min-date="updatedFrom"
+                    showIcon
+                    dateFormat="yy-mm-dd"
+                    class="w-full"
+                />
+            </div>
+
+            <section>
+                <h1>Sorting</h1>
+                <SortUpvotesByDropdown></SortUpvotesByDropdown>
+                Something else on reviews
+            </section>
+        </div>
+
+        <div class="flex items-end flex-wrap gap-4 w-full">
+            <!-- Advanced Filters Toggle (now on the left) -->
+            <div>
+                <button
+                    type="button"
+                    class="flex items-center gap-1 text-sm text-blue-600 underline focus:outline-none"
+                    @click="advancedOpen = !advancedOpen"
+                >
+                    <Icon
+                        :icon="
                             advancedOpen
-                                ? "Hide Advanced Filters"
-                                : "Show Advanced Filters"
-                        }}
-                    </button>
-                </div>
-
-                <!-- Reset & Filter Buttons (now on the right) -->
-                <div class="flex gap-4 ml-auto">
-                    <Button
-                        label="Reset"
-                        icon="pi pi-refresh"
-                        type="button"
-                        class="p-button-secondary"
-                        @click="resetFilters"
+                                ? 'mdi:chevron-up'
+                                : 'mdi:chevron-down'
+                        "
+                        class="w-4 h-4 transition-transform duration-200"
                     />
+                    {{
+                        advancedOpen
+                            ? "Hide Advanced Filters"
+                            : "Show Advanced Filters"
+                    }}
+                </button>
+            </div>
 
-                    <Button label="Filter" icon="pi pi-search" type="submit" />
-                </div>
+            <!-- Reset & Filter Buttons (now on the right) -->
+            <div class="flex gap-4 ml-auto">
+                <Button
+                    label="Reset"
+                    icon="pi pi-refresh"
+                    type="button"
+                    class="p-button-secondary"
+                    @click="resetFilters"
+                />
+
+                <Button label="Filter" icon="pi pi-search" type="submit" />
             </div>
         </div>
     </form>

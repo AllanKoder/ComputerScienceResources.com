@@ -22,6 +22,26 @@ class ResourceReviewService
         'overall_rating',
     ];
 
+    protected function ensureJoined(Builder $query): Builder
+    {
+        $reviewTable = (new ResourceReviewSummary())->getTable();
+        $joins = $query->getQuery()->joins ?? [];
+
+        $already = collect($joins)
+            ->pluck('table')
+            ->contains($reviewTable);
+
+        if (! $already) {
+            $resourceTable = $query->getModel()->getTable();
+            $query = $query
+                ->join($reviewTable, "{$reviewTable}.computer_science_resource_id", '=', "{$resourceTable}.id")
+                ->select("{$resourceTable}.*");
+        }
+
+        return $query;
+    }
+
+
     /**
      * Apply an average‐rating filter to a query for resources.
      *
@@ -34,7 +54,7 @@ class ResourceReviewService
      */
     public function applyRatingFilter(Builder $query, string $field, int $minRating): Builder
     {
-        if (!in_array($field, $this->allowedFields, true)) {
+        if (! in_array($field, $this->allowedFields, true)) {
             throw new InvalidArgumentException("Invalid rating field “{$field}”.");
         }
 
@@ -42,12 +62,14 @@ class ResourceReviewService
             throw new InvalidArgumentException("Rating must be between 1 and 5.");
         }
 
-        $resourceTable = $query->getModel()->getTable();
-        $reviewTable   = (new ResourceReviewSummary())->getTable();
+        // Make sure we only ever join once
+        $query = $this->ensureJoined($query);
 
-        return $query
-            ->join($reviewTable, "{$reviewTable}.computer_science_resource_id", '=', "{$resourceTable}.id")
-            ->select("{$resourceTable}.*")
-            ->whereRaw("{$reviewTable}.{$field} >= ? * {$reviewTable}.review_count", [$minRating]);
-        }
+        $reviewTable = (new ResourceReviewSummary())->getTable();
+
+        return $query->whereRaw(
+            "{$reviewTable}.{$field} >= ? * {$reviewTable}.review_count",
+            [$minRating]
+        );
+    }
 }
