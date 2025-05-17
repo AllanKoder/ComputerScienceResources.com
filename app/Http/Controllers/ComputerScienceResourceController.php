@@ -9,7 +9,7 @@ use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
 use App\Services\CommentService;
 use App\Services\ResourceReviewService;
-use App\Services\UpvoteService;
+use App\Services\SortingManagers\GeneralVotesSortingManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -20,13 +20,13 @@ use Inertia\Inertia;
 class ComputerScienceResourceController extends Controller
 {
     protected $commentService;
-    protected $upvoteService;
+    protected $generalVotesSortingManager;
     protected $reviewService;
 
-    function __construct(CommentService $commentService, UpvoteService $upvoteService, ResourceReviewService $reviewService)
+    function __construct(CommentService $commentService, GeneralVotesSortingManager $generalVotesSortingManager, ResourceReviewService $reviewService)
     {
         $this->commentService = $commentService;
-        $this->upvoteService = $upvoteService;
+        $this->generalVotesSortingManager = $generalVotesSortingManager;
         $this->reviewService = $reviewService;
     }
 
@@ -151,25 +151,27 @@ class ComputerScienceResourceController extends Controller
 
         // Filter by Date posted
         if ($createdFrom = $request->query('created_from')) {
-            $query->whereDate('created_at', '>=', $createdFrom);
+            $query->whereDate('computer_science_resources.created_at', '>=', $createdFrom);
         }
 
         if ($createdTo = $request->query('created_to')) {
-            $query->whereDate('created_at', '<=', $createdTo);
+            $query->whereDate('computer_science_resources.created_at', '<=', $createdTo);
         }
 
         // Filter by Date updated
         if ($updatedFrom = $request->query('updated_from')) {
-            $query->whereDate('updated_at', '>=', $updatedFrom);
+            $query->whereDate('computer_science_resources.updated_at', '>=', $updatedFrom);
         }
 
         if ($updatedTo = $request->query('updated_to')) {
-            $query->whereDate('updated_at', '<=', $updatedTo);
+            $query->whereDate('computer_science_resources.updated_at', '<=', $updatedTo);
         }
 
         /// Handle Sorting
 
         // Sort by votes
+
+        // Sort by reviews
 
         // Paginate and return
         $resources = $query->paginate(10)->appends($request->query());
@@ -255,7 +257,7 @@ class ComputerScienceResourceController extends Controller
             $data['reviews'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy) {
                     $query = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id);
-                    $query = $this->upvoteService->applySort($query, $sortBy, ResourceReview::class);
+                    $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceReview::class);
                     return $query->get();
                 }
             );
@@ -263,7 +265,7 @@ class ComputerScienceResourceController extends Controller
             $data['resourceEdits'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy) {
                     $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
-                    $query = $this->upvoteService->applySort($query, $sortBy, ResourceEdits::class);
+                    $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
                     return $query->get();
                 }
             );

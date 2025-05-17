@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\UserResource;
+use App\Services\SortingManagers\GeneralVotesSortingManager;
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
@@ -55,7 +56,7 @@ class CommentService
         ]);
 
         // Apply sorting on the comments
-        $query = app(UpvoteService::class)->applySort($query, $sortBy, Comment::class);
+        $query = app(GeneralVotesSortingManager::class)->applySort($query, $sortBy, Comment::class);
 
         $rootComments = $query->get();
         Log::debug("Root comments: " . json_encode($rootComments));

@@ -56,23 +56,23 @@ class ResourceReviewController extends Controller
     {
         // Validate the request data
         $validatedData = $request->validated();
-    
+
         $existingReview = ResourceReview::where([
             'user_id' => Auth::id(),
             'computer_science_resource_id' => $computerScienceResource->id,
         ])->first();
-    
+
         if (!$existingReview) {
             Log::debug("User has not already posted a review");
             // TODO: Make it a json with errors instead
             return back()->with('warning', 'You need to have a review posted before editing one.');
         }
-    
+
         Log::debug("Updating resource review: " . json_encode($validatedData));
-    
+
         // Update the existing review
         $oldAttributes = $existingReview->attributesToArray(); // Save old attributes
-    
+
         $existingReview->update([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
@@ -85,14 +85,14 @@ class ResourceReviewController extends Controller
             'pros' => $validatedData['pros'],
             'cons' => $validatedData['cons'],
         ]);
-    
+
         // Dispatch event with old and new data
         ResourceReviewProcessed::dispatch(
             $computerScienceResource->id,
             $oldAttributes,
             $existingReview->attributesToArray()
         );
-    
+
         return response()->json();
     }
 }
