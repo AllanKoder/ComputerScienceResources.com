@@ -22,7 +22,7 @@ class ResourceReviewsSortingStrategy implements SortingStrategy
         $reviewTable = $instance->getReviewSummaryTable();
 
         return $query->orderByRaw(
-            "{$reviewTable}.{$sortBy} / NULLIF({$reviewTable}.review_count, 0) DESC"
+            "{$reviewTable}.{$sortBy} / NULLIF({$reviewTable}.review_count, 1) DESC"
         );
     }
 }

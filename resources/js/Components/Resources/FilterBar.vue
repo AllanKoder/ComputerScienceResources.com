@@ -2,15 +2,19 @@
 import { ref, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
 import { router } from "@inertiajs/vue3";
-import { platforms, pricings, difficulties } from "@/Helpers/labels";
+import {
+    platforms,
+    pricings,
+    difficulties,
+    resourceSortingLabels,
+} from "@/Helpers/labels";
 import InputText from "primevue/inputtext";
 import MultiSelect from "primevue/multiselect";
 import Button from "primevue/button";
 import Rating from "primevue/rating";
-import Calendar from 'primevue/calendar';
+import Calendar from "primevue/calendar";
 
 import TagSelector from "@/Components/Form/TagSelector.vue";
-import SortUpvotesByDropdown from "../Comments/SortUpvotesByDropdown.vue";
 
 // text filters
 const name = ref("");
@@ -32,6 +36,9 @@ const selectedEngagement = ref(null);
 const selectedPracticality = ref(null);
 const selectedUserFriendliness = ref(null);
 const selectedUpdates = ref(null);
+
+// sort_by options
+const selectedSorting = ref("top");
 
 // date filters
 const createdFrom = ref(null);
@@ -71,6 +78,9 @@ onMounted(() => {
         refVar.value = v ? parseInt(v, 10) : null;
     }
 
+    // initialize sort_by
+    selectedSorting.value = urlParams.get("sort_by") || "top";
+
     createdFrom.value = urlParams.get("created_from")
         ? new Date(urlParams.get("created_from") + "T00:00:00")
         : null;
@@ -95,11 +105,12 @@ onMounted(() => {
             createdFrom.value !== null ||
             createdTo.value !== null ||
             updatedFrom.value !== null ||
-            updatedTo.value !== null
+            updatedTo.value !== null ||
+            selectedSorting.value !== "top"
         );
     }
 
-    advancedOpen.value = isAnyAdvancedFilterSet()
+    advancedOpen.value = isAnyAdvancedFilterSet();
 });
 
 function extractIndexedArray(urlParams, base) {
@@ -110,6 +121,10 @@ function extractIndexedArray(urlParams, base) {
         }
     }
     return result;
+}
+
+function selectSorting(option) {
+    selectedSorting.value = option;
 }
 
 function search() {
@@ -142,7 +157,6 @@ function search() {
             practicality: selectedPracticality.value || undefined,
             user_friendliness: selectedUserFriendliness.value || undefined,
             updates: selectedUpdates.value || undefined,
-
             created_from:
                 createdFrom.value?.toISOString().slice(0, 10) || undefined,
             created_to:
@@ -151,6 +165,7 @@ function search() {
                 updatedFrom.value?.toISOString().slice(0, 10) || undefined,
             updated_to:
                 updatedTo.value?.toISOString().slice(0, 10) || undefined,
+            sort_by: selectedSorting.value || undefined,
         }),
         { preserveScroll: true }
     );
@@ -183,6 +198,9 @@ function resetFilters() {
     createdTo.value = null;
     updatedFrom.value = null;
     updatedTo.value = null;
+
+    // Sorting
+    selectedSorting.value = "top";
 }
 </script>
 
@@ -286,10 +304,8 @@ function resetFilters() {
             </div>
         </div>
         <!-- Advanced Filters Section -->
-        <div
-            v-if="advancedOpen"
-            class="flex flex-wrap gap-4 mb-4"
-        >
+        <div v-if="advancedOpen" class="flex flex-wrap gap-4 mb-4">
+            <!-- rating/date filters ... -->
             <div>
                 <label class="block text-sm font-medium mb-1"
                     >Min. Community</label
@@ -364,15 +380,14 @@ function resetFilters() {
                 >
                 <Calendar
                     v-model="createdFrom"
+                    :max-date="createdTo"
                     showIcon
                     dateFormat="yy-mm-dd"
                     class="w-full"
                 />
             </div>
             <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Created To</label
-                >
+                <label class="block text-sm font-medium mb-1">Created To</label>
                 <Calendar
                     v-model="createdTo"
                     :min-date="createdFrom"
@@ -389,15 +404,14 @@ function resetFilters() {
                 >
                 <Calendar
                     v-model="updatedFrom"
+                    :max-date="updatedTo"
                     showIcon
                     dateFormat="yy-mm-dd"
                     class="w-full"
                 />
             </div>
             <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Updated To</label
-                >
+                <label class="block text-sm font-medium mb-1">Updated To</label>
                 <Calendar
                     v-model="updatedTo"
                     :min-date="updatedFrom"
@@ -407,15 +421,30 @@ function resetFilters() {
                 />
             </div>
 
-            <section>
-                <h1>Sorting</h1>
-                <SortUpvotesByDropdown></SortUpvotesByDropdown>
-                Something else on reviews
-            </section>
+            <!-- Sorting Buttons -->
+            <div class="w-full">
+                <h2 class="text-sm font-medium mb-2">Sorting</h2>
+                <div class="flex flex-wrap gap-2">
+                    <button
+                        v-for="opt in resourceSortingLabels"
+                        :key="opt.value"
+                        type="button"
+                        @click="selectSorting(opt.value)"
+                        :class="[
+                            'px-3 py-1 rounded-full text-sm font-medium focus:outline-none',
+                            selectedSorting === opt.value
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
+                        ]"
+                    >
+                        {{ opt.label }}
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div class="flex items-end flex-wrap gap-4 w-full">
-            <!-- Advanced Filters Toggle (now on the left) -->
+            <!-- Advanced Filters Toggle -->
             <div>
                 <button
                     type="button"
@@ -424,9 +453,7 @@ function resetFilters() {
                 >
                     <Icon
                         :icon="
-                            advancedOpen
-                                ? 'mdi:chevron-up'
-                                : 'mdi:chevron-down'
+                            advancedOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'
                         "
                         class="w-4 h-4 transition-transform duration-200"
                     />
@@ -438,7 +465,7 @@ function resetFilters() {
                 </button>
             </div>
 
-            <!-- Reset & Filter Buttons (now on the right) -->
+            <!-- Reset & Filter Buttons -->
             <div class="flex gap-4 ml-auto">
                 <Button
                     label="Reset"

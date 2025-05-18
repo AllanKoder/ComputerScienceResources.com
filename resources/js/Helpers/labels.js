@@ -1,6 +1,6 @@
 /**
  * Labels on the more visual end of things
- * 
+ *
  */
 export const platforms = [
     { label: "Website", value: "website" },
@@ -15,21 +15,24 @@ export const platforms = [
     { label: "Workshop", value: "workshop" },
     { label: "Mobile app", value: "mobile_app" },
     { label: "Desktop app", value: "desktop_app" },
-    { label: "Magazine", value: "magazine" }
+    { label: "Magazine", value: "magazine" },
 ];
 
 export const pricings = [
     { label: "Free", value: "free" },
     { label: "Paid", value: "paid" },
-    { label: "Freemium", value: "freemium" }
+    { label: "Freemium", value: "freemium" },
 ];
 
 export const difficulties = [
     { label: "Beginners - Non-technical", value: "beginner" },
     { label: "Industry Simple - Jr Engineer", value: "industry_simple" },
     { label: "Industry Standard - Engineer", value: "industry_standard" },
-    { label: "Industry Professional - Senior Engineer", value: "industry_professional" },
-    { label: "Academic - Research", value: "academic" }
+    {
+        label: "Industry Professional - Senior Engineer",
+        value: "industry_professional",
+    },
+    { label: "Academic - Research", value: "academic" },
 ];
 
 export const difficultyLabels = {
@@ -54,10 +57,28 @@ export const ratingLabels = {
     practicality: "Practicality",
     user_friendliness: "User Friendliness",
     updates: "Updates",
-  };
-  
+};
 
-// Aesthetics
+/// Sorting
+export const resourceSortingLabels = [
+    { value: "top", label: "Top Votes (Most Upvotes)" },
+    { value: "bottom", label: "Bottom Votes (Most Downvotes)" },
+    { value: "controversial", label: "Controversial (Mixed Votes)" },
+    { value: "total_votes", label: "Most Voted" },
+    { value: "hot", label: "Hot (Trending Now)" },
+    { value: "latest", label: "Newest (Date Added)" },
+    { value: "oldest", label: "Oldest (Date Added)" },
+    { value: "recently_updated", label: "Recently Updated" },
+    { value: "community", label: "Top Community Rated" },
+    { value: "teaching_clarity", label: "Teaching Clarity" },
+    { value: "engagement", label: "Engagement" },
+    { value: "practicality", label: "Practicality" },
+    { value: "user_friendliness", label: "User Friendliness" },
+    { value: "updates", label: "Most Updates" },
+    { value: "overall_rating", label: "Overall Rating" },
+];
+
+/// Aesthetics
 export const platformColors = {
     book: "blue",
     podcast: "green",

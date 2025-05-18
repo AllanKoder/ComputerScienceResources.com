@@ -7,5 +7,8 @@ use App\SortingStrategies\VoteSortingStrategy;
 
 class GeneralVotesSortingManager extends SortingManager
 {
-    protected array $strategies = [DateSortingStrategy::class, VoteSortingStrategy::class];
+    protected array $strategies = [
+        DateSortingStrategy::class,
+        VoteSortingStrategy::class,
+    ];
 }

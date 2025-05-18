@@ -10,6 +10,7 @@ use App\Models\ResourceReview;
 use App\Services\CommentService;
 use App\Services\ResourceReviewService;
 use App\Services\SortingManagers\GeneralVotesSortingManager;
+use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -22,12 +23,18 @@ class ComputerScienceResourceController extends Controller
     protected $commentService;
     protected $generalVotesSortingManager;
     protected $reviewService;
+    protected $resourceSortingManager;
 
-    function __construct(CommentService $commentService, GeneralVotesSortingManager $generalVotesSortingManager, ResourceReviewService $reviewService)
-    {
+    function __construct(
+        CommentService $commentService,
+        GeneralVotesSortingManager $generalVotesSortingManager,
+        ResourceReviewService $reviewService,
+        ResourceSortingManager $resourceSortingManager,
+    ) {
         $this->commentService = $commentService;
         $this->generalVotesSortingManager = $generalVotesSortingManager;
         $this->reviewService = $reviewService;
+        $this->resourceSortingManager = $resourceSortingManager;
     }
 
     /**
@@ -40,49 +47,52 @@ class ComputerScienceResourceController extends Controller
         // Eager load relations
         $query->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
 
-        $validator = Validator::make([
-            'name' => $request->query('name'),
-            'description' => $request->query('description'),
-            'platforms' => $request->query('platforms'),
-            'difficulty' => $request->query('difficulty'),
-            'pricing' => $request->query('pricing'),
-            'topics' => $request->query('topics'),
-            'programming_languages' => $request->query('programming_languages'),
-            'general_tags' => $request->query('general_tags'),
+        $validator = Validator::make(
+            [
+                'name' => $request->query('name'),
+                'description' => $request->query('description'),
+                'platforms' => $request->query('platforms'),
+                'difficulty' => $request->query('difficulty'),
+                'pricing' => $request->query('pricing'),
+                'topics' => $request->query('topics'),
+                'programming_languages' => $request->query('programming_languages'),
+                'general_tags' => $request->query('general_tags'),
 
-            'community_rating' => $request->query('community_rating'),
-            'teaching_clarity' => $request->query('teaching_clarity'),
-            'engagement' => $request->query('engagement'),
-            'practicality' => $request->query('practicality'),
-            'user_friendliness' => $request->query('user_friendliness'),
-            'updates' => $request->query('updates'),
-        ],
-        [
-            'name' => ['nullable', 'string', 'max:100'],
-            'name' => ['nullable', 'string', 'max:1000'],
-            'platforms' => ['nullable', 'array', 'min:1'],
-            'platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
-            'difficulty' => ['nullable', 'string', Rule::in(config('computerScienceResource.difficulties'))],
-            'pricing' => ['nullable', 'string', Rule::in(config('computerScienceResource.pricings'))],
+                'community_rating' => $request->query('community_rating'),
+                'teaching_clarity' => $request->query('teaching_clarity'),
+                'engagement' => $request->query('engagement'),
+                'practicality' => $request->query('practicality'),
+                'user_friendliness' => $request->query('user_friendliness'),
+                'updates' => $request->query('updates'),
+            ],
+            [
+                'name' => ['nullable', 'string', 'max:100'],
+                'name' => ['nullable', 'string', 'max:1000'],
+                'platforms' => ['nullable', 'array', 'min:1'],
+                'platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
+                'difficulty' => ['nullable', 'string', Rule::in(config('computerScienceResource.difficulties'))],
+                'pricing' => ['nullable', 'string', Rule::in(config('computerScienceResource.pricings'))],
 
-            'topic_tags' => ['nullable', 'array', 'min:3'],
-            'topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+                'topic_tags' => ['nullable', 'array', 'min:3'],
+                'topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
 
-            'general_tags' => ['nullable', 'array'],
-            'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],
-            'programming_language_tags' => ['nullable', 'array'],
-            'programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+                'general_tags' => ['nullable', 'array'],
+                'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+                'programming_language_tags' => ['nullable', 'array'],
+                'programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50'],
 
-            'community_rating' => ['nullable', 'integer', 'between:1,4'],
-            'teaching_clarity' => ['nullable', 'integer', 'between:1,4'],
-            'engagement' => ['nullable', 'integer', 'between:1,4'],
-            'practicality' => ['nullable', 'integer', 'between:1,4'],
-            'user_friendliness' => ['nullable', 'integer', 'between:1,4'],
-            'updates' => ['nullable', 'integer', 'between:1,4'],
-        ]);
+                'community_rating' => ['nullable', 'integer', 'between:1,4'],
+                'teaching_clarity' => ['nullable', 'integer', 'between:1,4'],
+                'engagement' => ['nullable', 'integer', 'between:1,4'],
+                'practicality' => ['nullable', 'integer', 'between:1,4'],
+                'user_friendliness' => ['nullable', 'integer', 'between:1,4'],
+                'updates' => ['nullable', 'integer', 'between:1,4'],
 
-        if (!$validator->validate())
-        {
+                // TODO: Add more validation for the dates
+            ]
+        );
+
+        if (!$validator->validate()) {
             // TODO: actually show the error, need to flash instead
             return back()->with('error', 'Invalid query parameters data');
         }
@@ -141,7 +151,7 @@ class ComputerScienceResourceController extends Controller
             'user_friendliness',
             'updates',
             'overall_rating',
-            ];
+        ];
 
         foreach ($ratingFilters as $field) {
             if ($rating = $request->query($field)) {
@@ -168,10 +178,8 @@ class ComputerScienceResourceController extends Controller
         }
 
         /// Handle Sorting
-
-        // Sort by votes
-
-        // Sort by reviews
+        $sortBy = $request->query('sort_by', 'top');
+        $query = $this->resourceSortingManager->applySort($query, $sortBy);
 
         // Paginate and return
         $resources = $query->paginate(10)->appends($request->query());
