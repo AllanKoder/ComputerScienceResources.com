@@ -39,6 +39,7 @@ const selectedUpdates = ref(null);
 
 // sort_by options
 const selectedSorting = ref("top");
+const selectedReverse = ref(false);
 
 // date filters
 const createdFrom = ref(null);
@@ -80,6 +81,7 @@ onMounted(() => {
 
     // initialize sort_by
     selectedSorting.value = urlParams.get("sort_by") || "top";
+    selectedReverse.value = urlParams.get("reverse") === "1";
 
     createdFrom.value = urlParams.get("created_from")
         ? new Date(urlParams.get("created_from") + "T00:00:00")
@@ -106,7 +108,8 @@ onMounted(() => {
             createdTo.value !== null ||
             updatedFrom.value !== null ||
             updatedTo.value !== null ||
-            selectedSorting.value !== "top"
+            selectedSorting.value !== "top" ||
+            selectedReverse.value == true
         );
     }
 
@@ -166,6 +169,7 @@ function search() {
             updated_to:
                 updatedTo.value?.toISOString().slice(0, 10) || undefined,
             sort_by: selectedSorting.value || undefined,
+            reverse: selectedReverse.value == true ? true : undefined,
         }),
         { preserveScroll: true }
     );
@@ -201,6 +205,7 @@ function resetFilters() {
 
     // Sorting
     selectedSorting.value = "top";
+    selectedReverse.value = false;
 }
 </script>
 
@@ -424,7 +429,7 @@ function resetFilters() {
             <!-- Sorting Buttons -->
             <div class="w-full">
                 <h2 class="text-sm font-medium mb-2">Sorting</h2>
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-2 mb-2">
                     <button
                         v-for="opt in resourceSortingLabels"
                         :key="opt.value"
@@ -440,6 +445,20 @@ function resetFilters() {
                         {{ opt.label }}
                     </button>
                 </div>
+
+                <h2 class="text-sm font-medium mb-2">Reverse Sorting</h2>
+                <button
+                    type="button"
+                    @click="selectedReverse = !selectedReverse"
+                    :class="[
+                        'px-3 py-1 rounded-full text-sm font-medium focus:outline-none',
+                        selectedReverse
+                        ? 'bg-blue-600 text-white'
+                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
+                    ]"
+                    >
+                    Reverse
+                </button>
             </div>
         </div>
 

@@ -25,19 +25,19 @@ class VoteSortingStrategy implements SortingStrategy
 
         switch ($sortBy) {
             case 'top':
-                $query->orderBy('upvote_summaries.score', 'desc');
+                $query->orderBy('upvote_summaries.score', 'DESC');
                 break;
 
             case 'bottom':
-                $query->orderBy('upvote_summaries.score', 'asc');
+                $query->orderBy('upvote_summaries.score', 'ASC');
                 break;
 
             case 'controversial':
-                $query->orderBy('upvote_summaries.controversy', 'asc');
+                $query->orderBy('upvote_summaries.controversy', 'ASC');
                 break;
 
             case 'total_votes':
-                $query->orderBy('upvote_summaries.total_votes', 'desc');
+                $query->orderBy('upvote_summaries.total_votes', 'DESC');
                 break;
 
             case 'hot':

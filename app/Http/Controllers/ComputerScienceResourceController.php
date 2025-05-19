@@ -180,6 +180,9 @@ class ComputerScienceResourceController extends Controller
         /// Handle Sorting
         $sortBy = $request->query('sort_by', 'top');
         $query = $this->resourceSortingManager->applySort($query, $sortBy);
+        if ($request->query('reverse', '0') == '1') {
+            $query = $this->resourceSortingManager->reverse($query);
+        }
 
         // Paginate and return
         $resources = $query->paginate(10)->appends($request->query());

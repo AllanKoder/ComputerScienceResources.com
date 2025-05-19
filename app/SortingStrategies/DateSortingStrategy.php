@@ -16,13 +16,13 @@ class DateSortingStrategy implements SortingStrategy
     {
         switch ($sortBy) {
             case 'latest':
-                $query->orderBy('created_at', 'desc');
+                $query->orderBy('created_at', 'DESC');
                 break;
             case 'oldest':
-                $query->orderBy('created_at', 'asc');
+                $query->orderBy('created_at', 'ASC');
                 break;
             case 'recently_updated':
-                $query->orderBy('updated_at', 'desc');
+                $query->orderBy('updated_at', 'DESC');
                 break;
         }
 
