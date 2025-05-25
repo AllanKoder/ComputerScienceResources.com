@@ -66,7 +66,7 @@ onMounted(() => {
     selectedGeneralTags.value = extractIndexedArray(urlParams, "general_tags");
 
     const ratingsMap = {
-        overall_rating: selectedOverallRating,
+        overall: selectedOverallRating,
         community: selectedCommunityRating,
         teaching_clarity: selectedTeachingClarity,
         engagement: selectedEngagement,
@@ -153,7 +153,7 @@ function search() {
             general_tags: selectedGeneralTags.value.length
                 ? selectedGeneralTags.value
                 : undefined,
-            overall_rating: selectedOverallRating.value || undefined,
+            overall: selectedOverallRating.value || undefined,
             community: selectedCommunityRating.value || undefined,
             teaching_clarity: selectedTeachingClarity.value || undefined,
             engagement: selectedEngagement.value || undefined,
@@ -169,7 +169,7 @@ function search() {
             updated_to:
                 updatedTo.value?.toISOString().slice(0, 10) || undefined,
             sort_by: selectedSorting.value || undefined,
-            reverse: selectedReverse.value == true ? true : undefined,
+            reverse: selectedReverse.value == true ? 'true' : undefined,
         }),
         { preserveScroll: true }
     );

@@ -10,9 +10,12 @@ trait HandlesResourceReviewJoins
     protected function ensureReviewSummaryJoined(Builder $query): Builder
     {
         $reviewTable = (new ResourceReviewSummary())->getTable();
+
         $joins = $query->getQuery()->joins ?? [];
 
-        $already = collect($joins)->pluck('table')->contains($reviewTable);
+        $already = collect($joins)->contains(function ($join) use ($reviewTable) {
+            return $join->table === $reviewTable;
+        });
 
         if (! $already) {
             $resourceTable = $query->getModel()->getTable();
@@ -21,7 +24,7 @@ trait HandlesResourceReviewJoins
                 "{$reviewTable}.computer_science_resource_id",
                 '=',
                 "{$resourceTable}.id"
-            )->select("{$resourceTable}.*");
+            );
         }
 
         return $query;
@@ -41,7 +44,7 @@ trait HandlesResourceReviewJoins
             'practicality',
             'user_friendliness',
             'updates',
-            'overall_rating',
+            'overall',
         ];
     }
 }

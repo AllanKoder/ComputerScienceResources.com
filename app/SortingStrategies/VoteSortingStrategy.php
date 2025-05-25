@@ -33,7 +33,7 @@ class VoteSortingStrategy implements SortingStrategy
                 break;
 
             case 'controversial':
-                $query->orderBy('upvote_summaries.controversy', 'ASC');
+                $query->orderBy('upvote_summaries.controversy', 'DESC');
                 break;
 
             case 'total_votes':

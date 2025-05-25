@@ -144,13 +144,13 @@ class ComputerScienceResourceController extends Controller
 
         // Filter by reviews
         $ratingFilters = [
-            'community_rating',
+            'community',
             'teaching_clarity',
             'engagement',
             'practicality',
             'user_friendliness',
             'updates',
-            'overall_rating',
+            'overall',
         ];
 
         foreach ($ratingFilters as $field) {
@@ -180,7 +180,7 @@ class ComputerScienceResourceController extends Controller
         /// Handle Sorting
         $sortBy = $request->query('sort_by', 'top');
         $query = $this->resourceSortingManager->applySort($query, $sortBy);
-        if ($request->query('reverse', '0') == '1') {
+        if ($request->query('reverse', 'false') == 'true') {
             $query = $this->resourceSortingManager->reverse($query);
         }
 

@@ -61,21 +61,21 @@ export const ratingLabels = {
 
 /// Sorting
 export const resourceSortingLabels = [
-    { value: "top", label: "Top Votes (Most Upvotes)" },
-    { value: "bottom", label: "Bottom Votes (Most Downvotes)" },
+    { value: "top", label: "Top Votes (Best Score)" },
+    { value: "bottom", label: "Bottom Votes (Worst Score)" },
     { value: "controversial", label: "Controversial (Mixed Votes)" },
     { value: "total_votes", label: "Most Voted" },
     { value: "hot", label: "Hot (Trending Now)" },
     { value: "latest", label: "Newest (Date Added)" },
     { value: "oldest", label: "Oldest (Date Added)" },
     { value: "recently_updated", label: "Recently Updated" },
-    { value: "community", label: "Top Community Rated" },
+    { value: "community", label: "Best Community" },
     { value: "teaching_clarity", label: "Teaching Clarity" },
     { value: "engagement", label: "Engagement" },
     { value: "practicality", label: "Practicality" },
     { value: "user_friendliness", label: "User Friendliness" },
     { value: "updates", label: "Most Updates" },
-    { value: "overall_rating", label: "Overall Rating" },
+    { value: "overall", label: "Overall Rating" },
 ];
 
 /// Aesthetics

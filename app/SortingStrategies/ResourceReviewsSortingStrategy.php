@@ -18,11 +18,12 @@ class ResourceReviewsSortingStrategy implements SortingStrategy
     public static function apply(Builder $query, string $sortBy): Builder
     {
         $instance = new self();
+        $resourceTable = $query->getModel()->getTable();
         $query = $instance->ensureReviewSummaryJoined($query);
         $reviewTable = $instance->getReviewSummaryTable();
 
-        return $query->orderByRaw(
-            "{$reviewTable}.{$sortBy} / NULLIF({$reviewTable}.review_count, 1) DESC"
-        );
+        return $query
+            ->orderByDesc("{$reviewTable}.{$sortBy}_rating")
+            ->addSelect("{$resourceTable}.*");
     }
 }

@@ -14,7 +14,7 @@ class ResourceReview extends Model
     use HasFactory;
     use HasVotes;
     use HasComments;
-    
+
     protected $guarded = [];
 
     protected $with = ['votes', 'upvoteSummary', 'commentsCountRelationship'];

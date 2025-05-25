@@ -31,8 +31,8 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
- 
-    
+
+
     // CompSci Resources
     Route::controller(ComputerScienceResourceController::class)->group(function () {
         Route::get('/resources/create', 'create')->name('resources.create');
