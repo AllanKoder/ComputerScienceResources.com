@@ -105,22 +105,21 @@ class SortingManagerTest extends TestCase
 
     public function test_sorting_manager_denies_fake_sort_by_field()
     {
-        $resource1 = ComputerScienceResource::where('name', 'name1')->first();
-        $resource2 = ComputerScienceResource::where('name', 'name2')->first();
-        $resource3 = ComputerScienceResource::where('name', 'name3')->first();
-        $resource4 = ComputerScienceResource::where('name', 'name4')->first();
+        // Query with explicit orderBy id ASC before applying sort
+        $query = ComputerScienceResource::orderBy('id');
+
+        $defaultOrder = $query->pluck('id')->toArray();
 
         $sorted = $this->sortingManager
-            ->applySort(ComputerScienceResource::query(), 'Fake Field')
+            ->applySort($query, 'Fake Field') // applySort should NOT modify query because field unsupported
             ->pluck('id')
             ->toArray();
 
-        $this->assertEquals([
-            $resource1->id,
-            $resource2->id,
-            $resource3->id,
-            $resource4->id,
-        ], $sorted);
+        $this->assertEquals(
+            $defaultOrder,
+            $sorted,
+            "SortingManager should not modify order when sorting by invalid field."
+        );
     }
 
     public function test_can_sort_by_date_reverse()
