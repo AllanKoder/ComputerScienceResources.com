@@ -7,6 +7,7 @@ use App\Models\ComputerScienceResource;
 use Database\Factories\ComputerScienceResourceFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 
@@ -65,42 +66,42 @@ class ComputerScienceResourceControllerTest extends TestCase
         $response->assertStatus(422); // a fail
     }
 
-    public function test_cannot_post_resource_with_invalid_fields()
+    public static function invalidFieldProvider(): array
+    {
+        return [
+            'name too long' => ['name', str_repeat('a', 101)],
+            'description too long' => ['description', str_repeat('a', 10001)],
+            'invalid platform' => ['platforms', ['invalid_platform']],
+            'invalid page_url' => ['page_url', 'not-a-url'],
+            'invalid difficulty' => ['difficulty', 'invalid_difficulty'],
+            'invalid pricing' => ['pricing', 'invalid_pricing'],
+            'too few topic_tags' => ['topic_tags', ['tag1', 'tag2']],
+            'invalid image_url' => ['image_url', 'not-a-url'],
+            'null programming_language_tags' => ['programming_language_tags', null],
+            'non-distinct general_tags' => ['general_tags', ['a', 'a', 'a']],
+        ];
+    }
+
+    #[DataProvider('invalidFieldProvider')]
+    public function test_cannot_post_resource_with_invalid_fields(string $field, mixed $invalidValue)
     {
         $this->actingAs($this->user);
 
         $validData = ComputerScienceResourceTestResource::fake();
+        $validData[$field] = $invalidValue;
 
-        $invalidDataSets = [
-            'name' => str_repeat('a', 101), # Too long
-            'description' => str_repeat('a', 10001), # Too long
-            'platforms' => ['invalid_platform'],
-            'page_url' => 'not-a-url',
-            'difficulty' => 'invalid_difficulty',
-            'pricing' => 'invalid_pricing',
-            'topic_tags' => ['tag1', 'tag2'], // Less than required minimum of 3
-            'image_url' => 'not-a-url',
-            'programming_language_tags' => null,
-            'general_tags' => ['a','a','a'], // Not distinct
-        ];
+        $response = $this->postJson(route('resources.store'), $validData);
 
-        // Choose from one of the invalid fields
-        foreach ($invalidDataSets as $field => $invalidValue) {
-            $testData = $validData;
-            $testData[$field] = $invalidValue;
+        $this->assertEquals(
+            422,
+            $response->status(),
+            "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: " . $response->status()
+        );
 
-            $response = $this->postJson(route('resources.store'), $testData);
-
-            $this->assertTrue(
-                $response->status() === 422,
-                "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: " . $response->status()
-            );
-
-            $not_created_resource = ComputerScienceResource::first();
-            $this->assertNull(
-                $not_created_resource,
-                "Failed asserting that a resource with name '{$testData['name']}' was not created in the database. Invalid field being: " . $field
-            );
-        }
+        $not_created_resource = ComputerScienceResource::first();
+        $this->assertNull(
+            $not_created_resource,
+            "Failed asserting that a resource with name '{$validData['name']}' was not created in the database. Invalid field: $field"
+        );
     }
 }
