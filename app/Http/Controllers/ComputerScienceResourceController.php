@@ -8,6 +8,7 @@ use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
 use App\Services\CommentService;
+use App\Services\ComputerScienceResourceFilter;
 use App\Services\ResourceReviewService;
 use App\Services\SortingManagers\GeneralVotesSortingManager;
 use App\Services\SortingManagers\ResourceSortingManager;
@@ -40,151 +41,15 @@ class ComputerScienceResourceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request, ComputerScienceResourceFilter $filterService)
     {
         $query = ComputerScienceResource::query();
 
-        // Eager load relations
-        $query->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
+        // Apply all filters and sorting
+        $filters = $request->query();
+        $query = $filterService->applyFilters($query, $filters);
 
-        $validator = Validator::make(
-            [
-                'name' => $request->query('name'),
-                'description' => $request->query('description'),
-                'platforms' => $request->query('platforms'),
-                'difficulty' => $request->query('difficulty'),
-                'pricing' => $request->query('pricing'),
-                'topics' => $request->query('topics'),
-                'programming_languages' => $request->query('programming_languages'),
-                'general_tags' => $request->query('general_tags'),
-
-                'community_rating' => $request->query('community_rating'),
-                'teaching_clarity' => $request->query('teaching_clarity'),
-                'engagement' => $request->query('engagement'),
-                'practicality' => $request->query('practicality'),
-                'user_friendliness' => $request->query('user_friendliness'),
-                'updates' => $request->query('updates'),
-            ],
-            [
-                'name' => ['nullable', 'string', 'max:100'],
-                'name' => ['nullable', 'string', 'max:1000'],
-                'platforms' => ['nullable', 'array', 'min:1'],
-                'platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
-                'difficulty' => ['nullable', 'string', Rule::in(config('computerScienceResource.difficulties'))],
-                'pricing' => ['nullable', 'string', Rule::in(config('computerScienceResource.pricings'))],
-
-                'topic_tags' => ['nullable', 'array', 'min:3'],
-                'topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
-
-                'general_tags' => ['nullable', 'array'],
-                'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],
-                'programming_language_tags' => ['nullable', 'array'],
-                'programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50'],
-
-                'community_rating' => ['nullable', 'integer', 'between:1,4'],
-                'teaching_clarity' => ['nullable', 'integer', 'between:1,4'],
-                'engagement' => ['nullable', 'integer', 'between:1,4'],
-                'practicality' => ['nullable', 'integer', 'between:1,4'],
-                'user_friendliness' => ['nullable', 'integer', 'between:1,4'],
-                'updates' => ['nullable', 'integer', 'between:1,4'],
-
-                // TODO: Add more validation for the dates
-            ]
-        );
-
-        if (!$validator->validate()) {
-            // TODO: actually show the error, need to flash instead
-            return back()->with('error', 'Invalid query parameters data');
-        }
-
-        // Fulltext search on name
-        if ($name = $request->query('name')) {
-            $query->whereFullText('name', $name);
-        }
-
-        // Fulltext search on description
-        if ($description = $request->query('description')) {
-            $query->whereFullText('description', $description);
-        }
-
-        // Filter by platforms (array)
-        if ($platforms = $request->query('platforms')) {
-            $query->where(function ($q) use ($platforms) {
-                foreach ((array) $platforms as $platform) {
-                    $q->orWhereRaw('FIND_IN_SET(?, platforms)', [$platform]);
-                }
-            });
-        }
-
-        // Filter by difficulty (array)
-        if ($difficulty = $request->query('difficulty')) {
-            $query->whereIn('difficulty', (array) $difficulty);
-        }
-
-        // Filter by pricing (array)
-        if ($pricing = $request->query('pricing')) {
-            $query->whereIn('pricing', (array) $pricing);
-        }
-
-        // Filter by topic tags
-        if ($topics = $request->query('topics')) {
-            $query->withAnyTags((array) $topics, 'topics');
-        }
-
-        // Filter by programming languages
-        if ($programmingLanguages = $request->query('programming_languages')) {
-            $query->withAnyTags((array) $programmingLanguages, 'programming_languages');
-        }
-
-        // Filter by general tags
-        if ($generalTags = $request->query('general_tags')) {
-            $query->withAnyTags((array) $generalTags, 'general_tags');
-        }
-
-
-        // Filter by reviews
-        $ratingFilters = [
-            'community',
-            'teaching_clarity',
-            'engagement',
-            'practicality',
-            'user_friendliness',
-            'updates',
-            'overall',
-        ];
-
-        foreach ($ratingFilters as $field) {
-            if ($rating = $request->query($field)) {
-                $query = $this->reviewService->applyRatingFilter($query, $field, $rating);
-            }
-        }
-
-        // Filter by Date posted
-        if ($createdFrom = $request->query('created_from')) {
-            $query->whereDate('computer_science_resources.created_at', '>=', $createdFrom);
-        }
-
-        if ($createdTo = $request->query('created_to')) {
-            $query->whereDate('computer_science_resources.created_at', '<=', $createdTo);
-        }
-
-        // Filter by Date updated
-        if ($updatedFrom = $request->query('updated_from')) {
-            $query->whereDate('computer_science_resources.updated_at', '>=', $updatedFrom);
-        }
-
-        if ($updatedTo = $request->query('updated_to')) {
-            $query->whereDate('computer_science_resources.updated_at', '<=', $updatedTo);
-        }
-
-        /// Handle Sorting
-        $sortBy = $request->query('sort_by', 'top');
-        $query = $this->resourceSortingManager->applySort($query, $sortBy);
-        if ($request->query('reverse', 'false') == 'true') {
-            $query = $this->resourceSortingManager->reverse($query);
-        }
-
-        // Paginate and return
+        // Paginate with appended query params
         $resources = $query->paginate(10)->appends($request->query());
 
         return Inertia::render('Resources/Index', [

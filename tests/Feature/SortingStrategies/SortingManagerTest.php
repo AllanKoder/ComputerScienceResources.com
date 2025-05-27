@@ -8,11 +8,13 @@ use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Tests\Feature\Utils\ResourceUtils;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 
 class SortingManagerTest extends TestCase
 {
     use RefreshDatabase;
+    use ResourceUtils;
 
     protected ResourceSortingManager $sortingManager;
 
@@ -25,25 +27,10 @@ class SortingManagerTest extends TestCase
         $this->actingAs($user);
 
         // Create 4 resources
-        $resourceForm1 = ComputerScienceResourceTestResource::fake(['name'=>'name1']);
-        $resourceForm2 = ComputerScienceResourceTestResource::fake(['name'=>'name2']);
-        $resourceForm3 = ComputerScienceResourceTestResource::fake(['name'=>'name3']);
-        $resourceForm4 = ComputerScienceResourceTestResource::fake(['name'=>'name4']);
-
-        $response1 = $this->postJson(route('resources.store'), $resourceForm1);
-        $response2 = $this->postJson(route('resources.store'), $resourceForm2);
-        $response3 = $this->postJson(route('resources.store'), $resourceForm3);
-        $response4 = $this->postJson(route('resources.store'), $resourceForm4);
-
-        $response1->assertStatus(302);
-        $response2->assertStatus(302);
-        $response3->assertStatus(302);
-        $response4->assertStatus(302);
-
-        $resource1 = ComputerScienceResource::where('name', 'name1')->first();
-        $resource2 = ComputerScienceResource::where('name', 'name2')->first();
-        $resource3 = ComputerScienceResource::where('name', 'name3')->first();
-        $resource4 = ComputerScienceResource::where('name', 'name4')->first();
+        $resource1 = $this->createResource(['name' => 'name1']);
+        $resource2 = $this->createResource(['name' => 'name2']);
+        $resource3 = $this->createResource(['name' => 'name3']);
+        $resource4 = $this->createResource(['name' => 'name4']);
 
         # Set the resource's dates in descending order
         $resource1->created_at = "2025-05-25 18:17:19";

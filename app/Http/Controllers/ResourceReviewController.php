@@ -8,7 +8,6 @@ use App\Models\ComputerScienceResource;
 use App\Models\ResourceReview;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Redirect;
 
 class ResourceReviewController extends Controller
 {

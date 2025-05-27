@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Log;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 
 class ComputerScienceResourceControllerTest extends TestCase
 {
@@ -83,6 +85,8 @@ class ComputerScienceResourceControllerTest extends TestCase
     }
 
     #[DataProvider('invalidFieldProvider')]
+    #[Test]
+    #[Group('slow')]
     public function test_cannot_post_resource_with_invalid_fields(string $field, mixed $invalidValue)
     {
         $this->actingAs($this->user);

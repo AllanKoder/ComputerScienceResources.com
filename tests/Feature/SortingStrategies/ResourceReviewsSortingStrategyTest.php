@@ -146,5 +146,4 @@ class ResourceReviewsSortingStrategyTest extends TestCase
             "Failed asserting that resources are sorted by overall_rating"
         );
     }
-
 }
