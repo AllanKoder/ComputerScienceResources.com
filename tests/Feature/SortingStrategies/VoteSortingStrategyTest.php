@@ -66,7 +66,7 @@ class VoteSortingStrategyTest extends TestCase
             ->create([ 'upvotes' => 10, 'downvotes' => 5 ]);
 
         $sorted = $this->sortingManager
-            ->applySort(ResourceReview::query(), 'bottom', ResourceReview::class)
+            ->applySort(ResourceReview::query(), 'bottom')
             ->pluck('id')
             ->toArray();
 
@@ -91,7 +91,7 @@ class VoteSortingStrategyTest extends TestCase
         UpvoteSummary::factory()->forUpvotable($reviews[2])->create(['upvotes'=>10, 'downvotes'=>0]);
 
         $sorted = $this->sortingManager
-            ->applySort(ResourceReview::query(), 'controversial', ResourceReview::class)
+            ->applySort(ResourceReview::query(), 'controversial')
             ->pluck('id')
             ->toArray();
 
@@ -113,7 +113,7 @@ class VoteSortingStrategyTest extends TestCase
         UpvoteSummary::factory()->forUpvotable($reviews[2])->create(['upvotes'=>10, 'downvotes'=>5]);
 
         $sorted = $this->sortingManager
-            ->applySort(ResourceReview::query(), 'total_votes', ResourceReview::class)
+            ->applySort(ResourceReview::query(), 'total_votes')
             ->pluck('id')
             ->toArray();
 
@@ -136,7 +136,7 @@ class VoteSortingStrategyTest extends TestCase
         UpvoteSummary::factory()->forUpvotable($review2)->create(['upvotes'=>10, 'downvotes'=>0]);
 
         $sorted = $this->sortingManager
-            ->applySort(ResourceReview::query(), 'hot', ResourceReview::class)
+            ->applySort(ResourceReview::query(), 'hot')
             ->pluck('id')
             ->toArray();
 
