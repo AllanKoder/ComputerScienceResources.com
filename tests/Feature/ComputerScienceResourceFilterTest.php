@@ -7,6 +7,7 @@ use App\Models\ComputerScienceResource;
 use App\Services\ComputerScienceResourceFilter;
 use App\Services\ResourceReviewService;
 use App\Services\SortingManagers\ResourceSortingManager;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 use Tests\Feature\Utils\ResourceUtils;
@@ -14,6 +15,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
+use Throwable;
 
 class ComputerScienceResourceFilterTest extends TestCase
 {
@@ -32,18 +34,8 @@ class ComputerScienceResourceFilterTest extends TestCase
         $resourceSortingManager = app(ResourceSortingManager::class);
 
         $this->filterService = new ComputerScienceResourceFilter($reviewService, $resourceSortingManager);
-
-        foreach (range(1, 10) as $i) {
-            $this->user = User::factory()->create();
-            $this->actingAs($this->user);
-
-            $resource = $this->createResource(['name' => "name{$i}"]);
-            $this->createReview($resource->id, ['title' => "Review A {$i}"]);
-
-            $this->user = User::factory()->create();
-            $this->actingAs($this->user);
-            $this->createReview($resource->id, ['title' => "Review B {$i}"]);
-        }
+        $this->user = User::factory()->create();
+        $this->actingAs($this->user);
     }
 
     public function test_can_get_resources()
@@ -94,12 +86,206 @@ class ComputerScienceResourceFilterTest extends TestCase
     #[Group('slow')]
     public function test_cannot_filter_with_invalid_fields(string $field, mixed $invalidValue)
     {
-        $this->actingAs($this->user);
-
         $validData = ComputerScienceResourceTestResource::fake();
         $validData[$field] = $invalidValue;
 
         $response = $this->getJson(route('resources.index', $validData));
         $response->assertStatus(422);
+    }
+
+    static public function filterProvider(): array
+    {
+        return [
+
+            'by name' => [['name' => 'Graph Theory']],
+
+            'by description' => [['description' => 'unit testing best practices']],
+
+            'by platforms' => [['platforms' => ['website', 'bootcamp']]],
+
+            'by difficulty & pricing' => [[
+                'difficulty' => 'beginner',
+                'pricing'    => 'free',
+            ]],
+
+            'by topics, languages & general tags' => [[
+                'topics'                => ['algorithms', 'data-structures', 'recursion'],
+                'programming_languages' => ['php', 'javascript'],
+                'general_tags'          => ['tutorial', 'video', 'lecture'],
+            ]],
+
+            'by ratings' => [[
+                'community_rating'    => 4,
+                'teaching_clarity'    => 3,
+                'engagement'          => 2,
+                'practicality'        => 4,
+                'user_friendliness'   => 3,
+                'updates'             => 4,
+            ]],
+
+            'by created & updated dates' => [[
+                'created_from' => '2025-01-01',
+                'created_to'   => '2025-03-01',
+                'updated_from' => '2025-02-01',
+                'updated_to'   => '2025-04-01',
+            ]],
+
+            'sorted newest reversed' => [[
+                'sort_by' => 'latest',
+                'reverse' => 'true',
+            ]],
+
+            'all filters together' => [[
+                'name'                  => 'Graph',
+                'description'           => 'algorithm analysis',
+                'platforms'             => ['podcast', 'website'],
+                'difficulty'            => 'industry_simple',
+                'pricing'               => 'free',
+                'topics'                => ['algorithms', 'recursion', 'data-structures'],
+                'programming_languages' => ['python'],
+                'general_tags'          => ['interactive', 'educational', 'advanced'],
+                'community_rating'      => 4,
+                'teaching_clarity'      => 4,
+                'created_from'          => '2025-01-15',
+                'sort_by'               => 'top',
+                'reverse'               => 'false',
+            ]],
+        ];
+    }
+
+
+    #[DataProvider('filterProvider')]
+    public function testApplyFilters(array $filters)
+    {
+        $query = ComputerScienceResource::query();
+        $filtered = $this->filterService->applyFilters($query, $filters);
+
+        $sql = $filtered->toSql();
+        $bindings = $filtered->getBindings();
+
+        $this->assertInstanceOf(Builder::class, $filtered);
+
+        // Full-text search
+        if (!empty($filters['name']))
+        {
+            $this->assertStringContainsStringIgnoringCase('MATCH (`name`)', $sql);
+            $this->assertContains($filters['name'], $bindings);
+        }
+
+        if (!empty($filters['description']))
+        {
+            $this->assertStringContainsStringIgnoringCase('MATCH (`description`)', $sql);
+            $this->assertContains($filters['description'], $bindings);
+        }
+
+        // Platforms (FIND_IN_SET)
+        if (!empty($filters['platforms']))
+        {
+            foreach ($filters['platforms'] as $platform)
+            {
+                $this->assertStringContainsStringIgnoringCase('FIND_IN_SET', $sql);
+                $this->assertContains($platform, $bindings);
+            }
+        }
+
+        // Difficulty
+        if (!empty($filters['difficulty']))
+        {
+            foreach ((array) $filters['difficulty'] as $difficulty)
+            {
+                $this->assertContains($difficulty, $bindings);
+            }
+        }
+
+        // Pricing
+        if (!empty($filters['pricing']))
+        {
+            foreach ((array) $filters['pricing'] as $pricing)
+            {
+                $this->assertContains($pricing, $bindings);
+            }
+        }
+
+        // Tags (just check joins exist)
+        if (!empty($filters['topics'])) {
+            $this->assertStringContainsString('taggables', $sql); // indirect check
+        }
+        if (!empty($filters['programming_languages']))
+        {
+            $this->assertStringContainsString('taggables', $sql); // indirect check
+        }
+        if (!empty($filters['general_tags']))
+        {
+            $this->assertStringContainsString('taggables', $sql); // indirect check
+        }
+
+        // Ratings
+        $ratingFields = [
+            'community',
+            'teaching_clarity',
+            'engagement',
+            'practicality',
+            'user_friendliness',
+            'updates',
+            'overall',
+        ];
+
+        foreach ($ratingFields as $field)
+        {
+            if (!empty($filters[$field]))
+            {
+                // Assert the rating value was bound
+                $this->assertContains($filters[$field], $bindings);
+            }
+        }
+
+        // Date filters
+        if (!empty($filters['created_from']))
+        {
+            $this->assertStringContainsString('date(`computer_science_resources`.`created_at`) >= ?', $sql);
+            $this->assertContains($filters['created_from'], $bindings);
+        }
+
+        if (!empty($filters['created_to']))
+        {
+            $this->assertStringContainsString('date(`computer_science_resources`.`created_at`) <= ?', $sql);
+            $this->assertContains($filters['created_to'], $bindings);
+        }
+
+        if (!empty($filters['updated_from']))
+        {
+            $this->assertStringContainsString('date(`computer_science_resources`.`updated_at`) >= ?', $sql);
+            $this->assertContains($filters['updated_from'], $bindings);
+        }
+
+        if (!empty($filters['updated_to']))
+        {
+            $this->assertStringContainsString('date(`computer_science_resources`.`updated_at`) <= ?', $sql);
+            $this->assertContains($filters['updated_to'], $bindings);
+        }
+
+        // Sorting shows the orderby, covered in sorting strategies tests.
+        if (!empty($filters['sort_by']))
+        {
+            $this->assertNotNull($filtered->getQuery()->orders);
+        }
+
+        if (!empty($filters['reverse']) && $filters['reverse'] === 'true')
+        {
+            // reverse() changes order direction
+            $orderClause = $filtered->getQuery()->orders[0] ?? [];
+            // Actual reverse test is covered in sorting manager test SortingStrategies/SortingManagerTest.php
+            $this->assertEqualsIgnoringCase('asc', strtolower($orderClause['direction']));
+        }
+
+        try
+        {
+            $filtered->get();
+            $this->assertTrue(true); // If we get here, the query is valid
+        }
+        catch (Throwable $e)
+        {
+            $this->fail("Query failed: " . $e->getMessage());
+        }
     }
 }
