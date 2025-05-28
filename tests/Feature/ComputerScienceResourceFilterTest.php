@@ -55,7 +55,6 @@ class ComputerScienceResourceFilterTest extends TestCase
             'platforms not distinct' => ['platforms', ['web', 'web']],
             'difficulty invalid' => ['difficulty', 'super-hard'],
             'pricing invalid' => ['pricing', 'expensive'],
-            'topics too few' => ['topics', ['a', 'b']],
             'topics item too long' => ['topics', ['a', str_repeat('b', 51), 'c']],
             'topics not distinct' => ['topics', ['a', 'a', 'a']],
             'general_tags not array' => ['general_tags', 'not-an-array'],
@@ -109,9 +108,9 @@ class ComputerScienceResourceFilterTest extends TestCase
             ]],
 
             'by topics, languages & general tags' => [[
-                'topics'                => ['algorithms', 'data-structures', 'recursion'],
+                'topics'                => ['algorithms'],
                 'programming_languages' => ['php', 'javascript'],
-                'general_tags'          => ['tutorial', 'video', 'lecture'],
+                'general_tags'          => ['tutorial', 'lecture'],
             ]],
 
             'by ratings' => [[
@@ -121,6 +120,7 @@ class ComputerScienceResourceFilterTest extends TestCase
                 'practicality'        => 4,
                 'user_friendliness'   => 3,
                 'updates'             => 4,
+                'overall'             => 2,
             ]],
 
             'by created & updated dates' => [[
@@ -146,6 +146,7 @@ class ComputerScienceResourceFilterTest extends TestCase
                 'general_tags'          => ['interactive', 'educational', 'advanced'],
                 'community_rating'      => 4,
                 'teaching_clarity'      => 4,
+                'overall'               => 4,
                 'created_from'          => '2025-01-15',
                 'sort_by'               => 'top',
                 'reverse'               => 'false',
@@ -153,6 +154,15 @@ class ComputerScienceResourceFilterTest extends TestCase
         ];
     }
 
+    function interpolateQuery(string $sql, array $bindings): string
+    {
+        foreach ($bindings as $binding) {
+            // Quote strings
+            $binding = is_numeric($binding) ? $binding : "'$binding'";
+            $sql = preg_replace('/\?/', $binding, $sql, 1);
+        }
+        return $sql;
+    }
 
     #[DataProvider('filterProvider')]
     public function testApplyFilters(array $filters)
@@ -162,6 +172,7 @@ class ComputerScienceResourceFilterTest extends TestCase
 
         $sql = $filtered->toSql();
         $bindings = $filtered->getBindings();
+        $interpolated = $this->interpolateQuery($sql, $bindings);
 
         $this->assertInstanceOf(Builder::class, $filtered);
 
@@ -234,34 +245,31 @@ class ComputerScienceResourceFilterTest extends TestCase
         {
             if (!empty($filters[$field]))
             {
-                // Assert the rating value was bound
-                $this->assertContains($filters[$field], $bindings);
+                // Assert the rating value was created
+                $value = $filters[$field];
+                $this->assertStringContainsString("`{$field}_rating` >= $value", $interpolated);
             }
         }
 
         // Date filters
         if (!empty($filters['created_from']))
         {
-            $this->assertStringContainsString('date(`computer_science_resources`.`created_at`) >= ?', $sql);
-            $this->assertContains($filters['created_from'], $bindings);
+            $this->assertStringContainsString("date(`computer_science_resources`.`created_at`) >= '{$filters['created_from']}'", $interpolated);
         }
 
         if (!empty($filters['created_to']))
         {
-            $this->assertStringContainsString('date(`computer_science_resources`.`created_at`) <= ?', $sql);
-            $this->assertContains($filters['created_to'], $bindings);
+            $this->assertStringContainsString("date(`computer_science_resources`.`created_at`) <= '{$filters['created_to']}'", $interpolated);
         }
 
         if (!empty($filters['updated_from']))
         {
-            $this->assertStringContainsString('date(`computer_science_resources`.`updated_at`) >= ?', $sql);
-            $this->assertContains($filters['updated_from'], $bindings);
+            $this->assertStringContainsString("date(`computer_science_resources`.`updated_at`) >= '{$filters['updated_from']}'", $interpolated);
         }
 
         if (!empty($filters['updated_to']))
         {
-            $this->assertStringContainsString('date(`computer_science_resources`.`updated_at`) <= ?', $sql);
-            $this->assertContains($filters['updated_to'], $bindings);
+            $this->assertStringContainsString("date(`computer_science_resources`.`updated_at`) <= '{$filters['updated_to']}'", $interpolated);
         }
 
         // Sorting shows the orderby, covered in sorting strategies tests.

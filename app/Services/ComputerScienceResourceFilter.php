@@ -21,11 +21,11 @@ class ComputerScienceResourceFilter
         $rules = [
             'name' => ['nullable', 'string', 'max:1000'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'platforms' => ['nullable', 'array', 'min:1'],
+            'platforms' => ['nullable', 'array'],
             'platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
             'difficulty' => ['nullable', 'string', Rule::in(config('computerScienceResource.difficulties'))],
             'pricing' => ['nullable', 'string', Rule::in(config('computerScienceResource.pricings'))],
-            'topics' => ['nullable', 'array', 'min:3'],
+            'topics' => ['nullable', 'array'],
             'topics.*' => ['required', 'distinct', 'string', 'max:50'],
             'general_tags' => ['nullable', 'array'],
             'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],

@@ -135,7 +135,7 @@ class ResourceReviewsSortingStrategyTest extends TestCase
         // Sort by overall
         $sorted = $this->resourceSortingManager
             ->applySort(ComputerScienceResource::query(), 'overall')
-            ->addSelect('resource_review_summaries.overall_rating') // Optional depending on DB
+            ->addSelect('resource_review_summaries.overall_rating')
             ->get()
             ->pluck('id')
             ->toArray();
@@ -146,4 +146,6 @@ class ResourceReviewsSortingStrategyTest extends TestCase
             "Failed asserting that resources are sorted by overall_rating"
         );
     }
+
+    // TODO: Create test so that it sorts the highest (despite it having a lot of bad reviews, or something with quantity)
 }

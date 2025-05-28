@@ -23,10 +23,7 @@ class ResourceReviewService
         $query = $this->ensureReviewSummaryJoined($query);
         $reviewTable = $this->getReviewSummaryTable();
 
-        return $query->whereRaw(
-            "{$reviewTable}.{$field} >= ? * {$reviewTable}.review_count",
-            [$minRating]
-        );
+        return $query->where("{$reviewTable}.{$field}_rating", '>=', $minRating);
     }
 }
 
