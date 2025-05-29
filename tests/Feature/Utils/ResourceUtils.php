@@ -4,6 +4,7 @@ namespace Tests\Feature\Utils;
 
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceReview;
+use App\Models\User;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 use Tests\TestResources\ResourceReviewTestResource;
 
@@ -17,8 +18,14 @@ trait ResourceUtils
         return ComputerScienceResource::where('name', $resourceForm['name'])->first();
     }
 
-    public function createReview(int $id, array $overrides = []): ResourceReview
+    public function createReview(int $id, array $overrides = [], bool $newUser = false): ResourceReview
     {
+        if ($newUser)
+        {
+            $user = User::factory()->create();
+            $this->actingAs($user);
+        }
+
         $reviewForm = ResourceReviewTestResource::fake($overrides);
         $response = $this->post(route('reviews.store', $id), $reviewForm);
         $response->assertStatus(200); // Success
