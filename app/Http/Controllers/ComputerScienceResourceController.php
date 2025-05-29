@@ -8,31 +8,50 @@ use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
 use App\Services\CommentService;
-use App\Services\UpvoteService;
+use App\Services\ComputerScienceResourceFilter;
+use App\Services\ResourceReviewService;
+use App\Services\SortingManagers\GeneralVotesSortingManager;
+use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ComputerScienceResourceController extends Controller
 {
     protected $commentService;
-    protected $upvoteService;
+    protected $generalVotesSortingManager;
+    protected $reviewService;
+    protected $resourceSortingManager;
 
-    function __construct(CommentService $commentService, UpvoteService $upvoteService)
-    {
+    function __construct(
+        CommentService $commentService,
+        GeneralVotesSortingManager $generalVotesSortingManager,
+        ResourceReviewService $reviewService,
+        ResourceSortingManager $resourceSortingManager,
+    ) {
         $this->commentService = $commentService;
-        $this->upvoteService = $upvoteService;
+        $this->generalVotesSortingManager = $generalVotesSortingManager;
+        $this->reviewService = $reviewService;
+        $this->resourceSortingManager = $resourceSortingManager;
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request, ComputerScienceResourceFilter $filterService)
     {
-        // Eager load topic tags and other tag types as needed
-        $resources = ComputerScienceResource::with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship'])
-            ->paginate(10);
+        $query = ComputerScienceResource::query();
+
+        // Apply all filters and sorting
+        $filters = $request->query();
+        $query = $filterService->applyFilters($query, $filters);
+
+        // Paginate with appended query params
+        $resources = $query->paginate(10)->appends($request->query());
+
         return Inertia::render('Resources/Index', [
             'resources' => $resources,
         ]);
@@ -114,7 +133,7 @@ class ComputerScienceResourceController extends Controller
             $data['reviews'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy) {
                     $query = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id);
-                    $query = $this->upvoteService->applySort($query, $sortBy, ResourceReview::class);
+                    $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceReview::class);
                     return $query->get();
                 }
             );
@@ -122,7 +141,7 @@ class ComputerScienceResourceController extends Controller
             $data['resourceEdits'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy) {
                     $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
-                    $query = $this->upvoteService->applySort($query, $sortBy, ResourceEdits::class);
+                    $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
                     return $query->get();
                 }
             );

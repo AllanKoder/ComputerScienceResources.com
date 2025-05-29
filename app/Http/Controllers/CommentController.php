@@ -41,12 +41,12 @@ class CommentController extends Controller
 
         $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_key']);
         $commentableId = $validatedData['commentable_id'];
-        
+
         // Ensure that the model exists
         $model = $this->modelResolver->resolve($validatedData['commentable_key'], $commentableId);
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);
-        }    
+        }
         Log::debug("Resolved model class: " . $commentableType);
 
         // Set the commentable type
@@ -64,7 +64,7 @@ class CommentController extends Controller
         else {
             $parent = Comment::find($parentCommentId);
             $new_comment_depth = $parent->depth + 1;
-            
+
             // Check if the parent is the root comment
             if ($parent->depth == 1) {
                 $root_comment = $parent;
@@ -79,7 +79,7 @@ class CommentController extends Controller
 
             // Ensure that they are commenting to the same root
             // And the depth is not exceeded
-            Validator::make(
+            Validator::validate(
                 [
                     'commentable_id' => $commentableId,
                     'commentable_type' => $commentableType,
@@ -108,14 +108,14 @@ class CommentController extends Controller
                         'lt:' . (config('comment.max_replies'))
                     ]
                 ]
-            )->validate();
+            );
 
             // Set the parent id
             $comment->parent_comment_id = $parentCommentId;
-            
+
             // Set the parent's root as this comment's root, unless it is the root itself.
             $comment->root_comment_id = $root_comment_id;
-            
+
             // Set the new depth
             $comment->depth = $new_comment_depth;
 
@@ -148,10 +148,10 @@ class CommentController extends Controller
         }
 
         $sortBy = $request->query('sort_by', 'top');
-        
+
         Log::debug("Request is, commentable_type: " .  $commentableKey . ". id: " . $commentableId . ". index: " . $index . ". Sorting: " . $sortBy);
         $paginatedResults = $this->commentService->getPaginatedComments($commentableKey, $commentableId, $index, $paginationLimit, $sortBy);
-        
+
         return $paginatedResults;
     }
 }

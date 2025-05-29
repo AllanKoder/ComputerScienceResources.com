@@ -35,10 +35,10 @@ class ComputerScienceResourceTestResource extends JsonResource
 
         // Transform it to API form
         $formData = (new self($model))->toArray(request());
-    
+
         // Delete after getting the array to avoid polluting the DB
         $model->delete();
-    
+
         // Merge and return
         return array_merge($formData, $overrides);
     }

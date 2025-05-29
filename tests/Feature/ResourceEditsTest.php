@@ -37,10 +37,10 @@ class ResourceEditsTest extends TestCase
 
         $resource = ComputerScienceResource::factory()->create();
         $validData = ComputerScienceResourceTestResource::fake();
-        
+
         $validData['edit_title'] = 'title';
         $validData['edit_description'] = 'description';
-        
+
         $invalidDataSets = [
             'name' => str_repeat('a', 101), // Too long
             'description' => str_repeat('a', 10001), // Too long
@@ -54,7 +54,8 @@ class ResourceEditsTest extends TestCase
             'programming_language_tags' => 'not-an-array'
         ];
 
-        foreach ($invalidDataSets as $field => $invalidValue) {
+        foreach ($invalidDataSets as $field => $invalidValue)
+        {
             $testData = $validData;
             $testData[$field] = $invalidValue;
 
@@ -88,9 +89,9 @@ class ResourceEditsTest extends TestCase
         {
             // Create the original resource.
             $resource = ComputerScienceResource::factory()->create();
-            
+
             // Create valid edit payload, then set fields to exactly match the resource.
-            
+
             $editData = array();
             $editData['name'] = $resource->name;
             $editData['description'] = $resource->description;
@@ -102,23 +103,23 @@ class ResourceEditsTest extends TestCase
             $editData['topic_tags'] = $resource->topic_tags;
             $editData['programming_language_tags'] = $resource->programming_language_tags;
             $editData['general_tags'] = $resource->general_tags;
-            
+
             // Add required edit-specific fields.
             $editData['edit_title'] = 'Proposed edit with no changes';
             $editData['edit_description'] = 'This edit does nothing.';
-            
+
             $response = $this->postJson(route('resource_edits.store', $resource), $editData);
-            
+
             if ($response->status() !== 422) {
                 Log::debug("here");
                 Log::debug('editData:'. json_encode($editData));
                 Log::debug('resource:'. json_encode(new ComputerScienceResourceResource($resource)));
             }
-            
+
             $response->assertStatus(422);
         }
     }
-        
+
         /**
      * Test that a valid resource edit can be posted.
      */
@@ -133,11 +134,11 @@ class ResourceEditsTest extends TestCase
         $editData = ComputerScienceResourceTestResource::fake();
         $editData['edit_title'] = 'Proposed Update';
         $editData['edit_description'] = 'Proposing an update to the resource';
-        
+
         $editData['name'] = $resource->name . ' Updated';
-        
+
         $response = $this->post(route('resource_edits.store', $resource), $editData);
-        
+
         // Expect redirection to the edit show page with a success message.
         $response->assertRedirect()
             ->assertSessionHas('success', "The proposed edits were created. Other's can now view it.");
@@ -167,7 +168,8 @@ class ResourceEditsTest extends TestCase
 
         $mergeAttempts = 10;
 
-        for ($i = 0; $i < $mergeAttempts; $i++) {
+        for ($i = 0; $i < $mergeAttempts; $i++)
+        {
             $resource->refresh();
 
             $editData = ComputerScienceResourceTestResource::fake();
@@ -185,7 +187,7 @@ class ResourceEditsTest extends TestCase
             $editData['topic_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"];
 
             $editData['programming_language_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"];
-            $editData['general_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"]; 
+            $editData['general_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"];
 
             // Submit the edit
             $this->actingAs($this->user);
@@ -213,7 +215,7 @@ class ResourceEditsTest extends TestCase
             $this->assertEquals($editData['page_url'], $resource->page_url);
             $this->assertEquals($editData['difficulty'], $resource->difficulty);
             $this->assertEquals($editData['pricing'], $resource->pricing);
-            
+
             // Arrays
             $this->assertEqualsCanonicalizing($editData['platforms'], $resource->platforms);
             $this->assertEqualsCanonicalizing($editData['topic_tags'], $resource->topic_tags);
@@ -247,7 +249,7 @@ class ResourceEditsTest extends TestCase
         $editData['topic_tags'] = ['1', '2', '3'];
         $editData['programming_language_tags'] = [];
         $editData['general_tags'] = [];
-            
+
         // Submit the edit
         $this->actingAs($this->user);
         $response = $this->post(
@@ -274,13 +276,13 @@ class ResourceEditsTest extends TestCase
         $this->assertEquals($editData['page_url'], $resource->page_url);
         $this->assertEquals($editData['difficulty'], $resource->difficulty);
         $this->assertEquals($editData['pricing'], $resource->pricing);
-        
+
         // Arrays
         $this->assertEqualsCanonicalizing($editData['platforms'], $resource->platforms);
         $this->assertEqualsCanonicalizing($editData['topic_tags'], $resource->topic_tags);
         $this->assertEqualsCanonicalizing($editData['programming_language_tags'], $resource->programming_language_tags);
         $this->assertEqualsCanonicalizing($editData['general_tags'], $resource->general_tags);
-        
+
         $this->assertDatabaseMissing('resource_edits', ['id' => $edit->id]);
     }
 }

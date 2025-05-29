@@ -23,6 +23,39 @@ return new class extends Migration
             $table->bigInteger('user_friendliness')->default(0);
             $table->bigInteger('updates')->default(0);
 
+            $table->decimal('community_rating')->storedAs("
+                CASE WHEN review_count = 0 THEN 0 ELSE community / review_count END
+            ")->index();
+
+            $table->decimal('teaching_clarity_rating')->storedAs("
+                CASE WHEN review_count = 0 THEN 0 ELSE teaching_clarity / review_count END
+            ")->index();
+
+            $table->decimal('engagement_rating')->storedAs("
+                CASE WHEN review_count = 0 THEN 0 ELSE engagement / review_count END
+            ")->index();
+
+            $table->decimal('practicality_rating')->storedAs("
+                CASE WHEN review_count = 0 THEN 0 ELSE practicality / review_count END
+            ")->index();
+
+            $table->decimal('user_friendliness_rating')->storedAs("
+                CASE WHEN review_count = 0 THEN 0 ELSE user_friendliness / review_count END
+            ")->index();
+
+            $table->decimal('updates_rating')->storedAs("
+                CASE WHEN review_count = 0 THEN 0 ELSE updates / review_count END
+            ")->index();
+
+            $table->decimal('overall_rating')
+                ->storedAs('(community_rating +
+                    teaching_clarity_rating +
+                    engagement_rating +
+                    practicality_rating +
+                    user_friendliness_rating +
+                    updates_rating)/6')
+                ->index();
+
             $table->integer('review_count')->default(0);
 
             $table->timestamps();

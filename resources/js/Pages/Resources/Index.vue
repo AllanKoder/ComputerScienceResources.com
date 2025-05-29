@@ -5,6 +5,7 @@ import NewsItem from "@/Components/NewsItem.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps } from "vue";
 import PaginateLinks from "@/Components/Pagination/PaginateLinks.vue";
+import FilterBar from "@/Components/Resources/FilterBar.vue";
 
 const props = defineProps({
     resources: Object,
@@ -56,7 +57,11 @@ const newsItems = [
     <AppLayout title="Computer Science Resources">
         <main class="py-12">
             <div class="max-w-[110rem] mx-auto sm:px-6 lg:px-10">
+                <!-- Filter bar -->
+                <FilterBar></FilterBar>
+
                 <div class="flex gap-4">
+
                     <!-- Resources Section -->
                     <section
                         class="w-3/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6"

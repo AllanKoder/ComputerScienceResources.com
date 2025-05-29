@@ -12,11 +12,14 @@ const props = defineProps({
 const selectedSort = ref(props.initialValue);
 
 const sortOptions = [
-    { label: "Latest", value: "latest" },
+    { label: "Hot", value: "hot" },
     { label: "Top", value: "top" },
     { label: "Bottom", value: "bottom" },
     { label: "Controversial", value: "controversial" },
-    { label: "Posted by me", value: "mine" },
+    { label: "Total Votes", value: "total_votes" },
+    { label: "Latest", value: "latest" },
+    { label: "Oldest", value: "oldest" },
+    { label: "Recently Updated", value: "recently_updated" },
 ];
 
 const emit = defineEmits(['change'])

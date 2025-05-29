@@ -26,7 +26,7 @@ class ResourceReviewTestResource extends JsonResource
         ];
     }
 
-    public static function fake(): array
+    public static function fake(array $overrides = []): array
     {
         // Fake certain events
         $model = Event::fakeFor(function () {
@@ -35,10 +35,10 @@ class ResourceReviewTestResource extends JsonResource
 
         // Transform it to API form
         $formData = (new self($model))->toArray(request());
-    
+
         // Delete after getting the array
         $model->delete();
-    
-        return $formData;
+
+        return array_merge($formData, $overrides);
     }
 }

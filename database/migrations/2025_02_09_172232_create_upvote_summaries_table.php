@@ -17,6 +17,11 @@ return new class extends Migration
             $table->morphs('upvotable');
             $table->bigInteger('upvotes')->default(0);
             $table->bigInteger('downvotes')->default(0);
+
+            $table->integer('score')->storedAs('upvotes - downvotes');
+            $table->integer('total_votes')->storedAs('upvotes + downvotes');
+            $table->integer('controversy')->storedAs('(upvotes + downvotes) - ABS(upvotes - downvotes)');
+
             $table->timestamps();
         });
     }

@@ -9,7 +9,6 @@ use App\Models\TagFrequency;
 use App\Models\User;
 use App\Services\ResourceEditsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Mockery;
 use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
@@ -25,7 +24,7 @@ class TagSearchTest extends TestCase
         parent::setUp();
         $this->user = User::factory()->create();
     }
-    
+
 
     public function test_can_search_tags_by_prefix()
     {

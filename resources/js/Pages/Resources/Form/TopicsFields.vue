@@ -58,10 +58,9 @@ const validateAndNext = async () => {
         :initialValues="formData"
         class="flex flex-col gap-4 w-full"
     >
-        <div class="flex flex-col gap-1">
+        <div class="flex flex-col gap-1 justify-center items-center">
             <!-- Tag Selector for topics -->
             <TagSelector
-                :initial="formData.topic_tags ?? []"
                 v-model="formData.topic_tags"
             ></TagSelector>
 

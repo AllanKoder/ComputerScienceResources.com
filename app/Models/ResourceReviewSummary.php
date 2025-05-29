@@ -11,9 +11,9 @@ class ResourceReviewSummary extends Model
 {
     use HasVotes;
     use HasComments;
-    
+
     protected $fillable = ['computer_science_resource_id'];
-    
+
     protected $primaryKey = 'computer_science_resource_id';
 
     protected $appends = ['average_reviews_score'];
@@ -30,21 +30,8 @@ class ResourceReviewSummary extends Model
                 if ($this->review_count === 0) {
                     return 0;
                 }
-    
-                $fields = [
-                    $this->community,
-                    $this->teaching_clarity,
-                    $this->engagement,
-                    $this->practicality,
-                    $this->user_friendliness,
-                    $this->updates,
-                ];
-    
-                $numericFields = array_filter($fields, 'is_numeric');
-    
-                $sum = array_sum($numericFields);
-    
-                return round($sum / ($this->review_count * 6), 2);
+
+                return round($this->overall_rating / $this->review_count, 2);
             }
         );
     }
