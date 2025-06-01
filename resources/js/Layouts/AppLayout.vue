@@ -7,7 +7,8 @@ import { Icon } from "@iconify/vue";
 import UserDropdown from "@/Components/Navbar/UserDropdown.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
-import { useToast } from 'primevue/usetoast'
+import { useToast } from "primevue/usetoast";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 defineProps({
     title: String,
@@ -20,22 +21,35 @@ const logout = () => {
 };
 
 // Handling toast messages
-const flash = usePage().props.flash
-const toast = useToast()
+const flash = usePage().props.flash;
+const toast = useToast();
 onMounted(() => {
     if (!flash) return;
 
+    const TOAST_LIFETIME = 10_000; // miliseconds
     if (flash.success) {
-        toast.add({ severity: 'success', summary: 'Success', detail: flash.success, life: 5000 });
-    }
-    else if (flash.warning) {
-        toast.add({ severity: 'warn', summary: 'Warning', detail: flash.warning, life: 5000 });
-    }
-    else if (flash.error) {
-        toast.add({ severity: 'error', summary: 'Error', detail: flash.error, life: 5000 });
+        toast.add({
+            severity: "success",
+            summary: "Success",
+            detail: flash.success,
+            life: TOAST_LIFETIME,
+        });
+    } else if (flash.warning) {
+        toast.add({
+            severity: "warn",
+            summary: "Warning",
+            detail: flash.warning,
+            life: TOAST_LIFETIME,
+        });
+    } else if (flash.error) {
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail: flash.error,
+            life: TOAST_LIFETIME,
+        });
     }
 });
-
 </script>
 
 <template>
@@ -45,11 +59,11 @@ onMounted(() => {
         <Banner />
 
         <!-- Handle Toasts -->
-        <Toast /> 
+        <Toast />
 
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+        <div class="min-h-screen bg-background dark:bg-gray-900">
             <nav
-                class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700"
+                class="bg-white dark:bg-secondaryDark border-accent dark:border-primaryDark"
             >
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -57,7 +71,7 @@ onMounted(() => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('resources.index')">
                                     <ApplicationMark class="block h-9 w-auto" />
                                 </Link>
                             </div>
@@ -67,48 +81,49 @@ onMounted(() => {
                                 class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
                             >
                                 <NavLink
-                                    :href="route('dashboard')"
-                                    :active="route().current('dashboard')"
-                                >
-                                    Dashboard
-                                </NavLink>
-                            </div>
-
-                            <div
-                                class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex"
-                            >
-                                <NavLink
                                     :href="route('resources.index')"
                                     :active="route().current('resources.index')"
+                                    class="text-primaryDark hover:text-primary"
                                 >
                                     Resources
                                 </NavLink>
                             </div>
                         </div>
 
-                        <!-- Logged in -->
+                        <!-- Authenticated -->
                         <template v-if="$page.props.auth.user">
                             <div class="hidden sm:flex sm:items-center sm:ms-6">
                                 <!-- Create Resource Button -->
-                                <Link
-                                    :href="route('resources.create')"
-                                    class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
-                                >
-                                    <Icon icon="mdi:plus" class="mr-2" />
-                                    Create
+                                <Link :href="route('resources.create')">
+                                    <SecondaryButton>
+                                        <Icon icon="mdi:plus" class="mr-2" />
+                                        Create
+                                    </SecondaryButton>
                                 </Link>
 
+                                <!-- Settings Dropdown -->
                                 <div class="flex items-center justify-center">
-                                    <!-- Settings Dropdown -->
                                     <UserDropdown align="right" width="48" />
                                 </div>
+                            </div>
+                        </template>
+
+                        <!-- Guest -->
+                        <template v-else>
+                            <div class="hidden sm:flex sm:items-center sm:ms-6">
+                                <Link :href="route('login')">
+                                    <SecondaryButton>
+                                        <Icon icon="mdi:login" class="mr-2" />
+                                        Sign In
+                                    </SecondaryButton>
+                                </Link>
                             </div>
                         </template>
 
                         <!-- Hamburger -->
                         <div class="-me-2 flex items-center sm:hidden">
                             <button
-                                class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
+                                class="inline-flex items-center justify-center p-2 rounded-md text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryDark hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none focus:bg-accent/30 dark:focus:bg-primaryDark/30 focus:text-primary dark:focus:text-primaryDark transition duration-150 ease-in-out"
                                 @click="
                                     showingNavigationDropdown =
                                         !showingNavigationDropdown
@@ -158,24 +173,17 @@ onMounted(() => {
                 >
                     <div class="pt-2 pb-3 space-y-1">
                         <ResponsiveNavLink
-                            :href="route('dashboard')"
-                            :active="route().current('dashboard')"
-                        >
-                            Dashboard
-                        </ResponsiveNavLink>
-
-                        <ResponsiveNavLink
                             :href="route('resources.index')"
                             :active="route().current('resources.index')"
+                            class="text-primaryDark hover:text-primary"
                         >
                             Resources
                         </ResponsiveNavLink>
 
-
                         <!-- Create Resource Button -->
                         <ResponsiveNavLink
                             :href="route('resources.create')"
-                            class="mx-2 inline-flex items-center border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition ease-in-out duration-150"
+                            class="mx-2 inline-flex items-center border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150"
                         >
                             <Icon icon="mdi:plus" class="" />
                             Create
@@ -252,7 +260,7 @@ onMounted(() => {
             <!-- Page Heading -->
             <header
                 v-if="$slots.header"
-                class="bg-white dark:bg-gray-800 shadow"
+                class="bg-secondary dark:bg-secondaryDark shadow"
             >
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
