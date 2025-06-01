@@ -62,12 +62,10 @@ export const ratingLabels = {
 /// Sorting
 export const resourceSortingLabels = [
     { value: "top", label: "Top Votes (Best Score)" },
-    { value: "bottom", label: "Bottom Votes (Worst Score)" },
     { value: "controversial", label: "Controversial (Mixed Votes)" },
-    { value: "total_votes", label: "Most Voted" },
+    { value: "total_votes", label: "Most Voted (Negative + Postive)" },
     { value: "hot", label: "Hot (Trending Now)" },
-    { value: "latest", label: "Newest (Date Added)" },
-    { value: "oldest", label: "Oldest (Date Added)" },
+    { value: "latest", label: "Newest (Date Created)" },
     { value: "recently_updated", label: "Recently Updated" },
     { value: "community", label: "Best Community" },
     { value: "teaching_clarity", label: "Teaching Clarity" },

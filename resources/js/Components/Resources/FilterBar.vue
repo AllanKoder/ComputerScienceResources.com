@@ -10,11 +10,10 @@ import {
 } from "@/Helpers/labels";
 import InputText from "primevue/inputtext";
 import MultiSelect from "primevue/multiselect";
-import Button from "primevue/button";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 import Rating from "primevue/rating";
 import Calendar from "primevue/calendar";
-
-import TagSelector from "@/Components/Form/TagSelector.vue";
 
 // text filters
 const name = ref("");
@@ -212,289 +211,332 @@ function resetFilters() {
 <template>
     <form
         @submit.prevent="search"
-        class="p-6 bg-white rounded-xl shadow-md mb-4"
+        class="bg-white rounded-xl shadow-sm border border-primary/10 mb-6 max-w-7xl mx-auto"
     >
-        <div class="flex flex-wrap gap-4">
-            <!-- Name -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1">Name</label>
-                <InputText v-model="name" placeholder="Title" class="w-full" />
-            </div>
-
-            <!-- Description -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Description</label
-                >
-                <InputText
-                    v-model="description"
-                    placeholder="Enter Keywords"
-                    class="w-full"
-                />
-            </div>
-
-            <!-- Platforms -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1">Platforms</label>
-                <MultiSelect
-                    v-model="selectedPlatforms"
-                    :options="platforms"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="All Platforms"
-                    showClear
-                    class="w-full"
-                />
-            </div>
-
-            <!-- Difficulty -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1">Difficulty</label>
-                <MultiSelect
-                    v-model="selectedDifficulty"
-                    :options="difficulties"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="All Difficulties"
-                    showClear
-                    class="w-full"
-                />
-            </div>
-
-            <!-- Pricing -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1">Pricing</label>
-                <MultiSelect
-                    v-model="selectedPricing"
-                    :options="pricings"
-                    optionLabel="label"
-                    optionValue="value"
-                    placeholder="All Pricing"
-                    showClear
-                    class="w-full"
-                />
-            </div>
-
-            <!-- Topics -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1">Topics</label>
-                <TagSelector v-model="selectedTopics" />
-            </div>
-
-            <!-- Programming Languages -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Programming Languages</label
-                >
-                <TagSelector v-model="selectedProgrammingLanguages" />
-            </div>
-
-            <!-- Other Tags -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1">Other Tags</label>
-                <TagSelector v-model="selectedGeneralTags" />
-            </div>
-
-            <!-- Star-rating filters -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Overall Rating</label
-                >
-                <Rating
-                    v-model="selectedOverallRating"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-        </div>
-        <!-- Advanced Filters Section -->
-        <div v-if="advancedOpen" class="flex flex-wrap gap-4 mb-4">
-            <!-- rating/date filters ... -->
-            <div>
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Community</label
-                >
-                <Rating
-                    v-model="selectedCommunityRating"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Teaching Clarity</label
-                >
-                <Rating
-                    v-model="selectedTeachingClarity"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Engagement</label
-                >
-                <Rating
-                    v-model="selectedEngagement"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Practicality</label
-                >
-                <Rating
-                    v-model="selectedPracticality"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1"
-                    >Min. User Friendliness</label
-                >
-                <Rating
-                    v-model="selectedUserFriendliness"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-            <div>
-                <label class="block text-sm font-medium mb-1"
-                    >Min. Updates</label
-                >
-                <Rating
-                    v-model="selectedUpdates"
-                    :stars="4"
-                    cancel
-                    class="text-yellow-400"
-                />
-            </div>
-
-            <!-- Created Date Range -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Created From</label
-                >
-                <Calendar
-                    v-model="createdFrom"
-                    :max-date="createdTo"
-                    showIcon
-                    dateFormat="yy-mm-dd"
-                    class="w-full"
-                />
-            </div>
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1">Created To</label>
-                <Calendar
-                    v-model="createdTo"
-                    :min-date="createdFrom"
-                    showIcon
-                    dateFormat="yy-mm-dd"
-                    class="w-full"
-                />
-            </div>
-
-            <!-- Updated Date Range -->
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1"
-                    >Updated From</label
-                >
-                <Calendar
-                    v-model="updatedFrom"
-                    :max-date="updatedTo"
-                    showIcon
-                    dateFormat="yy-mm-dd"
-                    class="w-full"
-                />
-            </div>
-            <div class="flex-1 min-w-[200px]">
-                <label class="block text-sm font-medium mb-1">Updated To</label>
-                <Calendar
-                    v-model="updatedTo"
-                    :min-date="updatedFrom"
-                    showIcon
-                    dateFormat="yy-mm-dd"
-                    class="w-full"
-                />
-            </div>
-
-            <!-- Sorting Buttons -->
-            <div class="w-full">
-                <h2 class="text-sm font-medium mb-2">Sorting</h2>
-                <div class="flex flex-wrap gap-2 mb-2">
-                    <button
-                        v-for="opt in resourceSortingLabels"
-                        :key="opt.value"
-                        type="button"
-                        @click="selectSorting(opt.value)"
-                        :class="[
-                            'px-3 py-1 rounded-full text-sm font-medium focus:outline-none',
-                            selectedSorting === opt.value
-                                ? 'bg-blue-600 text-white'
-                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-                        ]"
-                    >
-                        {{ opt.label }}
-                    </button>
+        <!-- Primary Search Section -->
+        <div class="p-6 border-b border-primary/10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Name Search -->
+                <div class="w-full">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <Icon icon="mdi:magnify" class="w-4 h-4" />
+                        Resource Name
+                    </label>
+                    <InputText
+                        v-model="name"
+                        placeholder="Search by title..."
+                        class="w-full h-10 text-sm shadow-sm"
+                    />
                 </div>
 
-                <h2 class="text-sm font-medium mb-2">Reverse Sorting</h2>
-                <button
-                    type="button"
-                    @click="selectedReverse = !selectedReverse"
-                    :class="[
-                        'px-3 py-1 rounded-full text-sm font-medium focus:outline-none',
-                        selectedReverse
-                        ? 'bg-blue-600 text-white'
-                        : 'bg-gray-200 text-gray-700 hover:bg-gray-300',
-                    ]"
-                    >
-                    Reverse
-                </button>
+                <!-- Description Search -->
+                <div class="w-full">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <Icon icon="mdi:text" class="w-4 h-4" />
+                        Description
+                    </label>
+                    <InputText
+                        v-model="description"
+                        placeholder="Search in content..."
+                        class="w-full h-10 text-sm shadow-sm"
+                    />
+                </div>
             </div>
         </div>
 
-        <div class="flex items-end flex-wrap gap-4 w-full">
-            <!-- Advanced Filters Toggle -->
-            <div>
-                <button
-                    type="button"
-                    class="flex items-center gap-1 text-sm text-blue-600 underline focus:outline-none"
-                    @click="advancedOpen = !advancedOpen"
-                >
-                    <Icon
-                        :icon="
-                            advancedOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'
-                        "
-                        class="w-4 h-4 transition-transform duration-200"
+        <!-- Quick Filters Section -->
+        <div class="p-6 border-b border-primary/10 bg-secondary/5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Platform Filter -->
+                <div class="w-full">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <Icon icon="mdi:devices" class="w-4 h-4" />
+                        Platform
+                    </label>
+                    <MultiSelect
+                        v-model="selectedPlatforms"
+                        :options="platforms"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="All Platforms"
+                        class="w-full min-h-[40px]"
                     />
-                    {{
-                        advancedOpen
-                            ? "Hide Advanced Filters"
-                            : "Show Advanced Filters"
-                    }}
-                </button>
+                </div>
+
+                <!-- Difficulty Level -->
+                <div class="w-full">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <Icon icon="mdi:stairs" class="w-4 h-4" />
+                        Difficulty
+                    </label>
+                    <MultiSelect
+                        v-model="selectedDifficulty"
+                        :options="difficulties"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="All Levels"
+                        class="w-full min-h-[40px]"
+                    />
+                </div>
+
+                <!-- Pricing -->
+                <div class="w-full">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <Icon icon="mdi:currency-usd" class="w-4 h-4" />
+                        Pricing
+                    </label>
+                    <MultiSelect
+                        v-model="selectedPricing"
+                        :options="pricings"
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Any Price"
+                        class="w-full min-h-[40px]"
+                    />
+                </div>
+
+                <!-- Overall Rating -->
+                <div class="flex flex-col w-full">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <Icon icon="mdi:star" class="w-4 h-4" />
+                        Minimum Rating
+                    </label>
+                    <div class="flex items-center h-10">
+                        <Rating
+                            v-model="selectedOverallRating"
+                            :stars="4"
+                            cancel
+                            class="text-accent"
+                        />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Filters Toggle -->
+        <div class="px-6 py-4 bg-white border-b border-primary/10">
+            <button
+                type="button"
+                class="flex items-center gap-2 text-sm text-primary hover:text-primaryDark focus:outline-none group w-full justify-center"
+                @click="advancedOpen = !advancedOpen"
+            >
+                <Icon
+                    :icon="advancedOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+                    class="w-4 h-4 transition-transform duration-200"
+                />
+                <span class="font-medium">{{ advancedOpen ? 'Hide Advanced Filters' : 'Show Advanced Filters' }}</span>
+            </button>
+        </div>
+
+        <!-- Advanced Filters Section -->
+        <div v-if="advancedOpen" class="p-6 bg-secondary/5 space-y-8">
+            <!-- Ratings Section -->
+            <div class="space-y-4">
+                <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600">
+                    <Icon icon="mdi:star-settings" class="w-4 h-4" />
+                    Rating Filters
+                </h3>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                    <!-- Community Rating -->
+                    <div class="flex flex-col items-center">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                            <Icon icon="mdi:account-group" class="w-4 h-4" />
+                            Community
+                        </label>
+                        <Rating
+                            v-model="selectedCommunityRating"
+                            :stars="4"
+                            cancel
+                            class="text-accent"
+                        />
+                    </div>
+
+                    <!-- Teaching Rating -->
+                    <div class="flex flex-col items-center">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                            <Icon icon="mdi:school" class="w-4 h-4" />
+                            Teaching
+                        </label>
+                        <Rating
+                            v-model="selectedTeachingClarity"
+                            :stars="4"
+                            cancel
+                            class="text-accent"
+                        />
+                    </div>
+
+                    <!-- Engagement Rating -->
+                    <div class="flex flex-col items-center">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                            <Icon icon="mdi:thumb-up" class="w-4 h-4" />
+                            Engagement
+                        </label>
+                        <Rating
+                            v-model="selectedEngagement"
+                            :stars="4"
+                            cancel
+                            class="text-accent"
+                        />
+                    </div>
+
+                    <!-- Practicality Rating -->
+                    <div class="flex flex-col items-center">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                            <Icon icon="mdi:tools" class="w-4 h-4" />
+                            Practicality
+                        </label>
+                        <Rating
+                            v-model="selectedPracticality"
+                            :stars="4"
+                            cancel
+                            class="text-accent"
+                        />
+                    </div>
+
+                    <!-- User Friendly Rating -->
+                    <div class="flex flex-col items-center">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                            <Icon icon="mdi:account-heart" class="w-4 h-4" />
+                            User Friendly
+                        </label>
+                        <Rating
+                            v-model="selectedUserFriendliness"
+                            :stars="4"
+                            cancel
+                            class="text-accent"
+                        />
+                    </div>
+
+                    <!-- Updates Rating -->
+                    <div class="flex flex-col items-center">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                            <Icon icon="mdi:update" class="w-4 h-4" />
+                            Updates
+                        </label>
+                        <Rating
+                            v-model="selectedUpdates"
+                            :stars="4"
+                            cancel
+                            class="text-accent"
+                        />
+                    </div>
+                </div>
             </div>
 
-            <!-- Reset & Filter Buttons -->
-            <div class="flex gap-4 ml-auto">
-                <Button
-                    label="Reset"
-                    icon="pi pi-refresh"
-                    type="button"
-                    class="p-button-secondary"
-                    @click="resetFilters"
-                />
+            <!-- Date Filters -->
+            <div class="space-y-4">
+                <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600">
+                    <Icon icon="mdi:calendar" class="w-4 h-4" />
+                    Date Filters
+                </h3>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="space-y-4">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600">
+                            <Icon icon="mdi:calendar-plus" class="w-4 h-4" />
+                            Created Date Range
+                        </label>
+                        <div class="flex gap-4">
+                            <Calendar
+                                v-model="createdFrom"
+                                :max-date="createdTo"
+                                showIcon
+                                dateFormat="yy-mm-dd"
+                                placeholder="From date"
+                                class="flex-1"
+                            />
+                            <Calendar
+                                v-model="createdTo"
+                                :min-date="createdFrom"
+                                showIcon
+                                dateFormat="yy-mm-dd"
+                                placeholder="To date"
+                                class="flex-1"
+                            />
+                        </div>
+                    </div>
+                    <div class="space-y-4">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600">
+                            <Icon icon="mdi:calendar-refresh" class="w-4 h-4" />
+                            Updated Date Range
+                        </label>
+                        <div class="flex gap-4">
+                            <Calendar
+                                v-model="updatedFrom"
+                                :max-date="updatedTo"
+                                showIcon
+                                dateFormat="yy-mm-dd"
+                                placeholder="From date"
+                                class="flex-1"
+                            />
+                            <Calendar
+                                v-model="updatedTo"
+                                :min-date="updatedFrom"
+                                showIcon
+                                dateFormat="yy-mm-dd"
+                                placeholder="To date"
+                                class="flex-1"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-                <Button label="Filter" icon="pi pi-search" type="submit" />
+            <!-- Sorting Section -->
+            <div class="space-y-4">
+                <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600">
+                    <Icon icon="mdi:sort" class="w-4 h-4" />
+                    Sorting Options
+                </h3>
+                <div class="space-y-4">
+                    <div class="flex flex-wrap gap-2">
+                        <button
+                            v-for="opt in resourceSortingLabels"
+                            :key="opt.value"
+                            type="button"
+                            @click="selectSorting(opt.value)"
+                            :class="[
+                                'px-4 py-2 rounded-full text-sm font-medium focus:outline-none transition-colors duration-200',
+                                selectedSorting === opt.value
+                                    ? 'bg-primary text-white shadow-sm'
+                                    : 'bg-secondary text-primary hover:bg-secondaryDark',
+                            ]"
+                        >
+                            {{ opt.label }}
+                        </button>
+                    </div>
+                    <div>
+                        <button
+                            type="button"
+                            @click="selectedReverse = !selectedReverse"
+                            :class="[
+                                'px-4 py-2 rounded-full text-sm font-medium focus:outline-none transition-colors duration-200',
+                                selectedReverse
+                                    ? 'bg-primary text-white shadow-sm'
+                                    : 'bg-secondary text-primary hover:bg-secondaryDark',
+                            ]"
+                        >
+                            Reverse Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="px-6 py-4 bg-white rounded-b-xl flex items-center justify-between border-t border-primary/10">
+            <div class="text-sm text-gray-500">
+                <!-- Filter count here if needed -->
+            </div>
+            <div class="flex gap-4">
+                <SecondaryButton type="button" @click="resetFilters">
+                    <Icon icon="mdi:refresh" class="mr-2" />
+                    Reset
+                </SecondaryButton>
+
+                <PrimaryButton type="submit">
+                    <Icon icon="mdi:search" class="mr-2" />
+                    Apply Filters
+                </PrimaryButton>
             </div>
         </div>
     </form>
