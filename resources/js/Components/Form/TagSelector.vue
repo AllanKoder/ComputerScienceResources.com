@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, nextTick } from "vue";
 import { Tag } from "primevue";
 import { Icon } from "@iconify/vue";
 import AutoComplete from "primevue/autocomplete";
@@ -28,7 +28,6 @@ watch(
 const addTag = (tag) => {
     if (tag && !selectedTags.value.includes(tag)) {
         selectedTags.value.push(tag);
-        searchValue.value = "";
         model.value = [...selectedTags.value];
     }
 };
@@ -42,6 +41,10 @@ const removeTag = (tag) => {
 
 const handleSelect = (event) => {
     addTag(event.value);
+    // Clear search value in next tick after Vue updates
+    nextTick(() => {
+        searchValue.value = "";
+    });
 };
 
 const handleKeydown = (event) => {
@@ -84,13 +87,20 @@ const filterSuggestions = () => {
         @keydown="handleKeydown"
         placeholder="Type to add tags"
         completeOnFocus
+        class="w-full"
+        :class="{
+            'min-h-[40px]': true,
+            'shadow-sm': true,
+        }"
+        :inputClass="'w-full h-10 text-sm'"
+        :panelClass="'bg-white border border-primary/10 shadow-lg rounded-lg'"
     >
         <template #option="slotProps">
             <div class="flex items-center justify-between w-full">
-                <span>{{ slotProps.option }}</span>
+                <span class="text-sm">{{ slotProps.option }}</span>
                 <span
                     v-if="tagCount[slotProps.option] !== undefined"
-                    class="py-0.5 px-1 rounded-lg bg-gray-100 text-sm text-gray-700"
+                    class="rounded-lg bg-secondary px-1 text-sm text-primaryDark"
                 >
                     {{ tagCount[slotProps.option] }}
                 </span>
@@ -98,12 +108,16 @@ const filterSuggestions = () => {
         </template>
     </AutoComplete>
     <!-- List of tags -->
-    <div class="mt-2">
-        <Tag v-for="tag in selectedTags" :key="tag" class="mr-2 mb-2">
-            <button @click="() => removeTag(tag)" class="mr-1">
-                <Icon icon="mdi:remove-bold" />
+    <div class="mt-2 flex flex-wrap">
+        <Tag v-for="tag in selectedTags"
+             :key="tag"
+             class="mr-2 mb-2 bg-secondary border border-primary/10 text-primary px-2 py-1 rounded-full"
+        >
+            <button @click="() => removeTag(tag)"
+                    class="mr-1 hover:text-primaryDark transition-colors focus:outline-none">
+                <Icon icon="mdi:remove-bold" class="w-4 h-4" />
             </button>
-            <span class="text-base">{{ tag }}</span>
+            <span class="text-sm">{{ tag }}</span>
         </Tag>
     </div>
 </template>

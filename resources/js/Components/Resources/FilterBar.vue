@@ -8,6 +8,7 @@ import {
     difficulties,
     resourceSortingLabels,
 } from "@/Helpers/labels";
+import TagSelector from "@/Components/Form/TagSelector.vue";
 import InputText from "primevue/inputtext";
 import MultiSelect from "primevue/multiselect";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -80,7 +81,7 @@ onMounted(() => {
 
     // initialize sort_by
     selectedSorting.value = urlParams.get("sort_by") || "top";
-    selectedReverse.value = urlParams.get("reverse") === "1";
+    selectedReverse.value = urlParams.get("reverse") === "true";
 
     createdFrom.value = urlParams.get("created_from")
         ? new Date(urlParams.get("created_from") + "T00:00:00")
@@ -211,11 +212,11 @@ function resetFilters() {
 <template>
     <form
         @submit.prevent="search"
-        class="bg-white rounded-xl shadow-sm border border-primary/10 mb-6 max-w-7xl mx-auto"
+        class="bg-white rounded-xl shadow-sm border border-primary/10 mb-4 max-w-7xl mx-auto"
     >
         <!-- Primary Search Section -->
         <div class="p-6 border-b border-primary/10">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Name Search -->
                 <div class="w-full">
                     <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
@@ -246,7 +247,7 @@ function resetFilters() {
 
         <!-- Quick Filters Section -->
         <div class="p-6 border-b border-primary/10 bg-secondary/5">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Platform Filter -->
                 <div class="w-full">
                     <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
@@ -310,33 +311,54 @@ function resetFilters() {
                         />
                     </div>
                 </div>
+
+                <!-- Topics Filter -->
+                <div class="w-full">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <Icon icon="mdi:tag-multiple" class="w-4 h-4" />
+                        Topics
+                    </label>
+                    <TagSelector
+                        v-model="selectedTopics"
+                        class="w-full"
+                    />
+                </div>
+
+                <!-- Programming Languages Filter -->
+                <div class="w-full">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <Icon icon="mdi:language-javascript" class="w-4 h-4" />
+                        Programming Languages
+                    </label>
+                    <TagSelector
+                        v-model="selectedProgrammingLanguages"
+                        class="w-full"
+                    />
+                </div>
+
+                <!-- General Tags Filter -->
+                <div class="w-full">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <Icon icon="mdi:tag" class="w-4 h-4" />
+                        General Tags
+                    </label>
+                    <TagSelector
+                        v-model="selectedGeneralTags"
+                        class="w-full"
+                    />
+                </div>
             </div>
         </div>
 
-        <!-- Advanced Filters Toggle -->
-        <div class="px-6 py-4 bg-white border-b border-primary/10">
-            <button
-                type="button"
-                class="flex items-center gap-2 text-sm text-primary hover:text-primaryDark focus:outline-none group w-full justify-center"
-                @click="advancedOpen = !advancedOpen"
-            >
-                <Icon
-                    :icon="advancedOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'"
-                    class="w-4 h-4 transition-transform duration-200"
-                />
-                <span class="font-medium">{{ advancedOpen ? 'Hide Advanced Filters' : 'Show Advanced Filters' }}</span>
-            </button>
-        </div>
-
         <!-- Advanced Filters Section -->
-        <div v-if="advancedOpen" class="p-6 bg-secondary/5 space-y-8">
+        <div v-if="advancedOpen" class="p-6 bg-secondary/5 space-y-6">
             <!-- Ratings Section -->
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600">
                     <Icon icon="mdi:star-settings" class="w-4 h-4" />
                     Rating Filters
                 </h3>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     <!-- Community Rating -->
                     <div class="flex flex-col items-center">
                         <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
@@ -424,12 +446,12 @@ function resetFilters() {
             </div>
 
             <!-- Date Filters -->
-            <div class="space-y-4">
+            <div class="space-y-3">
                 <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600">
                     <Icon icon="mdi:calendar" class="w-4 h-4" />
                     Date Filters
                 </h3>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div class="space-y-4">
                         <label class="flex items-center gap-2 text-xs font-medium text-gray-600">
                             <Icon icon="mdi:calendar-plus" class="w-4 h-4" />
@@ -523,10 +545,18 @@ function resetFilters() {
         </div>
 
         <!-- Action Buttons -->
-        <div class="px-6 py-4 bg-white rounded-b-xl flex items-center justify-between border-t border-primary/10">
-            <div class="text-sm text-gray-500">
-                <!-- Filter count here if needed -->
-            </div>
+        <div class="px-4 py-3 bg-white rounded-b-xl flex items-center justify-between border-t border-primary/10">
+            <button
+                type="button"
+                class="flex items-center gap-2 text-sm text-primary hover:text-primaryDark focus:outline-none"
+                @click="advancedOpen = !advancedOpen"
+            >
+                <Icon
+                    :icon="advancedOpen ? 'mdi:chevron-up' : 'mdi:chevron-down'"
+                    class="w-4 h-4 transition-transform duration-200"
+                />
+                <span class="font-medium">{{ advancedOpen ? 'Hide Advanced Filters' : 'Show Advanced Filters' }}</span>
+            </button>
             <div class="flex gap-4">
                 <SecondaryButton type="button" @click="resetFilters">
                     <Icon icon="mdi:refresh" class="mr-2" />
