@@ -212,10 +212,10 @@ function resetFilters() {
 <template>
     <form
         @submit.prevent="search"
-        class="bg-white rounded-xl shadow-sm border border-primary/10 mb-4 max-w-7xl mx-auto"
+        class="bg-white rounded-xl shadow-sm border border-primary/10 mb-4 max-w-8xl mx-auto"
     >
         <!-- Primary Search Section -->
-        <div class="p-6 border-b border-primary/10">
+        <div class="px-6 pt-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Name Search -->
                 <div class="w-full">
@@ -246,10 +246,10 @@ function resetFilters() {
         </div>
 
         <!-- Quick Filters Section -->
-        <div class="p-6 border-b border-primary/10 bg-secondary/5">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="px-6 py-6 border-b border-primary/10 bg-secondary/5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-4">
                 <!-- Platform Filter -->
-                <div class="w-full">
+                <div class="w-full lg:col-span-2">
                     <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
                         <Icon icon="mdi:devices" class="w-4 h-4" />
                         Platform
@@ -265,7 +265,7 @@ function resetFilters() {
                 </div>
 
                 <!-- Difficulty Level -->
-                <div class="w-full">
+                <div class="w-full lg:col-span-1">
                     <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
                         <Icon icon="mdi:stairs" class="w-4 h-4" />
                         Difficulty
@@ -281,7 +281,7 @@ function resetFilters() {
                 </div>
 
                 <!-- Pricing -->
-                <div class="w-full">
+                <div class="w-full lg:col-span-1">
                     <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
                         <Icon icon="mdi:currency-usd" class="w-4 h-4" />
                         Pricing
@@ -297,10 +297,10 @@ function resetFilters() {
                 </div>
 
                 <!-- Overall Rating -->
-                <div class="flex flex-col w-full">
+                <div class="w-full lg:col-span-1">
                     <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
                         <Icon icon="mdi:star" class="w-4 h-4" />
-                        Minimum Rating
+                        Min Rating
                     </label>
                     <div class="flex items-center h-10">
                         <Rating
@@ -313,7 +313,7 @@ function resetFilters() {
                 </div>
 
                 <!-- Topics Filter -->
-                <div class="w-full">
+                <div class="w-full lg:col-span-1">
                     <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
                         <Icon icon="mdi:tag-multiple" class="w-4 h-4" />
                         Topics
@@ -325,10 +325,10 @@ function resetFilters() {
                 </div>
 
                 <!-- Programming Languages Filter -->
-                <div class="w-full">
+                <div class="w-full lg:col-span-1">
                     <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
                         <Icon icon="mdi:language-javascript" class="w-4 h-4" />
-                        Programming Languages
+                        Languages
                     </label>
                     <TagSelector
                         v-model="selectedProgrammingLanguages"
@@ -337,10 +337,10 @@ function resetFilters() {
                 </div>
 
                 <!-- General Tags Filter -->
-                <div class="w-full">
+                <div class="w-full lg:col-span-1">
                     <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
                         <Icon icon="mdi:tag" class="w-4 h-4" />
-                        General Tags
+                        Tags
                     </label>
                     <TagSelector
                         v-model="selectedGeneralTags"

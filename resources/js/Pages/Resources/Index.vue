@@ -55,7 +55,7 @@ const newsItems = [
 </script>
 <template>
     <AppLayout title="Computer Science Resources">
-        <main class="py-12">
+        <main class="py-4">
             <div class="max-w-[110rem] mx-auto sm:px-6 lg:px-10">
                 <!-- Filter bar -->
                 <FilterBar></FilterBar>
