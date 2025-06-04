@@ -17,7 +17,7 @@ import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import TagSelector from "@/Components/Form/TagSelector.vue";
 
 // Helpers and Constants
-import { platforms, pricings, difficulties } from "@/Helpers/labels";
+import { platformsObject, pricingsObject, difficultiesObject } from "@/Helpers/labels";
 import {
     resourceEditsMandatoryFields,
     resourceMandatoryFields,
@@ -196,7 +196,7 @@ const submit = () => {
                                     >
                                         <MultiSelect
                                             v-model="formData.platforms"
-                                            :options="platforms"
+                                            :options="platformsObject"
                                             option-label="label"
                                             option-value="value"
                                             placeholder="Select Resource Platforms"
@@ -217,7 +217,7 @@ const submit = () => {
                                             name="difficulty"
                                         >
                                             <Select
-                                                :options="difficulties"
+                                                :options="difficultiesObject"
                                                 v-model="formData.difficulty"
                                                 option-label="label"
                                                 option-value="value"
@@ -235,7 +235,7 @@ const submit = () => {
                                             name="pricing"
                                         >
                                             <Select
-                                                :options="pricings"
+                                                :options="pricingsObject"
                                                 v-model="formData.pricing"
                                                 option-label="label"
                                                 option-value="value"

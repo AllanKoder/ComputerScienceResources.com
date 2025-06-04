@@ -10,9 +10,9 @@ import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import Select from "primevue/select";
 import { defineProps, defineEmits, watch, ref } from "vue";
 import {
-    platforms,
-    pricings,
-    difficulties,
+    platformsObject,
+    pricingsObject,
+    difficultiesObject,
 } from "@/Helpers/labels";
 import { reactive } from "vue";
 import { resourceMandatoryFields } from "@/Helpers/validation";
@@ -140,7 +140,7 @@ const validateAndNext = () => {
                 >
                 <MultiSelect
                     v-model="formData.platforms"
-                    :options="platforms"
+                    :options="platformsObject"
                     option-label="label"
                     option-value="value"
                     placeholder="Select Resource Platform"
@@ -183,7 +183,7 @@ const validateAndNext = () => {
                     >Difficulty</label
                 >
                 <Select
-                    :options="difficulties"
+                    :options="difficultiesObject"
                     v-model="formData.difficulty"
                     option-label="label"
                     option-value="value"
@@ -206,7 +206,7 @@ const validateAndNext = () => {
                     >Pricing</label
                 >
                 <Select
-                    :options="pricings"
+                    :options="pricingsObject"
                     v-model="formData.pricing"
                     option-label="label"
                     option-value="value"

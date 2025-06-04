@@ -1,8 +1,7 @@
 /**
  * Labels on the more visual end of things
- *
  */
-export const platforms = [
+export const platformsObject = [
     { label: "Website", value: "website" },
     { label: "Book", value: "book" },
     { label: "Blog", value: "blog" },
@@ -18,13 +17,13 @@ export const platforms = [
     { label: "Magazine", value: "magazine" },
 ];
 
-export const pricings = [
+export const pricingsObject = [
     { label: "Free", value: "free" },
     { label: "Paid", value: "paid" },
     { label: "Freemium", value: "freemium" },
 ];
 
-export const difficulties = [
+export const difficultiesObject = [
     { label: "Beginners - Non-technical", value: "beginner" },
     { label: "Industry Simple - Jr Engineer", value: "industry_simple" },
     { label: "Industry Standard - Engineer", value: "industry_standard" },
@@ -75,21 +74,3 @@ export const resourceSortingLabels = [
     { value: "updates", label: "Most Updates" },
     { value: "overall", label: "Overall Rating" },
 ];
-
-/// Aesthetics
-export const platformColors = {
-    book: "blue",
-    podcast: "green",
-    youtube_channel: "red",
-    blog: "orange",
-    website: "purple",
-    organization: "cyan",
-    bootcamp: "pink",
-    newsletter: "indigo",
-    workshop: "teal",
-    course: "yellow",
-    forum: "gray",
-    mobile_app: "lime",
-    desktop_app: "amber",
-    magazine: "rose",
-};

@@ -10,7 +10,6 @@ import TabPanel from "primevue/tabpanel";
 import {
     pricingLabels,
     difficultyLabels,
-    platformColors,
 } from "@/Helpers/labels.js";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
@@ -227,9 +226,6 @@ function mergeEdits(id) {
                                                     .editedResource.platforms"
                                                 :key="platform"
                                                 :value="platform"
-                                                :severity="
-                                                    platformColors[platform]
-                                                "
                                                 class="capitalize"
                                             />
                                         </div>
@@ -320,9 +316,6 @@ function mergeEdits(id) {
                                                     .originalResource.platforms"
                                                 :key="platform"
                                                 :value="platform"
-                                                :severity="
-                                                    platformColors[platform]
-                                                "
                                                 class="capitalize"
                                             />
                                         </div>

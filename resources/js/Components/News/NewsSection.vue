@@ -17,7 +17,10 @@ const showNewsDialog = ref(false);
 <template>
     <!-- News Section - Desktop -->
     <aside class="hidden lg:block w-1/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6">
-        <h2 class="text-xl font-semibold mb-4">Latest News</h2>
+        <div class="bg-secondary dark:bg-gray-700 -m-6 p-4 mb-0 flex items-center gap-2">
+            <Icon icon="mdi:newspaper" class="w-6 h-6 text-primary dark:text-white" />
+            <h2 class="font-bold text-primary dark:text-white">Latest News</h2>
+        </div>
         <div class="space-y-4">
             <NewsItem
                 v-for="(news, index) in newsItems"

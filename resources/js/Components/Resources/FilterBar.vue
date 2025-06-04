@@ -3,9 +3,9 @@ import { ref, onMounted } from "vue";
 import { Icon } from "@iconify/vue";
 import { router } from "@inertiajs/vue3";
 import {
-    platforms,
-    pricings,
-    difficulties,
+    platformsObject,
+    pricingsObject,
+    difficultiesObject,
     resourceSortingLabels,
 } from "@/Helpers/labels";
 import TagSelector from "@/Components/Form/TagSelector.vue";
@@ -256,7 +256,7 @@ function resetFilters() {
                     </label>
                     <MultiSelect
                         v-model="selectedPlatforms"
-                        :options="platforms"
+                        :options="platformsObject"
                         optionLabel="label"
                         optionValue="value"
                         placeholder="All Platforms"
@@ -272,7 +272,7 @@ function resetFilters() {
                     </label>
                     <MultiSelect
                         v-model="selectedDifficulty"
-                        :options="difficulties"
+                        :options="difficultiesObject"
                         optionLabel="label"
                         optionValue="value"
                         placeholder="All Levels"
@@ -288,7 +288,7 @@ function resetFilters() {
                     </label>
                     <MultiSelect
                         v-model="selectedPricing"
-                        :options="pricings"
+                        :options="pricingsObject"
                         optionLabel="label"
                         optionValue="value"
                         placeholder="Any Price"
