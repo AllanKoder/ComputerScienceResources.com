@@ -77,47 +77,49 @@ const filterSuggestions = () => {
 </script>
 
 <template>
-    <!-- Search bar to add tags -->
-    <AutoComplete
-        v-model="searchValue"
-        :suggestions="tagResult"
-        :empty-search-message="emptySearchMessage"
-        @complete="filterSuggestions"
-        @item-select="handleSelect"
-        @keydown="handleKeydown"
-        placeholder="Type to add tags"
-        completeOnFocus
-        class="w-full"
-        :class="{
-            'min-h-[40px]': true,
-            'shadow-sm': true,
-        }"
-        :inputClass="'w-full h-10 text-sm'"
-        :panelClass="'bg-white border border-primary/10 shadow-lg rounded-lg'"
-    >
-        <template #option="slotProps">
-            <div class="flex items-center justify-between w-full">
-                <span class="text-sm">{{ slotProps.option }}</span>
-                <span
-                    v-if="tagCount[slotProps.option] !== undefined"
-                    class="rounded-lg bg-secondary px-1 text-sm text-primaryDark"
-                >
-                    {{ tagCount[slotProps.option] }}
-                </span>
-            </div>
-        </template>
-    </AutoComplete>
-    <!-- List of tags -->
-    <div class="mt-2 flex flex-wrap">
-        <Tag v-for="tag in selectedTags"
-             :key="tag"
-             class="mr-2 mb-2 bg-secondary border border-primary/10 text-primary px-2 py-1 rounded-full"
+    <div>
+        <!-- Search bar to add tags -->
+        <AutoComplete
+            v-model="searchValue"
+            :suggestions="tagResult"
+            :empty-search-message="emptySearchMessage"
+            @complete="filterSuggestions"
+            @item-select="handleSelect"
+            @keydown="handleKeydown"
+            placeholder="Type to add tags"
+            completeOnFocus
+            class="w-full"
+            :class="{
+                'min-h-[40px]': true,
+                'shadow-sm': true,
+            }"
+            :inputClass="'w-full h-10 text-sm'"
+            :panelClass="'bg-white border border-primary/10 shadow-lg rounded-lg'"
         >
-            <button @click="() => removeTag(tag)"
-                    class="mr-1 hover:text-primaryDark transition-colors focus:outline-none">
-                <Icon icon="mdi:remove-bold" class="w-4 h-4" />
-            </button>
-            <span class="text-sm">{{ tag }}</span>
-        </Tag>
+            <template #option="slotProps">
+                <div class="flex items-center justify-between w-full">
+                    <span class="text-sm">{{ slotProps.option }}</span>
+                    <span
+                        v-if="tagCount[slotProps.option] !== undefined"
+                        class="rounded-lg bg-secondary px-1 text-sm text-primaryDark"
+                    >
+                        {{ tagCount[slotProps.option] }}
+                    </span>
+                </div>
+            </template>
+        </AutoComplete>
+        <!-- List of tags -->
+        <div class="mt-2 flex flex-wrap">
+            <Tag v-for="tag in selectedTags"
+                 :key="tag"
+                 class="mr-2 mb-2 bg-secondary border border-primary/10 text-primary px-2 py-1 rounded-full"
+            >
+                <button @click="() => removeTag(tag)"
+                        class="mr-1 hover:text-primaryDark transition-colors focus:outline-none">
+                    <Icon icon="mdi:remove-bold" class="w-4 h-4" />
+                </button>
+                <span class="text-sm">{{ tag }}</span>
+            </Tag>
+        </div>
     </div>
 </template>

@@ -118,7 +118,7 @@ const emit = defineEmits(["upvote", "downvote"]);
         <td class="align-middle py-3 pr-3 whitespace-nowrap">
             <div class="flex flex-col items-center">
                 <StarRating
-                    :model-value="resource.review_summary?.overall_rating"
+                    :model-value="Number(resource.review_summary?.overall_rating)"
                     :size="20"
                     class="mb-1"
                 />
