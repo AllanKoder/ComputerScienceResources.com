@@ -13,7 +13,7 @@ const props = defineProps({
 <template>
     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-4">
         <div class="overflow-x-auto">
-            <table class="w-full border-separate" style="border-spacing: 0 1rem">
+            <table class="w-full border-separate">
                 <ResourceItem
                     v-for="resource in resources.data"
                     :key="resource.id"
@@ -22,7 +22,7 @@ const props = defineProps({
             </table>
 
             <!-- Pagination Links -->
-            <div class="mt-6">
+            <div class="mt-6 mb-4">
                 <PaginateLinks :links="resources.links"></PaginateLinks>
             </div>
         </div>
