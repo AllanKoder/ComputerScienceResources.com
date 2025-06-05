@@ -9,52 +9,90 @@ jobs:
   laravel-tests:
     runs-on: ubuntu-latest
 
+    # --------------------------------------------------------------
+    # 1) Spin up a MySQL 8.0 container with the correct database name
+    # --------------------------------------------------------------
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testing
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: computer_science_resources_testing
         ports:
           - 3306:3306
         options: >-
-          --health-cmd="mysqladmin ping"
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=3
+          --health-retries=5
+
+    # --------------------------------------------------------------
+    # 2) Define every environment variable manually at the job level
+    # --------------------------------------------------------------
+    env:
+      # Application settings
+      APP_NAME: "Computer Science Resources"
+      APP_ENV: testing
+      APP_KEY: base64:7aYe15aBsSh6a2ScVwj1JfYjQKUmz9Z5X/GSe64joHA=
+      APP_DEBUG: 'true'
+      APP_TIMEZONE: UTC
+      APP_URL: http://localhost
+
+      # Database settings (pointing to MySQL on localhost)
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: computer_science_resources_testing
+      DB_USERNAME: root
+      DB_PASSWORD: password
 
     steps:
-      - uses: actions/checkout@v4
+      # --------------------------------------------------------------
+      # 3) Check out your repository
+      # --------------------------------------------------------------
+      - name: Checkout code
+        uses: actions/checkout@v4
 
+      # --------------------------------------------------------------
+      # 4) Set up PHP 8.3 + required extensions + Composer
+      # --------------------------------------------------------------
       - name: Set up PHP & Composer
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
           extensions: mbstring, pdo, mysql, bcmath, tokenizer
           tools: composer
-    
-      - name: Update DB host in testing env
-        run: sed -i 's/DB_HOST=mysql/DB_HOST=127.0.0.1/' .env.testing
-      
-      - name: Copy .env.testing to .env
-        run: cp .env.testing .env
-      
+
+      # --------------------------------------------------------------
+      # 5) Install Composer dependencies
+      # --------------------------------------------------------------
       - name: Install Composer dependencies
-        run: composer install
+        run: composer install --no-interaction --prefer-dist
 
+      # --------------------------------------------------------------
+      # 6) Generate a new application key (uses APP_KEY from `env:` above)
+      # --------------------------------------------------------------
       - name: Generate app key
-        run: php artisan key:generate
+        run: php artisan key:generate --ansi
 
-      - name: Wait for MySQL
+      # --------------------------------------------------------------
+      # 7) Wait until MySQL is ready to accept connections
+      # --------------------------------------------------------------
+      - name: Wait for MySQL to be ready
         run: |
+          echo "Waiting for MySQL to be ready..."
           until mysqladmin ping -h 127.0.0.1 -P 3306 --silent; do
-            echo "Waiting for database connection..."
-            sleep 5
+            sleep 3
           done
 
-      - name: Run migrations
-        run: php artisan migrate
+      # --------------------------------------------------------------
+      # 8) Run migrations (uses the `DB_` variables defined at the top)
+      # --------------------------------------------------------------
+      - name: Run database migrations
+        run: php artisan migrate --force
 
-      - name: Run tests
+      # --------------------------------------------------------------
+      # 9) Run all tests (feature + unit)
+      # --------------------------------------------------------------
+      - name: Run feature & unit tests
         run: php artisan test
-
