@@ -79,13 +79,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 20
-
-      - name: Install NPM dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
-
+      
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -93,7 +87,12 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
+      
+      - name: Install NPM dependencies
+        run: npm ci
+      
+      - name: Build assets
+        run: npm run build
 
       # --------------------------------------------------------------
       # Wait until MySQL is ready to accept connections
