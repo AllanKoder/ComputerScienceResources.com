@@ -17,11 +17,52 @@ export const platformsObject = [
     { label: "Magazine", value: "magazine" },
 ];
 
+export const platformLabels = {
+    website: "Website",
+    book: "Book",
+    blog: "Blog",
+    course: "Course",
+    bootcamp: "Bootcamp",
+    youtube_channel: "Youtube Channel",
+    newsletter: "Newsletter",
+    podcast: "Podcast",
+    forum: "Forum",
+    workshop: "Workshop",
+    mobile_app: "Mobile App",
+    desktop_app: "Desktop App",
+    magazine: "Magazine",
+};
+
+// export const platformsLabels = [
+//      "Website", value: "website" },
+//     { label: "Book", value: "book" },
+//     { label: "Blog", value: "blog" },
+//     { label: "Course", value: "course" },
+//     { label: "Bootcamp", value: "bootcamp" },
+//     { label: "Youtube Channel", value: "youtube_channel" },
+//     { label: "Newsletter", value: "newsletter" },
+//     { label: "Podcast", value: "podcast" },
+//     { label: "Forum", value: "forum" },
+//     { label: "Workshop", value: "workshop" },
+//     { label: "Mobile app", value: "mobile_app" },
+//     { label: "Desktop app", value: "desktop_app" },
+//     { label: "Magazine", value: "magazine" },
+// ];
+
+
+
 export const pricingsObject = [
     { label: "Free", value: "free" },
     { label: "Paid", value: "paid" },
     { label: "Freemium", value: "freemium" },
 ];
+
+export const pricingLabels = {
+    free: "Free",
+    premium: "Premium",
+    paid: "Paid",
+    freemium: "Freemium",
+};
 
 export const difficultiesObject = [
     { label: "Beginners - Non-technical", value: "beginner" },
@@ -42,12 +83,6 @@ export const difficultyLabels = {
     academic: "Academic",
 };
 
-export const pricingLabels = {
-    free: "Free",
-    premium: "Premium",
-    paid: "Paid",
-    freemium: "Freemium",
-};
 
 export const ratingLabels = {
     community: "Community",

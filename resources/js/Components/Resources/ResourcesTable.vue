@@ -22,8 +22,13 @@ const props = defineProps({
             </table>
 
             <!-- Pagination Links -->
-             <div class="mt-4 mb-4">
-                <PaginateLinks :links="resources.links"></PaginateLinks>
+             <div class="mb-4">
+                <PaginateLinks
+                    :links="resources.links"
+                    :from="resources.from"
+                    :to="resources.to"
+                    :total="resources.total"
+                ></PaginateLinks>
             </div>
         </div>
     </div>

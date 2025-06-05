@@ -3,7 +3,7 @@ import { Icon } from "@iconify/vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import StarRating from "@/Components/StarRating/StarRating.vue";
 import { Link } from "@inertiajs/vue3";
-import { difficultyLabels, pricingLabels } from "@/Helpers/labels";
+import { difficultyLabels, pricingLabels, platformLabels } from "@/Helpers/labels";
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 
 defineProps({
@@ -52,64 +52,83 @@ const emit = defineEmits(["upvote", "downvote"]);
             </div>
             <p class="text-gray-600 dark:text-gray-300 mb-2 line-clamp-2 leading-relaxed text-sm">{{ resource.description }}</p>
 
-            <!-- All Tags Section -->
-            <div class="flex flex-wrap items-center gap-2">
-                <!-- Platforms -->
-                <div class="flex flex-wrap items-center gap-1">
-                    <span v-for="type in resource.platforms" :key="type"
-                        class="inline-flex items-center gap-1 bg-primary/10 dark:bg-primary/20 px-2 py-1 rounded-full text-xs font-medium text-primary-dark dark:text-secondary">
-                        <Icon :icon="platformIcons[type.trim()]" width="14" height="14" />
-                        {{ type.trim() }}
-                    </span>
+            <!-- Resource Metadata Section -->
+            <div class="flex flex-col gap-2">
+                <!-- Row 1: Resource Properties -->
+                <div class="flex flex-wrap items-center gap-3 text-xs">
+                    <!-- Difficulty -->
+                    <div v-if="resource.difficulty" class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-2 py-1 rounded-md">
+                        <span class="font-semibold text-gray-900 dark:text-gray-100">Level:</span>
+                        <span class="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300">
+                            <Icon :icon="difficultyIcons[resource.difficulty]" width="14" height="14" />
+                            {{ difficultyLabels[resource.difficulty] }}
+                        </span>
+                    </div>
+
+                    <!-- Pricing -->
+                    <div class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-2 py-1 rounded-md">
+                        <span class="font-semibold text-gray-900 dark:text-gray-100">Pricing:</span>
+                        <span class="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300">
+                            <Icon :icon="pricingIcons[resource.pricing]" width="14" height="14" />
+                            {{ pricingLabels[resource.pricing] }}
+                        </span>
+                    </div>
+
+                    <!-- Platforms -->
+                    <div class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-2 py-1 rounded-md">
+                        <span class="font-semibold text-gray-900 dark:text-gray-100">Platforms:</span>
+                        <div class="inline-flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span v-for="type in resource.platforms" :key="type" class="inline-flex items-center gap-1">
+                                <Icon :icon="platformIcons[type.trim()]" width="14" height="14" />
+                                {{ platformLabels[type.trim()] }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
 
-                <span class="text-gray-300 dark:text-gray-600">|</span>
+                <!-- Row 2: Tags -->
+                <div class="flex flex-wrap items-center gap-3 text-xs">
+                    <!-- Topic Tags -->
+                    <div v-if="resource.topic_tags?.length" class="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-md">
+                        <span class="inline-flex items-center gap-1 font-medium text-blue-700 dark:text-blue-200">
+                            <Icon icon="mdi:bookmark" width="14" height="14" />
+                            Topics:
+                        </span>
+                        <div class="inline-flex flex-wrap items-center gap-1">
+                            <span v-for="tag in resource.topic_tags" :key="tag"
+                                class="inline-flex items-center gap-1 bg-blue-100/50 dark:bg-blue-800/30 px-2 py-0.5 rounded-full text-blue-700 dark:text-blue-200">
+                                {{ tag }}
+                            </span>
+                        </div>
+                    </div>
 
-                <!-- Pricing -->
-                <div class="inline-flex items-center gap-1 bg-green-100 dark:bg-green-900/50 px-2 py-1 rounded-full">
-                    <Icon :icon="pricingIcons[resource.pricing]" width="14" height="14" class="text-green-800 dark:text-green-200" />
-                    <span class="text-xs font-medium text-green-800 dark:text-green-200">
-                        {{ pricingLabels[resource.pricing] }}
-                    </span>
-                </div>
+                    <!-- Programming Language Tags -->
+                    <div v-if="resource.programming_language_tags?.length" class="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded-md">
+                        <span class="inline-flex items-center gap-1 font-medium text-purple-700 dark:text-purple-200">
+                            <Icon icon="mdi:language-typescript" width="14" height="14" />
+                            Languages:
+                        </span>
+                        <div class="inline-flex flex-wrap items-center gap-1">
+                            <span v-for="tag in resource.programming_language_tags" :key="tag"
+                                class="inline-flex items-center gap-1 bg-purple-100/50 dark:bg-purple-800/30 px-2 py-0.5 rounded-full text-purple-700 dark:text-purple-200">
+                                {{ tag }}
+                            </span>
+                        </div>
+                    </div>
 
-                <span class="text-gray-300 dark:text-gray-600">|</span>
-
-                <!-- Difficulty -->
-                <div v-if="resource.difficulty" class="inline-flex items-center gap-1 bg-red-100 dark:bg-red-900/50 px-2 py-1 rounded-full">
-                    <Icon :icon="difficultyIcons[resource.difficulty]" width="14" height="14" class="text-red-800 dark:text-red-200" />
-                    <span class="text-xs font-medium text-red-800 dark:text-red-200">
-                        {{ difficultyLabels[resource.difficulty] }}
-                    </span>
-                </div>
-
-                <span class="text-gray-300 dark:text-gray-600">|</span>
-
-                <!-- Topic Tags -->
-                <div v-if="resource.topic_tags?.length" class="flex flex-wrap items-center gap-1">
-                    <span v-for="(tag, index) in resource.topic_tags" :key="tag"
-                        class="inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-900/50 px-2 py-1 rounded-full text-xs font-medium text-blue-800 dark:text-blue-200">
-                        <Icon v-if="index === 0" icon="mdi:bookmark" width="14" height="14" />
-                        {{ tag }}
-                    </span>
-                </div>
-
-                <!-- Programming Language Tags -->
-                <div v-if="resource.programming_language_tags?.length" class="flex flex-wrap items-center gap-1">
-                    <span v-for="(tag, index) in resource.programming_language_tags" :key="tag"
-                        class="inline-flex items-center gap-1 bg-purple-100 dark:bg-purple-900/50 px-2 py-1 rounded-full text-xs font-medium text-purple-800 dark:text-purple-200">
-                        <Icon v-if="index === 0" icon="mdi:language-typescript" width="14" height="14" />
-                        {{ tag }}
-                    </span>
-                </div>
-
-                <!-- General Tags -->
-                <div v-if="resource.general_tags?.length" class="flex flex-wrap items-center gap-1">
-                    <span v-for="(tag, index) in resource.general_tags" :key="tag"
-                        class="inline-flex items-center gap-1 bg-accent/20 dark:bg-yellow-900/50 px-2 py-1 rounded-full text-xs font-medium text-yellow-800 dark:text-yellow-200">
-                        <Icon v-if="index === 0" icon="mdi:tag" width="14" height="14" />
-                        {{ tag }}
-                    </span>
+                    <!-- General Tags -->
+                    <div v-if="resource.general_tags?.length" class="flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded-md">
+                        <span class="inline-flex items-center gap-1 font-medium text-yellow-700 dark:text-yellow-200">
+                            <Icon icon="mdi:tag" width="14" height="14" />
+                            Tags:
+                        </span>
+                        <div class="inline-flex flex-wrap items-center gap-1">
+                            <span v-for="tag in resource.general_tags" :key="tag"
+                                class="inline-flex items-center gap-1 bg-yellow-100/50 dark:bg-yellow-800/30 px-2 py-0.5 rounded-full text-yellow-700 dark:text-yellow-200">
+                                {{ tag }}
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </td>
