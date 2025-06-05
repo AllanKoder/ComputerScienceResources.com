@@ -71,6 +71,30 @@ jobs:
       - name: Generate app key
         run: php artisan key:generate --ansi
 
+
+      # --------------------------------------------------------------
+      # Node Setup
+      # --------------------------------------------------------------
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install NPM dependencies
+        run: npm ci
+
+      - name: Build assets
+        run: npm run build
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+
       # --------------------------------------------------------------
       # Wait until MySQL is ready to accept connections
       # --------------------------------------------------------------
@@ -86,29 +110,6 @@ jobs:
       # --------------------------------------------------------------
       - name: Run database migrations
         run: php artisan migrate --force
-
-
-      # --------------------------------------------------------------
-      # Node Setup
-      # --------------------------------------------------------------
-      - name: Install Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-      
-      - name: Install frontend dependencies
-        run: npm ci
-      
-      - name: Build Vite assets
-        run: npm run build
-        
-      - name: Cache node modules
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       # --------------------------------------------------------------
       # Run all tests (feature + unit)
