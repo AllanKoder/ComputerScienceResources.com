@@ -32,10 +32,13 @@ jobs:
           php-version: 8.3
           extensions: mbstring, pdo, mysql, bcmath, tokenizer
           tools: composer
-
+    
+      - name: Update DB host in testing env
+        run: sed -i 's/DB_HOST=mysql/DB_HOST=127.0.0.1/' .env.testing
+      
       - name: Copy .env.testing to .env
         run: cp .env.testing .env
-
+      
       - name: Install Composer dependencies
         run: composer install
 
