@@ -24,21 +24,21 @@ env:
 
 jobs:
   # --------------------------------------------------------------
-  # 1. PHP dependencies setup
+  # 1. PHP dependencies setup + cache vendor + upload as artifact
   # --------------------------------------------------------------
   php-setup:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-  
+
       - name: Set up PHP & Composer
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.3
           extensions: mbstring, pdo, mysql, bcmath, tokenizer
           tools: composer
-  
+
       - name: Cache Composer dependencies
         uses: actions/cache@v3
         with:
@@ -46,12 +46,18 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-
-  
+
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
+      - name: Upload vendor artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vendor
+          path: vendor
+
   # --------------------------------------------------------------
-  # 2. Node/Vite build
+  # 2. Node/Vite build + cache node_modules + upload build artifacts
   # --------------------------------------------------------------
   frontend-setup:
     runs-on: ubuntu-latest
@@ -78,14 +84,14 @@ jobs:
       - name: Build assets
         run: npm run build
 
-      - name: Cache Vite build
-        uses: actions/cache@v3
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v3
         with:
+          name: public-build
           path: public/build
-          key: ${{ runner.os }}-vite-${{ github.sha }}
 
   # --------------------------------------------------------------
-  # 3. Run tests 
+  # 3. Run tests (depends on php-setup and frontend-setup)
   # --------------------------------------------------------------
   run-feature-tests:
     runs-on: ubuntu-latest
@@ -104,10 +110,22 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=5
-          
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Download vendor artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: vendor
+          path: vendor
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: public-build
+          path: public/build
 
       - name: Set up PHP & Composer
         uses: shivammathur/setup-php@v2
@@ -116,19 +134,15 @@ jobs:
           extensions: mbstring, pdo, mysql, bcmath, tokenizer
           tools: composer
 
-      - name: Install Composer dependencies
-        run: composer install --no-interaction --prefer-dist
+      # Skip composer install since vendor is restored
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
 
-      - name: Install NPM dependencies
-        run: npm ci
-
-      - name: Build assets
-        run: npm run build
+      # Skip npm install/build since public/build and node_modules are already ready
+      # (If node_modules needed, consider uploading and downloading that artifact too)
 
       - name: Wait for MySQL to be ready
         run: |
