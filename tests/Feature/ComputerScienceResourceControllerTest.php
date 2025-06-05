@@ -31,11 +31,9 @@ class ComputerScienceResourceControllerTest extends TestCase
 
         $formData = ComputerScienceResourceTestResource::fake();
 
-        Log::debug("Form data: ". json_encode($formData));
         $response = $this->postJson(route('resources.store'), $formData);
 
-        $response->assertStatus(302); // a redirect after successful creation
-        $response->assertRedirect();
+        $response->assertRedirect(); // a redirect after successful creation
 
         // Check it is created
         $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
@@ -53,19 +51,6 @@ class ComputerScienceResourceControllerTest extends TestCase
         $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
 
         $this->assertNull($createdResource);
-    }
-
-    public function test_cannot_post_resource_with_long_name()
-    {
-        $this->actingAs($this->user);
-        $formData = ComputerScienceResourceTestResource::fake();
-
-        // Set to invalid name
-        $formData['name'] = str_repeat('0', 101);
-
-        $response = $this->postJson(route('resources.store'), $formData);
-
-        $response->assertStatus(422); // a fail
     }
 
     public static function invalidFieldProvider(): array

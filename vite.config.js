@@ -22,5 +22,5 @@ export default defineConfig({
         noExternal: [
             'primevue',
         ],
-    }, 
+    },
 });

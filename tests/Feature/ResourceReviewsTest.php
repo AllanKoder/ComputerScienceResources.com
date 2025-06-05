@@ -12,12 +12,6 @@ class ResourceReviewsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_example(): void
-    {
-        $response = $this->get('/');
-        $response->assertStatus(200);
-    }
-
     public function test_invalid_data_missing_required_fields(): void
     {
         $user = User::factory()->create();

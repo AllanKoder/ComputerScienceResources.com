@@ -1,17 +1,14 @@
 <script setup>
-import ResourceItem from "@/Components/Resources/ResourceItem.vue";
-import NewsItem from "@/Components/NewsItem.vue";
-
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { defineProps } from "vue";
-import PaginateLinks from "@/Components/Pagination/PaginateLinks.vue";
 import FilterBar from "@/Components/Resources/FilterBar.vue";
+import ResourcesTable from "@/Components/Resources/ResourcesTable.vue";
+import NewsSection from "@/Components/News/NewsSection.vue";
 
 const props = defineProps({
     resources: Object,
     newsItems: Array,
 });
-
 
 const newsItems = [
     {
@@ -51,51 +48,22 @@ const newsItems = [
         date: "2025-01-25",
     },
 ];
-
 </script>
+
 <template>
     <AppLayout title="Computer Science Resources">
-        <main class="py-12">
-            <div class="max-w-[110rem] mx-auto sm:px-6 lg:px-10">
-                <!-- Filter bar -->
-                <FilterBar></FilterBar>
+        <div class="max-w-[90vw] mx-auto sm:px-6 lg:px-10 py-4">
+            <!-- Filter bar -->
+            <FilterBar></FilterBar>
 
-                <div class="flex gap-4">
+            <div class="flex flex-col lg:flex-row gap-4">
+                <!-- Resources Section -->
+                <section class="w-full lg:w-3/4">
+                    <ResourcesTable :resources="props.resources" />
+                </section>
 
-                    <!-- Resources Section -->
-                    <section
-                        class="w-3/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6"
-                    >
-                        <table
-                            class="w-full border-separate"
-                            style="border-spacing: 0 2rem"
-                        >
-                            <ResourceItem
-                                v-for="resource in props.resources.data"
-                                :key="resource.id"
-                                :resource="resource"
-                            />
-                        </table>
-
-                        <!-- Pagination Links -->
-                        <PaginateLinks :links="props.resources.links"></PaginateLinks>
-                    </section>
-
-                    <!-- News Column -->
-                    <aside
-                        class="w-1/4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg p-6"
-                    >
-                        <h2 class="text-xl font-semibold mb-4">Latest News</h2>
-                        <div class="space-y-4">
-                            <NewsItem
-                                v-for="(news, index) in newsItems"
-                                :key="index"
-                                :news="news"
-                            />
-                        </div>
-                    </aside>
-                </div>
+                <NewsSection :news-items="newsItems" />
             </div>
-        </main>
+        </div>
     </AppLayout>
 </template>

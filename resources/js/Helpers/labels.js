@@ -1,8 +1,7 @@
 /**
  * Labels on the more visual end of things
- *
  */
-export const platforms = [
+export const platformsObject = [
     { label: "Website", value: "website" },
     { label: "Book", value: "book" },
     { label: "Blog", value: "blog" },
@@ -18,13 +17,54 @@ export const platforms = [
     { label: "Magazine", value: "magazine" },
 ];
 
-export const pricings = [
+export const platformLabels = {
+    website: "Website",
+    book: "Book",
+    blog: "Blog",
+    course: "Course",
+    bootcamp: "Bootcamp",
+    youtube_channel: "Youtube Channel",
+    newsletter: "Newsletter",
+    podcast: "Podcast",
+    forum: "Forum",
+    workshop: "Workshop",
+    mobile_app: "Mobile App",
+    desktop_app: "Desktop App",
+    magazine: "Magazine",
+};
+
+// export const platformsLabels = [
+//      "Website", value: "website" },
+//     { label: "Book", value: "book" },
+//     { label: "Blog", value: "blog" },
+//     { label: "Course", value: "course" },
+//     { label: "Bootcamp", value: "bootcamp" },
+//     { label: "Youtube Channel", value: "youtube_channel" },
+//     { label: "Newsletter", value: "newsletter" },
+//     { label: "Podcast", value: "podcast" },
+//     { label: "Forum", value: "forum" },
+//     { label: "Workshop", value: "workshop" },
+//     { label: "Mobile app", value: "mobile_app" },
+//     { label: "Desktop app", value: "desktop_app" },
+//     { label: "Magazine", value: "magazine" },
+// ];
+
+
+
+export const pricingsObject = [
     { label: "Free", value: "free" },
     { label: "Paid", value: "paid" },
     { label: "Freemium", value: "freemium" },
 ];
 
-export const difficulties = [
+export const pricingLabels = {
+    free: "Free",
+    premium: "Premium",
+    paid: "Paid",
+    freemium: "Freemium",
+};
+
+export const difficultiesObject = [
     { label: "Beginners - Non-technical", value: "beginner" },
     { label: "Industry Simple - Jr Engineer", value: "industry_simple" },
     { label: "Industry Standard - Engineer", value: "industry_standard" },
@@ -43,12 +83,6 @@ export const difficultyLabels = {
     academic: "Academic",
 };
 
-export const pricingLabels = {
-    free: "Free",
-    premium: "Premium",
-    paid: "Paid",
-    freemium: "Freemium",
-};
 
 export const ratingLabels = {
     community: "Community",
@@ -62,12 +96,10 @@ export const ratingLabels = {
 /// Sorting
 export const resourceSortingLabels = [
     { value: "top", label: "Top Votes (Best Score)" },
-    { value: "bottom", label: "Bottom Votes (Worst Score)" },
     { value: "controversial", label: "Controversial (Mixed Votes)" },
-    { value: "total_votes", label: "Most Voted" },
+    { value: "total_votes", label: "Most Voted (Negative + Postive)" },
     { value: "hot", label: "Hot (Trending Now)" },
-    { value: "latest", label: "Newest (Date Added)" },
-    { value: "oldest", label: "Oldest (Date Added)" },
+    { value: "latest", label: "Newest (Date Created)" },
     { value: "recently_updated", label: "Recently Updated" },
     { value: "community", label: "Best Community" },
     { value: "teaching_clarity", label: "Teaching Clarity" },
@@ -77,21 +109,3 @@ export const resourceSortingLabels = [
     { value: "updates", label: "Most Updates" },
     { value: "overall", label: "Overall Rating" },
 ];
-
-/// Aesthetics
-export const platformColors = {
-    book: "blue",
-    podcast: "green",
-    youtube_channel: "red",
-    blog: "orange",
-    website: "purple",
-    organization: "cyan",
-    bootcamp: "pink",
-    newsletter: "indigo",
-    workshop: "teal",
-    course: "yellow",
-    forum: "gray",
-    mobile_app: "lime",
-    desktop_app: "amber",
-    magazine: "rose",
-};

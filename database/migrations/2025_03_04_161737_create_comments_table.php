@@ -20,9 +20,9 @@ return new class extends Migration
             $table->foreignIdFor(Comment::class, "root_comment_id")->nullable();
             $table->foreignIdFor(Comment::class, "parent_comment_id")->nullable();
             $table->foreignIdFor(User::class);
-            
+
             $table->text("content");
-            
+
             $table->smallInteger("depth")->default(1)->index();
             // Only root comment uses this
             $table->unsignedInteger("children_count")->default(0);

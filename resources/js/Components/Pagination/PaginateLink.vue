@@ -1,6 +1,6 @@
 <script setup>
-import { computed } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import { computed } from "vue";
+import { Link } from "@inertiajs/vue3";
 
 const props = defineProps({
     href: String,
@@ -9,13 +9,13 @@ const props = defineProps({
 
 const classes = computed(() => {
     return props.active
-        ? 'inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:border-indigo-700 focus:ring focus:ring-indigo-200 transition duration-150 ease-in-out'
-        : 'inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-100 focus:outline-none focus:ring focus:ring-gray-300 transition duration-150 ease-in-out';
+        ? "inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-md text-white bg-primary hover:bg-primaryDark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/50 transition duration-200"
+        : "inline-flex items-center justify-center px-3 py-1.5 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-secondary dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/30 transition duration-200";
 });
 </script>
 
 <template>
-    <Link :href="href" :class="classes" :only="['resources']">
+    <Link :href="href" :class="classes" :only="['resources', 'filters']">
         <slot />
     </Link>
 </template>

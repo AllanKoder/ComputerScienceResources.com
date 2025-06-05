@@ -9,7 +9,7 @@ defineProps({
 
 <template>
     <div class="my-4">
-        <h3 class="text-lg font-semibold">
+        <h3 class="font-semibold">
             {{ news.title }}
         </h3>
         <img
