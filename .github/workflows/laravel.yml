@@ -8,12 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
-  laravel-tests:
+  laravel-feature-tests:
     runs-on: ubuntu-latest
 
-    # --------------------------------------------------------------
-    #  Spin up a MySQL 8.0 container for testing
-    # --------------------------------------------------------------
     services:
       mysql:
         image: mysql:8.0
@@ -28,11 +25,7 @@ jobs:
           --health-timeout=5s
           --health-retries=5
 
-    # --------------------------------------------------------------
-    # Define every environment variable manually
-    # --------------------------------------------------------------
     env:
-      # Application settings
       APP_NAME: "Computer Science Resources"
       APP_ENV: testing
       APP_KEY: base64:7aYe15aBsSh6a2ScVwj1JfYjQKUmz9Z5X/GSe64joHA=
@@ -40,7 +33,6 @@ jobs:
       APP_TIMEZONE: UTC
       APP_URL: http://localhost
 
-      # Database settings (pointing to MySQL on localhost)
       DB_CONNECTION: mysql
       DB_HOST: 127.0.0.1
       DB_PORT: 3306
@@ -52,9 +44,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # --------------------------------------------------------------
-      #  Set up PHP 8.3 + required extensions + Composer
-      # --------------------------------------------------------------
       - name: Set up PHP & Composer
         uses: shivammathur/setup-php@v2
         with:
@@ -62,24 +51,25 @@ jobs:
           extensions: mbstring, pdo, mysql, bcmath, tokenizer
           tools: composer
 
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-
+
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist
 
-      # --------------------------------------------------------------
-      # Generate a new application key (uses APP_KEY from `env:` above)
-      # --------------------------------------------------------------
       - name: Generate app key
         run: php artisan key:generate --ansi
 
-
-      # --------------------------------------------------------------
-      # Node Setup
-      # --------------------------------------------------------------
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 20
-      
+
       - name: Cache node modules
         uses: actions/cache@v3
         with:
@@ -87,16 +77,13 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-      
+
       - name: Install NPM dependencies
         run: npm ci
-      
+
       - name: Build assets
         run: npm run build
 
-      # --------------------------------------------------------------
-      # Wait until MySQL is ready to accept connections
-      # --------------------------------------------------------------
       - name: Wait for MySQL to be ready
         run: |
           echo "Waiting for MySQL to be ready..."
@@ -104,14 +91,8 @@ jobs:
             sleep 3
           done
 
-      # --------------------------------------------------------------
-      # Run migrations (uses the `DB_` variables defined at the top)
-      # --------------------------------------------------------------
       - name: Run database migrations
         run: php artisan migrate --force
 
-      # --------------------------------------------------------------
-      # Run all tests (feature + unit)
-      # --------------------------------------------------------------
       - name: Run feature & unit tests
         run: php artisan test
