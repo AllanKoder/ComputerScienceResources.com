@@ -33,14 +33,14 @@ jobs:
           extensions: mbstring, pdo, mysql, bcmath, tokenizer
           tools: composer
 
+      - name: Copy .env.testing to .env
+        run: cp .env.testing .env
+
       - name: Install Composer dependencies
         run: composer install
 
       - name: Generate app key
         run: php artisan key:generate
-
-      - name: Copy .env.testing to .env
-        run: cp .env.testing .env
 
       - name: Wait for MySQL
         run: |
