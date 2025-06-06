@@ -39,16 +39,38 @@ const emit = defineEmits(["upvote", "downvote"]);
 
         <!-- Main content column -->
         <td class="align-top pr-4 py-3 min-w-[400px]">
-            <div class="flex justify-between items-start mb-2">
-                <Link
-                    :href="route('resources.show', { computerScienceResource: resource.id })"
-                    class="group"
-                >
-                    <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors duration-200 font-sans">
-                        {{ resource.name }}
-                    </h2>
-                </Link>
-                <time class="text-xs text-gray-500 font-medium">{{ resource.resource_created_on }}</time>
+            <div class="flex justify-between items-start mb-2 w-full">
+                <div class="flex items-center gap-3">
+                    <Link
+                        :href="route('resources.show', { computerScienceResource: resource.id })"
+                        class="group"
+                    >
+                        <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors duration-200 font-sans">
+                            {{ resource.name }}
+                        </h2>
+                    </Link>
+                    <a
+                        :href="resource.page_url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-gray-400 hover:text-primary transition-colors duration-200"
+                    >
+                        <Icon icon="mdi:external-link" width="20" height="20" />
+                    </a>
+                </div>
+                <div class="flex items-center gap-4">
+                    <div class="flex items-center gap-2">
+                        <StarRating
+                            :model-value="Number(resource.review_summary?.overall_rating)"
+                            :size="16"
+                        />
+                        <div class="inline-flex items-center gap-0.5 text-xs font-medium text-gray-700 dark:text-gray-300">
+                            <Icon icon="mdi:account-group" width="12" height="12" />
+                            {{ resource.review_summary?.review_count || 0 }}
+                        </div>
+                    </div>
+                    <time class="text-xs text-gray-500 font-medium">{{ resource.resource_created_on }}</time>
+                </div>
             </div>
             <p class="text-gray-600 dark:text-gray-300 mb-2 line-clamp-2 leading-relaxed text-sm">{{ resource.description }}</p>
 
@@ -89,12 +111,12 @@ const emit = defineEmits(["upvote", "downvote"]);
                 <!-- Row 2: Tags -->
                 <div class="flex flex-wrap items-center gap-3 text-xs">
                     <!-- Topic Tags -->
-                    <div v-if="resource.topic_tags?.length" class="flex items-center gap-1.5 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-md">
-                        <span class="inline-flex items-center gap-1 font-medium text-blue-700 dark:text-blue-200">
+                    <div v-if="resource.topic_tags?.length" class="flex items-center gap-1 px-2 py-1 rounded-md">
+                        <span class="inline-flex items-center gap-1 font-semibold text-blue-700 dark:text-blue-200">
                             <Icon icon="mdi:bookmark" width="14" height="14" />
                             Topics:
                         </span>
-                        <div class="inline-flex flex-wrap items-center gap-1">
+                        <div class="inline-flex flex-wrap items-center gap-0.5">
                             <span v-for="tag in resource.topic_tags" :key="tag"
                                 class="inline-flex items-center gap-1 bg-blue-100/50 dark:bg-blue-800/30 px-2 py-0.5 rounded-full text-blue-700 dark:text-blue-200">
                                 {{ tag }}
@@ -103,12 +125,12 @@ const emit = defineEmits(["upvote", "downvote"]);
                     </div>
 
                     <!-- Programming Language Tags -->
-                    <div v-if="resource.programming_language_tags?.length" class="flex items-center gap-1.5 bg-purple-50 dark:bg-purple-900/20 px-2 py-1 rounded-md">
-                        <span class="inline-flex items-center gap-1 font-medium text-purple-700 dark:text-purple-200">
+                    <div v-if="resource.programming_language_tags?.length" class="flex items-center gap-1.5 px-2 py-1 rounded-md">
+                        <span class="inline-flex items-center gap-1 font-semibold text-purple-700 dark:text-purple-200">
                             <Icon icon="mdi:language-typescript" width="14" height="14" />
                             Languages:
                         </span>
-                        <div class="inline-flex flex-wrap items-center gap-1">
+                        <div class="inline-flex flex-wrap items-center gap-0.5">
                             <span v-for="tag in resource.programming_language_tags" :key="tag"
                                 class="inline-flex items-center gap-1 bg-purple-100/50 dark:bg-purple-800/30 px-2 py-0.5 rounded-full text-purple-700 dark:text-purple-200">
                                 {{ tag }}
@@ -117,33 +139,18 @@ const emit = defineEmits(["upvote", "downvote"]);
                     </div>
 
                     <!-- General Tags -->
-                    <div v-if="resource.general_tags?.length" class="flex items-center gap-1.5 bg-yellow-50 dark:bg-yellow-900/20 px-2 py-1 rounded-md">
-                        <span class="inline-flex items-center gap-1 font-medium text-yellow-700 dark:text-yellow-200">
+                    <div v-if="resource.general_tags?.length" class="flex items-center gap-1.5 px-2 py-1 rounded-md">
+                        <span class="inline-flex items-center gap-1 font-semibold text-yellow-700 dark:text-yellow-200">
                             <Icon icon="mdi:tag" width="14" height="14" />
                             Tags:
                         </span>
-                        <div class="inline-flex flex-wrap items-center gap-1">
+                        <div class="inline-flex flex-wrap items-center gap-0.5">
                             <span v-for="tag in resource.general_tags" :key="tag"
                                 class="inline-flex items-center gap-1 bg-yellow-100/50 dark:bg-yellow-800/30 px-2 py-0.5 rounded-full text-yellow-700 dark:text-yellow-200">
                                 {{ tag }}
                             </span>
                         </div>
                     </div>
-                </div>
-            </div>
-        </td>
-
-        <!-- Rating column -->
-        <td class="align-middle py-3 pr-3 whitespace-nowrap">
-            <div class="flex flex-col items-center">
-                <StarRating
-                    :model-value="Number(resource.review_summary?.overall_rating)"
-                    :size="20"
-                    class="mb-1"
-                />
-                <div class="inline-flex items-center gap-0.5 text-xs font-medium text-gray-700 dark:text-gray-300">
-                    <Icon icon="mdi:account-group" width="12" height="12" />
-                    {{ resource.review_summary?.review_count || 0 }}
                 </div>
             </div>
         </td>

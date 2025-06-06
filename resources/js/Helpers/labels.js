@@ -33,24 +33,6 @@ export const platformLabels = {
     magazine: "Magazine",
 };
 
-// export const platformsLabels = [
-//      "Website", value: "website" },
-//     { label: "Book", value: "book" },
-//     { label: "Blog", value: "blog" },
-//     { label: "Course", value: "course" },
-//     { label: "Bootcamp", value: "bootcamp" },
-//     { label: "Youtube Channel", value: "youtube_channel" },
-//     { label: "Newsletter", value: "newsletter" },
-//     { label: "Podcast", value: "podcast" },
-//     { label: "Forum", value: "forum" },
-//     { label: "Workshop", value: "workshop" },
-//     { label: "Mobile app", value: "mobile_app" },
-//     { label: "Desktop app", value: "desktop_app" },
-//     { label: "Magazine", value: "magazine" },
-// ];
-
-
-
 export const pricingsObject = [
     { label: "Free", value: "free" },
     { label: "Paid", value: "paid" },

@@ -9,6 +9,10 @@ import Commentable from "@/Components/Comments/Commentable.vue";
 import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
 import ResourceUpvoteSorting from "@/Components/Resources/ResourceUpvoteSorting.vue";
 import { getConfigData } from "@/Helpers/config";
+import StarRating from "@/Components/StarRating/StarRating.vue";
+import { Icon } from "@iconify/vue";
+import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
+import { platformLabels } from "@/Helpers/labels";
 
 const props = defineProps({
     tab: {
@@ -47,130 +51,462 @@ const sortingType = urlParams.get("sort_by") || "top";
 
 <template>
     <AppLayout :title="props.resource.name">
-        <Head :title="props.resource.name" />
         <div class="max-w-[90vw] mx-auto sm:px-6 py-4 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-                <div class="p-6 sm:p-8">
+                <div class="p-7 sm:p-8">
                     <div class="relative">
-                        <div class="flex flex-col md:flex-row items-start mb-6">
+                        <div
+                            class="flex flex-col md:flex-row items-center mb-4 gap-6"
+                        >
+                            <!-- Upvote column -->
                             <div
-                                class="flex flex-col items-center mr-4 mb-4 md:mb-0"
+                                class="flex flex-col items-center mr-6 mb-4 md:mb-0"
                             >
                                 <UpvoteResource
                                     :upvotable-id="props.resource.id"
                                     :upvotable-key="'resource'"
                                     :initial-votes="props.resource.vote_score"
                                     :user-vote="props.resource.user_vote"
-                                ></UpvoteResource>
+                                />
                             </div>
+
+                            <!-- Image column -->
                             <img
                                 :src="props.resource.image_url"
                                 :alt="props.resource.name"
-                                class="w-24 h-24 object-cover rounded-lg mr-6 mb-4 md:mb-0"
+                                class="w-28 h-28 object-cover rounded-lg shadow-md self-center"
                             />
-                            <div class="flex-grow">
-                                <h1 class="text-3xl font-bold mb-2">
-                                    {{ props.resource.name }}
-                                </h1>
+
+                            <!-- Main content column -->
+                            <div class="flex-grow w-full">
                                 <div
-                                    class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2"
+                                    class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4"
                                 >
-                                    <div>
-                                        <span
-                                            class="font-semibold text-gray-700"
-                                            >Difficulty:</span
+                                    <div class="flex items-center gap-3">
+                                        <h1 class="text-3xl font-bold">
+                                            {{ props.resource.name }}
+                                        </h1>
+                                        <a
+                                            :href="props.resource.page_url"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="text-gray-400 hover:text-primary transition-colors duration-200"
                                         >
-                                        <span class="text-gray-600 ml-1">{{
-                                            difficultyLabels[
-                                                props.resource.difficulty
-                                            ]
-                                        }}</span>
+                                            <Icon
+                                                icon="mdi:external-link"
+                                                width="24"
+                                                height="24"
+                                            />
+                                        </a>
                                     </div>
-                                    <div>
-                                        <span
-                                            class="font-semibold text-gray-700"
-                                            >Pricing:</span
-                                        >
-                                        <span class="text-gray-600 ml-1">{{
-                                            pricingLabels[
-                                                props.resource.pricing
-                                            ]
-                                        }}</span>
+                                    <div class="flex flex-col gap-4">
+                                        <!-- Overall Rating with Review Count -->
+                                        <div class="flex items-center gap-4">
+                                            <div
+                                                class="flex items-center gap-2"
+                                            >
+                                                <StarRating
+                                                    :model-value="
+                                                        Number(
+                                                            props.resource
+                                                                .review_summary
+                                                                ?.overall_rating
+                                                        )
+                                                    "
+                                                    :size="23"
+                                                />
+                                            </div>
+                                            <div
+                                                class="inline-flex items-center gap-1 text-lg font-medium text-gray-700 dark:text-gray-300"
+                                            >
+                                                <Icon
+                                                    icon="mdi:account-group"
+                                                    width="20"
+                                                    height="20"
+                                                />
+                                                {{
+                                                    props.resource
+                                                        .review_summary
+                                                        ?.review_count || 0
+                                                }}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="flex flex-wrap gap-2 mb-2">
-                                    <Tag
-                                        v-for="platform in props.resource
-                                            .platforms"
-                                        :key="platform"
-                                        :value="platform"
-                                        class="capitalize"
-                                    />
-                                </div>
-                                <div class="flex flex-wrap gap-1">
-                                    <Tag
-                                        v-for="tag in props.resource.topic_tags"
-                                        :key="tag"
-                                        :value="tag"
-                                        severity="info"
-                                        class="text-xs"
-                                    />
-                                    <Tag
-                                        v-for="tag in props.resource
-                                            .programming_language_tags"
-                                        :key="tag"
-                                        :value="tag"
-                                        severity="success"
-                                        class="text-xs"
-                                    />
-                                    <Tag
-                                        v-for="tag in props.resource
-                                            .general_tags"
-                                        :key="tag"
-                                        :value="tag"
-                                        severity="warning"
-                                        class="text-xs"
-                                    />
+
+                                <p
+                                    class="text-gray-700 mb-6 text-base leading-relaxed"
+                                >
+                                    {{ props.resource.description }}
+                                </p>
+
+                                <!-- Resource Metadata Section -->
+                                <div class="flex flex-col gap-3 mb-4">
+                                    <!-- Row 1: Resource Properties -->
+                                    <div
+                                        class="flex flex-wrap items-center gap-4 text-sm"
+                                    >
+                                        <!-- Difficulty -->
+                                        <div
+                                            v-if="props.resource.difficulty"
+                                            class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-3 py-1 rounded-md"
+                                        >
+                                            <span
+                                                class="font-semibold text-gray-900 dark:text-gray-100"
+                                                >Level:</span
+                                            >
+                                            <span
+                                                class="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300"
+                                            >
+                                                <Icon
+                                                    :icon="
+                                                        difficultyIcons[
+                                                            props.resource
+                                                                .difficulty
+                                                        ]
+                                                    "
+                                                    width="16"
+                                                    height="16"
+                                                />
+                                                {{
+                                                    difficultyLabels[
+                                                        props.resource
+                                                            .difficulty
+                                                    ]
+                                                }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Pricing -->
+                                        <div
+                                            class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-3 py-1 rounded-md"
+                                        >
+                                            <span
+                                                class="font-semibold text-gray-900 dark:text-gray-100"
+                                                >Pricing:</span
+                                            >
+                                            <span
+                                                class="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300"
+                                            >
+                                                <Icon
+                                                    :icon="
+                                                        pricingIcons[
+                                                            props.resource
+                                                                .pricing
+                                                        ]
+                                                    "
+                                                    width="16"
+                                                    height="16"
+                                                />
+                                                {{
+                                                    pricingLabels[
+                                                        props.resource.pricing
+                                                    ]
+                                                }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Platforms -->
+                                        <div
+                                            class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-3 py-1 rounded-md"
+                                        >
+                                            <span
+                                                class="font-semibold text-gray-900 dark:text-gray-100"
+                                                >Platforms:</span
+                                            >
+                                            <div
+                                                class="inline-flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-300"
+                                            >
+                                                <span
+                                                    v-for="type in props
+                                                        .resource.platforms"
+                                                    :key="type"
+                                                    class="inline-flex items-center gap-1"
+                                                >
+                                                    <Icon
+                                                        :icon="
+                                                            platformIcons[
+                                                                type.trim()
+                                                            ]
+                                                        "
+                                                        width="16"
+                                                        height="16"
+                                                    />
+                                                    {{
+                                                        platformLabels[
+                                                            type.trim()
+                                                        ]
+                                                    }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Row 2: Tags -->
+                                    <div
+                                        class="flex flex-wrap items-center gap-4 text-sm"
+                                    >
+                                        <!-- Topic Tags -->
+                                        <div
+                                            v-if="resource.topic_tags?.length"
+                                            class="flex items-center gap-1 px-2 py-1 rounded-md"
+                                        >
+                                            <span
+                                                class="inline-flex items-center gap-1 font-semibold text-blue-700 dark:text-blue-200"
+                                            >
+                                                <Icon
+                                                    icon="mdi:bookmark"
+                                                    width="14"
+                                                    height="14"
+                                                />
+                                                Topics:
+                                            </span>
+                                            <div
+                                                class="inline-flex flex-wrap items-center gap-0.5"
+                                            >
+                                                <span
+                                                    v-for="tag in resource.topic_tags"
+                                                    :key="tag"
+                                                    class="inline-flex items-center gap-1 bg-blue-100/50 dark:bg-blue-800/30 px-2 py-0.5 rounded-full text-blue-700 dark:text-blue-200"
+                                                >
+                                                    {{ tag }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Programming Language Tags -->
+                                        <div
+                                            v-if="
+                                                resource
+                                                    .programming_language_tags
+                                                    ?.length
+                                            "
+                                            class="flex items-center gap-1.5 px-2 py-1 rounded-md"
+                                        >
+                                            <span
+                                                class="inline-flex items-center gap-1 font-semibold text-purple-700 dark:text-purple-200"
+                                            >
+                                                <Icon
+                                                    icon="mdi:language-typescript"
+                                                    width="14"
+                                                    height="14"
+                                                />
+                                                Languages:
+                                            </span>
+                                            <div
+                                                class="inline-flex flex-wrap items-center gap-0.5"
+                                            >
+                                                <span
+                                                    v-for="tag in resource.programming_language_tags"
+                                                    :key="tag"
+                                                    class="inline-flex items-center gap-1 bg-purple-100/50 dark:bg-purple-800/30 px-2 py-0.5 rounded-full text-purple-700 dark:text-purple-200"
+                                                >
+                                                    {{ tag }}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- General Tags -->
+                                        <div
+                                            v-if="resource.general_tags?.length"
+                                            class="flex items-center gap-1.5 px-2 py-1 rounded-md"
+                                        >
+                                            <span
+                                                class="inline-flex items-center gap-1 font-semibold text-yellow-700 dark:text-yellow-200"
+                                            >
+                                                <Icon
+                                                    icon="mdi:tag"
+                                                    width="14"
+                                                    height="14"
+                                                />
+                                                Tags:
+                                            </span>
+                                            <div
+                                                class="inline-flex flex-wrap items-center gap-0.5"
+                                            >
+                                                <span
+                                                    v-for="tag in resource.general_tags"
+                                                    :key="tag"
+                                                    class="inline-flex items-center gap-1 bg-yellow-100/50 dark:bg-yellow-800/30 px-2 py-0.5 rounded-full text-yellow-700 dark:text-yellow-200"
+                                                >
+                                                    {{ tag }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <p class="text-gray-700 mb-4">
-                        {{ props.resource.description }}
-                    </p>
-                    <div
-                        class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4"
-                    >
-                        <a
-                            :href="props.resource.page_url"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="text-blue-600 hover:underline mb-2 sm:mb-0"
-                            >Visit Resource</a
+                        <!-- Resource Link and Meta -->
+                        <div
+                            class="flex flex-col sm:flex-row justify-end items-start sm:items-end gap-16"
                         >
-                        <div class="text-sm text-gray-500">
-                            <p>
-                                Posted by:
-                                {{
-                                    props.resource.user?.name ?? "Unknown User"
-                                }}
-                            </p>
-                            <p>
-                                Created:
-                                {{
-                                    new Date(
-                                        props.resource.created_at
-                                    ).toLocaleString()
-                                }}
-                            </p>
-                            <p>
-                                Last updated:
-                                {{
-                                    new Date(
-                                        props.resource.updated_at
-                                    ).toLocaleString()
-                                }}
-                            </p>
+                            <!-- Detailed Ratings Grid -->
+                            <div
+                                class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6"
+                            >
+                                <!-- Community Rating -->
+                                <div class="flex flex-col items-center">
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
+                                    >
+                                        <Icon
+                                            icon="mdi:account-group"
+                                            class="w-4 h-4"
+                                        />
+                                        Community
+                                    </label>
+                                    <StarRating
+                                        :model-value="
+                                            Number(
+                                                props.resource.review_summary
+                                                    ?.community_rating
+                                            )
+                                        "
+                                        :size="20"
+                                    />
+                                </div>
+
+                                <!-- Teaching Clarity Rating -->
+                                <div class="flex flex-col items-center">
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
+                                    >
+                                        <Icon
+                                            icon="mdi:school"
+                                            class="w-4 h-4"
+                                        />
+                                        Teaching
+                                    </label>
+                                    <StarRating
+                                        :model-value="
+                                            Number(
+                                                props.resource.review_summary
+                                                    ?.teaching_clarity_rating
+                                            )
+                                        "
+                                        :size="20"
+                                    />
+                                </div>
+
+                                <!-- Engagement Rating -->
+                                <div class="flex flex-col items-center">
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
+                                    >
+                                        <Icon
+                                            icon="mdi:thumb-up"
+                                            class="w-4 h-4"
+                                        />
+                                        Engagement
+                                    </label>
+                                    <StarRating
+                                        :model-value="
+                                            Number(
+                                                props.resource.review_summary
+                                                    ?.engagement_rating
+                                            )
+                                        "
+                                        :size="20"
+                                    />
+                                </div>
+
+                                <!-- Practicality Rating -->
+                                <div class="flex flex-col items-center">
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
+                                    >
+                                        <Icon
+                                            icon="mdi:tools"
+                                            class="w-4 h-4"
+                                        />
+                                        Practicality
+                                    </label>
+                                    <StarRating
+                                        :model-value="
+                                            Number(
+                                                props.resource.review_summary
+                                                    ?.practicality_rating
+                                            )
+                                        "
+                                        :size="20"
+                                    />
+                                </div>
+
+                                <!-- User Friendliness Rating -->
+                                <div class="flex flex-col items-center">
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
+                                    >
+                                        <Icon
+                                            icon="mdi:account-heart"
+                                            class="w-4 h-4"
+                                        />
+                                        User Friendly
+                                    </label>
+                                    <StarRating
+                                        :model-value="
+                                            Number(
+                                                props.resource.review_summary
+                                                    ?.user_friendliness_rating
+                                            )
+                                        "
+                                        :size="20"
+                                    />
+                                </div>
+
+                                <!-- Updates Rating -->
+                                <div class="flex flex-col items-center">
+                                    <label
+                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
+                                    >
+                                        <Icon
+                                            icon="mdi:update"
+                                            class="w-4 h-4"
+                                        />
+                                        Updates
+                                    </label>
+                                    <StarRating
+                                        :model-value="
+                                            Number(
+                                                props.resource.review_summary
+                                                    ?.updates_rating
+                                            )
+                                        "
+                                        :size="20"
+                                    />
+                                </div>
+                            </div>
+
+                            <div
+                                class="text-xs text-gray-500 text-right space-y-1"
+                            >
+                                <div>
+                                    <span class="font-semibold">Creator:</span>
+                                    {{
+                                        props.resource.user?.name ??
+                                        "Unknown User"
+                                    }}
+                                </div>
+                                <div>
+                                    <span class="font-semibold">Posted:</span>
+                                    {{
+                                        new Date(
+                                            props.resource.created_at
+                                        ).toLocaleString()
+                                    }}
+                                </div>
+                                <div>
+                                    <span class="font-semibold"
+                                        >Last Updated:</span
+                                    >
+                                    {{
+                                        new Date(
+                                            props.resource.updated_at
+                                        ).toLocaleString()
+                                    }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

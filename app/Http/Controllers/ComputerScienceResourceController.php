@@ -111,6 +111,9 @@ class ComputerScienceResourceController extends Controller
      */
     public function show(Request $request, ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
     {
+        # Get the review summaries
+        $computerScienceResource->load('reviewSummary');
+
         $validTabs = ['reviews', 'discussion', 'edits'];
 
         if (!in_array($tab, $validTabs)) {
