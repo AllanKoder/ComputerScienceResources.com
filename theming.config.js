@@ -2,6 +2,9 @@ import { definePreset } from '@primevue/themes';
 import Aura from "@primevue/themes/aura";
 
 const customTheme = definePreset(Aura, {
+    font: {
+        family: 'Open Sans'
+    },
     semantic: {
         primary: {
             50: '{orange.50}',

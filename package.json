@@ -22,10 +22,11 @@
         "vue": "^3.3.13"
     },
     "dependencies": {
+        "@fontsource/open-sans": "^5.2.5",
         "@primevue/forms": "^4.3.3",
         "@primevue/themes": "^4.3.3",
-        "primevue": "^4.3.3",
         "diff": "^7.0.0",
+        "primevue": "^4.3.3",
         "yup": "^1.6.1"
     }
 }
