@@ -12,9 +12,9 @@ const props = defineProps({
 const selectedSort = ref(props.initialValue);
 
 const sortOptions = [
-    { label: "Hot", value: "hot" },
     { label: "Top", value: "top" },
     { label: "Bottom", value: "bottom" },
+    { label: "Hot", value: "hot" },
     { label: "Controversial", value: "controversial" },
     { label: "Total Votes", value: "total_votes" },
     { label: "Latest", value: "latest" },

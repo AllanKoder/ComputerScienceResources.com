@@ -4,6 +4,9 @@ import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import SortByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
 import CommentList from "./CommentList.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import LoadingAnimation from "@/Components/LoadingAnimation.vue";
+import { Icon } from "@iconify/vue";
 
 const props = defineProps({
     commentableId: {
@@ -183,7 +186,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="comments-section p-4">
+    <div class="comments-section bg-white rounded-lg shadow-sm border border-primary/10 p-6 mt-8">
         <SortByDropdown
             v-if="props.hasSortByDropdown && hasOpenedComments"
             @change="handleSortChange"
@@ -196,8 +199,8 @@ onMounted(() => {
         <CommentList :id-to-children="idToChildren" />
 
         <!-- Loading State -->
-        <div v-if="isLoading" class="text-center text-gray-500 mb-4">
-            Loading comments...
+        <div v-if="isLoading" class="my-8">
+            <LoadingAnimation />
         </div>
 
         <!-- Load More Button -->

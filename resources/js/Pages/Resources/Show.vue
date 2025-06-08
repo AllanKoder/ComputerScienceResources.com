@@ -13,6 +13,7 @@ import StarRating from "@/Components/StarRating/StarRating.vue";
 import { Icon } from "@iconify/vue";
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import { platformLabels } from "@/Helpers/labels";
+import LoadingAnimation from "@/Components/LoadingAnimation.vue";
 
 const props = defineProps({
     tab: {
@@ -56,26 +57,24 @@ const sortingType = urlParams.get("sort_by") || "top";
                 <div class="p-7 sm:p-8">
                     <div class="relative">
                         <div
-                            class="flex flex-col md:flex-row items-center mb-4 gap-6"
+                            class="flex flex-col md:flex-row items-center mb-2 gap-6"
                         >
                             <!-- Upvote column -->
-                            <div
-                                class="flex flex-col items-center mr-6 mb-4 md:mb-0"
-                            >
+                            <div class="flex flex-row items-center mr-6 gap-6">
                                 <UpvoteResource
                                     :upvotable-id="props.resource.id"
                                     :upvotable-key="'resource'"
                                     :initial-votes="props.resource.vote_score"
                                     :user-vote="props.resource.user_vote"
                                 />
-                            </div>
 
-                            <!-- Image column -->
-                            <img
-                                :src="props.resource.image_url"
-                                :alt="props.resource.name"
-                                class="w-28 h-28 object-cover rounded-lg shadow-md self-center"
-                            />
+                                <!-- Image column -->
+                                <img
+                                    :src="props.resource.image_url"
+                                    :alt="props.resource.name"
+                                    class="w-28 h-28 object-cover rounded-lg shadow-md self-center"
+                                />
+                            </div>
 
                             <!-- Main content column -->
                             <div class="flex-grow w-full">
@@ -339,147 +338,154 @@ const sortingType = urlParams.get("sort_by") || "top";
                         </div>
                         <!-- Resource Link and Meta -->
                         <div
-                            class="flex flex-col sm:flex-row justify-end items-start sm:items-end gap-16"
+                            class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end"
                         >
                             <!-- Detailed Ratings Grid -->
-                            <div
-                                class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6"
-                            >
-                                <!-- Community Rating -->
-                                <div class="flex flex-col items-center">
-                                    <label
-                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
-                                    >
-                                        <Icon
-                                            icon="mdi:account-group"
-                                            class="w-4 h-4"
+                            <div class="flex-1 flex justify-center">
+                                <div
+                                    class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
+                                >
+                                    <!-- Community Rating -->
+                                    <div class="flex flex-col items-center">
+                                        <label
+                                            class="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:account-group"
+                                                class="w-4 h-4"
+                                            />
+                                            Community
+                                        </label>
+                                        <StarRating
+                                            :model-value="
+                                                Number(
+                                                    props.resource
+                                                        .review_summary
+                                                        ?.community_rating
+                                                )
+                                            "
+                                            :size="20"
                                         />
-                                        Community
-                                    </label>
-                                    <StarRating
-                                        :model-value="
-                                            Number(
-                                                props.resource.review_summary
-                                                    ?.community_rating
-                                            )
-                                        "
-                                        :size="20"
-                                    />
-                                </div>
+                                    </div>
 
-                                <!-- Teaching Clarity Rating -->
-                                <div class="flex flex-col items-center">
-                                    <label
-                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
-                                    >
-                                        <Icon
-                                            icon="mdi:school"
-                                            class="w-4 h-4"
+                                    <!-- Teaching Clarity Rating -->
+                                    <div class="flex flex-col items-center">
+                                        <label
+                                            class="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:school"
+                                                class="w-4 h-4"
+                                            />
+                                            Teaching
+                                        </label>
+                                        <StarRating
+                                            :model-value="
+                                                Number(
+                                                    props.resource
+                                                        .review_summary
+                                                        ?.teaching_clarity_rating
+                                                )
+                                            "
+                                            :size="20"
                                         />
-                                        Teaching
-                                    </label>
-                                    <StarRating
-                                        :model-value="
-                                            Number(
-                                                props.resource.review_summary
-                                                    ?.teaching_clarity_rating
-                                            )
-                                        "
-                                        :size="20"
-                                    />
-                                </div>
+                                    </div>
 
-                                <!-- Engagement Rating -->
-                                <div class="flex flex-col items-center">
-                                    <label
-                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
-                                    >
-                                        <Icon
-                                            icon="mdi:thumb-up"
-                                            class="w-4 h-4"
+                                    <!-- Engagement Rating -->
+                                    <div class="flex flex-col items-center">
+                                        <label
+                                            class="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:thumb-up"
+                                                class="w-4 h-4"
+                                            />
+                                            Engagement
+                                        </label>
+                                        <StarRating
+                                            :model-value="
+                                                Number(
+                                                    props.resource
+                                                        .review_summary
+                                                        ?.engagement_rating
+                                                )
+                                            "
+                                            :size="20"
                                         />
-                                        Engagement
-                                    </label>
-                                    <StarRating
-                                        :model-value="
-                                            Number(
-                                                props.resource.review_summary
-                                                    ?.engagement_rating
-                                            )
-                                        "
-                                        :size="20"
-                                    />
-                                </div>
+                                    </div>
 
-                                <!-- Practicality Rating -->
-                                <div class="flex flex-col items-center">
-                                    <label
-                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
-                                    >
-                                        <Icon
-                                            icon="mdi:tools"
-                                            class="w-4 h-4"
+                                    <!-- Practicality Rating -->
+                                    <div class="flex flex-col items-center">
+                                        <label
+                                            class="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:tools"
+                                                class="w-4 h-4"
+                                            />
+                                            Practicality
+                                        </label>
+                                        <StarRating
+                                            :model-value="
+                                                Number(
+                                                    props.resource
+                                                        .review_summary
+                                                        ?.practicality_rating
+                                                )
+                                            "
+                                            :size="20"
                                         />
-                                        Practicality
-                                    </label>
-                                    <StarRating
-                                        :model-value="
-                                            Number(
-                                                props.resource.review_summary
-                                                    ?.practicality_rating
-                                            )
-                                        "
-                                        :size="20"
-                                    />
-                                </div>
+                                    </div>
 
-                                <!-- User Friendliness Rating -->
-                                <div class="flex flex-col items-center">
-                                    <label
-                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
-                                    >
-                                        <Icon
-                                            icon="mdi:account-heart"
-                                            class="w-4 h-4"
+                                    <!-- User Friendliness Rating -->
+                                    <div class="flex flex-col items-center">
+                                        <label
+                                            class="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:account-heart"
+                                                class="w-4 h-4"
+                                            />
+                                            User Friendly
+                                        </label>
+                                        <StarRating
+                                            :model-value="
+                                                Number(
+                                                    props.resource
+                                                        .review_summary
+                                                        ?.user_friendliness_rating
+                                                )
+                                            "
+                                            :size="20"
                                         />
-                                        User Friendly
-                                    </label>
-                                    <StarRating
-                                        :model-value="
-                                            Number(
-                                                props.resource.review_summary
-                                                    ?.user_friendliness_rating
-                                            )
-                                        "
-                                        :size="20"
-                                    />
-                                </div>
+                                    </div>
 
-                                <!-- Updates Rating -->
-                                <div class="flex flex-col items-center">
-                                    <label
-                                        class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2"
-                                    >
-                                        <Icon
-                                            icon="mdi:update"
-                                            class="w-4 h-4"
+                                    <!-- Updates Rating -->
+                                    <div class="flex flex-col items-center">
+                                        <label
+                                            class="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:update"
+                                                class="w-4 h-4"
+                                            />
+                                            Updates
+                                        </label>
+                                        <StarRating
+                                            :model-value="
+                                                Number(
+                                                    props.resource
+                                                        .review_summary
+                                                        ?.updates_rating
+                                                )
+                                            "
+                                            :size="20"
                                         />
-                                        Updates
-                                    </label>
-                                    <StarRating
-                                        :model-value="
-                                            Number(
-                                                props.resource.review_summary
-                                                    ?.updates_rating
-                                            )
-                                        "
-                                        :size="20"
-                                    />
+                                    </div>
                                 </div>
                             </div>
-
                             <div
-                                class="text-xs text-gray-500 text-right space-y-1"
+                                class="text-xs text-gray-500 text-right space-y-1 min-w-[160px] shrink-0"
                             >
                                 <div>
                                     <span class="font-semibold">Creator:</span>
@@ -551,7 +557,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                     <div v-if="props.tab === 'reviews'">
                         <Deferred data="reviews">
                             <template #fallback>
-                                <div>Loading...</div>
+                                <LoadingAnimation />
                             </template>
                             <ResourceReviews
                                 :reviews="reviews"
@@ -563,7 +569,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                     <div v-else-if="props.tab === 'discussion'">
                         <Deferred data="discussion">
                             <template #fallback>
-                                <div>Loading...</div>
+                                <LoadingAnimation />
                             </template>
                             <Commentable
                                 :sort-by-initial-value="
@@ -584,7 +590,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                     <div v-else-if="props.tab === 'edits'">
                         <Deferred data="resourceEdits">
                             <template #fallback>
-                                <div>Loading...</div>
+                                <LoadingAnimation />
                             </template>
                             <ResourceEdits
                                 :resource-id="props.resource.id"

@@ -18,7 +18,7 @@ const props = defineProps({
 const users = inject('users');
 
 // Memoize date formatting
-const formattedDate = computed(() => 
+const formattedDate = computed(() =>
     new Date(props.comment.created_at).toLocaleString(navigator.language, {
         year: 'numeric',
         month: 'short',
@@ -51,7 +51,7 @@ const formattedDate = computed(() =>
             />
             <div class="min-w-0">
                 <p class="font-semibold text-gray-800 truncate">{{ users.get(comment.id)?.name }}</p>
-                <time 
+                <time
                     :datetime="comment.created_at"
                     class="text-sm text-gray-500"
                     :title="comment.created_at"
