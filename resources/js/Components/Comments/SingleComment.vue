@@ -3,6 +3,7 @@ import { computed, inject } from "vue";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import Upvotable from "../Upvote/Upvotable.vue";
 import { getConfigData } from "@/Helpers/config";
+import ProfilePhoto from "../ProfilePhoto.vue";
 
 const props = defineProps({
     comment: {
@@ -41,14 +42,9 @@ const formattedDate = computed(() =>
 
         <!-- User Info with Lazy Loading -->
         <div class="flex items-center space-x-2">
-            <img
-                :src="users.get(comment.user_id)?.profile_photo_url"
-                alt="User avatar"
-                class="w-8 h-8 rounded-full"
-                loading="lazy"
-                width="32"
-                height="32"
-            />
+            <ProfilePhoto
+            :src="users.get(comment.user_id)?.profile_photo_url"
+            :alt="'User Avator'"/>
             <div class="min-w-0">
                 <p class="font-semibold text-gray-800 truncate">{{ users.get(comment.id)?.name }}</p>
                 <time

@@ -2,6 +2,8 @@
 import { ref, reactive, inject } from "vue";
 import { Icon } from "@iconify/vue";
 import axios from "axios";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import TextArea from "@/Components/TextArea.vue";
 
 const props = defineProps({
     parentCommentId: {
@@ -70,28 +72,27 @@ const submit = () => {
         <div class="mt-2 flex items-center space-x-4">
             <button
                 @click="toggleOpen"
-                class="text-sm text-blue-500 hover:underline"
+                class="text-sm text-primary hover:underline"
             >
                 <Icon icon="mdi:comment-outline" class="w-5 h-5 inline-block" />
                 {{ label }}
             </button>
         </div>
 
-        <form v-if="isOpen" @submit.prevent="submit" class="space-y-4 mt-2">
-            <textarea
+        <form v-if="isOpen" @submit.prevent="submit" class="space-y-2 mt-2">
+            <TextArea
                 v-model="form.content"
-                class="w-full border border-gray-300 rounded p-2 focus:outline-none focus:ring focus:border-blue-300"
                 placeholder="Write your comment..."
-                rows="4"
-            ></textarea>
+                :rows="4"
+            />
             <div>
-                <button
-                    type="submit"
-                    class="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded disabled:opacity-50"
+                <PrimaryButton
                     :disabled="form.processing"
+                    class="flex items-center gap-2"
                 >
+                    <Icon icon="mdi:send" class="w-4 h-4" />
                     Submit
-                </button>
+                </PrimaryButton>
             </div>
             <div v-if="form.errors.content" class="text-red-500 text-sm">
                 {{ form.errors.content }}

@@ -17,56 +17,64 @@ defineProps({
 
 <template>
     <AppLayout title="Profile">
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Profile
-            </h2>
-        </template>
-
-        <div>
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div v-if="$page.props.jetstream.canUpdateProfileInformation">
-                    <UpdateProfileInformationForm :user="$page.props.auth.user"/>
-
-                    <SectionBorder/>
-                </div>
-
-                <div v-if="$page.props.jetstream.canUpdatePassword && $page.props.socialstream.hasPassword">
-                    <UpdatePasswordForm class="mt-10 sm:mt-0"/>
-
-                    <SectionBorder/>
-                </div>
-
-                <div v-else>
-                    <SetPasswordForm class="mt-10 sm:mt-0"/>
-
-                    <SectionBorder/>
-                </div>
-
+        <!-- Background and padding -->
+        <div class="bg-gradient-to-br from-background to-background/50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-5xl mx-auto space-y-8">
+                <!-- Profile Info -->
                 <div
-                    v-if="$page.props.jetstream.canManageTwoFactorAuthentication && $page.props.socialstream.hasPassword">
-                    <TwoFactorAuthenticationForm :requires-confirmation="confirmsTwoFactorAuthentication"
-                                                 class="mt-10 sm:mt-0"/>
-
-                    <SectionBorder/>
+                    v-if="$page.props.jetstream.canUpdateProfileInformation"
+                    class="bg-white shadow-md rounded-2xl p-6"
+                >
+                    <UpdateProfileInformationForm :user="$page.props.auth.user" />
                 </div>
 
-                <div v-if="$page.props.socialstream.show">
-                    <ConnectedAccountsForm class="mt-10 sm:mt-0"/>
+                <!-- Update Password -->
+                <div
+                    v-if="$page.props.jetstream.canUpdatePassword && $page.props.socialstream.hasPassword"
+                    class="bg-white shadow-md rounded-2xl p-6"
+                >
+                    <UpdatePasswordForm />
                 </div>
 
-                <div v-if="$page.props.socialstream.hasPassword">
-                    <SectionBorder/>
-
-                    <LogoutOtherBrowserSessionsForm :sessions="sessions" class="mt-10 sm:mt-0"/>
+                <!-- Set Password -->
+                <div
+                    v-else
+                    class="bg-white shadow-md rounded-2xl p-6"
+                >
+                    <SetPasswordForm />
                 </div>
 
-                <template
-                    v-if="$page.props.jetstream.hasAccountDeletionFeatures && $page.props.socialstream.hasPassword">
-                    <SectionBorder/>
+                <!-- Two-Factor Auth -->
+                <div
+                    v-if="$page.props.jetstream.canManageTwoFactorAuthentication && $page.props.socialstream.hasPassword"
+                    class="bg-white shadow-md rounded-2xl p-6"
+                >
+                    <TwoFactorAuthenticationForm :requires-confirmation="confirmsTwoFactorAuthentication" />
+                </div>
 
-                    <DeleteUserForm class="mt-10 sm:mt-0"/>
-                </template>
+                <!-- Connected Accounts -->
+                <div
+                    v-if="$page.props.socialstream.show"
+                    class="bg-white shadow-md rounded-2xl p-6"
+                >
+                    <ConnectedAccountsForm />
+                </div>
+
+                <!-- Logout Sessions -->
+                <div
+                    v-if="$page.props.socialstream.hasPassword"
+                    class="bg-white shadow-md rounded-2xl p-6"
+                >
+                    <LogoutOtherBrowserSessionsForm :sessions="sessions" />
+                </div>
+
+                <!-- Account Deletion -->
+                <div
+                    v-if="$page.props.jetstream.hasAccountDeletionFeatures && $page.props.socialstream.hasPassword"
+                    class="bg-white shadow-md rounded-2xl p-6"
+                >
+                    <DeleteUserForm />
+                </div>
             </div>
         </div>
     </AppLayout>

@@ -30,6 +30,7 @@ Route::middleware([
         Route::post('/resources', 'store')->name('resources.store');
     });
 
+    // Voting
     Route::controller(UpvoteController::class)->group(function () {
         Route::post('/upvote/{type}/{id}', 'upvote')->name('upvote');
         Route::post('/downvote/{type}/{id}', 'downvote')->name('downvote');

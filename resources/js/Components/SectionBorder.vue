@@ -1,7 +1,5 @@
 <template>
     <div class="hidden sm:block">
-        <div class="py-8">
-            <div class="border-t border-gray-200 dark:border-gray-700" />
-        </div>
+        <div class="rounded border-primary/50 border-t-4" />
     </div>
 </template>

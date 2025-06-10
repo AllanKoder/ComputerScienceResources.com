@@ -7,6 +7,7 @@ import UserDropdown from "@/Components/Navbar/UserDropdown.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import ProfilePhoto from '@/Components/ProfilePhoto.vue';
 
 const showingNavigationDropdown = ref(false);
 
@@ -147,6 +148,7 @@ const logout = () => {
                                 class="size-10 rounded-full object-cover"
                                 :src="$page.props.auth.user.profile_photo_url"
                                 :alt="$page.props.auth.user.name"
+                                is="ProfilePhoto"
                             />
                         </div>
 
