@@ -30,11 +30,11 @@ const toggleCollapse = () => {
 <template>
     <div class="comments-list relative" :class="{'ml-4': parentId != null}">
         <!-- Collapse/Expand Control -->
-        <div 
-            v-if="parentId != null" 
+        <div
+            v-if="parentId != null"
             class="absolute left-0 top-0 bottom-0 flex items-center"
         >
-        
+
         <div
             v-if="!isCollapsed"
             class="relative h-full cursor-pointer"
@@ -43,18 +43,18 @@ const toggleCollapse = () => {
             @click="toggleCollapse"
         >
             <!-- Invisible clickable area -->
-            <div 
+            <div
                 class="absolute inset-y-0 left-1/2 transform -translate-x-1/2 w-8 bg-transparent"
             ></div>
 
             <!-- Visible line -->
-            <div 
+            <div
                 class="w-[1.2px] h-full bg-gray-300 transition-colors duration-200"
-                :class="{'bg-gray-500': isNearCollapsing}"
+                :class="{'bg-primary': isNearCollapsing}"
             ></div>
         </div>
 
-            <button 
+            <button
                 v-else
                 class="p-1 rounded-full border border-gray-300 bg-white hover:border-gray-500 hover:bg-gray-100 transition-colors duration-200"
                 @click="toggleCollapse"

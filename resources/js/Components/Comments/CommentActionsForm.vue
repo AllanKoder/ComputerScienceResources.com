@@ -90,7 +90,7 @@ const submit = () => {
                     :disabled="form.processing"
                     class="flex items-center gap-2"
                 >
-                    <Icon icon="mdi:send" class="w-4 h-4" />
+                    <Icon icon="mdi:send" class="w-4 h-4 " />
                     Submit
                 </PrimaryButton>
             </div>
