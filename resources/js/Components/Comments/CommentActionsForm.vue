@@ -80,6 +80,7 @@ const submit = () => {
         </div>
 
         <form v-if="isOpen" @submit.prevent="submit" class="space-y-2 mt-2">
+            <!-- TODO: SHOW THE REPLY AT FULL WIDTH, IT IS SHRINKING (WHATEVER) -->
             <TextArea
                 v-model="form.content"
                 placeholder="Write your comment..."

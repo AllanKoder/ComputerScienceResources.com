@@ -11,14 +11,15 @@ use JoelButcher\Socialstream\SetsProfilePhotoFromUrl;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use App\Traits\HasCustomProfilePhoto;
 
 class User extends Authenticatable
 {
     use HasApiTokens;
     use HasConnectedAccounts;
     use HasFactory;
-    use HasProfilePhoto {
-        HasProfilePhoto::profilePhotoUrl as getPhotoUrl;
+    use HasProfilePhoto, HasCustomProfilePhoto {
+        HasCustomProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
     use Notifiable;
     use SetsProfilePhotoFromUrl;
