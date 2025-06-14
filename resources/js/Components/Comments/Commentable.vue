@@ -23,7 +23,7 @@ const props = defineProps({
     },
     paginationLimit: {
         type: Number,
-        default: 5,
+        default: -1,
     },
     sortByInitialValue: {
         type: String,
@@ -186,7 +186,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="comments-section bg-white rounded-lg p-1 mt-8">
+    <div class="comments-section bg-white rounded-lg p-1 mt-2">
         <SortByDropdown
             v-if="props.hasSortByDropdown && hasOpenedComments"
             @change="handleSortChange"
@@ -208,7 +208,7 @@ onMounted(() => {
             <button
                 v-if="canLoadMoreComments && !isLoading"
                 @click="loadComments"
-                class="w-full py-2 text-center text-blue-500 hover:bg-gray-50 transition-colors"
+                class="w-full py-2 text-center text-primary hover:bg-background/50 transition-colors"
             >
                 View {{ commentsLeft }} Comments
             </button>

@@ -31,10 +31,9 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request)
     {
-        Log::debug("Called store on comment controller");
         $validatedData = $request->validated();
+        Log::debug("Comment Controller Store", ['validated data' => $validatedData]);
 
-        Log::debug("Data validated and is " . json_encode($validatedData));
         $comment = new Comment;
         $comment->content = $validatedData['content'];
         $comment->user_id = Auth::id();
@@ -47,7 +46,6 @@ class CommentController extends Controller
         if (!$model) {
             return response()->json(['message' => 'Model not found'], 404);
         }
-        Log::debug("Resolved model class: " . $commentableType);
 
         // Set the commentable type
         $comment->commentable_type = $commentableType;
@@ -130,7 +128,13 @@ class CommentController extends Controller
             $commentableType
         );
 
-        Log::debug("New saved comment is " . json_encode($comment));
+        Log::debug("New comment saved", [
+            'comment_id' => $comment->id,
+            'user_id' => $comment->user_id,
+            'commentable_type' => $comment->commentable_type,
+            'commentable_id' => $comment->commentable_id,
+            'depth' => $comment->depth
+        ]);
         return response()->json([
             'new_comment' => new CommentResource($comment),
             'user' => new UserResource(Auth::user()),
@@ -149,7 +153,13 @@ class CommentController extends Controller
 
         $sortBy = $request->query('sort_by', 'top');
 
-        Log::debug("Request is, commentable_type: " .  $commentableKey . ". id: " . $commentableId . ". index: " . $index . ". Sorting: " . $sortBy);
+        Log::debug("Processing comment show request", [
+            'commentable_key' => $commentableKey,
+            'commentable_id' => $commentableId,
+            'index' => $index,
+            'sort_by' => $sortBy,
+            'pagination_limit' => $paginationLimit
+        ]);
         $paginatedResults = $this->commentService->getPaginatedComments($commentableKey, $commentableId, $index, $paginationLimit, $sortBy);
 
         return $paginatedResults;

@@ -48,32 +48,33 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 
 <template>
     <div>
-        <Upvotable
-            :upvotable-key="'review'"
-            :upvotable-id="props.review.id"
-            :initial-votes="props.review.vote_score"
-            :user-vote="props.review.user_vote"
-        />
-
         <!-- Edit Mode -->
         <div v-if="editing">
             <div class="flex justify-end mb-2">
                 <Button
-                    label="Cancel Edit"
-                    severity="secondary"
-                    @click="requestCancelEdit"
+                label="Cancel Edit"
+                severity="secondary"
+                @click="requestCancelEdit"
                 />
             </div>
             <UpdateResourceReview
-                :resource-id="props.review.computer_science_resource_id"
-                :resource-review="props.review"
+            :resource-id="props.review.computer_science_resource_id"
+            :resource-review="props.review"
             />
         </div>
-
         <!-- Normal View Mode -->
         <div v-else>
             <div class="flex justify-between items-center mb-4">
-                <h3 class="text-xl font-semibold">{{ review.title }}</h3>
+                <div class="flex-row flex gap-4">
+                    <Upvotable
+                        :upvotable-key="'review'"
+                        :upvotable-id="props.review.id"
+                        :initial-votes="props.review.vote_score"
+                        :user-vote="props.review.user_vote"
+                        />
+
+                    <h3 class="text-xl font-semibold my-auto">{{ review.title }}</h3>
+                </div>
                 <div class="flex items-center gap-2">
                     <span class="mr-2 font-medium">Rating:</span>
                     <Rating

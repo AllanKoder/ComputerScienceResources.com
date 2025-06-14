@@ -46,7 +46,13 @@ class CommentService
         ]);
 
         $commentableType = $this->modelResolver->getModelClass($commentableKey);
-        Log::debug("Request is, commentable_type: {$commentableType}. id: {$commentableId}. index: {$index}");
+        Log::debug("Getting paginated comments", [
+            'commentable_type' => $commentableType,
+            'commentable_id' => $commentableId,
+            'index' => $index,
+            'sort_by' => $sortBy,
+            'pagination_limit' => $paginationLimit
+        ]);
 
         // Get the root comments:
         $query = Comment::where([
@@ -59,7 +65,11 @@ class CommentService
         $query = app(GeneralVotesSortingManager::class)->applySort($query, $sortBy, Comment::class);
 
         $rootComments = $query->get();
-        Log::debug("Root comments: " . json_encode($rootComments));
+        Log::debug("Root comments retrieved", [
+            'count' => $rootComments->count(),
+            'commentable_type' => $commentableType,
+            'commentable_id' => $commentableId
+        ]);
 
         // Initialize variables
         $currentCommentsSum = 0;
@@ -73,8 +83,7 @@ class CommentService
             // Handle comments that exceed MAX when alone in a page
             if ($currentCommentsSum + $childrenCount > $paginationLimit) {
                 if ($currentCommentsSum === 0) {
-                    // Force include oversized comment if it's the first in page
-                    Log::warning("Had to force include for oversized comment tree. Should consider increasing the max commentx in config or lowering the replies size limit.");
+                    // Force include oversized comment
                     if ($currentIndex === $index) {
                         $resultingPaginatedComments[] = $comment;
                         $currentCommentsSum += $childrenCount;
@@ -131,7 +140,12 @@ class CommentService
             }
         }
 
-        Log::debug("Returned comments: " . json_encode($flattenedComments));
+        Log::debug("Returning paginated comments", [
+            'comments_count' => $flattenedComments->count(),
+            'users_count' => $users->count(),
+            'has_more_comments' => $hasMoreComments,
+            'current_index' => $index
+        ]);
         return [
             'comments' => $flattenedComments,
             'users' => $users->values(),

@@ -23,15 +23,18 @@ class UpdateCommentsCount
      */
     public function handle(CommentCreated $event): void
     {
-        Log::debug("Handling comment created: " . json_encode($event));
+        Log::debug("Handling comment created", [
+            'commentable_type' => $event->commentable_type,
+            'commentable_id' => $event->commentable_id
+        ]);
 
         $commentsCount = CommentsCount::firstOrNew(
             [
-                'commentable_type' => $event->commentable_type, 
+                'commentable_type' => $event->commentable_type,
                 'commentable_id' => $event->commentable_id
             ]
         );
-        
+
         // Add 1
         $commentsCount->count = $commentsCount->count + 1;
 

@@ -172,7 +172,7 @@ const submitReview = async (event) => {
 </script>
 
 <template>
-    <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-6 relative">
+    <div class="mx-auto bg-white shadow-lg rounded-2xl p-6 relative">
         <!-- Saved to localStorage indicator -->
         <div
             v-if="isSavedToLocalStorage && hasFormContent"

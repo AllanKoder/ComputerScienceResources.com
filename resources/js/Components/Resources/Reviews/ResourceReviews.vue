@@ -20,7 +20,7 @@ const showForm = ref(false);
 </script>
 
 <template>
-    <div class="px-6 max-w-4xl mx-auto">
+    <div class="px-6 max-w-6xl mx-auto">
         <!-- Toggle Button -->
         <div class="flex justify-end mb-4">
             <PrimaryButton

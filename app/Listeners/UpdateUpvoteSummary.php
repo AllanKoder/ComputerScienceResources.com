@@ -20,10 +20,15 @@ class UpdateUpvoteSummary
 
     /**
      * Handle the event.
-     */ 
+     */
     public function handle(UpvoteProcessed $event): void
     {
-        Log::debug("Handling UpvoteProcessed: " . json_encode($event));
+        Log::debug("Handling UpvoteProcessed", [
+            'upvotable_id' => $event->id,
+            'upvotable_type' => $event->type,
+            'previous_value' => $event->previousValue,
+            'new_value' => $event->newValue
+        ]);
 
         $summary = UpvoteSummary::firstOrNew([
             'upvotable_id' => $event->id,
