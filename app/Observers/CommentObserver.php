@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Comment;
 use App\Models\CommentsCount;
 use Illuminate\Support\Facades\Log;
+use App\Models\UpvoteSummary;
 
 class CommentObserver
 {
@@ -18,6 +19,12 @@ class CommentObserver
             'commentable_id' => $comment->commentable_id
         ]);
 
+        // Create the upvotes summary
+        UpvoteSummary::create([
+            'upvotable_id' => $comment->id,
+            'upvotable_type' => Comment::class,
+        ]);
+
         $commentsCount = CommentsCount::firstOrNew(
             [
                 'commentable_type' => $comment->commentable_type,
@@ -25,8 +32,8 @@ class CommentObserver
             ]
         );
 
-        // Add 1
-        $commentsCount->count = $commentsCount->count + 1;
+        // Add 1 to the count (handle null case)
+        $commentsCount->count = ($commentsCount->count ?? 0) + 1;
 
         $commentsCount->save();
     }
@@ -44,7 +51,28 @@ class CommentObserver
      */
     public function deleted(Comment $comment): void
     {
-        //
+        Log::debug("Handling comment deleted", [
+            'comment_id' => $comment->id,
+            'commentable_type' => $comment->commentable_type,
+            'commentable_id' => $comment->commentable_id
+        ]);
+
+        // Decrease the comment count
+        $commentsCount = CommentsCount::where([
+            'commentable_type' => $comment->commentable_type,
+            'commentable_id' => $comment->commentable_id
+        ])->first();
+
+        if ($commentsCount) {
+            $commentsCount->count = max(0, ($commentsCount->count ?? 1) - 1);
+            $commentsCount->save();
+        }
+
+        // Delete the upvote summary for this comment
+        UpvoteSummary::where([
+            'upvotable_id' => $comment->id,
+            'upvotable_type' => Comment::class,
+        ])->delete();
     }
 
     /**

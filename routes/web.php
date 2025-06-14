@@ -65,7 +65,7 @@ Route::controller(ComputerScienceResourceController::class)->group(function () {
 
 // Comments
 Route::controller(CommentController::class)->group(function () {
-    Route::get('/comments/show/{type}/{id}/{index}/{paginationLimit?}', 'show')->name('comments.show');
+    Route::get('/comments/show/{commentableKey}/{commentableId}/{index}/{paginationLimit?}', 'show')->name('comments.show');
 });
 
 Route::controller(TagFrequencyController::class)->group(function () {

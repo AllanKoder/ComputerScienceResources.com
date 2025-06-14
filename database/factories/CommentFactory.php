@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Events\CommentCreated;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
 use App\Models\Comment;
@@ -26,10 +25,10 @@ class CommentFactory extends Factory
         $commentableKey = $this->faker->randomElement(['comment', 'resource']);
         $modelResolver = app(ModelResolverService::class);
         $modelClass = $modelResolver->getModelClass($commentableKey);
-    
+
         // Use an existing user or create one.
         $user = User::inRandomOrder()->first() ?? User::factory()->create();
-    
+
         // If the commentable type is a Comment, it means this new comment is a reply.
         if ($modelClass === Comment::class) {
             // Get an existing comment or create one if none exists.
@@ -37,7 +36,7 @@ class CommentFactory extends Factory
 
             $commentableId = $existingComment->commentable_id;
             $commentableType = $existingComment->commentable_type;
-    
+
             // Since it's a recursive comment, the existing comment becomes the parent.
             $parent = $existingComment;
             $parentCommentId = $parent->id;
@@ -49,13 +48,13 @@ class CommentFactory extends Factory
             $commenting = $modelClass::inRandomOrder()->first() ?? $modelClass::factory()->create();
             $commentableId = $commenting->id;
             $commentableType = $modelClass;
-    
+
             // For non-comment targets we always create a top-level comment.
             $parentCommentId = null;
             $rootCommentId = null;
             $depth = 1;
         }
-    
+
         return [
             'user_id' => $user->id,
             'content' => $this->faker->paragraph,
@@ -66,18 +65,5 @@ class CommentFactory extends Factory
             'depth' => $depth,
             'children_count' => 0,
         ];
-    }
-        
-    public function configure()
-    {
-        // TODO: Consider making the increment part of the dispatch event?
-        return $this->afterCreating(function (Comment $comment) {
-            if ($comment->root_comment_id) {
-                Comment::where('id', $comment->root_comment_id)
-                    ->increment('children_count');
-            }
-
-            CommentCreated::dispatch($comment->commentable_id, $comment->commentable_type);
-        });
     }
 }

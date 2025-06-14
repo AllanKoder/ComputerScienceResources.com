@@ -18,7 +18,7 @@ class VoteSortingStrategy implements SortingStrategy
         $modelClass = get_class($query->getModel());
 
         # Join on polymorphic relationship
-        $query->join('upvote_summaries', function ($join) use ($table, $modelClass) {
+        $query->leftJoin('upvote_summaries', function ($join) use ($table, $modelClass) {
             $join->on('upvote_summaries.upvotable_id', '=', "{$table}.id")
                  ->where('upvote_summaries.upvotable_type', '=', $modelClass);
         })->select("{$table}.*");

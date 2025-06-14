@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Comment;
 use App\Models\User;
 use App\Models\ComputerScienceResource;
+use App\Models\UpvoteSummary;
 use App\Services\ModelResolverService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -309,8 +310,8 @@ class CommentsTest extends TestCase
 
         do {
             $response = $this->getJson(route('comments.show', [
-                'type' => 'resource',
-                'id' => $resource->id,
+                'commentableKey' => 'resource',
+                'commentableId' => $resource->id,
                 'index' => $index,
             ]));
 
@@ -328,5 +329,155 @@ class CommentsTest extends TestCase
             $postedCommentIds,
             $retrievedCommentIds
         );
+    }
+
+    /**
+     * Test that upvote summaries are created for both root comments and reply comments.
+     */
+    public function test_upvote_summaries_created_for_comments()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $resource = ComputerScienceResource::factory()->create();
+
+        // Create a top-level comment.
+        $topPayload = [
+            'content' => 'Top level comment for upvote summary test.',
+            'commentable_key' => 'resource',
+            'commentable_id' => $resource->id,
+            'parent_comment_id' => null,
+        ];
+        $topResponse = $this->postJson(route('comments.store'), $topPayload);
+        $topResponse->assertStatus(200);
+        $topCommentId = $topResponse->json('new_comment.id');
+
+        // Upvote the top-level comment.
+        $this->postJson(route('comments.upvote', $topCommentId));
+        $this->assertDatabaseHas('upvote_summaries', [
+            'comment_id' => $topCommentId,
+            'upvote_count' => 1,
+        ]);
+
+        // Create a reply to the top-level comment.
+        $replyPayload = [
+            'content' => 'This is a reply to the top level comment.',
+            'commentable_key' => 'resource',
+            'commentable_id' => $resource->id,
+            'parent_comment_id' => $topCommentId,
+        ];
+        $replyResponse = $this->postJson(route('comments.store'), $replyPayload);
+        $replyResponse->assertStatus(200);
+        $replyCommentId = $replyResponse->json('new_comment.id');
+
+        // Upvote the reply comment.
+        $this->postJson(route('comments.upvote', $replyCommentId));
+        $this->assertDatabaseHas('upvote_summaries', [
+            'comment_id' => $replyCommentId,
+            'upvote_count' => 1,
+        ]);
+    }
+
+    /**
+     * Test that upvote summaries are created for all comments (root and replies).
+     */
+    public function test_upvote_summaries_created_for_all_comments()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $resource = ComputerScienceResource::factory()->create();
+
+        // Create a root comment
+        $rootCommentPayload = [
+            'content' => 'This is a root comment.',
+            'commentable_key' => 'resource',
+            'commentable_id' => $resource->id,
+            'parent_comment_id' => null,
+        ];
+
+        $rootResponse = $this->postJson(route('comments.store'), $rootCommentPayload);
+        $rootResponse->assertStatus(200);
+        $rootCommentId = $rootResponse->json('new_comment.id');
+
+        // Verify upvote summary was created for root comment
+        $this->assertDatabaseHas('upvote_summaries', [
+            'upvotable_id' => $rootCommentId,
+            'upvotable_type' => Comment::class,
+        ]);
+
+        // Create a reply comment
+        $replyCommentPayload = [
+            'content' => 'This is a reply comment.',
+            'commentable_key' => 'resource',
+            'commentable_id' => $resource->id,
+            'parent_comment_id' => $rootCommentId,
+        ];
+
+        $replyResponse = $this->postJson(route('comments.store'), $replyCommentPayload);
+        $replyResponse->assertStatus(200);
+        $replyCommentId = $replyResponse->json('new_comment.id');
+
+        // Verify upvote summary was created for reply comment
+        $this->assertDatabaseHas('upvote_summaries', [
+            'upvotable_id' => $replyCommentId,
+            'upvotable_type' => Comment::class,
+        ]);
+
+        // Also test commenting on a comment directly
+        $commentOnCommentPayload = [
+            'content' => 'This is a comment on a comment.',
+            'commentable_key' => 'comment',
+            'commentable_id' => $rootCommentId,
+            'parent_comment_id' => null,
+        ];
+
+        $commentOnCommentResponse = $this->postJson(route('comments.store'), $commentOnCommentPayload);
+        $commentOnCommentResponse->assertStatus(200);
+        $commentOnCommentId = $commentOnCommentResponse->json('new_comment.id');
+
+        // Verify upvote summary was created for comment on comment
+        $this->assertDatabaseHas('upvote_summaries', [
+            'upvotable_id' => $commentOnCommentId,
+            'upvotable_type' => Comment::class,
+        ]);
+
+        // Verify that we have exactly 3 upvote summaries for comments
+        $upvoteSummariesCount = UpvoteSummary::where('upvotable_type', Comment::class)->count();
+        $this->assertEquals(3, $upvoteSummariesCount);
+    }
+
+    /**
+     * Test that upvote summaries are cleaned up when comments are deleted.
+     */
+    public function test_upvote_summaries_cleaned_up_when_comments_deleted()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $resource = ComputerScienceResource::factory()->create();
+
+        // Create a comment
+        $comment = Comment::factory()->create([
+            'user_id' => $user->id,
+            'commentable_type' => ComputerScienceResource::class,
+            'commentable_id' => $resource->id,
+            'content' => 'Test comment for deletion',
+        ]);
+
+        // Verify upvote summary exists
+        $this->assertDatabaseHas('upvote_summaries', [
+            'upvotable_id' => $comment->id,
+            'upvotable_type' => Comment::class,
+        ]);
+
+        // Delete the comment
+        $comment->delete();
+
+        // Verify upvote summary was deleted
+        $this->assertDatabaseMissing('upvote_summaries', [
+            'upvotable_id' => $comment->id,
+            'upvotable_type' => Comment::class,
+        ]);
     }
 }

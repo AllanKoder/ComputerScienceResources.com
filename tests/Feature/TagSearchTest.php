@@ -30,7 +30,7 @@ class TagSearchTest extends TestCase
 
     public function test_can_search_tags_by_prefix()
     {
-        $this->createResource(['tags'=>['python' => 100, 'pygame' => 50, 'java' => 500]]);
+        $this->createResource(['general_tags'=>['python' => 100, 'pygame' => 50, 'java' => 500]]);
 
         $response = $this->getJson(route('tags.search', ['query' => 'py']));
 
