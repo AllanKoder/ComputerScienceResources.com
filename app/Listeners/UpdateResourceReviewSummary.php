@@ -25,10 +25,8 @@ class UpdateResourceReviewSummary
     {
         Log::debug("Handling ResourceReviewProcessed", [
             'resource_id' => $event->resource,
-            'has_old_review' => $event->oldReview !== null,
-            'has_new_review' => $event->newReview !== null,
-            'old_review_id' => $event->oldReview?->id,
-            'new_review_id' => $event->newReview?->id
+            'old_review' => $event->oldReview,
+            'new_review' => $event->newReview
         ]);
 
         if ($event->oldReview == null && $event->newReview == null) {

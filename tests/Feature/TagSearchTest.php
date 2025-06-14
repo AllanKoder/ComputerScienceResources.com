@@ -10,12 +10,14 @@ use App\Models\User;
 use App\Services\ResourceEditsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
+use Tests\Feature\Utils\ResourceUtils;
 use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 
 class TagSearchTest extends TestCase
 {
     use RefreshDatabase;
+    use ResourceUtils;
 
     protected $user;
 
@@ -28,7 +30,7 @@ class TagSearchTest extends TestCase
 
     public function test_can_search_tags_by_prefix()
     {
-        TagFrequencyChanged::dispatch(null, ['python' => 100, 'pygame' => 50, 'java' => 500]);
+        $this->createResource(['tags'=>['python' => 100, 'pygame' => 50, 'java' => 500]]);
 
         $response = $this->getJson(route('tags.search', ['query' => 'py']));
 

@@ -145,7 +145,7 @@ trait HasVotes
         $vote = $this->votes->where('user_id', $userId)->first();
         return $vote ? $vote->value : 0;
     }
- 
+
     /**
      * Vote on the model.
      */

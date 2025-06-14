@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\CommentCreated;
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Models\Comment;
@@ -123,10 +122,6 @@ class CommentController extends Controller
         }
 
         $comment->save();
-        CommentCreated::dispatch(
-            $commentableId,
-            $commentableType
-        );
 
         Log::debug("New comment saved", [
             'comment_id' => $comment->id,
@@ -138,7 +133,7 @@ class CommentController extends Controller
         return response()->json([
             'new_comment' => new CommentResource($comment),
             'user' => new UserResource(Auth::user()),
-        ]);;
+        ]);
     }
 
     /**

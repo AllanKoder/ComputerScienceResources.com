@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ComputerScienceResourceObserver;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,9 @@ use Spatie\Tags\HasTags;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy([ComputerScienceResourceObserver::class])]
 class ComputerScienceResource extends Model
 {
     /** @use HasFactory<\Database\Factories\ComputerScienceResourceFactory> */

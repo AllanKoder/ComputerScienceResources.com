@@ -268,6 +268,7 @@ class CommentsTest extends TestCase
     public function test_paginated_comment_retrieval_returns_all_posted_comments()
     {
         config(['comment.pagination_limit' => 5]); // simulate a small page size
+        config(['comment.default_pagination_limit' => 2]); // simulate a small page size
 
         $user = User::factory()->create();
         $this->actingAs($user);
