@@ -54,6 +54,13 @@ export const resourceReviewFields = object({
         .min(1, "Minimum is 1.")
         .max(5, "Maximum is 5."),
     pros: array()
+        .transform((_value, originalValue) => {
+            // Handle case where PrimeVue might pass a string instead of array
+            if (typeof originalValue === 'string') {
+                return originalValue.trim() ? [originalValue.trim()] : [];
+            }
+            return Array.isArray(originalValue) ? originalValue : [];
+        })
         .of(
             string()
                 .max(200, "Each pro must have 200 characters or less.")
@@ -61,6 +68,13 @@ export const resourceReviewFields = object({
         )
         .required("Pros are required."),
     cons: array()
+        .transform((_value, originalValue) => {
+            // Handle case where PrimeVue might pass a string instead of array
+            if (typeof originalValue === 'string') {
+                return originalValue.trim() ? [originalValue.trim()] : [];
+            }
+            return Array.isArray(originalValue) ? originalValue : [];
+        })
         .of(
             string()
                 .max(200, "Each con must have 200 characters or less.")

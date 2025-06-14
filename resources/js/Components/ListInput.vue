@@ -36,10 +36,8 @@ watch(
 watch(
     items,
     (newItems) => {
-        emit(
-            "change",
-            newItems.filter((item) => item !== "")
-        );
+        const filteredItems = newItems.filter((item) => item !== "");
+        emit("change", filteredItems);
     },
     { deep: true, immediate: true }
 );
@@ -72,6 +70,7 @@ const updateItem = (index, value) => {
                 @input="(event) => updateItem(index, event.target.value)"
                 placeholder="Enter an item"
                 class="flex-grow"
+                :name="`list-item-${index}`"
             />
             <button
                 type="button"
