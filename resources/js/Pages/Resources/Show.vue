@@ -524,8 +524,8 @@ const sortingType = urlParams.get("sort_by") || "top";
                         :class="[
                             'py-2 border-b-2 font-medium transition-all duration-200',
                             props.tab === tab.value
-                                ? 'border-blue-600 text-blue-600'
-                                : 'border-transparent text-gray-600 hover:text-blue-600 hover:border-blue-600',
+                                ? 'border-primary text-primary'
+                                : 'border-transparent text-gray-600',
                         ]"
                     >
                         <Link

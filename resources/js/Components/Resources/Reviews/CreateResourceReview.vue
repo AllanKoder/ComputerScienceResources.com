@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { useForm } from "@inertiajs/vue3";
 
 import { Form, FormField } from "@primevue/forms";
@@ -34,6 +34,110 @@ const form = useForm({
 });
 
 const resolver = ref(yupResolver(resourceReviewFields));
+const isSavedToLocalStorage = ref(false);
+const isSubmitting = ref(false);
+
+// LocalStorage key for this resource's review draft
+const localStorageKey = computed(() => `review-draft-${props.resourceId}`);
+
+// Check if form has any content
+const hasFormContent = computed(() => {
+    return (
+        form.title.trim() !== "" ||
+        form.description.trim() !== "" ||
+        form.community !== null ||
+        form.teaching_clarity !== null ||
+        form.engagement !== null ||
+        form.practicality !== null ||
+        form.user_friendliness !== null ||
+        form.updates !== null ||
+        form.pros.length > 0 ||
+        form.cons.length > 0
+    );
+});
+
+// Save form data to localStorage
+const saveToLocalStorage = () => {
+    if (hasFormContent.value) {
+        const formData = {
+            title: form.title,
+            description: form.description,
+            community: form.community,
+            teaching_clarity: form.teaching_clarity,
+            engagement: form.engagement,
+            practicality: form.practicality,
+            user_friendliness: form.user_friendliness,
+            updates: form.updates,
+            pros: form.pros,
+            cons: form.cons,
+            savedAt: new Date().toISOString()
+        };
+        localStorage.setItem(localStorageKey.value, JSON.stringify(formData));
+        isSavedToLocalStorage.value = true;
+    } else {
+        // Remove from localStorage if form is empty
+        localStorage.removeItem(localStorageKey.value);
+        isSavedToLocalStorage.value = false;
+    }
+};
+
+// Load form data from localStorage
+const loadFromLocalStorage = () => {
+    const savedData = localStorage.getItem(localStorageKey.value);
+    if (savedData) {
+        try {
+            const parsedData = JSON.parse(savedData);
+            form.title = parsedData.title || "";
+            form.description = parsedData.description || "";
+            form.community = parsedData.community;
+            form.teaching_clarity = parsedData.teaching_clarity;
+            form.engagement = parsedData.engagement;
+            form.practicality = parsedData.practicality;
+            form.user_friendliness = parsedData.user_friendliness;
+            form.updates = parsedData.updates;
+            form.pros = parsedData.pros || [];
+            form.cons = parsedData.cons || [];
+            isSavedToLocalStorage.value = true;
+        } catch (error) {
+            console.error('Error loading saved review:', error);
+        }
+    }
+};
+
+// Watch for changes and save to localStorage with debounce
+let saveTimeout;
+watch(
+    () => [
+        form.title,
+        form.description,
+        form.community,
+        form.teaching_clarity,
+        form.engagement,
+        form.practicality,
+        form.user_friendliness,
+        form.updates,
+        form.pros,
+        form.cons,
+    ],
+    () => {
+        if (!isSubmitting.value) {
+            // Debounce the save operation
+            clearTimeout(saveTimeout);
+            saveTimeout = setTimeout(() => {
+                saveToLocalStorage();
+            }, 500); // Save after 500ms of inactivity
+        }
+    },
+    { deep: true }
+);
+
+onMounted(() => {
+    loadFromLocalStorage();
+});
+
+onUnmounted(() => {
+    clearTimeout(saveTimeout);
+});
 
 const submitReview = (event) => {
     if (!event.valid) {
@@ -41,17 +145,43 @@ const submitReview = (event) => {
         return;
     }
 
+    isSubmitting.value = true;
+
     form.post(
         route("reviews.store", {
             computerScienceResource: props.resourceId,
         }),
-        { preserveScroll: true }
+        {
+            preserveScroll: true,
+            onFinish: () => {
+                isSubmitting.value = false;
+            },
+            onSuccess: () => {
+                // Clear localStorage on successful submission
+                localStorage.removeItem(localStorageKey.value);
+                isSavedToLocalStorage.value = false;
+            },
+            onError: () => {
+                isSubmitting.value = false;
+            }
+        }
     );
 };
 </script>
 
 <template>
-    <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-6">
+    <div class="max-w-3xl mx-auto bg-white shadow-lg rounded-2xl p-6 relative">
+        <!-- Saved to localStorage indicator -->
+        <div
+            v-if="isSavedToLocalStorage && hasFormContent"
+            class="absolute top-4 right-4 bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1"
+        >
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+            </svg>
+            Saved to local storage
+        </div>
+
         <h2 class="text-2xl font-semibold mb-6">Write a Review</h2>
 
         <Form

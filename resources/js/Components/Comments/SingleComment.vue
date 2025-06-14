@@ -49,8 +49,8 @@ const formattedDate = computed(() =>
                     :alt="'User Avator'"
                 />
                 <div class="min-w-0">
-                    <p class="font-semibold text-gray-800 truncate">
-                        {{ users.get(comment.id)?.name }}
+                    <p class="text-sm text-gray-800 truncate">
+                        {{ users.get(comment.user_id)?.name }}
                     </p>
                     <time
                         :datetime="comment.created_at"

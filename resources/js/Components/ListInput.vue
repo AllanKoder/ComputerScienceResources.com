@@ -18,6 +18,21 @@ const props = defineProps({
 
 const items = ref([...props.initialValues]);
 
+// Watch for changes to initialValues (e.g., when loading from localStorage)
+watch(
+    () => props.initialValues,
+    (newInitialValues) => {
+        // Only update if the content is actually different to avoid unnecessary updates
+        const currentFiltered = items.value.filter(item => item !== "");
+        const newFiltered = newInitialValues.filter(item => item !== "");
+
+        if (JSON.stringify(currentFiltered) !== JSON.stringify(newFiltered)) {
+            items.value = [...newInitialValues];
+        }
+    },
+    { deep: true }
+);
+
 watch(
     items,
     (newItems) => {
