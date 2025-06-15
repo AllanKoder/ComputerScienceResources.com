@@ -98,6 +98,9 @@ class ComputerScienceResourceController extends Controller
             $resource->general_tags = $validatedData['general_tags'];
         }
 
+        // Dispatch tag frequency change event
+        TagFrequencyChanged::dispatch(null, $resource->tagCounter());
+
         Log::debug("Created resource " . json_encode($resource));
 
         return redirect(route('resources.show', ['computerScienceResource' => $resource->id]))

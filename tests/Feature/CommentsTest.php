@@ -353,10 +353,11 @@ class CommentsTest extends TestCase
         $topCommentId = $topResponse->json('new_comment.id');
 
         // Upvote the top-level comment.
-        $this->postJson(route('comments.upvote', $topCommentId));
+        $this->postJson(route('upvote', ['type'=>'comment', 'id'=>$topCommentId]));
         $this->assertDatabaseHas('upvote_summaries', [
-            'comment_id' => $topCommentId,
-            'upvote_count' => 1,
+            'upvotable_id' => $topCommentId,
+            'upvotable_type' => Comment::class,
+            'upvotes' => 1,
         ]);
 
         // Create a reply to the top-level comment.
@@ -371,10 +372,11 @@ class CommentsTest extends TestCase
         $replyCommentId = $replyResponse->json('new_comment.id');
 
         // Upvote the reply comment.
-        $this->postJson(route('comments.upvote', $replyCommentId));
+        $this->postJson(route('upvote', ['type'=>'comment', 'id'=>$replyCommentId]));
         $this->assertDatabaseHas('upvote_summaries', [
-            'comment_id' => $replyCommentId,
-            'upvote_count' => 1,
+            'upvotable_id' => $replyCommentId,
+            'upvotable_type' => Comment::class,
+            'upvotes' => 1,
         ]);
     }
 

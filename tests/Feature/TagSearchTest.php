@@ -30,15 +30,20 @@ class TagSearchTest extends TestCase
 
     public function test_can_search_tags_by_prefix()
     {
-        $this->createResource(['general_tags'=>['python' => 100, 'pygame' => 50, 'java' => 500]]);
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        $this->createResource(['general_tags'=> ['python', 'pygame', 'java']]);
+        $this->createResource(['general_tags'=> ['python', 'pygame']]);
+        $this->createResource(['general_tags'=> ['python']]);
 
         $response = $this->getJson(route('tags.search', ['query' => 'py']));
 
         $response->assertStatus(200);
         $response->assertJsonCount(2, 'tags'); // only 'python' and 'pygame'
 
-        $response->assertJsonFragment(['tag' => 'python', 'count' => 100]);
-        $response->assertJsonFragment(['tag' => 'pygame', 'count' => 50]);
+        $response->assertJsonFragment(['tag' => 'python', 'count' => 3]);
+        $response->assertJsonFragment(['tag' => 'pygame', 'count' => 2]);
 
         // Ensure order by count descending
         $tags = collect($response->json('tags'));

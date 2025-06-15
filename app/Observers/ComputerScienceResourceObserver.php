@@ -19,9 +19,8 @@ class ComputerScienceResourceObserver
             'upvotable_type' => ComputerScienceResource::class,
         ]);
 
-        // Dispatch tag frequency change event
-        TagFrequencyChanged::dispatch(null, $computerScienceResource->tagCounter());
-    }
+        // TagFrequencyChanged is in store ComputerScienceResource controller
+   }
 
     /**
      * Handle the ComputerScienceResource "updated" event.
