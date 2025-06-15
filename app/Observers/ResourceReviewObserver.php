@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\ResourceReviewProcessed;
 use App\Models\ResourceReview;
 use App\Models\UpvoteSummary;
 
@@ -17,6 +18,12 @@ class ResourceReviewObserver
             'upvotable_id' => $resourceReview->id,
             'upvotable_type' => ResourceReview::class,
         ]);
+
+        ResourceReviewProcessed::dispatch(
+            $resourceReview->computer_science_resource_id,
+            null,
+            $resourceReview->attributesToArray()
+        );
     }
 
     /**
@@ -24,7 +31,11 @@ class ResourceReviewObserver
      */
     public function updated(ResourceReview $resourceReview): void
     {
-        //
+        ResourceReviewProcessed::dispatch(
+            $resourceReview->computer_science_resource_id,
+            $resourceReview->getOriginal(),
+            $resourceReview->attributesToArray()
+        );
     }
 
     /**

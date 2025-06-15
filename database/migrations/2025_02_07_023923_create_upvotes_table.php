@@ -19,8 +19,6 @@ return new class extends Migration
             $table->morphs('upvotable');
 
             $table->unique(['upvotable_id','upvotable_type', 'user_id']);
-
-            $table->timestamps();
         });
     }
 

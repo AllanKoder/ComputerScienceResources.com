@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
+use App\Services\DataNormalizationService;
 use App\Http\Requests\ResourceEdit\StoreResourceEdit;
-use App\Http\Resources\ComputerScienceResourceResource;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Log;
 
 class ResourceEditsController extends Controller
 {
+    private DataNormalizationService $dataService;
+    public function __construct(
+        private DataNormalizationService $dataNormalizationService
+    )
+    {
+        $this->dataService = $dataNormalizationService;
+    }
+
     /**
      * Return the form to create a edit.
      */
@@ -26,18 +33,6 @@ class ResourceEditsController extends Controller
         ]);
     }
 
-
-    // TODO: Make an array facade or something
-    function normalize($array) {
-        ksort($array);
-        foreach ($array as &$value) {
-            if (is_array($value)) {
-                sort($value); // Assumes it's a flat array of values
-            }
-        }
-        return $array;
-    }
-
     /**
      * Store the edits request.
      */
@@ -47,10 +42,10 @@ class ResourceEditsController extends Controller
         Log::debug("Creating a resource edit: " . json_encode($validatedData));
 
         // Ensure that they are not the same
-        $originalData = $this->normalize((new ComputerScienceResourceResource($computerScienceResource))->resolve());
-        $editData = $this->normalize($validatedData);
+        $originalData = $this->dataService->normalize((new ComputerScienceResourceResource($computerScienceResource))->resolve());
+        $editData = $this->dataService->normalize($validatedData);
         unset($editData['edit_title'], $editData['edit_description']);
-        
+
         if ($originalData == $editData) {
             return response()->json(['message' => 'No changes detected'], 422);
         }
@@ -103,9 +98,9 @@ class ResourceEditsController extends Controller
         $resource->platforms = $resourceEdits->platforms;
         $resource->difficulty = $resourceEdits->difficulty;
         $resource->pricing = $resourceEdits->pricing;
-        
+
         $resource->save();
-        
+
         $resource->topic_tags = $resourceEdits->topic_tags;
         $resource->programming_language_tags = $resourceEdits->programming_language_tags;
         $resource->general_tags = $resourceEdits->general_tags;

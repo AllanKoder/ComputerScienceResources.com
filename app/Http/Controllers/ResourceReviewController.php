@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ResourceReviewProcessed;
 use App\Http\Requests\ResourceReview\StoreResourceReview;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceReview;
@@ -31,7 +30,7 @@ class ResourceReviewController extends Controller
         Log::debug("Storing resource review: " . json_encode($validatedData));
 
         // Create the resource review
-        $review = ResourceReview::create([
+        ResourceReview::create([
             'user_id' => Auth::id(),
             'computer_science_resource_id' => $computerScienceResource->id,
             'title' => $validatedData['title'],
@@ -45,8 +44,6 @@ class ResourceReviewController extends Controller
             'pros' => $validatedData['pros'],
             'cons' => $validatedData['cons'],
         ]);
-
-        ResourceReviewProcessed::dispatch($computerScienceResource->id, null, $review->attributesToArray());
 
         return response()->json();
     }
@@ -70,8 +67,6 @@ class ResourceReviewController extends Controller
         Log::debug("Updating resource review: " . json_encode($validatedData));
 
         // Update the existing review
-        $oldAttributes = $existingReview->attributesToArray(); // Save old attributes
-
         $existingReview->update([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
@@ -84,13 +79,6 @@ class ResourceReviewController extends Controller
             'pros' => $validatedData['pros'],
             'cons' => $validatedData['cons'],
         ]);
-
-        // Dispatch event with old and new data
-        ResourceReviewProcessed::dispatch(
-            $computerScienceResource->id,
-            $oldAttributes,
-            $existingReview->attributesToArray()
-        );
 
         return response()->json();
     }
