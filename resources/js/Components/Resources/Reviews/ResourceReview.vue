@@ -2,7 +2,7 @@
 import { defineProps, ref, computed } from "vue";
 import { usePage } from "@inertiajs/vue3";
 import { ratingLabels } from "@/Helpers/labels";
-import Rating from "primevue/rating";
+import StarRating from "@/Components/StarRating/StarRating.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import UpdateResourceReview from "@/Components/Resources/Reviews/UpdateResourceReview.vue";
@@ -66,7 +66,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
         </div>
         <!-- Normal View Mode -->
         <div v-else>
-            <div class="flex justify-between items-center mb-2">
+            <div class="flex justify-between items-center">
                 <div class="flex-row flex gap-4">
                     <Upvotable
                         :upvotable-key="'review'"
@@ -79,12 +79,14 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                 </div>
 
                 <div class="flex items-center gap-2">
-                    <span class="mr-2 font-medium">Rating:</span>
-                    <Rating
+                    <span class="font-medium">Rating:</span>
+                    <div class="flex-row flex">
+                    <StarRating
                         :model-value="review.average_score"
-                        readonly
-                        :cancel="false"
+                        :size="24"
                     />
+                </div>
+
                     <button
                         v-if="isOwner"
                         @click="toggleEdit"
@@ -95,7 +97,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                 </div>
             </div>
 
-            <p class="text-gray-700 mb-4 whitespace-pre-line">
+            <p class="text-gray-700 mb-4 whitespace-pre-line mt-2">
                 {{ review.description }}
             </p>
 
@@ -126,6 +128,22 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                 </div>
             </div>
 
+            <div class="flex-row flex w-full justify-end">
+                <ProfilePhoto
+                :src="review.user.profile_photo_url"
+                :alt="'User Avator'"
+                />
+                <p class="text-sm my-auto text-gray-800 truncate">
+                    {{ review.user.name }}
+                </p>
+                <time :datetime="review.created_at"
+                    class="text-sm text-gray-500 my-auto"
+                    :title="review.created_at"
+                    >
+                    {{ formatDate(review.created_at) }}
+                </time>
+            </div>
+
             <!-- Detailed Ratings -->
             <div class="flex flex-wrap gap-4 mt-4 justify-between">
                 <div
@@ -134,28 +152,11 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                     class="flex flex-col items-center"
                 >
                     <span class="font-semibold mb-1">{{ feature.label }}</span>
-                    <Rating
+                    <StarRating
                         :model-value="review[feature.key]"
-                        readonly
-                        :cancel="false"
+                        :size="20"
                     />
                 </div>
-            </div>
-
-            <div class="flex-row flex mt-4 w-full justify-end">
-                <ProfilePhoto
-                :src="review.user.profile_photo_url"
-                :alt="'User Avator'"
-                />
-                    <p class="text-sm my-auto ml-2 text-gray-800 truncate">
-                        {{ review.user.name }}
-                    </p>
-                    <time :datetime="review.created_at"
-                        class="text-sm ml-4 text-gray-500 my-auto"
-                        :title="review.created_at"
-                        >
-                        {{ formatDate(review.created_at) }}
-                    </time>
             </div>
 
             <Commentable
