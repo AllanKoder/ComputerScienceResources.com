@@ -14,6 +14,7 @@ import { Icon } from "@iconify/vue";
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import { platformLabels } from "@/Helpers/labels";
 import LoadingAnimation from "@/Components/LoadingAnimation.vue";
+import { formatDate } from "@/Helpers/dates";
 
 const props = defineProps({
     tab: {
@@ -497,9 +498,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                                 <div>
                                     <span class="font-semibold">Posted:</span>
                                     {{
-                                        new Date(
-                                            props.resource.created_at
-                                        ).toLocaleString()
+                                        formatDate(props.resource.created_at)
                                     }}
                                 </div>
                                 <div>
@@ -507,9 +506,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                                         >Last Updated:</span
                                     >
                                     {{
-                                        new Date(
-                                            props.resource.updated_at
-                                        ).toLocaleString()
+                                        formatDate(props.resource.updated_at)
                                     }}
                                 </div>
                             </div>

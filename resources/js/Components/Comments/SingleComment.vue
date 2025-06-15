@@ -3,6 +3,7 @@ import { computed, inject } from "vue";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import Upvotable from "../Upvote/Upvotable.vue";
 import { getConfigData } from "@/Helpers/config";
+import { formatDate } from "@/Helpers/dates";
 import ProfilePhoto from "../ProfilePhoto.vue";
 
 const props = defineProps({
@@ -19,13 +20,7 @@ const props = defineProps({
 const users = inject("users");
 
 // Memoize date formatting
-const formattedDate = computed(() =>
-    new Date(props.comment.created_at).toLocaleString(navigator.language, {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-    })
-);
+const formattedDate = computed(() => formatDate(props.comment.created_at));
 </script>
 
 <template>
