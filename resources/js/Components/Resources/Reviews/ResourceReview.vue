@@ -9,6 +9,8 @@ import UpdateResourceReview from "@/Components/Resources/Reviews/UpdateResourceR
 import { Icon } from "@iconify/vue";
 import Dialog from "primevue/dialog";
 import Button from "primevue/button";
+import ProfilePhoto from "@/Components/ProfilePhoto.vue";
+import {formatDate} from "@/Helpers/dates";
 
 const props = defineProps({
     review: Object,
@@ -64,7 +66,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
         </div>
         <!-- Normal View Mode -->
         <div v-else>
-            <div class="flex justify-between items-center mb-4">
+            <div class="flex justify-between items-center mb-2">
                 <div class="flex-row flex gap-4">
                     <Upvotable
                         :upvotable-key="'review'"
@@ -75,6 +77,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 
                     <h3 class="text-xl font-semibold my-auto">{{ review.title }}</h3>
                 </div>
+
                 <div class="flex items-center gap-2">
                     <span class="mr-2 font-medium">Rating:</span>
                     <Rating
@@ -137,6 +140,22 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                         :cancel="false"
                     />
                 </div>
+            </div>
+
+            <div class="flex-row flex mt-4 w-full justify-end">
+                <ProfilePhoto
+                :src="review.user.profile_photo_url"
+                :alt="'User Avator'"
+                />
+                    <p class="text-sm my-auto ml-2 text-gray-800 truncate">
+                        {{ review.user.name }}
+                    </p>
+                    <time :datetime="review.created_at"
+                        class="text-sm ml-4 text-gray-500 my-auto"
+                        :title="review.created_at"
+                        >
+                        {{ formatDate(review.created_at) }}
+                    </time>
             </div>
 
             <Commentable

@@ -34,9 +34,14 @@ class ResourceEdits extends Model
         return $this->belongsTo(ComputerScienceResource::class, 'computer_science_resource_id', 'id');
     }
 
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
     /**
      * Attribute to get and set platforms as an array
-     * 
+     *
      * @return Attribute
      */
     protected function platforms(): Attribute
@@ -49,7 +54,7 @@ class ResourceEdits extends Model
 
     /**
      * Attribute to know if the edit can be merged
-     * 
+     *
      * @return Attribute
      */
     protected function canMergeEdits(): Attribute

@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject } from "vue";
+import { inject } from "vue";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import Upvotable from "../Upvote/Upvotable.vue";
 import { getConfigData } from "@/Helpers/config";
@@ -19,8 +19,6 @@ const props = defineProps({
 
 const users = inject("users");
 
-// Memoize date formatting
-const formattedDate = computed(() => formatDate(props.comment.created_at));
 </script>
 
 <template>
@@ -52,7 +50,7 @@ const formattedDate = computed(() => formatDate(props.comment.created_at));
                         class="text-sm text-gray-500"
                         :title="comment.created_at"
                     >
-                        {{ formattedDate }}
+                        {{ formatDate(props.comment.created_at) }}
                     </time>
                 </div>
             </div>

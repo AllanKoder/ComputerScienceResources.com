@@ -138,7 +138,8 @@ class ComputerScienceResourceController extends Controller
                 function () use ($computerScienceResource, $sortBy) {
                     $query = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id);
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceReview::class);
-                    return $query->get();
+
+                    return $query->with('user')->get();
                 }
             );
         } elseif ($tab === 'edits') {
@@ -146,7 +147,7 @@ class ComputerScienceResourceController extends Controller
                 function () use ($computerScienceResource, $sortBy) {
                     $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
-                    return $query->get();
+                    return $query->with('user')->get();
                 }
             );
         } elseif ($tab === 'discussion') {

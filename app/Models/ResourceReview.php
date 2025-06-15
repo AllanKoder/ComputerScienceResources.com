@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use App\Observers\ResourceReviewObserver;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[ObservedBy([ResourceReviewObserver::class])]
 class ResourceReview extends Model
@@ -28,6 +29,11 @@ class ResourceReview extends Model
         'pros' => 'array',
         'cons' => 'array',
     ];
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 
     /**
      * Get the average review score.

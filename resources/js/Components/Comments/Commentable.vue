@@ -186,7 +186,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="comments-section bg-white rounded-lg p-1 mt-2">
+    <div class="comments-section bg-white rounded-lg p-1">
         <SortByDropdown
             v-if="props.hasSortByDropdown && hasOpenedComments"
             @change="handleSortChange"
