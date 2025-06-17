@@ -12,6 +12,8 @@ class ResourceReviewSummary extends Model
     use HasVotes;
     use HasComments;
 
+    public $timestamps = false;
+
     protected $fillable = ['computer_science_resource_id'];
 
     protected $primaryKey = 'computer_science_resource_id';

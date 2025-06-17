@@ -22,7 +22,6 @@ return new class extends Migration
             $table->integer('total_votes')->storedAs('upvotes + downvotes');
             $table->integer('controversy')->storedAs('(upvotes + downvotes) - ABS(upvotes - downvotes)');
 
-            $table->timestamps();
         });
     }
 

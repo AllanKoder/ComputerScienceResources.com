@@ -20,19 +20,19 @@ class UpvoteTest extends TestCase
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->postJson(route('upvote', ['type' => 'invalid_type', 'id' => 1]));
+        $response = $this->postJson(route('upvote', ['typeKey' => 'invalid_type', 'id' => 1]));
         $response->assertStatus(422);
     }
 
     /**
      * Test upvote can only be done on an existing upvotable type and id.
      */
-    public function test_upvote_on_non_existing_type_returns_422()
+    public function test_upvote_on_non_existing_model_id_returns_404()
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->postJson(route('upvote', ['type' => 'resource', 'id' => 1]));
+        $response = $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => 99999]));
         $response->assertStatus(404);
     }
 
@@ -51,7 +51,7 @@ class UpvoteTest extends TestCase
             $model = $modelClass::factory()->create();
 
             $response = $this->postJson(route('upvote', [
-                'type' => $typeKey,
+                'typeKey' => $typeKey,
                 'id' => $model->id,
             ]));
 
@@ -70,7 +70,7 @@ class UpvoteTest extends TestCase
      */
     public function test_upvote_requires_authenticated_user()
     {
-        $response = $this->postJson(route('upvote', ['type' => 'resource', 'id' => 1]));
+        $response = $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => 1]));
         $response->assertStatus(401); // Unauthorized
     }
 
@@ -83,11 +83,11 @@ class UpvoteTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
         $this->actingAs($user);
 
-        $response = $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+        $response = $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => $resource->id]));
         $response->assertStatus(200);
 
         // Check the upvote summary or actual resource to confirm the upvote
-        $this->assertEquals(1, $resource->upvoteSummary->upvotes);
+        $this->assertEquals(1, $resource->refresh()->upvoteSummary->upvotes);
     }
 
     /**
@@ -100,13 +100,14 @@ class UpvoteTest extends TestCase
         $this->actingAs($user);
 
         // First, upvote
-        $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => $resource->id]));
 
         // Now, downvote
-        $response = $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+        $response = $this->postJson(route('downvote', ['typeKey' => 'resource', 'id' => $resource->id]));
         $response->assertStatus(200);
 
         // Check the upvote summary or actual resource to confirm downvote
+        $resource->refresh();
         $this->assertEquals(0, $resource->upvoteSummary->upvotes);
         $this->assertEquals(1, $resource->upvoteSummary->downvotes);
     }
@@ -122,10 +123,11 @@ class UpvoteTest extends TestCase
         // Downvote by 3 users
         foreach ($users as $user) {
             $this->actingAs($user);
-            $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+            $this->postJson(route('downvote', ['typeKey' => 'resource', 'id' => $resource->id]));
         }
 
         // Check if the downvotes have been accumulated correctly
+        $resource->refresh();
         $this->assertEquals(0, $resource->upvoteSummary->upvotes); // No upvotes
         $this->assertEquals(3, $resource->upvoteSummary->downvotes); // 3 downvotes
     }
@@ -141,10 +143,11 @@ class UpvoteTest extends TestCase
         // Upvote by 3 users
         foreach ($users as $user) {
             $this->actingAs($user);
-            $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+            $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => $resource->id]));
         }
 
         // Check if the upvotes have been accumulated correctly
+        $resource->refresh();
         $this->assertEquals(3, $resource->upvoteSummary->upvotes); // 3 upvotes
         $this->assertEquals(0, $resource->upvoteSummary->downvotes); // No downvotes
     }
@@ -159,10 +162,11 @@ class UpvoteTest extends TestCase
 
         // Upvote twice
         $this->actingAs($user);
-        $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
-        $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => $resource->id]));
 
         // Check if the votes have been deleted correctly
+        $resource->refresh();
         $this->assertEquals(0, $resource->upvoteSummary->upvotes); // No upvotes
         $this->assertEquals(0, $resource->upvoteSummary->downvotes); // No downvotes
     }
@@ -177,10 +181,11 @@ class UpvoteTest extends TestCase
 
         // Upvote twice
         $this->actingAs($user);
-        $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
-        $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('downvote', ['typeKey' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('downvote', ['typeKey' => 'resource', 'id' => $resource->id]));
 
         // Check if the votes have been deleted correctly
+        $resource->refresh();
         $this->assertEquals(0, $resource->upvoteSummary->upvotes); // No upvotes
         $this->assertEquals(0, $resource->upvoteSummary->downvotes); // No downvotes
     }
@@ -195,12 +200,13 @@ class UpvoteTest extends TestCase
         $this->actingAs($user);
 
         // First downvote
-        $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('downvote', ['typeKey' => 'resource', 'id' => $resource->id]));
 
         // Now upvote
-        $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => $resource->id]));
 
         // Check that the upvotes is now 1
+        $resource->refresh();
         $this->assertEquals(1, $resource->upvoteSummary->upvotes);
         // Check that the downvotes is reset to 0 after upvote
         $this->assertEquals(0, $resource->upvoteSummary->downvotes);
@@ -216,12 +222,13 @@ class UpvoteTest extends TestCase
         $this->actingAs($user);
 
         // First upvote
-        $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => $resource->id]));
 
         // Now downvote
-        $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+        $this->postJson(route('downvote', ['typeKey' => 'resource', 'id' => $resource->id]));
 
         // Check that the upvotes is reset to 0 after upvote
+        $resource->refresh();
         $this->assertEquals(0, $resource->upvoteSummary->upvotes);
         // Check that the downvotes is now 1
         $this->assertEquals(1, $resource->upvoteSummary->downvotes);
@@ -238,17 +245,18 @@ class UpvoteTest extends TestCase
         // Upvote by 3 users
         foreach ($users1 as $user) {
             $this->actingAs($user);
-            $this->postJson(route('upvote', ['type' => 'resource', 'id' => $resource->id]));
+            $this->postJson(route('upvote', ['typeKey' => 'resource', 'id' => $resource->id]));
         }
 
         $users2 = User::factory(3)->create();
         // Downvote by 3 users
         foreach ($users2 as $user) {
             $this->actingAs($user);
-            $this->postJson(route('downvote', ['type' => 'resource', 'id' => $resource->id]));
+            $this->postJson(route('downvote', ['typeKey' => 'resource', 'id' => $resource->id]));
         }
 
         // Check if the final score is zero
+        $resource->refresh();
         $this->assertEquals(3, $resource->upvoteSummary->upvotes);
         $this->assertEquals(3, $resource->upvoteSummary->downvotes);
         $this->assertEquals(0, $resource->upvoteSummary->voteScore);

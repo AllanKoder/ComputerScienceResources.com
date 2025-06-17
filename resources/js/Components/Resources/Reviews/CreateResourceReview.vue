@@ -37,6 +37,7 @@ const form = useForm({
 const resolver = ref(yupResolver(resourceReviewFields));
 const isSavedToLocalStorage = ref(false);
 const isSubmitting = ref(false);
+const isDataLoaded = ref(false); // New: For controlling form rendering
 
 // LocalStorage key for this resource's review draft
 const localStorageKey = computed(() => `review-draft-${props.resourceId}`);
@@ -90,17 +91,20 @@ const loadFromLocalStorage = () => {
             const parsedData = JSON.parse(savedData);
             form.title = parsedData.title || "";
             form.description = parsedData.description || "";
-            form.community = parsedData.community;
-            form.teaching_clarity = parsedData.teaching_clarity;
-            form.engagement = parsedData.engagement;
-            form.practicality = parsedData.practicality;
-            form.user_friendliness = parsedData.user_friendliness;
-            form.updates = parsedData.updates;
+            form.community = parsedData.community ?? null;
+            form.teaching_clarity = parsedData.teaching_clarity ?? null;
+            form.engagement = parsedData.engagement ?? null;
+            form.practicality = parsedData.practicality ?? null;
+            form.user_friendliness = parsedData.user_friendliness ?? null;
+            form.updates = parsedData.updates ?? null;
             form.pros = parsedData.pros || [];
             form.cons = parsedData.cons || [];
             isSavedToLocalStorage.value = true;
         } catch (error) {
             console.error('Error loading saved review:', error);
+            // clear localStorage if data is corrupt
+            localStorage.removeItem(localStorageKey.value);
+            isSavedToLocalStorage.value = false;
         }
     }
 };
@@ -134,6 +138,7 @@ watch(
 
 onMounted(() => {
     loadFromLocalStorage();
+    isDataLoaded.value = true; // New: Set to true after loading
 });
 
 onUnmounted(() => {
@@ -145,7 +150,6 @@ const submitReview = async (event) => {
         console.error("Validation errors");
         return;
     }
-
 
     isSubmitting.value = true;
 
@@ -172,7 +176,8 @@ const submitReview = async (event) => {
 </script>
 
 <template>
-    <div class="mx-auto bg-white shadow-lg rounded-2xl p-6 relative">
+    <!-- Main container, conditionally rendered -->
+    <div v-if="isDataLoaded" class="mx-auto bg-white shadow-lg rounded-2xl p-6 relative">
         <!-- Saved to localStorage indicator -->
         <div
             v-if="isSavedToLocalStorage && hasFormContent"

@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
 use App\Services\DataNormalizationService;
 use App\Http\Requests\ResourceEdit\StoreResourceEdit;
+use App\Http\Resources\ComputerScienceResourceResource;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Log;

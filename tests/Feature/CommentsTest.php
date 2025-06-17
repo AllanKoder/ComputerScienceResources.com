@@ -332,55 +332,6 @@ class CommentsTest extends TestCase
     }
 
     /**
-     * Test that upvote summaries are created for both root comments and reply comments.
-     */
-    public function test_upvote_summaries_created_for_comments()
-    {
-        $user = User::factory()->create();
-        $this->actingAs($user);
-
-        $resource = ComputerScienceResource::factory()->create();
-
-        // Create a top-level comment.
-        $topPayload = [
-            'content' => 'Top level comment for upvote summary test.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => null,
-        ];
-        $topResponse = $this->postJson(route('comments.store'), $topPayload);
-        $topResponse->assertStatus(200);
-        $topCommentId = $topResponse->json('new_comment.id');
-
-        // Upvote the top-level comment.
-        $this->postJson(route('upvote', ['type'=>'comment', 'id'=>$topCommentId]));
-        $this->assertDatabaseHas('upvote_summaries', [
-            'upvotable_id' => $topCommentId,
-            'upvotable_type' => Comment::class,
-            'upvotes' => 1,
-        ]);
-
-        // Create a reply to the top-level comment.
-        $replyPayload = [
-            'content' => 'This is a reply to the top level comment.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => $topCommentId,
-        ];
-        $replyResponse = $this->postJson(route('comments.store'), $replyPayload);
-        $replyResponse->assertStatus(200);
-        $replyCommentId = $replyResponse->json('new_comment.id');
-
-        // Upvote the reply comment.
-        $this->postJson(route('upvote', ['type'=>'comment', 'id'=>$replyCommentId]));
-        $this->assertDatabaseHas('upvote_summaries', [
-            'upvotable_id' => $replyCommentId,
-            'upvotable_type' => Comment::class,
-            'upvotes' => 1,
-        ]);
-    }
-
-    /**
      * Test that upvote summaries are created for all comments (root and replies).
      */
     public function test_upvote_summaries_created_for_all_comments()

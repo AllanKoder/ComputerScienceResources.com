@@ -27,15 +27,20 @@ class VoteSortingStrategyTest extends TestCase
         $reviews = ResourceReview::factory()->count(3)->create();
 
         // 10, 2, -1
-        UpvoteSummary::factory()
-            ->forUpvotable($reviews[0])
-            ->create([ 'upvotes' => 10, 'downvotes' => 0 ]);
-        UpvoteSummary::factory()
-            ->forUpvotable($reviews[1])
-            ->create([ 'upvotes' => 7, 'downvotes' => 8 ]); // 7 - 8 = -1
-        UpvoteSummary::factory()
-            ->forUpvotable($reviews[2])
-            ->create([ 'upvotes' => 6, 'downvotes' => 4 ]);  // 6 - 4 = 2
+        $summary1 = UpvoteSummary::where('upvotable_id', $reviews[0]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary1->upvotes = 10;
+        $summary1->downvotes = 0;
+        $summary1->save();
+
+        $summary2 = UpvoteSummary::where('upvotable_id', $reviews[1]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary2->upvotes = 7;
+        $summary2->downvotes = 8; // 7 - 8 = -1
+        $summary2->save();
+
+        $summary3 = UpvoteSummary::where('upvotable_id', $reviews[2]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary3->upvotes = 6;
+        $summary3->downvotes = 4;  // 6 - 4 = 2
+        $summary3->save();
 
         $sorted = $this->sortingManager
             ->applySort(ResourceReview::query(), 'top')
@@ -48,6 +53,7 @@ class VoteSortingStrategyTest extends TestCase
             $reviews[2]->id,
             $reviews[1]->id,
         ], $sorted);
+
     }
 
     public function test_it_sorts_resource_reviews_by_bottom_votes()
@@ -55,18 +61,24 @@ class VoteSortingStrategyTest extends TestCase
         $reviews = ResourceReview::factory()->count(3)->create();
 
         // Scores: -5, 0, 5
-        UpvoteSummary::factory()
-            ->forUpvotable($reviews[0])
-            ->create([ 'upvotes' => 0, 'downvotes' => 5 ]);
-        UpvoteSummary::factory()
-            ->forUpvotable($reviews[1])
-            ->create([ 'upvotes' => 3, 'downvotes' => 3 ]);
-        UpvoteSummary::factory()
-            ->forUpvotable($reviews[2])
-            ->create([ 'upvotes' => 10, 'downvotes' => 5 ]);
+        $summary1 = UpvoteSummary::where('upvotable_id', $reviews[0]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary1->upvotes = 0;
+        $summary1->downvotes = 5;
+        $summary1->save();
+
+        $summary2 = UpvoteSummary::where('upvotable_id', $reviews[1]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary2->upvotes = 3;
+        $summary2->downvotes = 3;
+        $summary2->save();
+
+        $summary3 = UpvoteSummary::where('upvotable_id', $reviews[2]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary3->upvotes = 10;
+        $summary3->downvotes = 5;
+        $summary3->save();
 
         $sorted = $this->sortingManager
             ->applySort(ResourceReview::query(), 'bottom')
+            ->get()
             ->pluck('id')
             ->toArray();
 
@@ -86,12 +98,24 @@ class VoteSortingStrategyTest extends TestCase
         // For (up, down): (5, 5) -> 10 - 0 = 10
         //                (6, 4) -> 10 - 2 = 8
         //                (10,0) -> 10 - 10 = 0
-        UpvoteSummary::factory()->forUpvotable($reviews[0])->create(['upvotes'=>5, 'downvotes'=>5]);
-        UpvoteSummary::factory()->forUpvotable($reviews[1])->create(['upvotes'=>6, 'downvotes'=>4]);
-        UpvoteSummary::factory()->forUpvotable($reviews[2])->create(['upvotes'=>10, 'downvotes'=>0]);
+        $summary1 = UpvoteSummary::where('upvotable_id', $reviews[0]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary1->upvotes = 5;
+        $summary1->downvotes = 5;
+        $summary1->save();
+
+        $summary2 = UpvoteSummary::where('upvotable_id', $reviews[1]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary2->upvotes = 6;
+        $summary2->downvotes = 4;
+        $summary2->save();
+
+        $summary3 = UpvoteSummary::where('upvotable_id', $reviews[2]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary3->upvotes = 10;
+        $summary3->downvotes = 0;
+        $summary3->save();
 
         $sorted = $this->sortingManager
             ->applySort(ResourceReview::query(), 'controversial')
+            ->get()
             ->pluck('id')
             ->toArray();
 
@@ -108,9 +132,20 @@ class VoteSortingStrategyTest extends TestCase
         $reviews = ResourceReview::factory()->count(3)->create();
 
         // Total votes: 5, 10, 15
-        UpvoteSummary::factory()->forUpvotable($reviews[0])->create(['upvotes'=>2, 'downvotes'=>3]);
-        UpvoteSummary::factory()->forUpvotable($reviews[1])->create(['upvotes'=>5, 'downvotes'=>5]);
-        UpvoteSummary::factory()->forUpvotable($reviews[2])->create(['upvotes'=>10, 'downvotes'=>5]);
+        $summary1 = UpvoteSummary::where('upvotable_id', $reviews[0]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary1->upvotes = 2;
+        $summary1->downvotes = 3;
+        $summary1->save();
+
+        $summary2 = UpvoteSummary::where('upvotable_id', $reviews[1]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary2->upvotes = 5;
+        $summary2->downvotes = 5;
+        $summary2->save();
+
+        $summary3 = UpvoteSummary::where('upvotable_id', $reviews[2]->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary3->upvotes = 10;
+        $summary3->downvotes = 5;
+        $summary3->save();
 
         $sorted = $this->sortingManager
             ->applySort(ResourceReview::query(), 'total_votes')
@@ -132,8 +167,15 @@ class VoteSortingStrategyTest extends TestCase
         // review2: created now, score 10
         $review2 = ResourceReview::factory()->create(['created_at' => $now]);
 
-        UpvoteSummary::factory()->forUpvotable($review1)->create(['upvotes'=>100, 'downvotes'=>0]);
-        UpvoteSummary::factory()->forUpvotable($review2)->create(['upvotes'=>10, 'downvotes'=>0]);
+        $summary1 = UpvoteSummary::where('upvotable_id', $review1->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary1->upvotes = 100;
+        $summary1->downvotes = 0;
+        $summary1->save();
+
+        $summary2 = UpvoteSummary::where('upvotable_id', $review2->id)->where('upvotable_type', ResourceReview::class)->first();
+        $summary2->upvotes = 10;
+        $summary2->downvotes = 0;
+        $summary2->save();
 
         $sorted = $this->sortingManager
             ->applySort(ResourceReview::query(), 'hot')

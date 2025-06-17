@@ -57,8 +57,6 @@ return new class extends Migration
                 ->index();
 
             $table->integer('review_count')->default(0);
-
-            $table->timestamps();
         });
     }
 
