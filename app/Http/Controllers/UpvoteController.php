@@ -30,7 +30,7 @@ class UpvoteController extends Controller
             [
                 'type_key' => ['required', Rule::in(config('upvotes.upvotable_keys'))]
             ]
-        )->validate(); 
+        )->validate();
 
         $model = $this->modelResolver->resolve($typeKey, $id);
 
@@ -59,7 +59,7 @@ class UpvoteController extends Controller
             [
                 'type_key' => ['required', Rule::in(config('upvotes.upvotable_keys'))]
             ]
-        )->validate(); 
+        )->validate();
 
         $model = $this->modelResolver->resolve($typeKey, $id);
 

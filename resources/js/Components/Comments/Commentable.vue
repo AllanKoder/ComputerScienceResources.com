@@ -141,8 +141,8 @@ async function loadComments() {
     try {
         const response = await axios.get(
             route("comments.show", {
-                id: props.commentableId,
-                type: props.commentableKey,
+                commentableId: props.commentableId,
+                commentableKey: props.commentableKey,
                 index: currentIndex.value,
                 paginationLimit: props.paginationLimit,
                 sort_by: sortBy.value,

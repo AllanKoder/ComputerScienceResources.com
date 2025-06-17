@@ -52,7 +52,7 @@ async function handleUpvote() {
         const response = await axios.post(
             route("upvote", {
                 id: props.upvotableId,
-                type: props.upvotableKey,
+                typeKey: props.upvotableKey,
             })
         );
         userVote.value = response.data.userVote;
@@ -77,12 +77,12 @@ async function handleDownvote() {
         const response = await axios.post(
             route("downvote", {
                 id: props.upvotableId,
-                type: props.upvotableKey,
+                typeKey: props.upvotableKey,
             })
         );
         userVote.value = response.data.userVote;
         votes.value += response.data.changeFromVote;
-        
+
         if (props.refresh)
         {
             router.reload({preserveScroll: true});
@@ -96,7 +96,7 @@ async function handleDownvote() {
 </script>
 
 <template>
-    <div class="flex items-center" 
+    <div class="flex items-center"
         :class="{ 'flex-row-reverse': flexRow, 'flex-col': !flexRow }">
         <!-- Upvote Section -->
         <button
@@ -114,7 +114,7 @@ async function handleDownvote() {
                     <Icon icon="mdi:chevron-up" width="24" height="24" />
                 </span>
             </slot>
-            
+
             <!-- Regular Upvote Icon -->
             <slot v-else name="upvoteIcon">
                 <Icon icon="mdi:chevron-up" width="24" height="24" />
@@ -142,7 +142,7 @@ async function handleDownvote() {
                     <Icon icon="mdi:chevron-down" width="24" height="24" />
                 </span>
             </slot>
-            
+
             <!-- Regular Downvote Icon -->
             <slot v-else name="downvoteIcon">
                 <Icon icon="mdi:chevron-down" width="24" height="24" />
