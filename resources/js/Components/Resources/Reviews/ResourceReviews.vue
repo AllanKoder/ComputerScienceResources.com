@@ -4,10 +4,11 @@ import { Icon } from "@iconify/vue";
 import CreateResourceReview from "@/Components/Resources/Reviews/CreateResourceReview.vue";
 import ResourceReview from "./ResourceReview.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import PaginateLinks from "@/Components/Pagination/PaginateLinks.vue";
 
 const props = defineProps({
     reviews: {
-        type: Array,
+        type: Object,
         required: true,
     },
     userReview: {
@@ -31,7 +32,7 @@ const iconClose = isEdittingMode ? "mdi:close" : "mdi:eye-off";
 </script>
 
 <template>
-    <div class="px-6 max-w-6xl mx-auto">
+    <div class="px-6 max-w-7xl mx-auto">
         <!-- Toggle Button -->
         <div class="flex justify-end mb-4">
             <PrimaryButton
@@ -58,12 +59,20 @@ const iconClose = isEdittingMode ? "mdi:close" : "mdi:eye-off";
         <!-- Review List -->
         <div class="space-y-6">
             <div
-                v-for="review in reviews"
+                v-for="review in reviews.data"
                 :key="review.id"
                 class="bg-white/70 backdrop-blur-md p-6 rounded-lg shadow-md"
             >
                 <ResourceReview :review="review" />
             </div>
         </div>
+        <PaginateLinks
+            class="mt-6"
+            :modelName="'reviews'"
+            :links="reviews.links"
+            :from="reviews.from"
+            :to="reviews.to"
+            :total="reviews.total"
+        ></PaginateLinks>
     </div>
 </template>

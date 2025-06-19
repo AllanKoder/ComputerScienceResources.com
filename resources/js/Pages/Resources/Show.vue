@@ -29,8 +29,9 @@ const props = defineProps({
         type: Object,
         required: false,
     },
+    // Paginated
     reviews: {
-        type: Array,
+        type: Object,
         required: false,
     },
     userReview: {

@@ -143,11 +143,11 @@ class ComputerScienceResourceController extends Controller
             $data['userReview'] = $userReview;
 
             $data['reviews'] = Inertia::defer(
-                function () use ($computerScienceResource, $sortBy) {
+                function () use ($computerScienceResource, $sortBy, $request) {
                     $query = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id);
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceReview::class);
 
-                    return $query->with('user')->get();
+                    return $query->with('user')->paginate(10)->appends($request->query());
                 }
             );
         } elseif ($tab === 'edits') {

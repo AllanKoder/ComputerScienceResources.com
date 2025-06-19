@@ -5,7 +5,7 @@ import StarRating from "@/Components/StarRating/StarRating.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import ProfilePhoto from "@/Components/ProfilePhoto.vue";
-import {formatDate} from "@/Helpers/dates";
+import { formatDate } from "@/Helpers/dates";
 
 const props = defineProps({
     review: Object,
@@ -21,26 +21,28 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
     <div>
         <!-- Normal View Mode -->
         <div>
-            <div class="flex justify-between items-center">
-                <div class="flex-row flex gap-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0">
+                <div class="flex flex-row gap-4 items-center w-full sm:w-auto">
                     <Upvotable
                         :upvotable-key="'review'"
                         :upvotable-id="props.review.id"
                         :initial-votes="props.review.vote_score"
                         :user-vote="props.review.user_vote"
-                        />
-
-                    <h3 class="text-xl font-semibold my-auto">{{ review.title }}</h3>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <span class="font-medium">Rating:</span>
-                    <div class="flex-row flex">
-                    <StarRating
-                        :model-value="review.average_score"
-                        :size="24"
                     />
+
+                    <h3 class="text-xl font-semibold my-auto">
+                        {{ review.title }}
+                    </h3>
                 </div>
+
+                <div class="flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto justify-end">
+                    <span class="font-medium">Rating:</span>
+                    <div class="flex flex-row">
+                        <StarRating
+                            :model-value="review.average_score"
+                            :size="24"
+                        />
+                    </div>
                 </div>
             </div>
 
@@ -77,16 +79,17 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 
             <div class="flex-row flex w-full justify-end">
                 <ProfilePhoto
-                :src="review.user.profile_photo_url"
-                :alt="'User Avator'"
+                    :src="review.user.profile_photo_url"
+                    :alt="'User Avator'"
                 />
                 <p class="text-sm my-auto text-gray-800 truncate">
                     {{ review.user.name }}
                 </p>
-                <time :datetime="review.created_at"
+                <time
+                    :datetime="review.created_at"
                     class="text-sm text-gray-500 my-auto"
                     :title="review.created_at"
-                    >
+                >
                     {{ formatDate(review.created_at) }}
                 </time>
             </div>
@@ -99,10 +102,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                     class="flex flex-col items-center"
                 >
                     <span class="font-semibold mb-1">{{ feature.label }}</span>
-                    <StarRating
-                        :model-value="review[feature.key]"
-                        :size="20"
-                    />
+                    <StarRating :model-value="review[feature.key]" :size="20" />
                 </div>
             </div>
 
