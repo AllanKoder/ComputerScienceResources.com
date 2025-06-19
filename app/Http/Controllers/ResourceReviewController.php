@@ -22,12 +22,18 @@ class ResourceReviewController extends Controller
         ])->first();
 
         if ($existingReview) {
-            Log::debug("User has already posted a review");
-            // TODO: Make it a json with errors instead
-            return back()->with('warning', 'You already have a review posted, you should edit your existing one instead.');
+            Log::warning("User has already posted a review, can't make a new one", [
+                'user_id' => Auth::id(),
+                'computer_science_resource_id' => $computerScienceResource->id,
+            ]);
+            return response()->json([], 400);
         }
 
-        Log::debug("Storing resource review: " . json_encode($validatedData));
+        Log::debug("Storing resource review", [
+            'user_id' => Auth::id(),
+            'computer_science_resource_id' => $computerScienceResource->id,
+            'review_data' => $validatedData
+        ]);
 
         // Create the resource review
         ResourceReview::create([
@@ -59,12 +65,18 @@ class ResourceReviewController extends Controller
         ])->first();
 
         if (!$existingReview) {
-            Log::debug("User has not already posted a review");
-            // TODO: Make it a json with errors instead
-            return back()->with('warning', 'You need to have a review posted before editing one.');
+            Log::warning("User has not posted a review, yet is trying to edit theirs", [
+                'user_id' => Auth::id(),
+                'computer_science_resource_id' => $computerScienceResource->id,
+            ]);
+            return response()->json([], 400);
         }
 
-        Log::debug("Updating resource review: " . json_encode($validatedData));
+        Log::debug("Updating resource review", [
+            'user_id' => Auth::id(),
+            'computer_science_resource_id' => $computerScienceResource->id,
+            'review_data' => $validatedData
+        ]);
 
         // Update the existing review
         $existingReview->update([

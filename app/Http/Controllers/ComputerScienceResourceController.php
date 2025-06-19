@@ -134,6 +134,14 @@ class ComputerScienceResourceController extends Controller
         $sortBy = $request->query('sort_by', 'top');
         // Load only the necessary tab data
         if ($tab === 'reviews') {
+            $userReview = null;
+            if ($userId = Auth::id())
+            {
+                $userReview = ResourceReview::where('user_id', $userId)->first();
+            }
+
+            $data['userReview'] = $userReview;
+
             $data['reviews'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy) {
                     $query = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id);

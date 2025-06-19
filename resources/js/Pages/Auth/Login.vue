@@ -76,9 +76,9 @@ const submit = () => {
                 </label>
             </div>
 
-            <div class="flex items-center justify-end mt-4">
+            <div class="flex items-center justify-between mt-4">
                 <Link v-if="canResetPassword" :href="route('password.request')"
-                      class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                     Forgot your password?
                 </Link>
 
@@ -91,5 +91,12 @@ const submit = () => {
         <Socialstream v-if="$page.props.socialstream.show && $page.props.socialstream.providers.length"
                       :error="$page.props?.errors?.socialstream || null" :prompt="$page.props.socialstream.prompt"
                       :labels="$page.props.socialstream.labels" :providers="$page.props.socialstream.providers"/>
+
+        <div class="flex justify-center mt-4 mr-3">
+            <Link :href="route('register')"
+                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Not registered yet? Make an account
+            </Link>
+        </div>
     </AuthenticationCard>
 </template>

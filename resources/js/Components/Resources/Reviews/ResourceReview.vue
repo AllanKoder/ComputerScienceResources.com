@@ -1,46 +1,15 @@
 <script setup>
-import { defineProps, ref, computed } from "vue";
-import { usePage } from "@inertiajs/vue3";
+import { defineProps } from "vue";
 import { ratingLabels } from "@/Helpers/labels";
 import StarRating from "@/Components/StarRating/StarRating.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
-import UpdateResourceReview from "@/Components/Resources/Reviews/UpdateResourceReview.vue";
-import { Icon } from "@iconify/vue";
-import Dialog from "primevue/dialog";
-import Button from "primevue/button";
 import ProfilePhoto from "@/Components/ProfilePhoto.vue";
 import {formatDate} from "@/Helpers/dates";
 
 const props = defineProps({
     review: Object,
 });
-
-const page = usePage();
-
-const isOwner = computed(() => {
-    return page.props.auth?.user?.id === props.review.user_id;
-});
-
-const editing = ref(false);
-const showCancelConfirm = ref(false);
-
-const toggleEdit = () => {
-    editing.value = true;
-};
-
-const requestCancelEdit = () => {
-    showCancelConfirm.value = true;
-};
-
-const confirmCancelEdit = () => {
-    editing.value = false;
-    showCancelConfirm.value = false;
-};
-
-const cancelDialog = () => {
-    showCancelConfirm.value = false;
-};
 
 const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
     key,
@@ -50,22 +19,8 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 
 <template>
     <div>
-        <!-- Edit Mode -->
-        <div v-if="editing">
-            <div class="flex justify-end mb-2">
-                <Button
-                label="Cancel Edit"
-                severity="secondary"
-                @click="requestCancelEdit"
-                />
-            </div>
-            <UpdateResourceReview
-            :resource-id="props.review.computer_science_resource_id"
-            :resource-review="props.review"
-            />
-        </div>
         <!-- Normal View Mode -->
-        <div v-else>
+        <div>
             <div class="flex justify-between items-center">
                 <div class="flex-row flex gap-4">
                     <Upvotable
@@ -86,14 +41,6 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                         :size="24"
                     />
                 </div>
-
-                    <button
-                        v-if="isOwner"
-                        @click="toggleEdit"
-                        class="ml-2 text-gray-500 hover:text-blue-600"
-                    >
-                        <Icon icon="mdi:pencil" class="text-xl" />
-                    </button>
                 </div>
             </div>
 
@@ -165,25 +112,5 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                 :comments-count="review.comments_count"
             />
         </div>
-
-        <!-- Confirmation Dialog -->
-        <Dialog
-            v-model:visible="showCancelConfirm"
-            modal
-            header="Cancel Editing?"
-            :style="{ width: '25rem' }"
-        >
-            <span class="block mb-6"
-                >Are you sure you want to cancel editing this review? Changes will not be saved.</span
-            >
-            <div class="flex justify-end gap-2">
-                <Button label="No" severity="secondary" @click="cancelDialog" />
-                <Button
-                    label="Yes"
-                    severity="danger"
-                    @click="confirmCancelEdit"
-                />
-            </div>
-        </Dialog>
     </div>
 </template>

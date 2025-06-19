@@ -118,5 +118,12 @@ const submit = () => {
         <Socialstream v-if="$page.props.socialstream.show && $page.props.socialstream.providers.length"
                       :error="$page.props?.errors?.socialstream || null" :prompt="$page.props.socialstream.prompt"
                       :labels="$page.props.socialstream.labels" :providers="$page.props.socialstream.providers"/>
+
+        <div class="flex justify-center mt-4 mr-3">
+            <Link :href="route('login')"
+                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                Already have an Account? Sign in
+            </Link>
+        </div>
     </AuthenticationCard>
 </template>

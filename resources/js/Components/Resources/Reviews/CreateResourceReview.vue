@@ -1,6 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch } from "vue";
-import { useForm } from "@inertiajs/vue3";
+import { ref, computed, reactive, onMounted, onUnmounted, watch } from "vue";
 
 import { Form, FormField } from "@primevue/forms";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
@@ -13,31 +12,46 @@ import Button from "primevue/button";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import { resourceReviewFields } from "@/Helpers/validation";
 import { Icon } from "@iconify/vue";
+import { router } from '@inertiajs/vue3'
+import axios from "axios";
 
 const props = defineProps({
     resourceId: {
         type: Number,
         required: true,
     },
+    isEditingMode: {
+        type: Boolean,
+        default: false,
+    },
+    resourceReview: {
+        type: Object,
+        default: () => null,
+    },
 });
 
-const form = useForm({
-    title: "",
-    description: "",
-    community: null,
-    teaching_clarity: null,
-    engagement: null,
-    practicality: null,
-    user_friendliness: null,
-    updates: null,
-    pros: [],
-    cons: [],
-});
+const form = reactive(
+    props.isEditingMode && props.resourceReview
+        ? { ...props.resourceReview }
+        : {
+            title: "",
+            description: "",
+            community: null,
+            teaching_clarity: null,
+            engagement: null,
+            practicality: null,
+            user_friendliness: null,
+            updates: null,
+            pros: [],
+            cons: [],
+          }
+);
 
 const resolver = ref(yupResolver(resourceReviewFields));
 const isSavedToLocalStorage = ref(false);
 const isSubmitting = ref(false);
 const isDataLoaded = ref(false); // New: For controlling form rendering
+const error = ref(null);
 
 // LocalStorage key for this resource's review draft
 const localStorageKey = computed(() => `review-draft-${props.resourceId}`);
@@ -153,25 +167,31 @@ const submitReview = async (event) => {
 
     isSubmitting.value = true;
 
-    form.post(
-        route("reviews.store", {
-            computerScienceResource: props.resourceId,
-        }),
-        {
-            preserveScroll: true,
-            onFinish: () => {
-                isSubmitting.value = false;
-            },
-            onSuccess: () => {
-                // Clear localStorage on successful submission
-                localStorage.removeItem(localStorageKey.value);
-                isSavedToLocalStorage.value = false;
-            },
-            onError: () => {
-                isSubmitting.value = false;
-            }
+    const url = props.isEditingMode
+        ? route("reviews.update", { computerScienceResource: props.resourceId })
+        : route("reviews.store", { computerScienceResource: props.resourceId });
+
+    const method = props.isEditingMode ? 'put' : 'post';
+
+    axios[method](url, form)
+    .then(() => {
+        // Clear localStorage on successful submission
+        localStorage.removeItem(localStorageKey.value);
+        isSavedToLocalStorage.value = false;
+
+        const routeParams = { computerScienceResource: props.resourceId };
+        if (props.isEditingMode) {
+            routeParams.tab = 'reviews';
+            routeParams.sort_by = 'recently_updated';
+        } else {
+            routeParams.sort_by = 'latest';
         }
-    );
+        router.visit(route('resources.show', routeParams));
+    }).catch(err => {
+        isSubmitting.value = false;
+        error.value = "Something went wrong with submitting your review, please refresh or try again.";
+        console.error(err);
+    });
 };
 </script>
 
@@ -187,7 +207,7 @@ const submitReview = async (event) => {
             Only saved locally
         </div>
 
-        <h2 class="text-2xl font-semibold mb-6">Write a Review</h2>
+        <h2 class="text-2xl font-semibold mb-6">{{ isEditingMode ? 'Update Review' : 'Write a Review' }}</h2>
 
         <Form
             :resolver="resolver"
@@ -334,12 +354,18 @@ const submitReview = async (event) => {
                 </FormField>
             </div>
 
+            <!-- Check if not auth since unauthed user will always fail (need to be logged in) -->
+            <div v-if="error && $page.props.auth.user" class="text-red-500 bg-red-100 p-3 rounded-md">
+                {{ error }}
+            </div>
+
             <!-- Submit -->
             <div class="text-right">
                 <Button
                     type="submit"
-                    label="Submit Review"
+                    :label="isEditingMode ? 'Update Review' : 'Submit Review'"
                     class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-2 mt-4"
+                    :disabled="isSubmitting"
                 />
             </div>
         </Form>

@@ -33,6 +33,10 @@ const props = defineProps({
         type: Array,
         required: false,
     },
+    userReview: {
+        type: Object,
+        required: false,
+    },
     resourceEdits: {
         type: Array,
         required: false,
@@ -558,6 +562,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                             </template>
                             <ResourceReviews
                                 :reviews="reviews"
+                                :user-review="userReview"
                                 :resource-id="props.resource.id"
                             />
                         </Deferred>
