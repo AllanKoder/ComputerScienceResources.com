@@ -23,7 +23,7 @@ const formatDate = (dateString) => {
 </script>
 
 <template>
-    <div class="flex items-center space-x-4">
+    <div class="flex items-center space-x-3">
         <ProfilePhoto
             v-if="user"
             :src="user?.profile_photo_url"

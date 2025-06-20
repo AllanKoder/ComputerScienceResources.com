@@ -1,47 +1,31 @@
 <script setup>
-import { Head, Link, useForm } from "@inertiajs/vue3";
-import { computed, ref } from "vue";
+import { Head, useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { yupResolver } from "@primevue/forms/resolvers/yup";
-
-// PrimeVue Components
-import InputText from "primevue/inputtext";
-import Textarea from "primevue/textarea";
+import InputError from "@/Components/InputError.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import TextArea from "@/Components/TextArea.vue";
 import MultiSelect from "primevue/multiselect";
 import Select from "primevue/select";
-import { Button } from "primevue";
-import { Form, FormField } from "@primevue/forms";
-import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
-
-// Custom Components
 import TagSelector from "@/Components/Form/TagSelector.vue";
-
-// Helpers and Constants
-import { platformsObject, pricingsObject, difficultiesObject } from "@/Helpers/labels";
 import {
-    resourceEditsMandatoryFields,
-    resourceMandatoryFields,
-    resourceMandatoryTags,
-} from "@/Helpers/validation";
+    platformsObject,
+    pricingsObject,
+    difficultiesObject,
+} from "@/Helpers/labels";
 
 const props = defineProps({
     resource: {
         type: Object,
         required: true,
     },
+    errors: Object,
 });
 
-// Validation Schema for name
-const schema = resourceMandatoryFields.concat(resourceMandatoryTags).concat(resourceEditsMandatoryFields);
-// PrimeVue Resolver
-const resolver = ref(yupResolver(schema));
-
-// Create a form with initial values taken from the resource prop
-const formData = useForm({
-    // Related to the edit
+const form = useForm({
     edit_title: "",
     edit_description: "",
-    // The resource
     name: props.resource.name,
     description: props.resource.description,
     page_url: props.resource.page_url,
@@ -54,309 +38,236 @@ const formData = useForm({
     general_tags: props.resource.general_tags || [],
 });
 
-// Function to handle form submission
 const submit = () => {
-    // Prepare the form data
-    schema.validate(formData.data).then((validData) => {
-        console.log("Posted: " + validData);
-        formData.post(
-            route("resource_edits.store", {
-                computerScienceResource: props.resource.id,
-            }),
-            validData
-        );
-    });
+    form.post(
+        route("resource_edits.store", {
+            computerScienceResource: props.resource.id,
+        })
+    );
 };
 </script>
 
 <template>
-    <AppLayout :title="formData.name">
-        <Head :title="formData.name" />
-        <main class="py-12">
+    <AppLayout title="Propose an Edit">
+        <Head title="Propose an Edit" />
+
+        <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <Form
-                    :resolver="resolver"
-                    :initialValues="formData"
-                    @submit="submit"
-                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg"
+                <div
+                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6"
                 >
-                    <!-- Edit title and description (reasoning for the edit) -->
-                    <div class="p-3 m-3">
-                        <!-- title Field -->
-                        <FormField v-slot="$field" name="edit_title" class="mb-4">
-                            <InputText
-                                v-model="formData.edit_title"
-                                placeholder="Title of your Edit"
-                                class="w-full text-3xl font-bold border-b border-gray-300 focus:outline-none focus:border-blue-500"
-                            />
-                            <PrimeVueFormError
-                                v-if="$field?.invalid"
-                                :errors="$field.errors"
-                            />
-                        </FormField>
+                    <form @submit.prevent="submit">
+                        <div class="mb-6 rounded-lg">
+                            <h2 class="text-xl font-semibold mb-2">
+                                Describe Your Change
+                            </h2>
+                            <div>
+                                <InputLabel for="edit_title" value="Title" />
+                                <TextInput
+                                    id="edit_title"
+                                    v-model="form.edit_title"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    required
+                                    autofocus
+                                />
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.edit_title"
+                                />
+                            </div>
 
-                        <!-- Description Field -->
-                        <FormField
-                            v-slot="$field"
-                            name="edit_description"
-                            class="mb-4"
-                        >
-                            <Textarea
-                                v-model="formData.edit_description"
-                                placeholder="Reason for the changes"
-                                class="w-full border border-gray-300 rounded"
-                                rows="4"
-                            />
-                            <PrimeVueFormError
-                                v-if="$field?.invalid"
-                                :errors="$field.errors"
-                            />
-                        </FormField>
-                    </div>
-                    <div class="p-6 sm:p-8">
-                        <div class="relative">
-                            <div
-                                class="flex flex-col md:flex-row items-start mb-6"
-                            >
-                                <div class="flex-grow">
-                                    <!-- Name Field -->
-                                    <FormField
-                                        v-slot="$field"
-                                        name="name"
-                                        class="mb-4"
-                                    >
-                                        <InputText
-                                            v-model="formData.name"
-                                            placeholder="Resource Name"
-                                            class="w-full text-3xl font-bold border-b border-gray-300 focus:outline-none focus:border-blue-500"
-                                        />
-                                        <PrimeVueFormError
-                                            v-if="$field?.invalid"
-                                            :errors="$field.errors"
-                                        />
-                                    </FormField>
+                            <div class="mt-4">
+                                <InputLabel
+                                    for="edit_description"
+                                    value="Description"
+                                />
+                                <TextArea
+                                    id="edit_description"
+                                    v-model="form.edit_description"
+                                    class="mt-1 block w-full"
+                                    rows="4"
+                                />
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.edit_description"
+                                />
+                            </div>
+                        </div>
 
-                                    <!-- Description Field -->
-                                    <FormField
-                                        v-slot="$field"
-                                        name="description"
-                                        class="mb-4"
-                                    >
-                                        <Textarea
-                                            v-model="formData.description"
-                                            placeholder="Describe the resource..."
-                                            class="w-full border border-gray-300 rounded"
-                                            rows="4"
-                                        />
-                                        <PrimeVueFormError
-                                            v-if="$field?.invalid"
-                                            :errors="$field.errors"
-                                        />
-                                    </FormField>
+                        <div class="p-4 border rounded">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <InputLabel
+                                        for="name"
+                                        value="Resource Name"
+                                    />
+                                    <TextInput
+                                        id="name"
+                                        v-model="form.name"
+                                        type="text"
+                                        class="mt-1 block w-full"
+                                        required
+                                    />
+                                    <InputError
+                                        class="mt-2"
+                                        :message="form.errors.name"
+                                    />
+                                </div>
 
-                                    <!-- URL Field -->
-                                    <FormField
-                                        v-slot="$field"
-                                        name="page_url"
-                                        class="mb-4"
-                                    >
-                                        <InputText
-                                            v-model="formData.page_url"
-                                            placeholder="Resource URL"
-                                            class="w-full border border-gray-300 rounded"
-                                        />
-                                        <PrimeVueFormError
-                                            v-if="$field?.invalid"
-                                            :errors="$field.errors"
-                                        />
-                                    </FormField>
-
-                                    <!-- Image URL Field -->
-                                    <FormField
-                                        v-slot="$field"
-                                        name="image_url"
-                                        class="mb-4"
-                                    >
-                                        <InputText
-                                            v-model="formData.image_url"
-                                            placeholder="Image URL"
-                                            class="w-full border border-gray-300 rounded"
-                                        />
-                                        <PrimeVueFormError
-                                            v-if="$field?.invalid"
-                                            :errors="$field.errors"
-                                        />
-                                    </FormField>
-
-                                    <!-- Platforms Field -->
-                                    <FormField
-                                        v-slot="$field"
-                                        name="platforms"
-                                        class="mb-4"
-                                    >
-                                        <MultiSelect
-                                            v-model="formData.platforms"
-                                            :options="platformsObject"
-                                            option-label="label"
-                                            option-value="value"
-                                            placeholder="Select Resource Platforms"
-                                            class="w-full"
-                                        />
-                                        <PrimeVueFormError
-                                            v-if="$field?.invalid"
-                                            :errors="$field.errors"
-                                        />
-                                    </FormField>
-
-                                    <!-- Difficulty and Pricing Fields -->
-                                    <div
-                                        class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4"
-                                    >
-                                        <FormField
-                                            v-slot="$field"
-                                            name="difficulty"
-                                        >
-                                            <Select
-                                                :options="difficultiesObject"
-                                                v-model="formData.difficulty"
-                                                option-label="label"
-                                                option-value="value"
-                                                placeholder="Select Difficulty"
-                                                class="w-full"
-                                            />
-                                            <PrimeVueFormError
-                                                v-if="$field?.invalid"
-                                                :errors="$field.errors"
-                                            />
-                                        </FormField>
-
-                                        <FormField
-                                            v-slot="$field"
-                                            name="pricing"
-                                        >
-                                            <Select
-                                                :options="pricingsObject"
-                                                v-model="formData.pricing"
-                                                option-label="label"
-                                                option-value="value"
-                                                placeholder="Select Pricing"
-                                                class="w-full"
-                                            />
-                                            <PrimeVueFormError
-                                                v-if="$field?.invalid"
-                                                :errors="$field.errors"
-                                            />
-                                        </FormField>
-                                    </div>
+                                <div>
+                                    <InputLabel for="page_url" value="URL" />
+                                    <TextInput
+                                        id="page_url"
+                                        v-model="form.page_url"
+                                        type="text"
+                                        class="mt-1 block w-full"
+                                        required
+                                    />
+                                    <InputError
+                                        class="mt-2"
+                                        :message="form.errors.page_url"
+                                    />
                                 </div>
                             </div>
 
-                            <!-- Tag Selectors -->
-                            <div class="mb-4">
-                                <FormField
-                                    v-slot="$field"
-                                    name="topic_tags"
-                                    class="mb-4"
-                                >
-                                    <p class="font-bold mb-4 text-center">
-                                        Topics?
-                                    </p>
-
-                                    <TagSelector
-                                        :initial="formData.topic_tags"
-                                        :query-url="''"
-                                        @changed="
-                                            (tags) =>
-                                                (formData.topic_tags = tags)
-                                        "
-                                    />
-
-                                    <PrimeVueFormError
-                                        v-if="$field?.invalid"
-                                        :errors="$field.errors"
-                                    />
-                                </FormField>
+                            <div class="mt-4">
+                                <InputLabel
+                                    for="description"
+                                    value="Resource Description"
+                                />
+                                <TextArea
+                                    id="description"
+                                    v-model="form.description"
+                                    class="mt-1 block w-full"
+                                    rows="6"
+                                    required
+                                />
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.description"
+                                />
                             </div>
 
-                            <div class="mb-4">
-                                <p class="font-bold mb-4 text-center">
-                                    What Programming Languages are used (if
-                                    any)?
-                                </p>
+                            <div
+                                class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4"
+                            >
+                                <div>
+                                    <InputLabel
+                                        for="difficulty"
+                                        value="Difficulty"
+                                    />
+                                    <Select
+                                        id="difficulty"
+                                        v-model="form.difficulty"
+                                        :options="difficultiesObject"
+                                        option-label="label"
+                                        option-value="value"
+                                        placeholder="Select Difficulty"
+                                        class="w-full mt-1"
+                                    />
+                                    <InputError
+                                        class="mt-2"
+                                        :message="form.errors.difficulty"
+                                    />
+                                </div>
+
+                                <div>
+                                    <InputLabel for="pricing" value="Pricing" />
+                                    <Select
+                                        id="pricing"
+                                        v-model="form.pricing"
+                                        :options="pricingsObject"
+                                        option-label="label"
+                                        option-value="value"
+                                        placeholder="Select Pricing"
+                                        class="w-full mt-1"
+                                    />
+                                    <InputError
+                                        class="mt-2"
+                                        :message="form.errors.pricing"
+                                    />
+                                </div>
+
+                                <div>
+                                    <InputLabel
+                                        for="platforms"
+                                        value="Platforms"
+                                    />
+                                    <MultiSelect
+                                        id="platforms"
+                                        v-model="form.platforms"
+                                        :options="platformsObject"
+                                        option-label="label"
+                                        option-value="value"
+                                        placeholder="Select Platforms"
+                                        class="w-full mt-1"
+                                    />
+                                    <InputError
+                                        class="mt-2"
+                                        :message="form.errors.platforms"
+                                    />
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <InputLabel value="Topic Tags" />
                                 <TagSelector
-                                    :initial="
-                                        formData.programming_language_tags
+                                    :initial="form.topic_tags"
+                                    @changed="
+                                        (tags) => (form.topic_tags = tags)
                                     "
-                                    :query-url="''"
+                                />
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.topic_tags"
+                                />
+                            </div>
+
+                            <div class="mt-4">
+                                <InputLabel value="Programming Language Tags" />
+                                <TagSelector
+                                    :initial="form.programming_language_tags"
                                     @changed="
                                         (tags) =>
-                                            (formData.programming_language_tags =
+                                            (form.programming_language_tags =
                                                 tags)
                                     "
                                 />
-                            </div>
-
-                            <div class="mb-4">
-                                <h2 class="font-bold mb-4 text-center">
-                                    What else is it related to?
-                                </h2>
-                                <TagSelector
-                                    :initial="formData.general_tags"
-                                    :query-url="''"
-                                    @changed="
-                                        (tags) => (formData.general_tags = tags)
+                                <InputError
+                                    class="mt-2"
+                                    :message="
+                                        form.errors.programming_language_tags
                                     "
                                 />
                             </div>
 
-                            <!-- Submission Details -->
-                            <div
-                                class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4"
-                            >
-                                <a
-                                    :href="props.resource.page_url"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    class="text-blue-600 hover:underline mb-2 sm:mb-0"
-                                    >Visit Resource</a
-                                >
-                                <div class="text-sm text-gray-500">
-                                    <p>
-                                        Posted by:
-                                        {{
-                                            props.resource.user?.name ??
-                                            "Unknown User"
-                                        }}
-                                    </p>
-                                    <p>
-                                        Created:
-                                        {{
-                                            new Date(
-                                                props.resource.created_at
-                                            ).toLocaleString()
-                                        }}
-                                    </p>
-                                    <p>
-                                        Last updated:
-                                        {{
-                                            new Date(
-                                                props.resource.updated_at
-                                            ).toLocaleString()
-                                        }}
-                                    </p>
-                                </div>
+                            <div class="mt-4">
+                                <InputLabel value="General Tags" />
+                                <TagSelector
+                                    :initial="form.general_tags"
+                                    @changed="
+                                        (tags) => (form.general_tags = tags)
+                                    "
+                                />
+                                <InputError
+                                    class="mt-2"
+                                    :message="form.errors.general_tags"
+                                />
                             </div>
 
-                            <!-- Submit Button -->
-                            <Button
-                                type="submit"
-                                label="Save Changes"
-                                class="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition duration-150"
-                            />
+                            <div class="flex items-center justify-end mt-6">
+                                <PrimaryButton
+                                    :class="{ 'opacity-25': form.processing }"
+                                    :disabled="form.processing"
+                                >
+                                    Submit Edit
+                                </PrimaryButton>
+                            </div>
                         </div>
-                    </div>
-                </Form>
+                    </form>
+                </div>
             </div>
-        </main>
+        </div>
     </AppLayout>
 </template>

@@ -1,8 +1,6 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
-import { Icon } from "@iconify/vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import EmptyState from "@/Components/EmptyState.vue";
 
 const props = defineProps({
@@ -19,24 +17,6 @@ const props = defineProps({
 
 <template>
     <div class="px-6 max-w-7xl mx-auto mb-2">
-        <!-- Propose Edits Button -->
-        <div class="flex justify-end mb-4">
-            <Link
-                :href="
-                    route('resource_edits.create', {
-                        computerScienceResource: props.resourceId,
-                    })
-                "
-            >
-                <PrimaryButton
-                    class="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg shadow hover:bg-blue-700 transition"
-                >
-                    <Icon icon="mdi:pencil" class="w-5 h-5" />
-                    <span>Propose Edits</span>
-                </PrimaryButton>
-            </Link>
-        </div>
-
         <div class="space-y-6">
             <div
                 v-for="edit in props.resourceEdits"

@@ -1,10 +1,10 @@
 <script setup>
 import { Head, Deferred, Link } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
-import Tag from "primevue/tag";
 import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
 import { pricingLabels, difficultyLabels } from "@/Helpers/labels.js";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
+import ToggleCreateReview from "@/Components/Resources/Reviews/ToggleCreateReview.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
 import ResourceUpvoteSorting from "@/Components/Resources/ResourceUpvoteSorting.vue";
@@ -14,8 +14,8 @@ import { Icon } from "@iconify/vue";
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import { platformLabels } from "@/Helpers/labels";
 import LoadingAnimation from "@/Components/LoadingAnimation.vue";
-import { formatDate } from "@/Helpers/dates";
 import UserProfile from "@/Components/Profile/UserProfile.vue";
+import ProposeEditsButton from "@/Components/Resources/ResourceEdit/ProposeEditsButton.vue";
 
 const props = defineProps({
     tab: {
@@ -542,14 +542,16 @@ const sortingType = urlParams.get("sort_by") || "top";
                     ></ResourceUpvoteSorting>
 
                     <div v-if="props.tab === 'reviews'">
+                        <ToggleCreateReview
+                            :user-review="userReview"
+                            :resource-id="props.resource.id"
+                        />
                         <Deferred data="reviews">
                             <template #fallback>
                                 <LoadingAnimation />
                             </template>
                             <ResourceReviews
                                 :reviews="reviews"
-                                :user-review="userReview"
-                                :resource-id="props.resource.id"
                             />
                         </Deferred>
                     </div>
@@ -576,6 +578,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                     </div>
 
                     <div v-else-if="props.tab === 'edits'">
+                        <ProposeEditsButton :resource-id="props.resource.id" />
                         <Deferred data="resourceEdits">
                             <template #fallback>
                                 <LoadingAnimation />
