@@ -149,9 +149,6 @@ async function loadComments() {
             })
         );
 
-        console.log(response.data);
-        console.log(props.loadedCommentData);
-
         // Update the users
         addCommentData(response.data);
     } catch (err) {

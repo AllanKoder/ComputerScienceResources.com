@@ -92,7 +92,7 @@ const submit = () => {
                       :error="$page.props?.errors?.socialstream || null" :prompt="$page.props.socialstream.prompt"
                       :labels="$page.props.socialstream.labels" :providers="$page.props.socialstream.providers"/>
 
-        <div class="flex justify-center mt-4 mr-3">
+        <div class="flex justify-center mt-8">
             <Link :href="route('register')"
                 class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 Not registered yet? Make an account

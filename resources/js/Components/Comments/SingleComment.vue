@@ -3,8 +3,7 @@ import { inject } from "vue";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import Upvotable from "../Upvote/Upvotable.vue";
 import { getConfigData } from "@/Helpers/config";
-import { formatDate } from "@/Helpers/dates";
-import ProfilePhoto from "../ProfilePhoto.vue";
+import UserProfile from "@/Components/Profile/UserProfile.vue";
 
 const props = defineProps({
     comment: {
@@ -37,22 +36,10 @@ const users = inject("users");
         <div>
             <!-- User Info with Lazy Loading -->
             <div class="flex items-center space-x-2">
-                <ProfilePhoto
-                    :src="users.get(comment.user_id)?.profile_photo_url"
-                    :alt="'User Avator'"
+                <UserProfile
+                    :user="users.get(comment.user_id)"
+                    :date="comment.created_at"
                 />
-                <div class="min-w-0">
-                    <p class="text-sm text-gray-800 truncate">
-                        {{ users.get(comment.user_id)?.name }}
-                    </p>
-                    <time
-                        :datetime="comment.created_at"
-                        class="text-sm text-gray-500"
-                        :title="comment.created_at"
-                    >
-                        {{ formatDate(props.comment.created_at) }}
-                    </time>
-                </div>
             </div>
 
             <!-- Comment Content -->
