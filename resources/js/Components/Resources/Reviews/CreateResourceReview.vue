@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, reactive, onMounted, onUnmounted, watch } from "vue";
+import { ref, reactive } from "vue";
 
 import { Form, FormField } from "@primevue/forms";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
@@ -8,12 +8,13 @@ import InputTextarea from "primevue/textarea";
 import Rating from "primevue/rating";
 import ListInput from "@/Components/ListInput.vue";
 import Button from "primevue/button";
+import FormSaverChip from "@/Components/Form/FormSaverChip.vue";
 
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import { resourceReviewFields } from "@/Helpers/validation";
-import { Icon } from "@iconify/vue";
 import { router } from '@inertiajs/vue3'
 import axios from "axios";
+import { useLocalStorageSaver } from "@/Composables/useLocalStorageSaver.js";
 
 const props = defineProps({
     resourceId: {
@@ -47,117 +48,29 @@ const form = reactive(
           }
 );
 
+const formFields = [
+    'title',
+    'description',
+    'community',
+    'teaching_clarity',
+    'engagement',
+    'practicality',
+    'user_friendliness',
+    'updates',
+    'pros',
+    'cons',
+];
+
+const {
+    isSavedToLocalStorage,
+    isDataLoaded,
+    hasFormContent,
+    clearLocalStorage
+} = useLocalStorageSaver(form, props.resourceId, formFields, 'review-draft');
+
 const resolver = ref(yupResolver(resourceReviewFields));
-const isSavedToLocalStorage = ref(false);
 const isSubmitting = ref(false);
-const isDataLoaded = ref(false); // New: For controlling form rendering
 const error = ref(null);
-
-// LocalStorage key for this resource's review draft
-const localStorageKey = computed(() => `review-draft-${props.resourceId}`);
-
-// Check if form has any content
-const hasFormContent = computed(() => {
-    return (
-        form.title.trim() !== "" ||
-        form.description.trim() !== "" ||
-        form.community !== null ||
-        form.teaching_clarity !== null ||
-        form.engagement !== null ||
-        form.practicality !== null ||
-        form.user_friendliness !== null ||
-        form.updates !== null ||
-        form.pros.length > 0 ||
-        form.cons.length > 0
-    );
-});
-
-// Save form data to localStorage
-const saveToLocalStorage = () => {
-    if (hasFormContent.value) {
-        const formData = {
-            title: form.title,
-            description: form.description,
-            community: form.community,
-            teaching_clarity: form.teaching_clarity,
-            engagement: form.engagement,
-            practicality: form.practicality,
-            user_friendliness: form.user_friendliness,
-            updates: form.updates,
-            pros: form.pros,
-            cons: form.cons,
-            savedAt: new Date().toISOString()
-        };
-        localStorage.setItem(localStorageKey.value, JSON.stringify(formData));
-        isSavedToLocalStorage.value = true;
-    } else {
-        // Remove from localStorage if form is empty
-        localStorage.removeItem(localStorageKey.value);
-        isSavedToLocalStorage.value = false;
-    }
-};
-
-// Load form data from localStorage
-const loadFromLocalStorage = () => {
-    const savedData = localStorage.getItem(localStorageKey.value);
-    if (savedData) {
-        try {
-            const parsedData = JSON.parse(savedData);
-            form.title = parsedData.title || "";
-            form.description = parsedData.description || "";
-            form.community = parsedData.community ?? null;
-            form.teaching_clarity = parsedData.teaching_clarity ?? null;
-            form.engagement = parsedData.engagement ?? null;
-            form.practicality = parsedData.practicality ?? null;
-            form.user_friendliness = parsedData.user_friendliness ?? null;
-            form.updates = parsedData.updates ?? null;
-            form.pros = parsedData.pros || [];
-            form.cons = parsedData.cons || [];
-            isSavedToLocalStorage.value = true;
-        } catch (error) {
-            console.error('Error loading saved review:', error);
-            // clear localStorage if data is corrupt
-            localStorage.removeItem(localStorageKey.value);
-            isSavedToLocalStorage.value = false;
-        }
-    }
-};
-
-// Watch for changes and save to localStorage with debounce
-let saveTimeout;
-watch(
-    () => [
-        form.title,
-        form.description,
-        form.community,
-        form.teaching_clarity,
-        form.engagement,
-        form.practicality,
-        form.user_friendliness,
-        form.updates,
-        form.pros,
-        form.cons,
-    ],
-    () => {
-        if (!isSubmitting.value) {
-            // Debounce the save operation
-            clearTimeout(saveTimeout);
-            saveTimeout = setTimeout(() => {
-                saveToLocalStorage();
-            }, 500); // Save after 500ms of inactivity
-        }
-    },
-    { deep: true }
-);
-
-onMounted(() => {
-    loadFromLocalStorage();
-    isDataLoaded.value = true; // New: Set to true after loading
-});
-
-onUnmounted(() => {
-    clearTimeout(saveTimeout);
-});
 
 const submitReview = async (event) => {
     if (!event.valid) {
@@ -176,8 +89,7 @@ const submitReview = async (event) => {
     axios[method](url, form)
     .then(() => {
         // Clear localStorage on successful submission
-        localStorage.removeItem(localStorageKey.value);
-        isSavedToLocalStorage.value = false;
+        clearLocalStorage();
 
         const routeParams = { computerScienceResource: props.resourceId };
         if (props.isEditingMode) {
@@ -198,14 +110,7 @@ const submitReview = async (event) => {
 <template>
     <!-- Main container, conditionally rendered -->
     <div v-if="isDataLoaded" class="mx-auto bg-white shadow-lg rounded-2xl p-6 relative">
-        <!-- Saved to localStorage indicator -->
-        <div
-            v-if="isSavedToLocalStorage && hasFormContent"
-            class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1"
-        >
-            <Icon icon="mdi:warning"/>
-            Only saved locally
-        </div>
+        <FormSaverChip :is-saved="isSavedToLocalStorage" :has-content="hasFormContent" />
 
         <h2 class="text-2xl font-semibold mb-6">{{ isEditingMode ? 'Update Review' : 'Write a Review' }}</h2>
 

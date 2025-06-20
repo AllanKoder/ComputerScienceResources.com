@@ -9,6 +9,8 @@ import TextArea from "@/Components/TextArea.vue";
 import MultiSelect from "primevue/multiselect";
 import Select from "primevue/select";
 import TagSelector from "@/Components/Form/TagSelector.vue";
+import FormSaverChip from "@/Components/Form/FormSaverChip.vue";
+import { useLocalStorageSaver } from "@/Composables/useLocalStorageSaver.js";
 import {
     platformsObject,
     pricingsObject,
@@ -38,11 +40,36 @@ const form = useForm({
     general_tags: props.resource.general_tags || [],
 });
 
+const formFields = [
+    'edit_title',
+    'edit_description',
+    'name',
+    'description',
+    'page_url',
+    'image_url',
+    'difficulty',
+    'pricing',
+    'platforms',
+    'topic_tags',
+    'programming_language_tags',
+    'general_tags',
+];
+
+const {
+    isSavedToLocalStorage,
+    isDataLoaded,
+    hasFormContent,
+    clearLocalStorage
+} = useLocalStorageSaver(form, props.resource.id, formFields);
+
 const submit = () => {
     form.post(
         route("resource_edits.store", {
             computerScienceResource: props.resource.id,
-        })
+        }),
+        {
+            onSuccess: () => clearLocalStorage(),
+        }
     );
 };
 </script>
@@ -54,10 +81,12 @@ const submit = () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
-                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6"
+                    v-if="isDataLoaded"
+                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 relative"
                 >
+                    <FormSaverChip :is-saved="isSavedToLocalStorage" :has-content="hasFormContent" />
                     <form @submit.prevent="submit">
-                        <div class="mb-6 rounded-lg">
+                        <div class="mb-9 rounded-lg">
                             <h2 class="text-xl font-semibold mb-2">
                                 Describe Your Change
                             </h2>
@@ -95,6 +124,9 @@ const submit = () => {
                             </div>
                         </div>
 
+                        <h2 class="text-xl font-semibold mb-2">
+                            New Edited Resource
+                        </h2>
                         <div class="p-4 border rounded">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
