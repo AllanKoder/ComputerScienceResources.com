@@ -25,12 +25,13 @@ const formatDate = (dateString) => {
 <template>
     <div class="flex items-center space-x-4">
         <ProfilePhoto
+            v-if="user"
             :src="user?.profile_photo_url"
             :alt="'User Avator'"
         />
         <div class="min-w-0">
             <p class="text-sm text-gray-800 truncate">
-                {{ user?.name }}
+                {{ user?.name ?? "Deleted User" }}
             </p>
             <time
                 :datetime="date"

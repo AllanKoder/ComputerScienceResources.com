@@ -114,6 +114,7 @@ class ComputerScienceResourceController extends Controller
     {
         # Get the review summaries
         $computerScienceResource->load('reviewSummary');
+        $computerScienceResource->load('user');
 
         $validTabs = ['reviews', 'discussion', 'edits'];
 

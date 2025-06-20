@@ -15,6 +15,7 @@ import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import { platformLabels } from "@/Helpers/labels";
 import LoadingAnimation from "@/Components/LoadingAnimation.vue";
 import { formatDate } from "@/Helpers/dates";
+import UserProfile from "@/Components/Profile/UserProfile.vue";
 
 const props = defineProps({
     tab: {
@@ -493,31 +494,15 @@ const sortingType = urlParams.get("sort_by") || "top";
                             <div
                                 class="text-xs text-gray-500 text-right space-y-1 min-w-[160px] shrink-0"
                             >
-                                <div>
-                                    <span class="font-semibold">Creator:</span>
-                                    {{
-                                        props.resource.user?.name ??
-                                        "Unknown User"
-                                    }}
-                                </div>
-                                <div>
-                                    <span class="font-semibold">Posted:</span>
-                                    {{
-                                        formatDate(props.resource.created_at)
-                                    }}
-                                </div>
-                                <div>
-                                    <span class="font-semibold"
-                                        >Last Updated:</span
-                                    >
-                                    {{
-                                        formatDate(props.resource.updated_at)
-                                    }}
-                                </div>
-                            </div>
+                            <UserProfile
+                                :user="resource.user"
+                                :date="resource.created_at"
+                            ></UserProfile>
+
                         </div>
                     </div>
                 </div>
+            </div>
 
                 <!-- Custom Tab Navigation -->
                 <div class="flex border-b mb-4 space-x-6 px-6">
