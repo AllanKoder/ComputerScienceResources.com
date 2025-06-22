@@ -4,7 +4,6 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { computed, ref } from "vue";
 import * as Diff from "diff";
 import Tag from "primevue/tag";
-import Button from "primevue/button";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 import {
@@ -12,7 +11,9 @@ import {
     difficultyLabels,
 } from "@/Helpers/labels.js";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
+import { Icon } from "@iconify/vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
+import UserProfile from "@/Components/Profile/UserProfile.vue";
 
 const props = defineProps({
     originalResource: {
@@ -60,8 +61,6 @@ const compareFields = [
         formatter: (value) => pricingLabels[value],
     },
 ];
-
-// TODO: FIx the diff, so it actually shows the diff
 
 // Compute diffs for text fields
 const textDiffs = computed(() => {
@@ -127,8 +126,8 @@ const hasTagDiffs = computed(() => {
 
 // Helper to render diff spans
 const renderDiffSpan = (part) => {
-    if (part.added) return `<span class="bg-green-100">${part.value}</span>`;
-    if (part.removed) return `<span class="bg-red-100">${part.value}</span>`;
+    if (part.added) return `<span class="bg-green-50 text-green-800 border-l-4 border-green-500 pl-2 pr-1">${part.value}</span>`;
+    if (part.removed) return `<span class="bg-red-50 text-red-800 border-l-4 border-red-500 pl-2 pr-1">${part.value}</span>`;
     return part.value;
 };
 
@@ -140,41 +139,54 @@ function mergeEdits(id) {
 <template>
     <AppLayout :title="`Compare Versions: ${props.originalResource.name}`">
         <Head :title="`Compare Versions: ${props.originalResource.name}`" />
-        <main class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div
-                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6"
-                >
-                    <!-- Viewing title and decription-->
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <h1 class="text-2xl font-bold mb-2">
-                                {{ editedResource.edit_title }}
-                            </h1>
-                            <p>{{ editedResource.edit_description }}</p>
-                        </div>
-                        <div v-if="editedResource.can_merge_edits">
-                            <!-- Merge button -->
-                            <button
-                                @click="mergeEdits(editedResource.id)"
-                                class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
-                            >
-                                Merge
-                            </button>
+        <div class="max-w-[90vw] mx-auto sm:px-6 py-4 lg:px-8">
+            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+                <div class="p-7 sm:p-8">
+                    <!-- Header Section -->
+                    <div class="border-b border-gray-200 pb-6 mb-6">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <h1 class="text-3xl font-bold text-gray-900">
+                                        {{ editedResource.edit_title }}
+                                    </h1>
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary text-primary border border-primary/20">
+                                        Proposed Edit
+                                    </span>
+                                </div>
+                                <p class="text-gray-700 text-lg leading-relaxed mb-4">{{ editedResource.edit_description }}</p>
+
+                                <UserProfile
+                                    :user="editedResource.user"
+                                    :date="editedResource.created_at"
+                                />
+                            </div>
+                            <div v-if="editedResource.can_merge_edits" class="ml-6">
+                                <button
+                                    @click="mergeEdits(editedResource.id)"
+                                    class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
+                                >
+                                    <Icon icon="mdi:source-merge" class="w-4 h-4 mr-2" />
+                                    Merge Changes
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    <TabView>
+
+                    <TabView class="custom-tabview">
                         <!-- Side-by-Side Comparison Tab -->
-                        <TabPanel header="Side-by-Side View">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <TabPanel header="Split View" class="custom-tab-panel">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 <!-- Edited Version -->
-                                <div class="border rounded-lg p-4">
-                                    <h2
-                                        class="text-xl font-semibold mb-4 text-gray-700"
-                                    >
-                                        Edited Version
-                                    </h2>
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg">
+                                    <div class="bg-primary/5 border-b border-gray-200 px-4 py-3">
+                                        <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                            <Icon icon="mdi:plus-circle" class="w-5 h-5 text-green-600" />
+                                            Proposed Changes
+                                        </h2>
+                                    </div>
+                                    <div class="p-4">
 
                                     <!-- Comparison Fields -->
                                     <div
@@ -183,14 +195,14 @@ function mergeEdits(id) {
                                         class="mb-4"
                                     >
                                         <div
-                                            class="font-semibold text-gray-600"
+                                            class="font-semibold text-gray-600 mb-1"
                                         >
                                             {{ field.label }}:
                                         </div>
                                         <div
-                                            class="text-gray-800"
+                                            class="text-gray-800 p-2 rounded"
                                             :class="{
-                                                'bg-yellow-50 p-1 rounded':
+                                                'bg-green-50 border-l-4 border-green-400':
                                                     props.originalResource[
                                                         field.key
                                                     ] !==
@@ -226,6 +238,7 @@ function mergeEdits(id) {
                                                     .editedResource.platforms"
                                                 :key="platform"
                                                 :value="platform"
+                                                severity="warning"
                                                 class="capitalize"
                                             />
                                         </div>
@@ -267,14 +280,22 @@ function mergeEdits(id) {
                                             />
                                         </div>
                                     </div>
+                                    </div>
                                 </div>
                                 <!-- Original Version -->
-                                <div class="border rounded-lg p-4">
-                                    <h2
-                                        class="text-xl font-semibold mb-4 text-gray-700"
-                                    >
-                                        Original Version
-                                    </h2>
+                                <div class="bg-gray-50 border border-gray-200 rounded-lg">
+                                    <div class="bg-gray-100 border-b border-gray-200 px-4 py-3">
+                                        <Link
+                                            :href="route('resources.show', { computerScienceResource: props.originalResource.id })"
+                                            class="group"
+                                        >
+                                            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2 group-hover:text-primary duration-200">
+                                                <Icon icon="mdi:file-document" class="w-5 h-5 text-gray-600 group-hover:text-primary duration-200" />
+                                                Current Version
+                                            </h2>
+                                        </Link>
+                                    </div>
+                                    <div class="p-4">
 
                                     <!-- Comparison Fields -->
                                     <div
@@ -316,6 +337,7 @@ function mergeEdits(id) {
                                                     .originalResource.platforms"
                                                 :key="platform"
                                                 :value="platform"
+                                                severity="secondary"
                                                 class="capitalize"
                                             />
                                         </div>
@@ -358,12 +380,13 @@ function mergeEdits(id) {
                                             />
                                         </div>
                                     </div>
+                                    </div>
                                 </div>
                             </div>
                         </TabPanel>
 
                         <!-- Diff View Tab -->
-                        <TabPanel header="Detailed Diff">
+                        <TabPanel header="Unified Diff" class="custom-tab-panel">
                             <!-- Only display diff sections if there are changes -->
                             <div
                                 v-if="
@@ -374,7 +397,7 @@ function mergeEdits(id) {
                                 class="space-y-6"
                             >
                                 <!-- Text Field Diffs -->
-                                <div v-if="hasTextDiffs">
+                                <div v-if="hasTextDiffs" class="space-y-4">
                                     <div
                                         v-for="field in compareFields.filter(
                                             (f) =>
@@ -385,13 +408,16 @@ function mergeEdits(id) {
                                                     ]
                                         )"
                                         :key="field.key"
-                                        class="mb-4"
+                                        class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
                                     >
-                                        <h3 class="text-lg font-semibold mb-2">
-                                            {{ field.label }} Diff:
-                                        </h3>
+                                        <div class="bg-gray-100 px-4 py-2 border-b border-gray-200">
+                                            <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+                                                <Icon icon="mdi:file-edit" class="w-4 h-4 text-primary" />
+                                                {{ field.label }}
+                                            </h3>
+                                        </div>
                                         <div
-                                            class="bg-gray-50 p-3 rounded-lg font-mono text-sm"
+                                            class="p-4 font-mono text-sm leading-relaxed"
                                             v-html="
                                                 textDiffs[field.key]
                                                     .map(renderDiffSpan)
@@ -502,58 +528,65 @@ function mergeEdits(id) {
                     </TabView>
 
                     <!-- Approval Actions -->
-                    <div class="mt-8 flex justify-center">
-                        <!-- TODO: Add partial reload to the refresh -->
-                        <Upvotable
-                            :flexRow="true"
-                            :upvotable-key="'edit'"
-                            :upvotable-id="resourceId"
-                            :initial-votes="editedResource.vote_score"
-                            :user-vote="editedResource.user_vote"
-                            :refresh="true"
-                            class="flex items-center gap-6"
-                        >
-                            <!-- Downvote (Reject) Button -->
-                            <template #alreadyDownvotedIcon>
-                                <span
-                                    class="bg-red-700 text-white px-3 py-1 rounded-full text-sm"
-                                >
-                                    Rejected
-                                </span>
-                            </template>
-                            <template #downvoteIcon>
-                                <span
-                                    class="bg-red-100 text-red-900 px-3 py-1 rounded-full text-sm"
-                                >
-                                    Reject Changes
-                                </span>
-                            </template>
+                    <div class="mt-8 border-t border-gray-200 pt-6">
+                        <div class="flex justify-center">
+                            <!-- TODO: Add partial reload to the refresh -->
+                            <Upvotable
+                                :flexRow="true"
+                                :upvotable-key="'edit'"
+                                :upvotable-id="resourceId"
+                                :initial-votes="editedResource.vote_score"
+                                :user-vote="editedResource.user_vote"
+                                :refresh="true"
+                                class="flex items-center gap-6"
+                            >
+                                <!-- Downvote (Reject) Button -->
+                                <template #alreadyDownvotedIcon>
+                                    <span
+                                        class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg font-medium"
+                                    >
+                                        <Icon icon="mdi:close-circle" class="w-4 h-4 mr-2" />
+                                        Rejected
+                                    </span>
+                                </template>
+                                <template #downvoteIcon>
+                                    <span
+                                        class="inline-flex items-center px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-lg font-medium transition-colors cursor-pointer"
+                                    >
+                                        <Icon icon="mdi:close-circle-outline" class="w-4 h-4 mr-2" />
+                                        Reject Changes
+                                    </span>
+                                </template>
 
-                            <!-- Vote Count -->
-                            <template #votes="{ votes }">
-                                <Tag severity="secondary" rounded>
-                                    {{ votes }} Approval{{
-                                        votes === 1 ? "" : "s"
-                                    }}
-                                </Tag>
-                            </template>
+                                <!-- Vote Count -->
+                                <template #votes="{ votes }">
+                                    <div class="flex flex-col items-center">
+                                        <span class="text-2xl font-bold text-gray-900">{{ votes }}</span>
+                                        <span class="text-sm text-gray-600">
+                                            Approval{{ votes === 1 ? "" : "s" }}
+                                        </span>
+                                    </div>
+                                </template>
 
-                            <!-- Upvote (Approve) Button -->
-                            <template #alreadyUpvotedIcon>
-                                <span
-                                    class="bg-green-600 text-white px-3 py-1 rounded-full text-sm"
-                                >
-                                    Approved!
-                                </span>
-                            </template>
-                            <template #upvoteIcon>
-                                <span
-                                    class="bg-green-100 text-green-900 px-3 py-1 rounded-full text-sm"
-                                >
-                                    Approve Changes
-                                </span>
-                            </template>
-                        </Upvotable>
+                                <!-- Upvote (Approve) Button -->
+                                <template #alreadyUpvotedIcon>
+                                    <span
+                                        class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg font-medium"
+                                    >
+                                        <Icon icon="mdi:check-circle" class="w-4 h-4 mr-2" />
+                                        Approved!
+                                    </span>
+                                </template>
+                                <template #upvoteIcon>
+                                    <span
+                                        class="inline-flex items-center px-4 py-2 bg-secondary hover:bg-secondaryDark text-primary border border-primary/20 rounded-lg font-medium transition-colors cursor-pointer"
+                                    >
+                                        <Icon icon="mdi:check-circle-outline" class="w-4 h-4 mr-2" />
+                                        Approve Changes
+                                    </span>
+                                </template>
+                            </Upvotable>
+                        </div>
                     </div>
 
                     <Commentable
@@ -563,6 +596,6 @@ function mergeEdits(id) {
                     ></Commentable>
                 </div>
             </div>
-        </main>
+        </div>
     </AppLayout>
 </template>

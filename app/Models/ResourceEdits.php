@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\ResourceEditsService;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -60,7 +61,7 @@ class ResourceEdits extends Model
     protected function canMergeEdits(): Attribute
     {
         return Attribute::make(
-            get: fn () => app(ResourceEditsService::class)->canMergeEdits($this),
+            get: fn () => app(ResourceEditsService::class)->canMergeEdits($this) && Auth::id() === $this->user_id,
         );
     }
 }
