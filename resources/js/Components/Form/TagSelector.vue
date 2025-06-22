@@ -48,8 +48,14 @@ const handleSelect = (event) => {
 };
 
 const handleKeydown = (event) => {
-    if (event.key === "Enter" && searchValue.value.trim()) {
-        addTag(searchValue.value.trim().toLowerCase());
+    if (event.key === "Enter") {
+        if (searchValue.value.trim()) {
+            addTag(searchValue.value.trim().toLowerCase());
+            // Clear the input after adding via Enter
+            nextTick(() => {
+                searchValue.value = "";
+            });
+        }
         event.preventDefault();
     }
 };

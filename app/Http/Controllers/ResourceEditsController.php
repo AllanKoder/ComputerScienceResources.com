@@ -41,15 +41,16 @@ class ResourceEditsController extends Controller
     public function store(ComputerScienceResource $computerScienceResource, StoreResourceEdit $request)
     {
         $validatedData = $request->validated();
-        Log::debug("Creating a resource edit: " . json_encode($validatedData));
 
         // Ensure that they are not the same
         $originalData = $this->dataService->normalize((new ComputerScienceResourceResource($computerScienceResource))->resolve());
         $editData = $this->dataService->normalize($validatedData);
         unset($editData['edit_title'], $editData['edit_description']);
 
+        Log::debug("Creating a resource edit", ['original' => $originalData, 'edited' => $editData]);
+
         if ($originalData == $editData) {
-            return response()->json(['message' => 'No changes detected'], 422);
+            return redirect()->back()->with('failure', "No Changes Were Made");
         }
 
         $resourceEdit = ResourceEdits::create([

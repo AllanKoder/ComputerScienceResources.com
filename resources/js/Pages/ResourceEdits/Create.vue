@@ -16,6 +16,7 @@ import {
     pricingsObject,
     difficultiesObject,
 } from "@/Helpers/labels";
+import BackButton from "@/Components/Navigation/BackButton.vue";
 
 const props = defineProps({
     resource: {
@@ -77,14 +78,16 @@ const submit = () => {
 <template>
     <AppLayout title="Propose an Edit">
         <Head title="Propose an Edit" />
-
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
-                    v-if="isDataLoaded"
-                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 relative"
+                v-if="isDataLoaded"
+                class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 relative"
                 >
-                    <FormSaverChip :is-saved="isSavedToLocalStorage" :has-content="hasFormContent" />
+                    <div class="flex-row flex my-2">
+                        <BackButton :route="route('resources.show', {'computerScienceResource': props.resource.id, 'tab': 'edits'})"/>
+                        <FormSaverChip :is-saved="isSavedToLocalStorage" :has-content="hasFormContent" />
+                    </div>
                     <form @submit.prevent="submit">
                         <div class="mb-9 rounded-lg">
                             <h2 class="text-xl font-semibold mb-2">
@@ -115,7 +118,7 @@ const submit = () => {
                                     id="edit_description"
                                     v-model="form.edit_description"
                                     class="mt-1 block w-full"
-                                    rows="4"
+                                    :rows="4"
                                 />
                                 <InputError
                                     class="mt-2"
@@ -172,7 +175,7 @@ const submit = () => {
                                     id="description"
                                     v-model="form.description"
                                     class="mt-1 block w-full"
-                                    rows="6"
+                                    :rows="6"
                                     required
                                 />
                                 <InputError
@@ -245,10 +248,7 @@ const submit = () => {
                             <div class="mt-4">
                                 <InputLabel value="Topic Tags" />
                                 <TagSelector
-                                    :initial="form.topic_tags"
-                                    @changed="
-                                        (tags) => (form.topic_tags = tags)
-                                    "
+                                    v-model="form.topic_tags"
                                 />
                                 <InputError
                                     class="mt-2"
@@ -259,12 +259,7 @@ const submit = () => {
                             <div class="mt-4">
                                 <InputLabel value="Programming Language Tags" />
                                 <TagSelector
-                                    :initial="form.programming_language_tags"
-                                    @changed="
-                                        (tags) =>
-                                            (form.programming_language_tags =
-                                                tags)
-                                    "
+                                    v-model="form.programming_language_tags"
                                 />
                                 <InputError
                                     class="mt-2"
@@ -277,10 +272,7 @@ const submit = () => {
                             <div class="mt-4">
                                 <InputLabel value="General Tags" />
                                 <TagSelector
-                                    :initial="form.general_tags"
-                                    @changed="
-                                        (tags) => (form.general_tags = tags)
-                                    "
+                                    v-model="form.general_tags"
                                 />
                                 <InputError
                                     class="mt-2"

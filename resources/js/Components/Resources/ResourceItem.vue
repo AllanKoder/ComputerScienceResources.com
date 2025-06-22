@@ -62,10 +62,10 @@ const emit = defineEmits(["upvote", "downvote"]);
                     <div class="flex items-center gap-2">
                         <StarRating
                             :model-value="Number(resource.review_summary?.overall_rating)"
-                            :size="16"
+                            :size="20"
                         />
                         <div class="inline-flex items-center gap-0.5 text-xs font-medium text-gray-700 dark:text-gray-300">
-                            <Icon icon="mdi:account-group" width="12" height="12" />
+                            <Icon icon="mdi:account-group" width="16" height="16" />
                             {{ resource.review_summary?.review_count || 0 }}
                         </div>
                     </div>

@@ -4,7 +4,7 @@ import TagSelector from "@/Components/Form/TagSelector.vue";
 import Button from "primevue/button";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import { resourceMandatoryTags } from "@/Helpers/validation";
-import { Form, FormField } from "@primevue/forms";
+import { Form } from "@primevue/forms";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 
 const props = defineProps({
@@ -60,6 +60,7 @@ const validateAndNext = async () => {
     >
         <div class="flex flex-col gap-1 justify-center items-center">
             <!-- Tag Selector for topics -->
+             {{ formData.topic_tags }}
             <TagSelector
                 v-model="formData.topic_tags"
             ></TagSelector>

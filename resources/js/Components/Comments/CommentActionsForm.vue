@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, inject } from "vue";
+import { ref, reactive, inject, computed } from "vue";
 import { Icon } from "@iconify/vue";
 import axios from "axios";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -96,7 +96,7 @@ const submit = () => {
                 </PrimaryButton>
             </div>
             <div v-if="form.errors.content" class="text-red-500 text-sm">
-                {{ form.errors.content }}
+                {{ form.errors.content[0] }}
             </div>
         </form>
     </div>
