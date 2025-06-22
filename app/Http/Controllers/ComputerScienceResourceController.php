@@ -153,10 +153,10 @@ class ComputerScienceResourceController extends Controller
             );
         } elseif ($tab === 'edits') {
             $data['resourceEdits'] = Inertia::defer(
-                function () use ($computerScienceResource, $sortBy) {
+                function () use ($computerScienceResource, $sortBy, $request) {
                     $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
-                    return $query->with('user')->get();
+                    return $query->with('user')->paginate(10)->appends($request->query());
                 }
             );
         } elseif ($tab === 'discussion') {
