@@ -17,13 +17,13 @@ import {
     difficultiesObject,
 } from "@/Helpers/labels";
 import BackButton from "@/Components/Navigation/BackButton.vue";
+import { resourceEditsFields } from "@/Helpers/validation";
 
 const props = defineProps({
     resource: {
         type: Object,
         required: true,
     },
-    errors: Object,
 });
 
 const form = useForm({
@@ -63,15 +63,23 @@ const {
     clearLocalStorage
 } = useLocalStorageSaver(form, props.resource.id, formFields);
 
-const submit = () => {
-    form.post(
-        route("resource_edits.store", {
-            computerScienceResource: props.resource.id,
-        }),
-        {
-            onSuccess: () => clearLocalStorage(),
+const submit = async () => {
+    // Clear previous errors
+    form.clearErrors();
+    try {
+        // Validate all fields
+        await resourceEditsFields.validate(form, { abortEarly: false });
+        // Submit if valid
+        form.post(
+            route("resource_edits.store", { computerScienceResource: props.resource.id }),
+            { onSuccess: () => clearLocalStorage() }
+        );
+    } catch (error) {
+        // Populate form errors from validation
+        if (error.inner) {
+            error.inner.forEach(err => form.setError(err.path, err.message));
         }
-    );
+    }
 };
 </script>
 

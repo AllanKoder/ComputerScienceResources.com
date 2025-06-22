@@ -39,9 +39,11 @@ const props = defineProps({
                                 })
                             "
                         >
-                            <h3 class="text-xl font-semibold">
+                            <h2
+                                class="text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100 hover:text-primary transition-colors duration-200 font-sans"
+                            >
                                 {{ edit.edit_title }}
-                            </h3>
+                            </h2>
                         </Link>
                         <p class="text-gray-700 mt-2">
                             {{ edit.edit_description }}

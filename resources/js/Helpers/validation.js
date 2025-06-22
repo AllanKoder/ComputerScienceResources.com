@@ -27,6 +27,8 @@ export const optionalFields = object({
             .of(string().max(50))
 });
 
+export const resourceFields = resourceMandatoryFields.concat(resourceMandatoryTags).concat(optionalFields);
+
 // -------------------------
 // Resource Reviews
 // -------------------------
@@ -95,3 +97,5 @@ export const resourceEditsMandatoryFields = object({
     edit_title: string().required().max(100, "Max 100 chars"),
     edit_description: string().required().max(10000),
 });
+
+export const resourceEditsFields = resourceEditsMandatoryFields.concat(resourceFields);
