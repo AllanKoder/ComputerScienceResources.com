@@ -15,12 +15,17 @@ export const resourceMandatoryFields = object({
 
 export const resourceMandatoryTags = object({
     topic_tags: array()
-        .of(string().trim())
+        .of(string().max(50))
         .min(3, "At least three topics are required")
         .required("Topics are required"),
 });
 
-export const optionalFields = object({});
+export const optionalFields = object({
+    programming_languages: array()
+        .of(string().max(50)),
+    general_tags: array()
+            .of(string().max(50))
+});
 
 // -------------------------
 // Resource Reviews
