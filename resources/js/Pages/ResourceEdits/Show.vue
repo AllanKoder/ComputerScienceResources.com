@@ -6,10 +6,7 @@ import * as Diff from "diff";
 import Tag from "primevue/tag";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import {
-    pricingLabels,
-    difficultyLabels,
-} from "@/Helpers/labels.js";
+import { pricingLabels, difficultyLabels } from "@/Helpers/labels.js";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import { Icon } from "@iconify/vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
@@ -109,6 +106,15 @@ const hasTextDiffs = computed(
         ).length > 0
 );
 
+const hasSelectDiffs = computed(
+    () =>
+        compareFields.filter(
+            (f) =>
+                f.type === "select" &&
+                props.editedResource[f.key] !== props.originalResource[f.key]
+        ).length > 0
+);
+
 const hasPlatformDiff = computed(
     () =>
         JSON.stringify(props.originalResource.platforms) !==
@@ -126,8 +132,10 @@ const hasTagDiffs = computed(() => {
 
 // Helper to render diff spans
 const renderDiffSpan = (part) => {
-    if (part.added) return `<span class="bg-green-50 text-green-800 border-l-4 border-green-500 pl-2 pr-1">${part.value}</span>`;
-    if (part.removed) return `<span class="bg-red-50 text-red-800 border-l-4 border-red-500 pl-2 pr-1">${part.value}</span>`;
+    if (part.added)
+        return `<span class="bg-green-50 text-green-800 border-l-4 border-green-500 pl-2 pr-1">${part.value}</span>`;
+    if (part.removed)
+        return `<span class="bg-red-50 text-red-800 border-l-4 border-red-500 pl-2 pr-1">${part.value}</span>`;
     return part.value;
 };
 
@@ -147,250 +155,291 @@ function mergeEdits(id) {
                         <div class="flex items-start justify-between">
                             <div class="flex-1">
                                 <div class="flex items-center gap-3 mb-3">
-                                    <h1 class="text-3xl font-bold text-gray-900">
+                                    <h1
+                                        class="text-3xl font-bold text-gray-900"
+                                    >
                                         {{ editedResource.edit_title }}
                                     </h1>
-                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary text-primary border border-primary/20">
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary text-primary border border-primary/20"
+                                    >
                                         Proposed Edit
                                     </span>
                                 </div>
-                                <p class="text-gray-700 text-lg leading-relaxed mb-4">{{ editedResource.edit_description }}</p>
+                                <p
+                                    class="text-gray-700 text-lg leading-relaxed mb-4"
+                                >
+                                    {{ editedResource.edit_description }}
+                                </p>
 
                                 <UserProfile
                                     :user="editedResource.user"
                                     :date="editedResource.created_at"
                                 />
                             </div>
-                            <div v-if="editedResource.can_merge_edits" class="ml-6">
+                            <div
+                                v-if="editedResource.can_merge_edits"
+                                class="ml-6"
+                            >
                                 <button
                                     @click="mergeEdits(editedResource.id)"
                                     class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
                                 >
-                                    <Icon icon="mdi:source-merge" class="w-4 h-4 mr-2" />
+                                    <Icon
+                                        icon="mdi:source-merge"
+                                        class="w-4 h-4 mr-2"
+                                    />
                                     Merge Changes
                                 </button>
                             </div>
                         </div>
                     </div>
 
-
                     <TabView class="custom-tabview">
                         <!-- Side-by-Side Comparison Tab -->
                         <TabPanel header="Split View" class="custom-tab-panel">
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 <!-- Edited Version -->
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg">
-                                    <div class="bg-primary/5 border-b border-gray-200 px-4 py-3">
-                                        <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                            <Icon icon="mdi:plus-circle" class="w-5 h-5 text-green-600" />
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg"
+                                >
+                                    <div
+                                        class="bg-primary/5 border-b border-gray-200 px-4 py-3"
+                                    >
+                                        <h2
+                                            class="text-lg font-semibold text-gray-900 flex items-center gap-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:plus-circle"
+                                                class="w-5 h-5 text-green-600"
+                                            />
                                             Proposed Changes
                                         </h2>
                                     </div>
                                     <div class="p-4">
+                                        <!-- Comparison Fields -->
+                                        <div
+                                            v-for="field in compareFields"
+                                            :key="field.key"
+                                            class="mb-4"
+                                        >
+                                            <div v-if="props.editedResource[field.key] != props.originalResource[field.key]">
+                                                <div
+                                                    class="font-semibold text-gray-600 mb-2"
+                                                >
+                                                    {{ field.label }}:
+                                                </div>
 
-                                    <!-- Comparison Fields -->
-                                    <div
-                                        v-for="field in compareFields"
-                                        :key="field.key"
-                                        class="mb-4"
-                                    >
-                                        <div
-                                            class="font-semibold text-gray-600 mb-1"
-                                        >
-                                            {{ field.label }}:
+                                                <div
+                                                    class="text-gray-800 p-2 rounded"
+                                                >
+                                                    {{
+                                                        field.formatter
+                                                            ? field.formatter(
+                                                                  props
+                                                                      .editedResource[
+                                                                      field.key
+                                                                  ]
+                                                              )
+                                                            : props
+                                                                  .editedResource[
+                                                                  field.key
+                                                              ]
+                                                    }}
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div
-                                            class="text-gray-800 p-2 rounded"
-                                            :class="{
-                                                'bg-green-50 border-l-4 border-green-400':
-                                                    props.originalResource[
-                                                        field.key
-                                                    ] !==
-                                                    props.editedResource[
-                                                        field.key
-                                                    ],
-                                            }"
-                                        >
-                                            {{
-                                                field.formatter
-                                                    ? field.formatter(
-                                                          props.editedResource[
-                                                              field.key
-                                                          ]
-                                                      )
-                                                    : props.editedResource[
-                                                          field.key
-                                                      ]
-                                            }}
-                                        </div>
-                                    </div>
 
-                                    <!-- Platforms -->
-                                    <div class="mb-4">
-                                        <div
-                                            class="font-semibold text-gray-600 mb-2"
-                                        >
-                                            Platforms:
+                                        <!-- Platforms -->
+                                        <div class="mb-4">
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                Platforms:
+                                            </div>
+                                            <div class="flex flex-wrap gap-2">
+                                                <Tag
+                                                    v-for="platform in props
+                                                        .editedResource
+                                                        .platforms"
+                                                    :key="platform"
+                                                    :value="platform"
+                                                    severity="warning"
+                                                    class="capitalize"
+                                                />
+                                            </div>
                                         </div>
-                                        <div class="flex flex-wrap gap-2">
-                                            <Tag
-                                                v-for="platform in props
-                                                    .editedResource.platforms"
-                                                :key="platform"
-                                                :value="platform"
-                                                severity="warning"
-                                                class="capitalize"
-                                            />
-                                        </div>
-                                    </div>
 
-                                    <!-- Tags -->
-                                    <div class="mb-4">
-                                        <div
-                                            class="font-semibold text-gray-600 mb-2"
-                                        >
-                                            Tags:
+                                        <!-- Tags -->
+                                        <div class="mb-4">
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                Tags:
+                                            </div>
+                                            <div class="flex flex-wrap gap-1">
+                                                <Tag
+                                                    v-for="tag in props
+                                                        .editedResource
+                                                        .topic_tags"
+                                                    :key="tag"
+                                                    :value="tag"
+                                                    severity="info"
+                                                    class="text-xs mr-1 mb-1"
+                                                />
+                                                <Tag
+                                                    v-for="tag in props
+                                                        .editedResource
+                                                        .programming_language_tags"
+                                                    :key="tag"
+                                                    :value="tag"
+                                                    severity="success"
+                                                    class="text-xs mr-1 mb-1"
+                                                />
+                                                <Tag
+                                                    v-for="tag in props
+                                                        .editedResource
+                                                        .general_tags"
+                                                    :key="tag"
+                                                    :value="tag"
+                                                    severity="warning"
+                                                    class="text-xs mr-1 mb-1"
+                                                />
+                                            </div>
                                         </div>
-                                        <div class="flex flex-wrap gap-1">
-                                            <Tag
-                                                v-for="tag in props
-                                                    .editedResource.topic_tags"
-                                                :key="tag"
-                                                :value="tag"
-                                                severity="info"
-                                                class="text-xs mr-1 mb-1"
-                                            />
-                                            <Tag
-                                                v-for="tag in props
-                                                    .editedResource
-                                                    .programming_language_tags"
-                                                :key="tag"
-                                                :value="tag"
-                                                severity="success"
-                                                class="text-xs mr-1 mb-1"
-                                            />
-                                            <Tag
-                                                v-for="tag in props
-                                                    .editedResource
-                                                    .general_tags"
-                                                :key="tag"
-                                                :value="tag"
-                                                severity="warning"
-                                                class="text-xs mr-1 mb-1"
-                                            />
-                                        </div>
-                                    </div>
                                     </div>
                                 </div>
                                 <!-- Original Version -->
-                                <div class="bg-gray-50 border border-gray-200 rounded-lg">
-                                    <div class="bg-gray-100 border-b border-gray-200 px-4 py-3">
+                                <div
+                                    class="bg-gray-50 border border-gray-200 rounded-lg"
+                                >
+                                    <div
+                                        class="bg-gray-100 border-b border-gray-200 px-4 py-3"
+                                    >
                                         <Link
-                                            :href="route('resources.show', { computerScienceResource: props.originalResource.id })"
+                                            :href="
+                                                route('resources.show', {
+                                                    computerScienceResource:
+                                                        props.originalResource
+                                                            .id,
+                                                })
+                                            "
                                             class="group"
                                         >
-                                            <h2 class="text-lg font-semibold text-gray-900 flex items-center gap-2 group-hover:text-primary duration-200">
-                                                <Icon icon="mdi:file-document" class="w-5 h-5 text-gray-600 group-hover:text-primary duration-200" />
+                                            <h2
+                                                class="text-lg font-semibold text-gray-900 flex items-center gap-2 group-hover:text-primary duration-200"
+                                            >
+                                                <Icon
+                                                    icon="mdi:file-document"
+                                                    class="w-5 h-5 text-gray-600 group-hover:text-primary duration-200"
+                                                />
                                                 Current Version
                                             </h2>
                                         </Link>
                                     </div>
                                     <div class="p-4">
-
-                                    <!-- Comparison Fields -->
-                                    <div
-                                        v-for="field in compareFields"
-                                        :key="field.key"
-                                        class="mb-4"
-                                    >
+                                        <!-- Comparison Fields -->
                                         <div
-                                            class="font-semibold text-gray-600"
+                                            v-for="field in compareFields"
+                                            :key="field.key"
+                                            class="mb-4"
                                         >
-                                            {{ field.label }}:
-                                        </div>
-                                        <div class="text-gray-800">
-                                            {{
-                                                field.formatter
-                                                    ? field.formatter(
-                                                          props
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                {{ field.label }}:
+                                            </div>
+                                            <div
+                                                class="text-gray-800 p-2 rounded"
+                                            >
+                                                {{
+                                                    field.formatter
+                                                        ? field.formatter(
+                                                              props
+                                                                  .originalResource[
+                                                                  field.key
+                                                              ]
+                                                          )
+                                                        : props
                                                               .originalResource[
                                                               field.key
                                                           ]
-                                                      )
-                                                    : props.originalResource[
-                                                          field.key
-                                                      ]
-                                            }}
+                                                }}
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <!-- Platforms -->
-                                    <div class="mb-4">
-                                        <div
-                                            class="font-semibold text-gray-600 mb-2"
-                                        >
-                                            Platforms:
+                                        <!-- Platforms -->
+                                        <div class="mb-4">
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                Platforms:
+                                            </div>
+                                            <div class="flex flex-wrap gap-2">
+                                                <Tag
+                                                    v-for="platform in props
+                                                        .originalResource
+                                                        .platforms"
+                                                    :key="platform"
+                                                    :value="platform"
+                                                    severity="secondary"
+                                                    class="capitalize"
+                                                />
+                                            </div>
                                         </div>
-                                        <div class="flex flex-wrap gap-2">
-                                            <Tag
-                                                v-for="platform in props
-                                                    .originalResource.platforms"
-                                                :key="platform"
-                                                :value="platform"
-                                                severity="secondary"
-                                                class="capitalize"
-                                            />
-                                        </div>
-                                    </div>
 
-                                    <!-- Tags -->
-                                    <div class="mb-4">
-                                        <div
-                                            class="font-semibold text-gray-600 mb-2"
-                                        >
-                                            Tags:
+                                        <!-- Tags -->
+                                        <div class="mb-4">
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                Tags:
+                                            </div>
+                                            <div class="flex flex-wrap gap-1">
+                                                <Tag
+                                                    v-for="tag in props
+                                                        .originalResource
+                                                        .topic_tags"
+                                                    :key="tag"
+                                                    :value="tag"
+                                                    severity="info"
+                                                    class="text-xs mr-1 mb-1"
+                                                />
+                                                <Tag
+                                                    v-for="tag in props
+                                                        .originalResource
+                                                        .programming_language_tags"
+                                                    :key="tag"
+                                                    :value="tag"
+                                                    severity="success"
+                                                    class="text-xs mr-1 mb-1"
+                                                />
+                                                <Tag
+                                                    v-for="tag in props
+                                                        .originalResource
+                                                        .general_tags"
+                                                    :key="tag"
+                                                    :value="tag"
+                                                    severity="warning"
+                                                    class="text-xs mr-1 mb-1"
+                                                />
+                                            </div>
                                         </div>
-                                        <div class="flex flex-wrap gap-1">
-                                            <Tag
-                                                v-for="tag in props
-                                                    .originalResource
-                                                    .topic_tags"
-                                                :key="tag"
-                                                :value="tag"
-                                                severity="info"
-                                                class="text-xs mr-1 mb-1"
-                                            />
-                                            <Tag
-                                                v-for="tag in props
-                                                    .originalResource
-                                                    .programming_language_tags"
-                                                :key="tag"
-                                                :value="tag"
-                                                severity="success"
-                                                class="text-xs mr-1 mb-1"
-                                            />
-                                            <Tag
-                                                v-for="tag in props
-                                                    .originalResource
-                                                    .general_tags"
-                                                :key="tag"
-                                                :value="tag"
-                                                severity="warning"
-                                                class="text-xs mr-1 mb-1"
-                                            />
-                                        </div>
-                                    </div>
                                     </div>
                                 </div>
                             </div>
                         </TabPanel>
 
                         <!-- Diff View Tab -->
-                        <TabPanel header="Unified Diff" class="custom-tab-panel">
+                        <TabPanel
+                            header="Unified Diff"
+                            class="custom-tab-panel"
+                        >
                             <!-- Only display diff sections if there are changes -->
                             <div
                                 v-if="
                                     hasTextDiffs ||
+                                    hasSelectDiffs ||
                                     hasPlatformDiff ||
                                     hasTagDiffs
                                 "
@@ -410,9 +459,16 @@ function mergeEdits(id) {
                                         :key="field.key"
                                         class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
                                     >
-                                        <div class="bg-gray-100 px-4 py-2 border-b border-gray-200">
-                                            <h3 class="font-semibold text-gray-900 flex items-center gap-2">
-                                                <Icon icon="mdi:file-edit" class="w-4 h-4 text-primary" />
+                                        <div
+                                            class="bg-gray-100 px-4 py-2 border-b border-gray-200"
+                                        >
+                                            <h3
+                                                class="font-semibold text-gray-900 flex items-center gap-2"
+                                            >
+                                                <Icon
+                                                    icon="mdi:file-edit"
+                                                    class="w-4 h-4 text-primary"
+                                                />
                                                 {{ field.label }}
                                             </h3>
                                         </div>
@@ -424,6 +480,53 @@ function mergeEdits(id) {
                                                     .join('')
                                             "
                                         ></div>
+                                    </div>
+                                </div>
+
+                                <!-- Select Field Diffs -->
+                                <div v-if="hasSelectDiffs" class="space-y-4">
+                                    <div
+                                        v-for="field in compareFields.filter(
+                                            (f) =>
+                                                f.type === 'select' &&
+                                                props.editedResource[f.key] !==
+                                                    props.originalResource[
+                                                        f.key
+                                                    ]
+                                        )"
+                                        :key="field.key"
+                                        class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
+                                    >
+                                        <div
+                                            class="bg-gray-100 px-4 py-2 border-b border-gray-200"
+                                        >
+                                            <h3
+                                                class="font-semibold text-gray-900 flex items-center gap-2"
+                                            >
+                                                <Icon
+                                                    icon="mdi:swap-horizontal"
+                                                    class="w-4 h-4 text-primary"
+                                                />
+                                                {{ field.label }}
+                                            </h3>
+                                        </div>
+                                        <div class="p-4">
+                                            <div class="flex items-center gap-4">
+                                                <div class="flex-1">
+                                                    <div class="text-sm font-medium text-gray-600 mb-1">From:</div>
+                                                    <span class="bg-red-50 text-red-800 border-l-4 border-red-500 pl-2 pr-1 py-1 rounded">
+                                                        {{ field.formatter ? field.formatter(props.originalResource[field.key]) : props.originalResource[field.key] }}
+                                                    </span>
+                                                </div>
+                                                <Icon icon="mdi:arrow-right" class="w-5 h-5 text-gray-400" />
+                                                <div class="flex-1">
+                                                    <div class="text-sm font-medium text-gray-600 mb-1">To:</div>
+                                                    <span class="bg-green-50 text-green-800 border-l-4 border-green-500 pl-2 pr-1 py-1 rounded">
+                                                        {{ field.formatter ? field.formatter(props.editedResource[field.key]) : props.editedResource[field.key] }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -545,7 +648,10 @@ function mergeEdits(id) {
                                     <span
                                         class="inline-flex items-center px-4 py-2 bg-red-600 text-white rounded-lg font-medium"
                                     >
-                                        <Icon icon="mdi:close-circle" class="w-4 h-4 mr-2" />
+                                        <Icon
+                                            icon="mdi:close-circle"
+                                            class="w-4 h-4 mr-2"
+                                        />
                                         Rejected
                                     </span>
                                 </template>
@@ -553,7 +659,10 @@ function mergeEdits(id) {
                                     <span
                                         class="inline-flex items-center px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 rounded-lg font-medium transition-colors cursor-pointer"
                                     >
-                                        <Icon icon="mdi:close-circle-outline" class="w-4 h-4 mr-2" />
+                                        <Icon
+                                            icon="mdi:close-circle-outline"
+                                            class="w-4 h-4 mr-2"
+                                        />
                                         Reject Changes
                                     </span>
                                 </template>
@@ -561,7 +670,10 @@ function mergeEdits(id) {
                                 <!-- Vote Count -->
                                 <template #votes="{ votes }">
                                     <div class="flex flex-col items-center">
-                                        <span class="text-2xl font-bold text-gray-900">{{ votes }}</span>
+                                        <span
+                                            class="text-2xl font-bold text-gray-900"
+                                            >{{ votes }}</span
+                                        >
                                         <span class="text-sm text-gray-600">
                                             Approval{{ votes === 1 ? "" : "s" }}
                                         </span>
@@ -573,7 +685,10 @@ function mergeEdits(id) {
                                     <span
                                         class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg font-medium"
                                     >
-                                        <Icon icon="mdi:check-circle" class="w-4 h-4 mr-2" />
+                                        <Icon
+                                            icon="mdi:check-circle"
+                                            class="w-4 h-4 mr-2"
+                                        />
                                         Approved!
                                     </span>
                                 </template>
@@ -581,7 +696,10 @@ function mergeEdits(id) {
                                     <span
                                         class="inline-flex items-center px-4 py-2 bg-secondary hover:bg-secondaryDark text-primary border border-primary/20 rounded-lg font-medium transition-colors cursor-pointer"
                                     >
-                                        <Icon icon="mdi:check-circle-outline" class="w-4 h-4 mr-2" />
+                                        <Icon
+                                            icon="mdi:check-circle-outline"
+                                            class="w-4 h-4 mr-2"
+                                        />
                                         Approve Changes
                                     </span>
                                 </template>
