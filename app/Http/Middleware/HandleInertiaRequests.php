@@ -39,7 +39,6 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'success' => $request->session()->get('success'),
                 'warning' => $request->session()->get('warning'),
-                'error'   => $request->session()->get('error'),
             ],
             'config' => [
                 'COMMENT_MAX_DEPTH' => config('comment.max_depth'),

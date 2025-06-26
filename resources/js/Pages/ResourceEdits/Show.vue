@@ -160,11 +160,6 @@ function mergeEdits(id) {
                                     >
                                         {{ editedResource.edit_title }}
                                     </h1>
-                                    <span
-                                        class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-secondary text-primary border border-primary/20"
-                                    >
-                                        Proposed Edit
-                                    </span>
                                 </div>
                                 <p
                                     class="text-gray-700 text-lg leading-relaxed mb-4"

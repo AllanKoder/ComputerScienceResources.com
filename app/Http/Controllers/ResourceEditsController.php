@@ -50,7 +50,8 @@ class ResourceEditsController extends Controller
         Log::debug("Creating a resource edit", ['original' => $originalData, 'edited' => $editData]);
 
         if ($originalData == $editData) {
-            return redirect()->back()->with('failure', "No Changes Were Made");
+            Log::warning("Resource edit was submitted without any changes");
+            return redirect()->back()->with('warning', "Cannot submit an edit with no changes made");
         }
 
         $resourceEdit = ResourceEdits::create([
