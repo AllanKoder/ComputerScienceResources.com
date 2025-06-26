@@ -40,7 +40,7 @@ const props = defineProps({
         required: false,
     },
     resourceEdits: {
-        type: Array,
+        type: Object,
         required: false,
     },
 });

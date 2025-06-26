@@ -1,10 +1,12 @@
 <script setup>
+import { ref } from "vue";
 import { Head, useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import InputError from "@/Components/InputError.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 import TextArea from "@/Components/TextArea.vue";
 import MultiSelect from "primevue/multiselect";
 import Select from "primevue/select";
@@ -18,6 +20,10 @@ import {
 } from "@/Helpers/labels";
 import BackButton from "@/Components/Navigation/BackButton.vue";
 import { resourceEditsFields } from "@/Helpers/validation";
+import ConfirmationModal from "@/Components/ConfirmationModal.vue";
+import DangerButton from "@/Components/DangerButton.vue";
+
+const showReset = ref(false);
 
 const props = defineProps({
     resource: {
@@ -62,6 +68,12 @@ const {
     hasFormContent,
     clearLocalStorage
 } = useLocalStorageSaver(form, props.resource.id, formFields);
+
+const resetForm = () => {
+    clearLocalStorage();
+    form.reset();
+    showReset.value = false;
+};
 
 const submit = async () => {
     // Clear previous errors
@@ -288,7 +300,35 @@ const submit = async () => {
                                 />
                             </div>
 
-                            <div class="flex items-center justify-end mt-6">
+                            <div class="flex items-center justify-between mt-6 p-4">
+                                <SecondaryButton @click="showReset = true" type="button">
+                                    Reset
+                                </SecondaryButton>
+                                <ConfirmationModal :show="showReset" @close="showReset = false">
+                                    <template #title>
+                                        Reset the form
+                                    </template>
+
+                                    <template #content>
+                                        Are you sure you want reset back to the default values for this resource? You will lose your saved changes.
+                                    </template>
+
+                                    <template #footer>
+                                        <SecondaryButton @click="showReset = false">
+                                            Cancel
+                                        </SecondaryButton>
+
+                                        <DangerButton
+                                            class="ms-3"
+                                            :class="{ 'opacity-25': form.processing }"
+                                            :disabled="form.processing"
+                                            @click="resetForm"
+                                        >
+                                            Reset Form
+                                        </DangerButton>
+                                    </template>
+                                </ConfirmationModal>
+
                                 <PrimaryButton
                                     :class="{ 'opacity-25': form.processing }"
                                     :disabled="form.processing"

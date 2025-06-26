@@ -1,21 +1,12 @@
 <?php
 
 use App\Http\Controllers\CommentController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComputerScienceResourceController;
 use App\Http\Controllers\ResourceEditsController;
 use App\Http\Controllers\ResourceReviewController;
 use App\Http\Controllers\TagFrequencyController;
 use App\Http\Controllers\UpvoteController;
-use App\Models\TagFrequency;
-use Inertia\Inertia;
-
-// Public
-Route::get('/', function () {
-    return redirect('/resources');
-});
-
 
 // Authenticated and verified
 Route::middleware([
@@ -58,6 +49,10 @@ Route::middleware([
 // -----------------------
 // Public
 // -----------------------
+Route::get('/', function () {
+    return redirect('/resources');
+});
+
 Route::controller(ComputerScienceResourceController::class)->group(function () {
     Route::get('/resources', 'index')->name('resources.index');
     Route::get('/resources/{computerScienceResource}/{tab?}', 'show')->name('resources.show');
