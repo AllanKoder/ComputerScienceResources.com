@@ -11,6 +11,8 @@ import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import { Icon } from "@iconify/vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import UserProfile from "@/Components/Profile/UserProfile.vue";
+import BackButton from "@/Components/Navigation/BackButton.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
     originalResource: {
@@ -19,10 +21,6 @@ const props = defineProps({
     },
     editedResource: {
         type: Object,
-        required: true,
-    },
-    resourceId: {
-        type: Number,
         required: true,
     },
 });
@@ -151,6 +149,17 @@ function mergeEdits(id) {
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-7 sm:p-8">
                     <!-- Header Section -->
+                    <div class="my-2">
+                        <BackButton
+                            :route="
+                                route('resources.show', {
+                                    computerScienceResource:
+                                        props.originalResource.id,
+                                    tab: 'edits',
+                                })
+                            "
+                        />
+                    </div>
                     <div class="border-b border-gray-200 pb-6 mb-6">
                         <div class="flex items-start justify-between">
                             <div class="flex-1">
@@ -176,16 +185,15 @@ function mergeEdits(id) {
                                 v-if="editedResource.can_merge_edits"
                                 class="ml-6"
                             >
-                                <button
+                                <PrimaryButton
                                     @click="mergeEdits(editedResource.id)"
-                                    class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm"
                                 >
                                     <Icon
                                         icon="mdi:source-merge"
                                         class="w-4 h-4 mr-2"
                                     />
                                     Merge Changes
-                                </button>
+                                </PrimaryButton>
                             </div>
                         </div>
                     </div>
@@ -218,7 +226,16 @@ function mergeEdits(id) {
                                             :key="field.key"
                                             class="mb-4"
                                         >
-                                            <div v-if="props.editedResource[field.key] != props.originalResource[field.key]">
+                                            <div
+                                                v-if="
+                                                    props.editedResource[
+                                                        field.key
+                                                    ] !=
+                                                    props.originalResource[
+                                                        field.key
+                                                    ]
+                                                "
+                                            >
                                                 <div
                                                     class="font-semibold text-gray-600 mb-2"
                                                 >
@@ -506,18 +523,61 @@ function mergeEdits(id) {
                                             </h3>
                                         </div>
                                         <div class="p-4">
-                                            <div class="flex items-center gap-4">
+                                            <div
+                                                class="flex items-center gap-4"
+                                            >
                                                 <div class="flex-1">
-                                                    <div class="text-sm font-medium text-gray-600 mb-1">From:</div>
-                                                    <span class="bg-red-50 text-red-800 border-l-4 border-red-500 pl-2 pr-1 py-1 rounded">
-                                                        {{ field.formatter ? field.formatter(props.originalResource[field.key]) : props.originalResource[field.key] }}
+                                                    <div
+                                                        class="text-sm font-medium text-gray-600 mb-1"
+                                                    >
+                                                        From:
+                                                    </div>
+                                                    <span
+                                                        class="bg-red-50 text-red-800 border-l-4 border-red-500 pl-2 pr-1 py-1 rounded"
+                                                    >
+                                                        {{
+                                                            field.formatter
+                                                                ? field.formatter(
+                                                                      props
+                                                                          .originalResource[
+                                                                          field
+                                                                              .key
+                                                                      ]
+                                                                  )
+                                                                : props
+                                                                      .originalResource[
+                                                                      field.key
+                                                                  ]
+                                                        }}
                                                     </span>
                                                 </div>
-                                                <Icon icon="mdi:arrow-right" class="w-5 h-5 text-gray-400" />
+                                                <Icon
+                                                    icon="mdi:arrow-right"
+                                                    class="w-5 h-5 text-gray-400"
+                                                />
                                                 <div class="flex-1">
-                                                    <div class="text-sm font-medium text-gray-600 mb-1">To:</div>
-                                                    <span class="bg-green-50 text-green-800 border-l-4 border-green-500 pl-2 pr-1 py-1 rounded">
-                                                        {{ field.formatter ? field.formatter(props.editedResource[field.key]) : props.editedResource[field.key] }}
+                                                    <div
+                                                        class="text-sm font-medium text-gray-600 mb-1"
+                                                    >
+                                                        To:
+                                                    </div>
+                                                    <span
+                                                        class="bg-green-50 text-green-800 border-l-4 border-green-500 pl-2 pr-1 py-1 rounded"
+                                                    >
+                                                        {{
+                                                            field.formatter
+                                                                ? field.formatter(
+                                                                      props
+                                                                          .editedResource[
+                                                                          field
+                                                                              .key
+                                                                      ]
+                                                                  )
+                                                                : props
+                                                                      .editedResource[
+                                                                      field.key
+                                                                  ]
+                                                        }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -632,7 +692,7 @@ function mergeEdits(id) {
                             <Upvotable
                                 :flexRow="true"
                                 :upvotable-key="'edit'"
-                                :upvotable-id="resourceId"
+                                :upvotable-id="editedResource.id"
                                 :initial-votes="editedResource.vote_score"
                                 :user-vote="editedResource.user_vote"
                                 :refresh="true"
@@ -678,7 +738,7 @@ function mergeEdits(id) {
                                 <!-- Upvote (Approve) Button -->
                                 <template #alreadyUpvotedIcon>
                                     <span
-                                        class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg font-medium"
+                                        class="inline-flex items-center px-4 py-2 bg-green-500 text-white rounded-lg font-medium"
                                     >
                                         <Icon
                                             icon="mdi:check-circle"
@@ -689,7 +749,7 @@ function mergeEdits(id) {
                                 </template>
                                 <template #upvoteIcon>
                                     <span
-                                        class="inline-flex items-center px-4 py-2 bg-secondary hover:bg-secondaryDark text-primary border border-primary/20 rounded-lg font-medium transition-colors cursor-pointer"
+                                        class="inline-flex items-center px-4 py-2 bg-green-200 hover:bg-green-300 text-green-800 border border-green-300 rounded-lg font-medium transition-colors cursor-pointer"
                                     >
                                         <Icon
                                             icon="mdi:check-circle-outline"
