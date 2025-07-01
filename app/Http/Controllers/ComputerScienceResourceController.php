@@ -16,6 +16,7 @@ use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -74,10 +75,18 @@ class ComputerScienceResourceController extends Controller
         $validatedData = $request->validated();
         Log::debug("Called store resource with data " . json_encode($request));
 
+        $imageUrl = null;
+        // Store the image onto storage
+        if (array_key_exists('image_file', $validatedData))
+        {
+            $path = $validatedData['image_file']->store('resource', 'public');
+            $imageUrl = Storage::url($path);
+        }
+
         $resource = ComputerScienceResource::create([
             'user_id' => Auth::id(),
             'name' => $validatedData['name'],
-            'image_url' => $validatedData['image_url'],
+            'image_url' => $imageUrl,
             'description' => $validatedData['description'],
             'page_url' => $validatedData['page_url'],
             'platforms' => $validatedData['platforms'],

@@ -11,7 +11,7 @@ const form = useForm("CreateResource", {
     name: "test",
     platforms: ["website"],
     page_url: "http://youtube.com",
-    image_url: "http://youtube.com",
+    image_file: null,
     pricing: "free",
     difficulty: "academic",
     description: "http://youtube.com",

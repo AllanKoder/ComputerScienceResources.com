@@ -6,9 +6,9 @@ import { Button } from "primevue";
 import { Form, FormField } from "@primevue/forms";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
-
+import PictureInput from 'vue-picture-input'
 import Select from "primevue/select";
-import { defineProps, defineEmits, watch, ref } from "vue";
+import { defineProps, defineEmits, watch, ref, nextTick  } from "vue";
 import {
     platformsObject,
     pricingsObject,
@@ -44,6 +44,11 @@ watch(
     },
     { deep: true }
 );
+
+function onChange(event) {
+    formData.image_file = event.target.files[0];
+}
+
 
 const validateAndNext = () => {
     // Validate the form using the schema
@@ -101,32 +106,27 @@ const validateAndNext = () => {
             <!-- Image URL Field -->
             <FormField
                 v-slot="$field"
-                name="imageUrl"
+                name="imageData"
                 class="flex flex-col gap-1"
             >
                 <label class="block text-sm font-medium text-gray-700"
-                    >Image URL</label
+                    >Image Thumbnail</label
                 >
-                <InputText
-                    v-model="formData.image_url"
-                    placeholder="Enter image URL"
-                    class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                />
+                <PictureInput
+                    ref="pictureInput"
+                    width="220"
+                    height="220"
+                    margin="16"
+                    accept="image/jpeg,image/png"
+                    size="0.5"
+                    remove-button-class="inline-flex items-center px-4 py-2 bg-primary border-0 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 transition ease-in-out duration-150"
+                    button-class="inline-flex items-center px-4 py-2 border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
+                    removable
+                    @change="onChange"/>
                 <PrimeVueFormError
-                    v-if="$field?.invalid"
-                    :errors="$field.errors"
+                v-if="$field?.invalid"
+                :errors="$field.errors"
                 />
-
-                <!-- Displaying the Image Preview -->
-                <div class="mt-4">
-                    <h3 class="text-lg font-semibold">Image Preview:</h3>
-                    <img
-                        :src="formData.imageUrl"
-                        alt="Resource Image"
-                        class="mt-2 border rounded shadow-md"
-                        style="max-width: 100%; height: auto"
-                    />
-                </div>
             </FormField>
 
             <FormField

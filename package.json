@@ -27,6 +27,7 @@
         "@primevue/themes": "^4.3.3",
         "diff": "^7.0.0",
         "primevue": "^4.3.3",
+        "vue-picture-input": "^3.0.1",
         "yup": "^1.6.1"
     }
 }

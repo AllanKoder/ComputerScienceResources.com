@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Log;
 use Mockery;
 use Mockery\MockInterface;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 
@@ -28,10 +29,27 @@ class ResourceEditsTest extends TestCase
         $this->user = User::factory()->create();
     }
 
+    public static function invalidResourceEditDataProvider(): array
+    {
+        return [
+            'name too long' => ['name', str_repeat('a', 101)],
+            'description too long' => ['description', str_repeat('a', 10001)],
+            'invalid platform' => ['platforms', ['invalid_platform']],
+            'invalid page_url' => ['page_url', 'not-a-url'],
+            'invalid difficulty' => ['difficulty', 'invalid_difficulty'],
+            'invalid pricing' => ['pricing', 'invalid_pricing'],
+            'topic_tags too few' => ['topic_tags', ['tag1', 'tag2']],
+            'invalid image_url' => ['image_url', 'not-a-url'],
+            'general_tags not an array' => ['general_tags', 'not-an-array'],
+            'programming_language_tags not an array' => ['programming_language_tags', 'not-an-array'],
+        ];
+    }
+
     /**
      * Test that invalid edit payloads are rejected.
      */
-    public function test_cannot_post_resource_with_invalid_fields(): void
+    #[DataProvider('invalidResourceEditDataProvider')]
+    public function test_cannot_post_resource_with_invalid_fields(string $field, mixed $invalidValue): void
     {
         $this->actingAs($this->user);
 
@@ -41,39 +59,23 @@ class ResourceEditsTest extends TestCase
         $validData['edit_title'] = 'title';
         $validData['edit_description'] = 'description';
 
-        $invalidDataSets = [
-            'name' => str_repeat('a', 101), // Too long
-            'description' => str_repeat('a', 10001), // Too long
-            'platforms' => ['invalid_platform'],
-            'page_url' => 'not-a-url',
-            'difficulty' => 'invalid_difficulty',
-            'pricing' => 'invalid_pricing',
-            'topic_tags' => ['tag1', 'tag2'], // Fewer than required minimum of 3
-            'image_url' => 'not-a-url',
-            'general_tags' => 'not-an-array',
-            'programming_language_tags' => 'not-an-array'
-        ];
+        $testData = $validData;
+        $testData[$field] = $invalidValue;
 
-        foreach ($invalidDataSets as $field => $invalidValue)
-        {
-            $testData = $validData;
-            $testData[$field] = $invalidValue;
+        $response = $this->postJson(route('resource_edits.store', [
+            'computerScienceResource' => $resource->id,
+        ]), $testData);
 
-            $response = $this->postJson(route('resource_edits.store', [
-                'computerScienceResource' => $resource->id,
-            ]), $testData);
+        $this->assertTrue(
+            $response->status() === 422,
+            "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: " . $response->status()
+        );
 
-            $this->assertTrue(
-                $response->status() === 422,
-                "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: " . $response->status()
-            );
-
-            $notCreatedEdit = ResourceEdits::first();
-            $this->assertNull(
-                $notCreatedEdit,
-                "Failed asserting that a resource edit with name '{$testData['name']}' was not created. Invalid field: " . $field
-            );
-        }
+        $notCreatedEdit = ResourceEdits::first();
+        $this->assertNull(
+            $notCreatedEdit,
+            "Failed asserting that a resource edit with name '{$testData['name']}' was not created. Invalid field: " . $field
+        );
     }
 
     /**
@@ -91,7 +93,6 @@ class ResourceEditsTest extends TestCase
             $resource = ComputerScienceResource::factory()->create();
 
             // Create valid edit payload, then set fields to exactly match the resource.
-
             $editData = array();
             $editData['name'] = $resource->name;
             $editData['description'] = $resource->description;
@@ -108,15 +109,10 @@ class ResourceEditsTest extends TestCase
             $editData['edit_title'] = 'Proposed edit with no changes';
             $editData['edit_description'] = 'This edit does nothing.';
 
-            $response = $this->postJson(route('resource_edits.store', $resource), $editData);
+            $response = $this->post(route('resource_edits.store', $resource), $editData);
 
-            if ($response->status() !== 422) {
-                Log::debug("here");
-                Log::debug('editData:'. json_encode($editData));
-                Log::debug('resource:'. json_encode(new ComputerScienceResourceResource($resource)));
-            }
-
-            $response->assertStatus(422);
+            $response->assertStatus(302);
+            $response->assertSessionHas('warning', 'Cannot submit an edit with no changes made');
         }
     }
 

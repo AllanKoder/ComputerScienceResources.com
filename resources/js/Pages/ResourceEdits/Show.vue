@@ -119,14 +119,23 @@ const hasPlatformDiff = computed(
         JSON.stringify(props.editedResource.platforms)
 );
 
-const tagDiffKeys = ["topic_tags", "programming_language_tags", "general_tags"];
-const hasTagDiffs = computed(() => {
-    return tagDiffKeys.some((tagType) => {
-        const original = props.originalResource[tagType] || [];
-        const edited = props.editedResource[tagType] || [];
-        return JSON.stringify(original) !== JSON.stringify(edited);
-    });
-});
+const hasTopicTagDiff = computed(
+    () =>
+        JSON.stringify(props.originalResource.topic_tags) !==
+        JSON.stringify(props.editedResource.topic_tags)
+);
+
+const hasProgrammingLanguageTagDiff = computed(
+    () =>
+        JSON.stringify(props.originalResource.programming_language_tags) !==
+        JSON.stringify(props.editedResource.programming_language_tags)
+);
+
+const hasGeneralTagDiff = computed(
+    () =>
+        JSON.stringify(props.originalResource.general_tags) !==
+        JSON.stringify(props.editedResource.general_tags)
+);
 
 // Helper to render diff spans
 const renderDiffSpan = (part) => {
@@ -263,7 +272,7 @@ function mergeEdits(id) {
                                         </div>
 
                                         <!-- Platforms -->
-                                        <div class="mb-4">
+                                        <div v-if="hasPlatformDiff" class="mb-4">
                                             <div
                                                 class="font-semibold text-gray-600 mb-2"
                                             >
@@ -283,11 +292,14 @@ function mergeEdits(id) {
                                         </div>
 
                                         <!-- Tags -->
-                                        <div class="mb-4">
+                                        <div
+                                            v-if="hasTopicTagDiff"
+                                            class="mb-4"
+                                        >
                                             <div
                                                 class="font-semibold text-gray-600 mb-2"
                                             >
-                                                Tags:
+                                                Topic Tags:
                                             </div>
                                             <div class="flex flex-wrap gap-1">
                                                 <Tag
@@ -296,25 +308,49 @@ function mergeEdits(id) {
                                                         .topic_tags"
                                                     :key="tag"
                                                     :value="tag"
-                                                    severity="info"
+                                                    severity="secondary"
                                                     class="text-xs mr-1 mb-1"
                                                 />
+                                            </div>
+                                        </div>
+                                        <div
+                                            v-if="hasProgrammingLanguageTagDiff"
+                                            class="mb-4"
+                                        >
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                Programming Language Tags:
+                                            </div>
+                                            <div class="flex flex-wrap gap-1">
                                                 <Tag
                                                     v-for="tag in props
                                                         .editedResource
                                                         .programming_language_tags"
                                                     :key="tag"
                                                     :value="tag"
-                                                    severity="success"
+                                                    severity="secondary"
                                                     class="text-xs mr-1 mb-1"
                                                 />
+                                            </div>
+                                        </div>
+                                        <div
+                                            v-if="hasGeneralTagDiff"
+                                            class="mb-4"
+                                        >
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                General Tags:
+                                            </div>
+                                            <div class="flex flex-wrap gap-1">
                                                 <Tag
                                                     v-for="tag in props
                                                         .editedResource
                                                         .general_tags"
                                                     :key="tag"
                                                     :value="tag"
-                                                    severity="warning"
+                                                    severity="secondary"
                                                     class="text-xs mr-1 mb-1"
                                                 />
                                             </div>
@@ -357,31 +393,42 @@ function mergeEdits(id) {
                                             class="mb-4"
                                         >
                                             <div
-                                                class="font-semibold text-gray-600 mb-2"
+                                                v-if="
+                                                    props.editedResource[
+                                                        field.key
+                                                    ] !=
+                                                    props.originalResource[
+                                                        field.key
+                                                    ]
+                                                "
                                             >
-                                                {{ field.label }}:
-                                            </div>
-                                            <div
-                                                class="text-gray-800 p-2 rounded"
-                                            >
-                                                {{
-                                                    field.formatter
-                                                        ? field.formatter(
-                                                              props
+                                                <div
+                                                    class="font-semibold text-gray-600 mb-2"
+                                                >
+                                                    {{ field.label }}:
+                                                </div>
+                                                <div
+                                                    class="text-gray-800 p-2 rounded"
+                                                >
+                                                    {{
+                                                        field.formatter
+                                                            ? field.formatter(
+                                                                  props
+                                                                      .originalResource[
+                                                                      field.key
+                                                                  ]
+                                                              )
+                                                            : props
                                                                   .originalResource[
                                                                   field.key
                                                               ]
-                                                          )
-                                                        : props
-                                                              .originalResource[
-                                                              field.key
-                                                          ]
-                                                }}
+                                                    }}
+                                                </div>
                                             </div>
                                         </div>
 
                                         <!-- Platforms -->
-                                        <div class="mb-4">
+                                        <div v-if="hasPlatformDiff" class="mb-4">
                                             <div
                                                 class="font-semibold text-gray-600 mb-2"
                                             >
@@ -401,11 +448,14 @@ function mergeEdits(id) {
                                         </div>
 
                                         <!-- Tags -->
-                                        <div class="mb-4">
+                                        <div
+                                            v-if="hasTopicTagDiff"
+                                            class="mb-4"
+                                        >
                                             <div
                                                 class="font-semibold text-gray-600 mb-2"
                                             >
-                                                Tags:
+                                                Topic Tags:
                                             </div>
                                             <div class="flex flex-wrap gap-1">
                                                 <Tag
@@ -414,25 +464,49 @@ function mergeEdits(id) {
                                                         .topic_tags"
                                                     :key="tag"
                                                     :value="tag"
-                                                    severity="info"
+                                                    severity="secondary"
                                                     class="text-xs mr-1 mb-1"
                                                 />
+                                            </div>
+                                        </div>
+                                        <div
+                                            v-if="hasProgrammingLanguageTagDiff"
+                                            class="mb-4"
+                                        >
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                Programming Language Tags:
+                                            </div>
+                                            <div class="flex flex-wrap gap-1">
                                                 <Tag
                                                     v-for="tag in props
                                                         .originalResource
                                                         .programming_language_tags"
                                                     :key="tag"
                                                     :value="tag"
-                                                    severity="success"
+                                                    severity="secondary"
                                                     class="text-xs mr-1 mb-1"
                                                 />
+                                            </div>
+                                        </div>
+                                        <div
+                                            v-if="hasGeneralTagDiff"
+                                            class="mb-4"
+                                        >
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                General Tags:
+                                            </div>
+                                            <div class="flex flex-wrap gap-1">
                                                 <Tag
                                                     v-for="tag in props
                                                         .originalResource
                                                         .general_tags"
                                                     :key="tag"
                                                     :value="tag"
-                                                    severity="warning"
+                                                    severity="secondary"
                                                     class="text-xs mr-1 mb-1"
                                                 />
                                             </div>
@@ -453,7 +527,9 @@ function mergeEdits(id) {
                                     hasTextDiffs ||
                                     hasSelectDiffs ||
                                     hasPlatformDiff ||
-                                    hasTagDiffs
+                                    hasTopicTagDiff ||
+                                    hasProgrammingLanguageTagDiff ||
+                                    hasGeneralTagDiff
                                 "
                                 class="space-y-6"
                             >
@@ -586,95 +662,186 @@ function mergeEdits(id) {
                                 </div>
 
                                 <!-- Platform Diffs -->
-                                <div v-if="hasPlatformDiff" class="mb-4">
-                                    <h3 class="text-lg font-semibold mb-2">
-                                        Platforms Diff:
-                                    </h3>
-                                    <div class="bg-gray-50 p-3 rounded-lg">
+                                <div
+                                    v-if="hasPlatformDiff"
+                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
+                                >
+                                    <div
+                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
+                                    >
+                                        <h3
+                                            class="font-semibold text-gray-900 flex items-center gap-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:laptop"
+                                                class="w-4 h-4 text-primary"
+                                            />
+                                            Platforms
+                                        </h3>
+                                    </div>
+                                    <div class="p-4 font-mono text-sm">
                                         <div
                                             v-for="(
                                                 part, index
                                             ) in platformDiffs"
                                             :key="index"
-                                            :class="{
-                                                'bg-green-100': part.added,
-                                                'bg-red-100': part.removed,
-                                                'p-1 rounded':
-                                                    part.added || part.removed,
-                                            }"
                                         >
-                                            {{
-                                                Array.isArray(part.value)
-                                                    ? part.value.join(", ")
-                                                    : part.value
-                                            }}
+                                            <span
+                                                v-if="part.added"
+                                                class="bg-green-50 text-green-800"
+                                                >+
+                                                {{
+                                                    part.value.join(", ")
+                                                }}</span
+                                            >
+                                            <span
+                                                v-else-if="part.removed"
+                                                class="bg-red-50 text-red-800"
+                                                >-
+                                                {{
+                                                    part.value.join(", ")
+                                                }}</span
+                                            >
+                                            <span v-else>{{
+                                                part.value.join(", ")
+                                            }}</span>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Tag Diffs -->
-                                <div v-if="hasTagDiffs" class="space-y-4">
+                                <div
+                                    v-if="hasTopicTagDiff"
+                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
+                                >
                                     <div
-                                        v-for="(diff, tagType) in tagDiffs"
-                                        :key="tagType"
+                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
                                     >
-                                        <template
-                                            v-if="
-                                                JSON.stringify(
-                                                    props.editedResource[
-                                                        tagType
-                                                    ]
-                                                ) !==
-                                                JSON.stringify(
-                                                    props.originalResource[
-                                                        tagType
-                                                    ]
-                                                )
-                                            "
+                                        <h3
+                                            class="font-semibold text-gray-900 flex items-center gap-2"
                                         >
-                                            <h3
-                                                class="text-lg font-semibold mb-2"
-                                            >
+                                            <Icon
+                                                icon="mdi:tag"
+                                                class="w-4 h-4 text-primary"
+                                            />
+                                            Topic Tags
+                                        </h3>
+                                    </div>
+                                    <div class="p-4 font-mono text-sm">
+                                        <div
+                                            v-for="(part, index) in tagDiffs.topic_tags"
+                                            :key="index"
+                                        >
+                                            <span
+                                                v-if="part.added"
+                                                class="bg-green-50 text-green-800"
+                                                >+
                                                 {{
-                                                    tagType === "topic_tags"
-                                                        ? "Topic"
-                                                        : tagType ===
-                                                          "programming_language_tags"
-                                                        ? "Programming Language"
-                                                        : "General"
-                                                }}
-                                                Tags Diff:
-                                            </h3>
-                                            <div
-                                                class="bg-gray-50 p-3 rounded-lg"
+                                                    part.value.join(", ")
+                                                }}</span
                                             >
-                                                <div
-                                                    v-for="(
-                                                        part, index
-                                                    ) in diff"
-                                                    :key="index"
-                                                    :class="{
-                                                        'bg-green-100':
-                                                            part.added,
-                                                        'bg-red-100':
-                                                            part.removed,
-                                                        'p-1 rounded':
-                                                            part.added ||
-                                                            part.removed,
-                                                    }"
-                                                >
-                                                    {{
-                                                        Array.isArray(
-                                                            part.value
-                                                        )
-                                                            ? part.value.join(
-                                                                  ", "
-                                                              )
-                                                            : part.value
-                                                    }}
-                                                </div>
-                                            </div>
-                                        </template>
+                                            <span
+                                                v-else-if="part.removed"
+                                                class="bg-red-50 text-red-800"
+                                                >-
+                                                {{
+                                                    part.value.join(", ")
+                                                }}</span
+                                            >
+                                            <span v-else>{{
+                                                part.value.join(", ")
+                                            }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    v-if="hasProgrammingLanguageTagDiff"
+                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
+                                >
+                                    <div
+                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
+                                    >
+                                        <h3
+                                            class="font-semibold text-gray-900 flex items-center gap-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:code-tags"
+                                                class="w-4 h-4 text-primary"
+                                            />
+                                            Programming Language Tags
+                                        </h3>
+                                    </div>
+                                    <div class="p-4 font-mono text-sm">
+                                        <div
+                                            v-for="(part, index) in tagDiffs.programming_language_tags"
+                                            :key="index"
+                                        >
+                                            <span
+                                                v-if="part.added"
+                                                class="bg-green-50 text-green-800"
+                                                >+
+                                                {{
+                                                    part.value.join(", ")
+                                                }}</span
+                                            >
+                                            <span
+                                                v-else-if="part.removed"
+                                                class="bg-red-50 text-red-800"
+                                                >-
+                                                {{
+                                                    part.value.join(", ")
+                                                }}</span
+                                            >
+                                            <span v-else>{{
+                                                part.value.join(", ")
+                                            }}</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div
+                                    v-if="hasGeneralTagDiff"
+                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
+                                >
+                                    <div
+                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
+                                    >
+                                        <h3
+                                            class="font-semibold text-gray-900 flex items-center gap-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:tag-multiple"
+                                                class="w-4 h-4 text-primary"
+                                            />
+                                            General Tags
+                                        </h3>
+                                    </div>
+                                    <div class="p-4 font-mono text-sm">
+                                        <div
+                                            v-for="(part, index) in tagDiffs.general_tags"
+                                            :key="index"
+                                        >
+                                            <span
+                                                v-if="part.added"
+                                                class="bg-green-50 text-green-800"
+                                                >+
+                                                {{
+                                                    part.value.join(", ")
+                                                }}</span
+                                            >
+                                            <span
+                                                v-else-if="part.removed"
+                                                class="bg-red-50 text-red-800"
+                                                >-
+                                                {{
+                                                    part.value.join(", ")
+                                                }}</span
+                                            >
+                                            <span v-else>{{
+                                                part.value.join(", ")
+                                            }}</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
