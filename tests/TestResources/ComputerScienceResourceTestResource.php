@@ -8,6 +8,7 @@ use Event;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+// TODO: MAKE IT THE BETTER FORM
 class ComputerScienceResourceTestResource extends JsonResource
 {
     public function toArray(Request $request): array
@@ -15,7 +16,6 @@ class ComputerScienceResourceTestResource extends JsonResource
         return [
             'name' => $this->name,
             'description' => $this->description,
-            'image_url' => $this->image_url,
             'page_url' => $this->page_url,
             'platforms' => $this->platforms,
             'difficulty' => $this->difficulty,

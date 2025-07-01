@@ -5,6 +5,7 @@ import StarRating from "@/Components/StarRating/StarRating.vue";
 import { Link } from "@inertiajs/vue3";
 import { difficultyLabels, pricingLabels, platformLabels } from "@/Helpers/labels";
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
+import ResourceThumbnail from "./ResourceThumbnail.vue";
 
 defineProps({
     resource: {
@@ -30,10 +31,9 @@ const emit = defineEmits(["upvote", "downvote"]);
 
         <!-- Image column -->
         <td class="align-middle pr-4 py-3 w-24">
-            <img
+            <ResourceThumbnail
                 :src="resource.image_url"
                 :alt="resource.name"
-                class="w-full h-auto object-contain rounded-lg shadow-sm"
             />
         </td>
 

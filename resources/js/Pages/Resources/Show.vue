@@ -10,12 +10,14 @@ import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue
 import ResourceUpvoteSorting from "@/Components/Resources/ResourceUpvoteSorting.vue";
 import { getConfigData } from "@/Helpers/config";
 import StarRating from "@/Components/StarRating/StarRating.vue";
+import ImageCompare from 'primevue/imagecompare';
 import { Icon } from "@iconify/vue";
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import { platformLabels } from "@/Helpers/labels";
 import LoadingAnimation from "@/Components/LoadingAnimation.vue";
 import UserProfile from "@/Components/Profile/UserProfile.vue";
 import ProposeEditsButton from "@/Components/Resources/ResourceEdit/ProposeEditsButton.vue";
+import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
 
 const props = defineProps({
     tab: {
@@ -76,10 +78,9 @@ const sortingType = urlParams.get("sort_by") || "top";
                                 />
 
                                 <!-- Image column -->
-                                <img
+                                <ResourceThumbnail
                                     :src="props.resource.image_url"
                                     :alt="props.resource.name"
-                                    class="w-28 h-28 object-cover rounded-lg shadow-md self-center"
                                 />
                             </div>
 

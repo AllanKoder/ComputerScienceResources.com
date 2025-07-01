@@ -6,7 +6,9 @@ use App\Models\User;
 use App\Models\ComputerScienceResource;
 use Database\Factories\ComputerScienceResourceFactory;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
@@ -40,6 +42,25 @@ class ComputerScienceResourceControllerTest extends TestCase
         $this->assertNotNull($createdResource);
     }
 
+    public function test_can_post_resource_with_image()
+    {
+        Storage::fake('public');
+        $this->actingAs($this->user);
+
+        $formData = ComputerScienceResourceTestResource::fake();
+        $formData['image_file'] = UploadedFile::fake()->image('avatar.jpg');
+
+        $response = $this->post(route('resources.store'), $formData);
+
+        $response->assertRedirect(); // a redirect after successful creation
+
+        // Check it is created
+        $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
+        $this->assertNotNull($createdResource);
+        $this->assertNotNull($createdResource->image_url);
+        Storage::disk('public')->assertExists('resource/' . $formData['image_file']->hashName());
+    }
+
     public function test_cannot_post_resource_unauthed()
     {
         $formData = ComputerScienceResourceTestResource::fake();
@@ -63,7 +84,7 @@ class ComputerScienceResourceControllerTest extends TestCase
             'invalid difficulty' => ['difficulty', 'invalid_difficulty'],
             'invalid pricing' => ['pricing', 'invalid_pricing'],
             'too few topic_tags' => ['topic_tags', ['tag1', 'tag2']],
-            'invalid image_url' => ['image_url', 'not-a-url'],
+            'invalid image_file' => ['image_file', 'not-an-image'],
             'null programming_language_tags' => ['programming_language_tags', null],
             'non-distinct general_tags' => ['general_tags', ['a', 'a', 'a']],
         ];

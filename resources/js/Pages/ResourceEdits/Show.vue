@@ -6,6 +6,7 @@ import * as Diff from "diff";
 import Tag from "primevue/tag";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
+import ImageCompare from "primevue/imagecompare";
 import { pricingLabels, difficultyLabels } from "@/Helpers/labels.js";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import { Icon } from "@iconify/vue";
@@ -13,6 +14,7 @@ import Commentable from "@/Components/Comments/Commentable.vue";
 import UserProfile from "@/Components/Profile/UserProfile.vue";
 import BackButton from "@/Components/Navigation/BackButton.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
 
 const props = defineProps({
     originalResource: {
@@ -135,6 +137,12 @@ const hasGeneralTagDiff = computed(
     () =>
         JSON.stringify(props.originalResource.general_tags) !==
         JSON.stringify(props.editedResource.general_tags)
+);
+
+const hasImageDiff = computed(
+    () =>
+        props.originalResource.image_url !== props.editedResource.image_url &&
+        (props.originalResource.image_url || props.editedResource.image_url)
 );
 
 // Helper to render diff spans
@@ -269,6 +277,32 @@ function mergeEdits(id) {
                                                     }}
                                                 </div>
                                             </div>
+                                        </div>
+
+                                        <!-- Image -->
+                                        <div v-if="hasImageDiff" class="mb-4 w-44 h-44">
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                Image:
+                                            </div>
+                                            <ResourceThumbnail
+                                                v-if="
+                                                    props.editedResource
+                                                        .image_url
+                                                "
+                                                :src="
+                                                    props.editedResource
+                                                        .image_url
+                                                "
+                                                :alt="'Proposed Image'"
+                                            />
+                                            <p
+                                                v-else
+                                                class="text-gray-500 italic"
+                                            >
+                                                Image removed
+                                            </p>
                                         </div>
 
                                         <!-- Platforms -->
@@ -427,6 +461,32 @@ function mergeEdits(id) {
                                             </div>
                                         </div>
 
+                                        <!-- Image -->
+                                        <div v-if="hasImageDiff" class="mb-4 w-44 h-44">
+                                            <div
+                                                class="font-semibold text-gray-600 mb-2"
+                                            >
+                                                Image:
+                                            </div>
+                                            <ResourceThumbnail
+                                                v-if="
+                                                    props.originalResource
+                                                        .image_url
+                                                "
+                                                :src="
+                                                    props.originalResource
+                                                        .image_url
+                                                "
+                                                :alt="'Current Image'"
+                                            />
+                                            <p
+                                                v-else
+                                                class="text-gray-500 italic"
+                                            >
+                                                No image
+                                            </p>
+                                        </div>
+
                                         <!-- Platforms -->
                                         <div v-if="hasPlatformDiff" class="mb-4">
                                             <div
@@ -529,7 +589,8 @@ function mergeEdits(id) {
                                     hasPlatformDiff ||
                                     hasTopicTagDiff ||
                                     hasProgrammingLanguageTagDiff ||
-                                    hasGeneralTagDiff
+                                    hasGeneralTagDiff ||
+                                    hasImageDiff
                                 "
                                 class="space-y-6"
                             >
@@ -658,6 +719,59 @@ function mergeEdits(id) {
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+
+                                <!-- Image Diff -->
+                                <div
+                                    v-if="hasImageDiff"
+                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
+                                >
+                                    <div
+                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
+                                    >
+                                        <h3
+                                            class="font-semibold text-gray-900 flex items-center gap-2"
+                                        >
+                                            <Icon
+                                                icon="mdi:image"
+                                                class="w-4 h-4 text-primary"
+                                            />
+                                            Image
+                                        </h3>
+                                    </div>
+                                    <div class="p-4 space-y-4">
+                                        <ImageCompare class="sm:!w-96 h-96 shadow-lg mx-auto">
+                                            <template #left>
+                                                <ResourceThumbnail
+                                                    v-if="
+                                                        props
+                                                            .originalResource
+                                                            .image_url
+                                                    "
+                                                    :src="
+                                                        props
+                                                            .originalResource
+                                                            .image_url
+                                                    "
+                                                    :alt="'Original Image'"
+                                                />
+                                            </template>
+                                            <template #right>
+                                                <ResourceThumbnail
+                                                    v-if="
+                                                        props.editedResource
+                                                            .image_url
+                                                    "
+                                                    :src="
+                                                        props.editedResource
+                                                            .image_url
+                                                    "
+                                                    :alt="'Proposed Image'"
+                                                />
+
+                                            </template>
+                                        </ImageCompare>
                                     </div>
                                 </div>
 

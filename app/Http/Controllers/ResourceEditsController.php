@@ -10,6 +10,7 @@ use App\Services\DataNormalizationService;
 use App\Http\Requests\ResourceEdit\StoreResourceEdit;
 use App\Http\Resources\ComputerScienceResourceResource;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Log;
 
@@ -54,12 +55,20 @@ class ResourceEditsController extends Controller
             return redirect()->back()->with('warning', "Cannot submit an edit with no changes made");
         }
 
+        $imageUrl = null;
+        // Store the image onto storage
+        if (array_key_exists('image_file', $validatedData))
+        {
+            $path = $validatedData['image_file']->store('resourceEdits', 'public');
+            $imageUrl = Storage::url($path);
+        }
+
         $resourceEdit = ResourceEdits::create([
             'user_id' => Auth::id(),
             'computer_science_resource_id' => $computerScienceResource->id,
             'edit_title' => $validatedData['edit_title'],
             'edit_description' => $validatedData['edit_description'],
-            'image_url' => $validatedData['image_url'],
+            'image_url' => $imageUrl,
             'name' => $validatedData['name'],
             'description' => $validatedData['description'],
             'page_url' => $validatedData['page_url'],
@@ -114,6 +123,8 @@ class ResourceEditsController extends Controller
         // Change tag frequency
         TagFrequencyChanged::dispatch($old_tag_counter, $new_tags);
 
+
+        // TODO: HANDLE DELETING
         // Delete the edit since we successfully merged the changes
         $resourceEdits->delete();
 
