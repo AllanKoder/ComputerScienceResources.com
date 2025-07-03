@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('resource_edits', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            
+
             // The resource we are editting
             $table->foreignIdFor(ComputerScienceResource::class)->constrained()->cascadeOnDelete();
             // The user who created the edit
@@ -26,27 +26,7 @@ return new class extends Migration
             $table->string('edit_title');
             $table->text('edit_description');
 
-            // Copied Schema of Computer Science Resource
-            $table->string('name')->fulltext();
-            $table->text('description')->fulltext();
-
-            // TODO: have it be nullable or something
-            $table->string('image_url')->nullable();
-            
-            $table->string('page_url');
-
-            $table->set('platforms', ['book', 'podcast', 'youtube_channel', 'blog', 'website', 'organization', 'bootcamp', 'newsletter', 'workshop', 'course', 'forum', 'mobile_app', 'desktop_app', 'magazine'])
-                ->index();
-            $table->enum('difficulty', ['beginner', 'industry_simple', 'industry_standard', 'industry_professional', 'academic'])
-                ->index();
-            $table->enum('pricing', ['free', 'premium', 'paid', 'freemium'])
-                ->index();
-
-            // Handle Tags:
-            // 'topic_tags', 'programming_language_tags', 'general_tags'
-            $table->json('topic_tags');
-            $table->json('programming_language_tags');
-            $table->json('general_tags');
+            $table->json('proposed_changes');
         });
     }
 

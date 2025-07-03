@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests\ComputerScienceResource;
 
-use App\Http\Requests\Shared\ComputerScienceResourceRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreResourceRequest extends FormRequest
 {
-    use ComputerScienceResourceRequest;
 
     /**
      * Determine if the user is authorized to make this request.
@@ -25,6 +23,23 @@ class StoreResourceRequest extends FormRequest
      */
     public function rules(): array
     {
-        return $this->baseResourceRules();
+        return [
+            'name' => ['required', 'string', 'max:100'],
+            'description' => ['required', 'string', 'max:10000'],
+            'platforms' => ['required', 'array', 'min:1'],
+            'platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
+            'page_url' => ['required', 'string', 'url:http,https', 'max:255'],
+            'difficulty' => ['required', 'string', Rule::in(config('computerScienceResource.difficulties'))],
+            'pricing' => ['required', 'string', Rule::in(config('computerScienceResource.pricings'))],
+            'topic_tags' => ['required', 'array', 'min:3'],
+            'topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+
+            // Optional, can just be omitted
+            'image_file' => ['image','max:400'], // 400 kiloBytes
+            'general_tags' => ['array'],
+            'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+            'programming_language_tags' => ['array'],
+            'programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+        ];
     }
 }

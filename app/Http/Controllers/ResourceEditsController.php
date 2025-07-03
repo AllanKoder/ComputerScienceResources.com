@@ -42,25 +42,18 @@ class ResourceEditsController extends Controller
     public function store(ComputerScienceResource $computerScienceResource, StoreResourceEdit $request)
     {
         $validatedData = $request->validated();
+        $proposedChanges = $validatedData['proposed_changes'] ?? [];
 
-        // Ensure that they are not the same
-        $originalData = $this->dataService->normalize((new ComputerScienceResourceResource($computerScienceResource))->resolve());
-        $editData = $this->dataService->normalize($validatedData);
-        unset($editData['edit_title'], $editData['edit_description']);
+        $actualChanges = $this->calculateChanges($computerScienceResource, $proposedChanges);
 
-        Log::debug("Creating a resource edit", ['original' => $originalData, 'edited' => $editData]);
-
-        if ($originalData == $editData) {
-            Log::warning("Resource edit was submitted without any changes");
-            return redirect()->back()->with('warning', "Cannot submit an edit with no changes made");
+        if (isset($validatedData['proposed_changes']['image_file'])) {
+            $path = $validatedData['proposed_changes']['image_file']->store('resource_edits', 'public');
+            $actualChanges['image_url'] = Storage::url($path);
         }
 
-        $imageUrl = null;
-        // Store the image onto storage
-        if (array_key_exists('image_file', $validatedData))
-        {
-            $path = $validatedData['image_file']->store('resourceEdits', 'public');
-            $imageUrl = Storage::url($path);
+        if (empty($actualChanges)) {
+            Log::warning("Resource edit was submitted without any changes for resource ID: {$computerScienceResource->id}");
+            return redirect()->back()->with('warning', "Cannot submit an edit with no changes made.");
         }
 
         $resourceEdit = ResourceEdits::create([
@@ -68,20 +61,32 @@ class ResourceEditsController extends Controller
             'computer_science_resource_id' => $computerScienceResource->id,
             'edit_title' => $validatedData['edit_title'],
             'edit_description' => $validatedData['edit_description'],
-            'image_url' => $imageUrl,
-            'name' => $validatedData['name'],
-            'description' => $validatedData['description'],
-            'page_url' => $validatedData['page_url'],
-            'platforms' => $validatedData['platforms'],
-            'difficulty' => $validatedData['difficulty'],
-            'pricing' => $validatedData['pricing'],
-            'topic_tags' => $validatedData['topic_tags'],
-            'programming_language_tags' => $validatedData['programming_language_tags'],
-            'general_tags' => $validatedData['general_tags'],
+            'proposed_changes' => $actualChanges,
         ]);
 
         return redirect()->route('resource_edits.show', ['resourceEdits' => $resourceEdit->id])
-            ->with('success', 'The proposed edits were created. Other\'s can now view it.');
+            ->with('success', 'The proposed edits were created. Others can now view it.');
+    }
+
+    /**
+     * Calculate the actual differences between the proposed changes and the original resource.
+     */
+    private function calculateChanges(ComputerScienceResource $resource, array $proposedChanges): array
+    {
+        $actualChanges = [];
+        $normalizedProposed = $this->dataNormalizationService->normalize($proposedChanges);
+        $normalizedOriginal = $this->dataNormalizationService->normalize($resource->toArray());
+        // If there is a new image, then it is a new change
+        if (isset($normalizedProposed['image_url']))
+
+        foreach ($normalizedProposed as $key => $value) {
+            if (!array_key_exists($key, $normalizedOriginal) || $normalizedOriginal[$key] !== $value) {
+                // Use the original value from the request, not the normalized one, for file uploads.
+                $actualChanges[$key] = $proposedChanges[$key];
+            }
+        }
+
+        return $actualChanges;
     }
 
     public function show(ResourceEdits $resourceEdits)

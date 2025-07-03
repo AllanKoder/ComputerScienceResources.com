@@ -20,6 +20,30 @@ class ResourceEditsFactory extends Factory
         $difficulties = config('computerScienceResource.difficulties');
         $pricings = config('computerScienceResource.pricings');
 
+        $possibleChanges = [
+            'name' => $this->faker->name(),
+            'description' => $this->faker->realText(),
+            'image_url' => 'https://cdn.iconscout.com/icon/free/png-256/free-leetcode-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-vol-1-pack-logos-icons-3030025.png',
+            'page_url' => $this->faker->url(),
+            'platforms' => $this->faker->randomElements($platforms, rand(1, 3)),
+            'difficulty' => $this->faker->randomElement($difficulties),
+            'pricing' => $this->faker->randomElement($pricings),
+            'topic_tags' => ['data structures', 'algorithms'],
+            'programming_language_tags' => ['python'],
+            'general_tags' => ['interactive', 'challenging'],
+        ];
+
+        // Select a random subset of keys to include in the proposed changes.
+        $proposedKeys = $this->faker->randomElements(
+            array_keys($possibleChanges),
+            $this->faker->numberBetween(1, count($possibleChanges))
+        );
+
+        $proposedChanges = [];
+        foreach ($proposedKeys as $key) {
+            $proposedChanges[$key] = $possibleChanges[$key];
+        }
+
         return [
             'computer_science_resource_id' => function () {
                 return ComputerScienceResource::inRandomOrder()->firstOr(function () {
@@ -34,19 +58,7 @@ class ResourceEditsFactory extends Factory
             'edit_title' => $this->faker->sentence,
             'edit_description' => $this->faker->paragraph,
 
-            // Copied fields from the resource
-            'name' => $this->faker->name(),
-            'description' => $this->faker->realText(),
-            'image_url' => 'https://cdn.iconscout.com/icon/free/png-256/free-leetcode-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-vol-1-pack-logos-icons-3030025.png',
-            'page_url' => $this->faker->url(),
-
-            'platforms' => $this->faker->randomElements($platforms, rand(1, 3)),
-            'difficulty' => $this->faker->randomElement($difficulties),
-            'pricing' => $this->faker->randomElement($pricings),
-
-            'topic_tags' => ['data structures', 'algorithms'],
-            'programming_language_tags' => ['python'],
-            'general_tags' => ['interactive', 'challenging'],
+            'proposed_changes' => $proposedChanges,
         ];
     }
 }

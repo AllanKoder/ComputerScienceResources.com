@@ -93,9 +93,22 @@ export const resourceReviewFields = object({
 // --------------------------
 // Resource Edits
 // --------------------------
-export const resourceEditsMandatoryFields = object({
-    edit_title: string().required().max(100, "Max 100 chars"),
-    edit_description: string().required().max(10000),
+
+// A nullable version of the resource fields for the edit form.
+export const nullableResourceFields = object({
+    name: string().max(100, "Max 100 chars"),
+    page_url: string().url("Must be a valid URL"),
+    platforms: array().of(string()),
+    description: string().max(10000),
+    difficulty: string(),
+    pricing: string(),
+    topic_tags: array().of(string().max(50)),
+    programming_language_tags: array().of(string().max(50)),
+    general_tags: array().of(string().max(50)),
 });
 
-export const resourceEditsFields = resourceEditsMandatoryFields.concat(resourceFields);
+export const resourceEditsFields = object({
+    edit_title: string().required("Title is required").max(100, "Max 100 chars"),
+    edit_description: string().required("Description is required").max(10000),
+    proposed_changes: nullableResourceFields,
+});

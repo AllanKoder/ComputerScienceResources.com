@@ -25,9 +25,7 @@ class ResourceEdits extends Model
     protected $appends = ['user_vote', 'vote_score', 'comments_count', 'can_merge_edits'];
 
     protected $casts = [
-        'topic_tags' => 'array',
-        'programming_language_tags' => 'array',
-        'general_tags' => 'array',
+        'proposed_changes' => 'array',
     ];
 
     public function resource(): BelongsTo
@@ -38,19 +36,6 @@ class ResourceEdits extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    /**
-     * Attribute to get and set platforms as an array
-     *
-     * @return Attribute
-     */
-    protected function platforms(): Attribute
-    {
-        return Attribute::make(
-            get: fn($value) => explode(',', $value),
-            set: fn($value) => implode(',', $value)
-        );
     }
 
     /**

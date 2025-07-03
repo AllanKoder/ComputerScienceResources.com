@@ -36,31 +36,24 @@ const props = defineProps({
 const formData = useForm({
     edit_title: "",
     edit_description: "",
-    name: props.resource.name,
-    description: props.resource.description,
-    page_url: props.resource.page_url,
-    image_file: props.resource.image_url,
-    difficulty: props.resource.difficulty,
-    pricing: props.resource.pricing,
-    platforms: props.resource.platforms,
-    topic_tags: props.resource.topic_tags || [],
-    programming_language_tags: props.resource.programming_language_tags || [],
-    general_tags: props.resource.general_tags || [],
+    proposed_changes: {
+        name: props.resource.name,
+        description: props.resource.description,
+        page_url: props.resource.page_url,
+        image_file: null,
+        difficulty: props.resource.difficulty,
+        pricing: props.resource.pricing,
+        platforms: props.resource.platforms,
+        topic_tags: props.resource.topic_tags || [],
+        programming_language_tags: props.resource.programming_language_tags || [],
+        general_tags: props.resource.general_tags || [],
+    }
 });
 
 const formFields = [
     'edit_title',
     'edit_description',
-    'name',
-    'description',
-    'page_url',
-    'image_file',
-    'difficulty',
-    'pricing',
-    'platforms' ,
-    'topic_tags',
-    'programming_language_tags',
-    'general_tags',
+    'proposed_changes',
 ];
 
 const {
@@ -68,37 +61,37 @@ const {
     isDataLoaded,
     hasFormContent,
     clearLocalStorage
-} = useLocalStorageSaver(formData, props.resource.id, formFields);
+} = useLocalStorageSaver(formData, `edit-${props.resource.id}`, formFields);
 
 const pictureKey = ref(0);
 const resetForm = () => {
     clearLocalStorage();
     formData.reset();
+    // Ensure the nested image_file is also reset
+    formData.proposed_changes.image_file = null;
     showReset.value = false;
-    pictureKey.value++; // Force rerender
+    pictureKey.value++; // Force rerender of PictureInput
 };
 
-function onChange(event) {
-    formData.image_file = event.target.files[0];
+function onImageChange(event) {
+    formData.proposed_changes.image_file = event.target.files[0];
 }
 
 const submit = async () => {
-    // Clear previous errors
     formData.clearErrors();
-    try {
-        // Validate all fields
-        await resourceEditsFields.validate(formData, { abortEarly: false });
-        // Submit if valid
-        formData.post(
-            route("resource_edits.store", { computerScienceResource: props.resource.id }),
-            { onSuccess: () => clearLocalStorage() }
-        );
-    } catch (error) {
-        // Populate form errors from validation
-        if (error.inner) {
-            error.inner.forEach(err => formData.setError(err.path, err.message));
+
+    await resourceEditsFields.validate(formData.data(), { abortEarly: false });
+
+    formData.post(
+        route("resource_edits.store", { computerScienceResource: props.resource.id }),
+        {
+            onSuccess: () => clearLocalStorage(),
+            onError: (errors) => {
+                formData.setError(errors);
+            }
         }
-    }
+    );
+
 };
 </script>
 
@@ -166,14 +159,14 @@ const submit = async () => {
                                     />
                                     <TextInput
                                         id="name"
-                                        v-model="formData.name"
+                                        v-model="formData.proposed_changes.name"
                                         type="text"
                                         class="mt-1 block w-full"
                                         required
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="formData.errors.name"
+                                        :message="formData.errors['proposed_changes.name']"
                                     />
                                 </div>
 
@@ -189,21 +182,21 @@ const submit = async () => {
                                     remove-button-class="inline-flex items-center px-4 py-2 bg-primary border-0 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 transition ease-in-out duration-150"
                                     button-class="inline-flex items-center px-4 py-2 border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
                                     removable
-                                    @change="onChange"
+                                    @change="onImageChange"
                                 />
 
                                 <div>
                                     <InputLabel for="page_url" value="URL" />
                                     <TextInput
                                         id="page_url"
-                                        v-model="formData.page_url"
+                                        v-model="formData.proposed_changes.page_url"
                                         type="text"
                                         class="mt-1 block w-full"
                                         required
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="formData.errors.page_url"
+                                        :message="formData.errors['proposed_changes.page_url']"
                                     />
                                 </div>
                             </div>
@@ -215,14 +208,14 @@ const submit = async () => {
                                 />
                                 <TextArea
                                     id="description"
-                                    v-model="formData.description"
+                                    v-model="formData.proposed_changes.description"
                                     class="mt-1 block w-full"
                                     :rows="6"
                                     required
                                 />
                                 <InputError
                                     class="mt-2"
-                                    :message="formData.errors.description"
+                                    :message="formData.errors['proposed_changes.description']"
                                 />
                             </div>
 
@@ -236,7 +229,7 @@ const submit = async () => {
                                     />
                                     <Select
                                         id="difficulty"
-                                        v-model="formData.difficulty"
+                                        v-model="formData.proposed_changes.difficulty"
                                         :options="difficultiesObject"
                                         option-label="label"
                                         option-value="value"
@@ -245,7 +238,7 @@ const submit = async () => {
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="formData.errors.difficulty"
+                                        :message="formData.errors['proposed_changes.difficulty']"
                                     />
                                 </div>
 
@@ -253,7 +246,7 @@ const submit = async () => {
                                     <InputLabel for="pricing" value="Pricing" />
                                     <Select
                                         id="pricing"
-                                        v-model="formData.pricing"
+                                        v-model="formData.proposed_changes.pricing"
                                         :options="pricingsObject"
                                         option-label="label"
                                         option-value="value"
@@ -262,7 +255,7 @@ const submit = async () => {
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="formData.errors.pricing"
+                                        :message="formData.errors['proposed_changes.pricing']"
                                     />
                                 </div>
 
@@ -273,7 +266,7 @@ const submit = async () => {
                                     />
                                     <MultiSelect
                                         id="platforms"
-                                        v-model="formData.platforms"
+                                        v-model="formData.proposed_changes.platforms"
                                         :options="platformsObject"
                                         option-label="label"
                                         option-value="value"
@@ -282,7 +275,7 @@ const submit = async () => {
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="formData.errors.platforms"
+                                        :message="formData.errors['proposed_changes.platforms']"
                                     />
                                 </div>
                             </div>
@@ -290,23 +283,23 @@ const submit = async () => {
                             <div class="mt-4">
                                 <InputLabel value="Topic Tags" />
                                 <TagSelector
-                                    v-model="formData.topic_tags"
+                                    v-model="formData.proposed_changes.topic_tags"
                                 />
                                 <InputError
                                     class="mt-2"
-                                    :message="formData.errors.topic_tags"
+                                    :message="formData.errors['proposed_changes.topic_tags']"
                                 />
                             </div>
 
                             <div class="mt-4">
                                 <InputLabel value="Programming Language Tags" />
                                 <TagSelector
-                                    v-model="formData.programming_language_tags"
+                                    v-model="formData.proposed_changes.programming_language_tags"
                                 />
                                 <InputError
                                     class="mt-2"
                                     :message="
-                                        formData.errors.programming_language_tags
+                                        formData.errors['proposed_changes.programming_language_tags']
                                     "
                                 />
                             </div>
@@ -314,11 +307,11 @@ const submit = async () => {
                             <div class="mt-4">
                                 <InputLabel value="General Tags" />
                                 <TagSelector
-                                    v-model="formData.general_tags"
+                                    v-model="formData.proposed_changes.general_tags"
                                 />
                                 <InputError
                                     class="mt-2"
-                                    :message="formData.errors.general_tags"
+                                    :message="formData.errors['proposed_changes.general_tags']"
                                 />
                             </div>
 

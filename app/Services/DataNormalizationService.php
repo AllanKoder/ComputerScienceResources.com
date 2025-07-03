@@ -13,7 +13,7 @@ class DataNormalizationService
 
         foreach ($array as &$value) {
             if (is_array($value)) {
-                sort($value); // Assumes it's a flat array of values
+                sort($value);
             }
         }
 
