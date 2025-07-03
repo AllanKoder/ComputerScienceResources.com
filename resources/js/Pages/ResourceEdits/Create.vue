@@ -64,21 +64,29 @@ const {
 } = useLocalStorageSaver(formData, `edit-${props.resource.id}`, formFields);
 
 const pictureKey = ref(0);
+const changedPicture = ref(false);
 const resetForm = () => {
     clearLocalStorage();
     formData.reset();
-    // Ensure the nested image_file is also reset
     formData.proposed_changes.image_file = null;
+    changedPicture.value = false;
     showReset.value = false;
     pictureKey.value++; // Force rerender of PictureInput
 };
 
 function onImageChange(event) {
     formData.proposed_changes.image_file = event.target.files[0];
+    changedPicture.value = true;
 }
 
 const submit = async () => {
     formData.clearErrors();
+
+    // Remove image if there is no changes made to it
+    if (!changedPicture.value)
+    {
+        delete formData.proposed_changes.image_file;
+    }
 
     await resourceEditsFields.validate(formData.data(), { abortEarly: false });
 

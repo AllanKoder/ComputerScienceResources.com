@@ -65,6 +65,10 @@ export const difficultyLabels = {
     academic: "Academic",
 };
 
+export const getPricingLabel = (pricing) => pricingLabels[pricing] || "Unknown";
+
+export const getDifficultyLabel = (difficulty) =>
+    difficultyLabels[difficulty] || "Unknown";
 
 export const ratingLabels = {
     community: "Community",

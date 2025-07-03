@@ -1,20 +1,26 @@
 <script setup>
-import { Head, Link, router } from "@inertiajs/vue3";
+import { computed } from "vue";
+import { Head, Link } from "@inertiajs/vue3";
+import { Icon } from "@iconify/vue";
+import { diffChars } from "diff";
+import { getDifficultyLabel, getPricingLabel } from "@/Helpers/labels";
+
 import AppLayout from "@/Layouts/AppLayout.vue";
-import { computed, ref } from "vue";
-import * as Diff from "diff";
 import Tag from "primevue/tag";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-import ImageCompare from "primevue/imagecompare";
-import { pricingLabels, difficultyLabels } from "@/Helpers/labels.js";
+
+// Component mapping for the Unified Diff view
+import TextDiffViewer from "@/Components/Diff/TextDiffViewer.vue";
+import SelectDiffViewer from "@/Components/Diff/SelectDiffViewer.vue";
+import TagDiffViewer from "@/Components/Diff/TagDiffViewer.vue";
+import ImageDiffViewer from "@/Components/Diff/ImageDiffViewer.vue";
+import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
-import { Icon } from "@iconify/vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 import UserProfile from "@/Components/Profile/UserProfile.vue";
 import BackButton from "@/Components/Navigation/BackButton.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
-import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
 
 const props = defineProps({
     originalResource: {
@@ -27,141 +33,73 @@ const props = defineProps({
     },
 });
 
-const emit = defineEmits(["approveChanges", "rejectChanges"]);
-
-const compareFields = [
-    {
-        key: "name",
-        label: "Name",
-        type: "text",
-    },
-    {
-        key: "description",
-        label: "Description",
-        type: "textarea",
-    },
-    {
-        key: "page_url",
-        label: "Resource URL",
-        type: "url",
-    },
-    {
-        key: "difficulty",
+// A map to get display labels, formatters, and diff components for each field.
+const fieldConfig = {
+    name: { label: "Name", component: TextDiffViewer },
+    description: { label: "Description", component: TextDiffViewer },
+    page_url: { label: "URL", component: TextDiffViewer },
+    difficulty: {
         label: "Difficulty",
-        type: "select",
-        formatter: (value) => difficultyLabels[value],
+        formatter: getDifficultyLabel,
+        component: SelectDiffViewer,
     },
-    {
-        key: "pricing",
+    pricing: {
         label: "Pricing",
-        type: "select",
-        formatter: (value) => pricingLabels[value],
+        formatter: getPricingLabel,
+        component: SelectDiffViewer,
     },
-];
-
-// Compute diffs for text fields
-const textDiffs = computed(() => {
-    return compareFields.reduce((diffs, field) => {
-        if (field.type !== "select") {
-            diffs[field.key] = Diff.diffChars(
-                props.originalResource[field.key] || "",
-                props.editedResource[field.key] || ""
-            );
-        }
-        return diffs;
-    }, {});
-});
-
-// Compute diffs for tags
-const tagDiffs = computed(() => ({
-    topic_tags: Diff.diffArrays(
-        props.originalResource.topic_tags || [],
-        props.editedResource.topic_tags || []
-    ),
-    programming_language_tags: Diff.diffArrays(
-        props.originalResource.programming_language_tags || [],
-        props.editedResource.programming_language_tags || []
-    ),
-    general_tags: Diff.diffArrays(
-        props.originalResource.general_tags || [],
-        props.editedResource.general_tags || []
-    ),
-}));
-
-// Compute diffs for platforms
-const platformDiffs = computed(() =>
-    Diff.diffArrays(
-        props.originalResource.platforms,
-        props.editedResource.platforms
-    )
-);
-
-// Computed flags to check if there are differences
-const hasTextDiffs = computed(
-    () =>
-        compareFields.filter(
-            (f) =>
-                f.type !== "select" &&
-                props.editedResource[f.key] !== props.originalResource[f.key]
-        ).length > 0
-);
-
-const hasSelectDiffs = computed(
-    () =>
-        compareFields.filter(
-            (f) =>
-                f.type === "select" &&
-                props.editedResource[f.key] !== props.originalResource[f.key]
-        ).length > 0
-);
-
-const hasPlatformDiff = computed(
-    () =>
-        JSON.stringify(props.originalResource.platforms) !==
-        JSON.stringify(props.editedResource.platforms)
-);
-
-const hasTopicTagDiff = computed(
-    () =>
-        JSON.stringify(props.originalResource.topic_tags) !==
-        JSON.stringify(props.editedResource.topic_tags)
-);
-
-const hasProgrammingLanguageTagDiff = computed(
-    () =>
-        JSON.stringify(props.originalResource.programming_language_tags) !==
-        JSON.stringify(props.editedResource.programming_language_tags)
-);
-
-const hasGeneralTagDiff = computed(
-    () =>
-        JSON.stringify(props.originalResource.general_tags) !==
-        JSON.stringify(props.editedResource.general_tags)
-);
-
-const hasImageDiff = computed(
-    () =>
-        props.originalResource.image_url !== props.editedResource.image_url &&
-        (props.originalResource.image_url || props.editedResource.image_url)
-);
-
-// Helper to render diff spans
-const renderDiffSpan = (part) => {
-    if (part.added)
-        return `<span class="bg-green-50 text-green-800 border-l-4 border-green-500 pl-2 pr-1">${part.value}</span>`;
-    if (part.removed)
-        return `<span class="bg-red-50 text-red-800 border-l-4 border-red-500 pl-2 pr-1">${part.value}</span>`;
-    return part.value;
+    image_url: { label: "Image", component: ImageDiffViewer },
+    platforms: { label: "Platforms", component: TagDiffViewer },
+    topic_tags: { label: "Topic Tags", component: TagDiffViewer },
+    programming_language_tags: {
+        label: "Programming Language Tags",
+        component: TagDiffViewer,
+    },
+    general_tags: { label: "General Tags", component: TagDiffViewer },
 };
+
+// The new, simplified way to get all changed fields.
+const changedFields = computed(() => {
+    const changes = props.editedResource.proposed_changes || {};
+    return Object.keys(changes)
+        .map((key) => {
+            const config = fieldConfig[key];
+            if (!config) return null; // Ignore keys not in config
+
+            const proposedValue = changes[key];
+            const originalValue = props.originalResource[key];
+
+            // For text diffs, pre-calculate the diff array
+            const diffArray =
+                config.component === TextDiffViewer &&
+                originalValue &&
+                proposedValue
+                    ? diffChars(originalValue || "", proposedValue || "")
+                    : null;
+
+            return {
+                key,
+                label: config.label,
+                component: config.component,
+                formatter: config.formatter,
+                originalValue,
+                proposedValue,
+                diffArray,
+            };
+        })
+        .filter(Boolean); // Filter out any nulls
+});
 
 function mergeEdits(id) {
     router.post(route("resource_edits.merge", { resourceEdits: id }));
 }
+
+const hasChanges = computed(() => changedFields.value.length > 0);
 </script>
 
 <template>
     <AppLayout :title="`Compare Versions: ${props.originalResource.name}`">
-        <Head :title="`Compare Versions: ${props.originalResource.name}`" />
+        <Head :title="`Edit for ${props.originalResource.name}`" />
         <div class="max-w-[90vw] mx-auto sm:px-6 py-4 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-7 sm:p-8">
@@ -219,7 +157,7 @@ function mergeEdits(id) {
                         <!-- Side-by-Side Comparison Tab -->
                         <TabPanel header="Split View" class="custom-tab-panel">
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                <!-- Edited Version -->
+                                <!-- Proposed Changes Column -->
                                 <div
                                     class="bg-gray-50 border border-gray-200 rounded-lg"
                                 >
@@ -236,162 +174,70 @@ function mergeEdits(id) {
                                             Proposed Changes
                                         </h2>
                                     </div>
-                                    <div class="p-4">
-                                        <!-- Comparison Fields -->
+                                    <div class="p-4 space-y-4">
                                         <div
-                                            v-for="field in compareFields"
+                                            v-for="field in changedFields"
                                             :key="field.key"
-                                            class="mb-4"
                                         >
-                                            <div
-                                                v-if="
-                                                    props.editedResource[
-                                                        field.key
-                                                    ] !=
-                                                    props.originalResource[
-                                                        field.key
-                                                    ]
-                                                "
-                                            >
-                                                <div
-                                                    class="font-semibold text-gray-600 mb-2"
-                                                >
-                                                    {{ field.label }}:
-                                                </div>
-
-                                                <div
-                                                    class="text-gray-800 p-2 rounded"
-                                                >
-                                                    {{
-                                                        field.formatter
-                                                            ? field.formatter(
-                                                                  props
-                                                                      .editedResource[
-                                                                      field.key
-                                                                  ]
-                                                              )
-                                                            : props
-                                                                  .editedResource[
-                                                                  field.key
-                                                              ]
-                                                    }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Image -->
-                                        <div v-if="hasImageDiff" class="mb-4 w-44 h-44">
-                                            <div
+                                            <h3
                                                 class="font-semibold text-gray-600 mb-2"
                                             >
-                                                Image:
-                                            </div>
-                                            <ResourceThumbnail
-                                                v-if="
-                                                    props.editedResource
-                                                        .image_url
-                                                "
-                                                :src="
-                                                    props.editedResource
-                                                        .image_url
-                                                "
-                                                :alt="'Proposed Image'"
-                                            />
-                                            <p
-                                                v-else
-                                                class="text-gray-500 italic"
-                                            >
-                                                Image removed
-                                            </p>
-                                        </div>
-
-                                        <!-- Platforms -->
-                                        <div v-if="hasPlatformDiff" class="mb-4">
+                                                {{ field.label }}:
+                                            </h3>
                                             <div
-                                                class="font-semibold text-gray-600 mb-2"
+                                                v-if="field.key === 'image_url'"
                                             >
-                                                Platforms:
+                                                <ResourceThumbnail
+                                                    v-if="field.proposedValue"
+                                                    :src="field.proposedValue"
+                                                    :alt="'Proposed Image'"
+                                                />
+                                                <p
+                                                    v-else
+                                                    class="text-gray-500 italic"
+                                                >
+                                                    Image removed
+                                                </p>
                                             </div>
-                                            <div class="flex flex-wrap gap-2">
+                                            <div
+                                                v-else-if="
+                                                    Array.isArray(
+                                                        field.proposedValue
+                                                    )
+                                                "
+                                                class="flex flex-wrap gap-2"
+                                            >
                                                 <Tag
-                                                    v-for="platform in props
-                                                        .editedResource
-                                                        .platforms"
-                                                    :key="platform"
-                                                    :value="platform"
+                                                    v-for="item in field.proposedValue"
+                                                    :key="item"
+                                                    :value="item"
                                                     severity="warning"
                                                     class="capitalize"
                                                 />
                                             </div>
-                                        </div>
-
-                                        <!-- Tags -->
-                                        <div
-                                            v-if="hasTopicTagDiff"
-                                            class="mb-4"
-                                        >
                                             <div
-                                                class="font-semibold text-gray-600 mb-2"
+                                                v-else
+                                                class="text-gray-800 p-2 rounded"
                                             >
-                                                Topic Tags:
-                                            </div>
-                                            <div class="flex flex-wrap gap-1">
-                                                <Tag
-                                                    v-for="tag in props
-                                                        .editedResource
-                                                        .topic_tags"
-                                                    :key="tag"
-                                                    :value="tag"
-                                                    severity="secondary"
-                                                    class="text-xs mr-1 mb-1"
-                                                />
+                                                {{
+                                                    field.formatter
+                                                        ? field.formatter(
+                                                              field.proposedValue
+                                                          )
+                                                        : field.proposedValue
+                                                }}
                                             </div>
                                         </div>
-                                        <div
-                                            v-if="hasProgrammingLanguageTagDiff"
-                                            class="mb-4"
+                                        <p
+                                            v-if="!hasChanges"
+                                            class="text-gray-500 italic"
                                         >
-                                            <div
-                                                class="font-semibold text-gray-600 mb-2"
-                                            >
-                                                Programming Language Tags:
-                                            </div>
-                                            <div class="flex flex-wrap gap-1">
-                                                <Tag
-                                                    v-for="tag in props
-                                                        .editedResource
-                                                        .programming_language_tags"
-                                                    :key="tag"
-                                                    :value="tag"
-                                                    severity="secondary"
-                                                    class="text-xs mr-1 mb-1"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div
-                                            v-if="hasGeneralTagDiff"
-                                            class="mb-4"
-                                        >
-                                            <div
-                                                class="font-semibold text-gray-600 mb-2"
-                                            >
-                                                General Tags:
-                                            </div>
-                                            <div class="flex flex-wrap gap-1">
-                                                <Tag
-                                                    v-for="tag in props
-                                                        .editedResource
-                                                        .general_tags"
-                                                    :key="tag"
-                                                    :value="tag"
-                                                    severity="secondary"
-                                                    class="text-xs mr-1 mb-1"
-                                                />
-                                            </div>
-                                        </div>
+                                            No changes were proposed.
+                                        </p>
                                     </div>
                                 </div>
-                                <!-- Original Version -->
+
+                                <!-- Current Version Column -->
                                 <div
                                     class="bg-gray-50 border border-gray-200 rounded-lg"
                                 >
@@ -419,312 +265,80 @@ function mergeEdits(id) {
                                             </h2>
                                         </Link>
                                     </div>
-                                    <div class="p-4">
-                                        <!-- Comparison Fields -->
+                                    <div class="p-4 space-y-4">
                                         <div
-                                            v-for="field in compareFields"
+                                            v-for="field in changedFields"
                                             :key="field.key"
-                                            class="mb-4"
                                         >
-                                            <div
-                                                v-if="
-                                                    props.editedResource[
-                                                        field.key
-                                                    ] !=
-                                                    props.originalResource[
-                                                        field.key
-                                                    ]
-                                                "
-                                            >
-                                                <div
-                                                    class="font-semibold text-gray-600 mb-2"
-                                                >
-                                                    {{ field.label }}:
-                                                </div>
-                                                <div
-                                                    class="text-gray-800 p-2 rounded"
-                                                >
-                                                    {{
-                                                        field.formatter
-                                                            ? field.formatter(
-                                                                  props
-                                                                      .originalResource[
-                                                                      field.key
-                                                                  ]
-                                                              )
-                                                            : props
-                                                                  .originalResource[
-                                                                  field.key
-                                                              ]
-                                                    }}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Image -->
-                                        <div v-if="hasImageDiff" class="mb-4 w-44 h-44">
-                                            <div
+                                            <h3
                                                 class="font-semibold text-gray-600 mb-2"
                                             >
-                                                Image:
-                                            </div>
-                                            <ResourceThumbnail
-                                                v-if="
-                                                    props.originalResource
-                                                        .image_url
-                                                "
-                                                :src="
-                                                    props.originalResource
-                                                        .image_url
-                                                "
-                                                :alt="'Current Image'"
-                                            />
-                                            <p
-                                                v-else
-                                                class="text-gray-500 italic"
-                                            >
-                                                No image
-                                            </p>
-                                        </div>
-
-                                        <!-- Platforms -->
-                                        <div v-if="hasPlatformDiff" class="mb-4">
+                                                {{ field.label }}:
+                                            </h3>
                                             <div
-                                                class="font-semibold text-gray-600 mb-2"
+                                                v-if="field.key === 'image_url'"
                                             >
-                                                Platforms:
+                                                <ResourceThumbnail
+                                                    v-if="field.originalValue"
+                                                    :src="field.originalValue"
+                                                    :alt="'Current Image'"
+                                                />
+                                                <p
+                                                    v-else
+                                                    class="text-gray-500 italic"
+                                                >
+                                                    No image
+                                                </p>
                                             </div>
-                                            <div class="flex flex-wrap gap-2">
+                                            <div
+                                                v-else-if="
+                                                    Array.isArray(
+                                                        field.originalValue
+                                                    )
+                                                "
+                                                class="flex flex-wrap gap-2"
+                                            >
                                                 <Tag
-                                                    v-for="platform in props
-                                                        .originalResource
-                                                        .platforms"
-                                                    :key="platform"
-                                                    :value="platform"
+                                                    v-for="item in field.originalValue"
+                                                    :key="item"
+                                                    :value="item"
                                                     severity="secondary"
                                                     class="capitalize"
                                                 />
                                             </div>
-                                        </div>
-
-                                        <!-- Tags -->
-                                        <div
-                                            v-if="hasTopicTagDiff"
-                                            class="mb-4"
-                                        >
                                             <div
-                                                class="font-semibold text-gray-600 mb-2"
+                                                v-else
+                                                class="text-gray-800 p-2 rounded"
                                             >
-                                                Topic Tags:
-                                            </div>
-                                            <div class="flex flex-wrap gap-1">
-                                                <Tag
-                                                    v-for="tag in props
-                                                        .originalResource
-                                                        .topic_tags"
-                                                    :key="tag"
-                                                    :value="tag"
-                                                    severity="secondary"
-                                                    class="text-xs mr-1 mb-1"
-                                                />
+                                                {{
+                                                    field.formatter
+                                                        ? field.formatter(
+                                                              field.originalValue
+                                                          )
+                                                        : field.originalValue
+                                                }}
                                             </div>
                                         </div>
-                                        <div
-                                            v-if="hasProgrammingLanguageTagDiff"
-                                            class="mb-4"
+                                        <p
+                                            v-if="!hasChanges"
+                                            class="text-gray-500 italic"
                                         >
-                                            <div
-                                                class="font-semibold text-gray-600 mb-2"
-                                            >
-                                                Programming Language Tags:
-                                            </div>
-                                            <div class="flex flex-wrap gap-1">
-                                                <Tag
-                                                    v-for="tag in props
-                                                        .originalResource
-                                                        .programming_language_tags"
-                                                    :key="tag"
-                                                    :value="tag"
-                                                    severity="secondary"
-                                                    class="text-xs mr-1 mb-1"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div
-                                            v-if="hasGeneralTagDiff"
-                                            class="mb-4"
-                                        >
-                                            <div
-                                                class="font-semibold text-gray-600 mb-2"
-                                            >
-                                                General Tags:
-                                            </div>
-                                            <div class="flex flex-wrap gap-1">
-                                                <Tag
-                                                    v-for="tag in props
-                                                        .originalResource
-                                                        .general_tags"
-                                                    :key="tag"
-                                                    :value="tag"
-                                                    severity="secondary"
-                                                    class="text-xs mr-1 mb-1"
-                                                />
-                                            </div>
-                                        </div>
+                                            No changes to compare.
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         </TabPanel>
 
-                        <!-- Diff View Tab -->
+                        <!-- Unified Diff Tab -->
                         <TabPanel
                             header="Unified Diff"
                             class="custom-tab-panel"
                         >
-                            <!-- Only display diff sections if there are changes -->
-                            <div
-                                v-if="
-                                    hasTextDiffs ||
-                                    hasSelectDiffs ||
-                                    hasPlatformDiff ||
-                                    hasTopicTagDiff ||
-                                    hasProgrammingLanguageTagDiff ||
-                                    hasGeneralTagDiff ||
-                                    hasImageDiff
-                                "
-                                class="space-y-6"
-                            >
-                                <!-- Text Field Diffs -->
-                                <div v-if="hasTextDiffs" class="space-y-4">
-                                    <div
-                                        v-for="field in compareFields.filter(
-                                            (f) =>
-                                                f.type !== 'select' &&
-                                                props.editedResource[f.key] !==
-                                                    props.originalResource[
-                                                        f.key
-                                                    ]
-                                        )"
-                                        :key="field.key"
-                                        class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
-                                    >
-                                        <div
-                                            class="bg-gray-100 px-4 py-2 border-b border-gray-200"
-                                        >
-                                            <h3
-                                                class="font-semibold text-gray-900 flex items-center gap-2"
-                                            >
-                                                <Icon
-                                                    icon="mdi:file-edit"
-                                                    class="w-4 h-4 text-primary"
-                                                />
-                                                {{ field.label }}
-                                            </h3>
-                                        </div>
-                                        <div
-                                            class="p-4 font-mono text-sm leading-relaxed"
-                                            v-html="
-                                                textDiffs[field.key]
-                                                    .map(renderDiffSpan)
-                                                    .join('')
-                                            "
-                                        ></div>
-                                    </div>
-                                </div>
-
-                                <!-- Select Field Diffs -->
-                                <div v-if="hasSelectDiffs" class="space-y-4">
-                                    <div
-                                        v-for="field in compareFields.filter(
-                                            (f) =>
-                                                f.type === 'select' &&
-                                                props.editedResource[f.key] !==
-                                                    props.originalResource[
-                                                        f.key
-                                                    ]
-                                        )"
-                                        :key="field.key"
-                                        class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
-                                    >
-                                        <div
-                                            class="bg-gray-100 px-4 py-2 border-b border-gray-200"
-                                        >
-                                            <h3
-                                                class="font-semibold text-gray-900 flex items-center gap-2"
-                                            >
-                                                <Icon
-                                                    icon="mdi:swap-horizontal"
-                                                    class="w-4 h-4 text-primary"
-                                                />
-                                                {{ field.label }}
-                                            </h3>
-                                        </div>
-                                        <div class="p-4">
-                                            <div
-                                                class="flex items-center gap-4"
-                                            >
-                                                <div class="flex-1">
-                                                    <div
-                                                        class="text-sm font-medium text-gray-600 mb-1"
-                                                    >
-                                                        From:
-                                                    </div>
-                                                    <span
-                                                        class="bg-red-50 text-red-800 border-l-4 border-red-500 pl-2 pr-1 py-1 rounded"
-                                                    >
-                                                        {{
-                                                            field.formatter
-                                                                ? field.formatter(
-                                                                      props
-                                                                          .originalResource[
-                                                                          field
-                                                                              .key
-                                                                      ]
-                                                                  )
-                                                                : props
-                                                                      .originalResource[
-                                                                      field.key
-                                                                  ]
-                                                        }}
-                                                    </span>
-                                                </div>
-                                                <Icon
-                                                    icon="mdi:arrow-right"
-                                                    class="w-5 h-5 text-gray-400"
-                                                />
-                                                <div class="flex-1">
-                                                    <div
-                                                        class="text-sm font-medium text-gray-600 mb-1"
-                                                    >
-                                                        To:
-                                                    </div>
-                                                    <span
-                                                        class="bg-green-50 text-green-800 border-l-4 border-green-500 pl-2 pr-1 py-1 rounded"
-                                                    >
-                                                        {{
-                                                            field.formatter
-                                                                ? field.formatter(
-                                                                      props
-                                                                          .editedResource[
-                                                                          field
-                                                                              .key
-                                                                      ]
-                                                                  )
-                                                                : props
-                                                                      .editedResource[
-                                                                      field.key
-                                                                  ]
-                                                        }}
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Image Diff -->
+                            <div v-if="hasChanges" class="space-y-6">
                                 <div
-                                    v-if="hasImageDiff"
+                                    v-for="field in changedFields"
+                                    :key="field.key"
                                     class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
                                 >
                                     <div
@@ -734,238 +348,25 @@ function mergeEdits(id) {
                                             class="font-semibold text-gray-900 flex items-center gap-2"
                                         >
                                             <Icon
-                                                icon="mdi:image"
+                                                icon="mdi:file-edit"
                                                 class="w-4 h-4 text-primary"
                                             />
-                                            Image
+                                            {{ field.label }}
                                         </h3>
                                     </div>
-                                    <div class="p-4 space-y-4">
-                                        <ImageCompare class="sm:!w-96 h-96 shadow-lg mx-auto">
-                                            <template #left>
-                                                <ResourceThumbnail
-                                                    v-if="
-                                                        props
-                                                            .originalResource
-                                                            .image_url
-                                                    "
-                                                    :src="
-                                                        props
-                                                            .originalResource
-                                                            .image_url
-                                                    "
-                                                    :alt="'Original Image'"
-                                                />
-                                            </template>
-                                            <template #right>
-                                                <ResourceThumbnail
-                                                    v-if="
-                                                        props.editedResource
-                                                            .image_url
-                                                    "
-                                                    :src="
-                                                        props.editedResource
-                                                            .image_url
-                                                    "
-                                                    :alt="'Proposed Image'"
-                                                />
-
-                                            </template>
-                                        </ImageCompare>
-                                    </div>
-                                </div>
-
-                                <!-- Platform Diffs -->
-                                <div
-                                    v-if="hasPlatformDiff"
-                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
-                                >
-                                    <div
-                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
-                                    >
-                                        <h3
-                                            class="font-semibold text-gray-900 flex items-center gap-2"
-                                        >
-                                            <Icon
-                                                icon="mdi:laptop"
-                                                class="w-4 h-4 text-primary"
-                                            />
-                                            Platforms
-                                        </h3>
-                                    </div>
-                                    <div class="p-4 font-mono text-sm">
-                                        <div
-                                            v-for="(
-                                                part, index
-                                            ) in platformDiffs"
-                                            :key="index"
-                                        >
-                                            <span
-                                                v-if="part.added"
-                                                class="bg-green-50 text-green-800"
-                                                >+
-                                                {{
-                                                    part.value.join(", ")
-                                                }}</span
-                                            >
-                                            <span
-                                                v-else-if="part.removed"
-                                                class="bg-red-50 text-red-800"
-                                                >-
-                                                {{
-                                                    part.value.join(", ")
-                                                }}</span
-                                            >
-                                            <span v-else>{{
-                                                part.value.join(", ")
-                                            }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Tag Diffs -->
-                                <div
-                                    v-if="hasTopicTagDiff"
-                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
-                                >
-                                    <div
-                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
-                                    >
-                                        <h3
-                                            class="font-semibold text-gray-900 flex items-center gap-2"
-                                        >
-                                            <Icon
-                                                icon="mdi:tag"
-                                                class="w-4 h-4 text-primary"
-                                            />
-                                            Topic Tags
-                                        </h3>
-                                    </div>
-                                    <div class="p-4 font-mono text-sm">
-                                        <div
-                                            v-for="(part, index) in tagDiffs.topic_tags"
-                                            :key="index"
-                                        >
-                                            <span
-                                                v-if="part.added"
-                                                class="bg-green-50 text-green-800"
-                                                >+
-                                                {{
-                                                    part.value.join(", ")
-                                                }}</span
-                                            >
-                                            <span
-                                                v-else-if="part.removed"
-                                                class="bg-red-50 text-red-800"
-                                                >-
-                                                {{
-                                                    part.value.join(", ")
-                                                }}</span
-                                            >
-                                            <span v-else>{{
-                                                part.value.join(", ")
-                                            }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div
-                                    v-if="hasProgrammingLanguageTagDiff"
-                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
-                                >
-                                    <div
-                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
-                                    >
-                                        <h3
-                                            class="font-semibold text-gray-900 flex items-center gap-2"
-                                        >
-                                            <Icon
-                                                icon="mdi:code-tags"
-                                                class="w-4 h-4 text-primary"
-                                            />
-                                            Programming Language Tags
-                                        </h3>
-                                    </div>
-                                    <div class="p-4 font-mono text-sm">
-                                        <div
-                                            v-for="(part, index) in tagDiffs.programming_language_tags"
-                                            :key="index"
-                                        >
-                                            <span
-                                                v-if="part.added"
-                                                class="bg-green-50 text-green-800"
-                                                >+
-                                                {{
-                                                    part.value.join(", ")
-                                                }}</span
-                                            >
-                                            <span
-                                                v-else-if="part.removed"
-                                                class="bg-red-50 text-red-800"
-                                                >-
-                                                {{
-                                                    part.value.join(", ")
-                                                }}</span
-                                            >
-                                            <span v-else>{{
-                                                part.value.join(", ")
-                                            }}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div
-                                    v-if="hasGeneralTagDiff"
-                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
-                                >
-                                    <div
-                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
-                                    >
-                                        <h3
-                                            class="font-semibold text-gray-900 flex items-center gap-2"
-                                        >
-                                            <Icon
-                                                icon="mdi:tag-multiple"
-                                                class="w-4 h-4 text-primary"
-                                            />
-                                            General Tags
-                                        </h3>
-                                    </div>
-                                    <div class="p-4 font-mono text-sm">
-                                        <div
-                                            v-for="(part, index) in tagDiffs.general_tags"
-                                            :key="index"
-                                        >
-                                            <span
-                                                v-if="part.added"
-                                                class="bg-green-50 text-green-800"
-                                                >+
-                                                {{
-                                                    part.value.join(", ")
-                                                }}</span
-                                            >
-                                            <span
-                                                v-else-if="part.removed"
-                                                class="bg-red-50 text-red-800"
-                                                >-
-                                                {{
-                                                    part.value.join(", ")
-                                                }}</span
-                                            >
-                                            <span v-else>{{
-                                                part.value.join(", ")
-                                            }}</span>
-                                        </div>
+                                    <div class="p-4">
+                                        <component
+                                            :is="field.component"
+                                            :field="field"
+                                        />
                                     </div>
                                 </div>
                             </div>
-                            <!-- If no diff exists, show a friendly message -->
-                            <div v-else class="p-4 text-gray-500">
-                                No differences found.
-                            </div>
+                            <p v-else class="text-gray-500 italic p-4">
+                                No changes to display in diff.
+                            </p>
                         </TabPanel>
                     </TabView>
-
                     <!-- Approval Actions -->
                     <div class="mt-8 border-t border-gray-200 pt-6">
                         <div class="flex justify-center">

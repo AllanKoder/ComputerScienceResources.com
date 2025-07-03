@@ -20,7 +20,7 @@ const emit = defineEmits(["upvote", "downvote"]);
 <template>
     <tr class="rounded-lg hover:bg-secondary/50 dark:hover:bg-gray-700/50 transition-colors duration-200">
         <!-- Upvote column -->
-        <td class="align-middle pr-4 pl-3 py-3">
+        <td class="align-middle">
             <Upvotable
                 :upvotable-id="resource.id"
                 :upvotable-key="'resource'"
@@ -30,7 +30,7 @@ const emit = defineEmits(["upvote", "downvote"]);
         </td>
 
         <!-- Image column -->
-        <td class="align-middle p-1">
+        <td class="align-middle p-3">
             <ResourceThumbnail
                 :src="resource.image_url"
                 :alt="resource.name"

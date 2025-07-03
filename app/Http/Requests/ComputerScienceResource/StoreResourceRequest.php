@@ -4,6 +4,7 @@ namespace App\Http\Requests\ComputerScienceResource;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StoreResourceRequest extends FormRequest
 {

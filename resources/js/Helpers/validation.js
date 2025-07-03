@@ -98,6 +98,7 @@ export const resourceReviewFields = object({
 export const nullableResourceFields = object({
     name: string().max(100, "Max 100 chars"),
     page_url: string().url("Must be a valid URL"),
+    // No validation on image_file since it will be validated on backend
     platforms: array().of(string()),
     description: string().max(10000),
     difficulty: string(),

@@ -46,9 +46,10 @@ class ResourceEditsController extends Controller
 
         $actualChanges = $this->calculateChanges($computerScienceResource, $proposedChanges);
 
-        if (isset($validatedData['proposed_changes']['image_file'])) {
-            $path = $validatedData['proposed_changes']['image_file']->store('resource_edits', 'public');
+        if (isset($proposedChanges['image_file'])) {
+            $path = $proposedChanges['image_file']->store('resource_edits', 'public');
             $actualChanges['image_url'] = Storage::url($path);
+            unset($actualChanges['image_file']);
         }
 
         if (empty($actualChanges)) {
@@ -76,8 +77,6 @@ class ResourceEditsController extends Controller
         $actualChanges = [];
         $normalizedProposed = $this->dataNormalizationService->normalize($proposedChanges);
         $normalizedOriginal = $this->dataNormalizationService->normalize($resource->toArray());
-        // If there is a new image, then it is a new change
-        if (isset($normalizedProposed['image_url']))
 
         foreach ($normalizedProposed as $key => $value) {
             if (!array_key_exists($key, $normalizedOriginal) || $normalizedOriginal[$key] !== $value) {

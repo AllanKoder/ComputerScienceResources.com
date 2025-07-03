@@ -17,6 +17,6 @@ defineProps({
         <img
         :src="src"
         :alt="alt"
-        class="w-full h-auto object-cover rounded-lg self-center p-4"
+        class="w-44 h-auto object-cover rounded-lg self-center p-1"
     />
 </template>
