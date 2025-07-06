@@ -215,7 +215,6 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                                     v-for="item in field.proposedValue"
                                                     :key="item"
                                                     :value="field.formatter ? field.formatter(item) : item"
-                                                    severity="secondary"
                                                 />
                                             </div>
                                             <div
@@ -305,7 +304,6 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                                     v-for="item in field.originalValue"
                                                     :key="item"
                                                     :value="field.formatter ? field.formatter(item) : item"
-                                                    severity="secondary"
                                                 />
                                             </div>
                                             <div

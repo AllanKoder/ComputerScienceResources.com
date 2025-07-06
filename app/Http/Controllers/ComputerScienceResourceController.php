@@ -77,9 +77,9 @@ class ComputerScienceResourceController extends Controller
 
         $imageUrl = null;
         // Store the image onto storage
-        if (array_key_exists('image_file', $validatedData))
+        if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file'])
         {
-            $path = $validatedData['image_file']->store('resource', 'public');
+            $path = $imageFile->store('resource', 'public');
             $imageUrl = Storage::url($path);
         }
 

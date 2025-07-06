@@ -6,19 +6,18 @@ import { Button } from "primevue";
 import { Form, FormField } from "@primevue/forms";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
-import PictureInput from 'vue-picture-input'
+import PictureInput from "vue-picture-input";
 import Select from "primevue/select";
-import { defineProps, defineEmits, watch, ref, nextTick  } from "vue";
+import { defineProps, defineEmits, ref } from "vue";
 import {
     platformsObject,
     pricingsObject,
     difficultiesObject,
 } from "@/Helpers/labels";
-import { reactive } from "vue";
 import { resourceMandatoryFields } from "@/Helpers/validation";
 
 const props = defineProps({
-    form: {
+    formData: {
         type: Object,
         required: true,
     },
@@ -26,58 +25,39 @@ const props = defineProps({
 
 const emit = defineEmits(["change", "next"]);
 
-// The form data that is being filled out
-const formData = reactive({
-    ...props.form,
-});
-
 // The validation schema
 const schema = resourceMandatoryFields;
 // PrimeVue Resolver
 const resolver = ref(yupResolver(schema));
 
-// Update change
-watch(
-    formData,
-    (newValue) => {
-        emit("change", newValue);
-    },
-    { deep: true }
-);
-
-function onChange(event) {
-    formData.image_file = event.target.files[0];
+function onImageChange(event, field) {
+    field.onInput(event.target.files[0]);
 }
 
+const validateAndNext = (formSubmitEvent) => {
+    if (!formSubmitEvent.valid) return;
 
-const validateAndNext = () => {
-    // Validate the form using the schema
-    schema
-        .validate(formData)
-        .then((validData) => {
-            emit("next", validData);
-        })
-        .catch((error) => {
-            // If validation fails, you can handle the errors here
-            console.error("Validation failed:", error.errors);
-        });
+    emit("next", formSubmitEvent.values);
 };
 </script>
 
 <template>
     <Form
         :resolver="resolver"
-        :initialValues="formData"
+        :initial-values="props.formData"
+        @submit="validateAndNext"
         class="flex flex-col gap-4 w-full"
     >
         <div class="space-y-4">
             <!-- Name Field -->
             <FormField v-slot="$field" name="name" class="flex flex-col gap-1">
                 <label class="block text-sm font-medium text-gray-700"
-                    >Name</label
-                >
+                    >Name
+                    <span class="text-red-500"> * </span>
+                </label>
+
                 <InputText
-                    v-model="formData.name"
+                    v-bind="$field.props"
                     placeholder="Enter the Name"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
@@ -88,12 +68,17 @@ const validateAndNext = () => {
             </FormField>
 
             <!-- URL Field -->
-            <FormField v-slot="$field" name="url" class="flex flex-col gap-1">
+            <FormField
+                v-slot="$field"
+                name="page_url"
+                class="flex flex-col gap-1"
+            >
                 <label class="block text-sm font-medium text-gray-700"
-                    >Resource Website URL</label
-                >
+                    >Resource Website URL
+                    <span class="text-red-500"> * </span>
+                </label>
                 <InputText
-                    v-model="formData.page_url"
+                    v-bind="$field.props"
                     placeholder="Enter resource URL"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
@@ -106,7 +91,7 @@ const validateAndNext = () => {
             <!-- Image URL Field -->
             <FormField
                 v-slot="$field"
-                name="imageData"
+                name="image_file"
                 class="flex flex-col gap-1"
             >
                 <label class="block text-sm font-medium text-gray-700"
@@ -122,10 +107,11 @@ const validateAndNext = () => {
                     remove-button-class="inline-flex items-center px-4 py-2 bg-primary border-0 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 transition ease-in-out duration-150"
                     button-class="inline-flex items-center px-4 py-2 border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
                     removable
-                    @change="onChange"/>
+                    @change="(event) => onImageChange(event, $field)"
+                />
                 <PrimeVueFormError
-                v-if="$field?.invalid"
-                :errors="$field.errors"
+                    v-if="$field?.invalid"
+                    :errors="$field.errors"
                 />
             </FormField>
 
@@ -136,10 +122,11 @@ const validateAndNext = () => {
             >
                 <!-- Resource Platforms Field -->
                 <label class="block text-sm font-medium text-gray-700"
-                    >Resource Platforms</label
-                >
+                    >Resource Platforms
+                    <span class="text-red-500"> * </span>
+                </label>
                 <MultiSelect
-                    v-model="formData.platforms"
+                    v-bind="$field.props"
                     :options="platformsObject"
                     option-label="label"
                     option-value="value"
@@ -159,10 +146,11 @@ const validateAndNext = () => {
                 class="flex flex-col gap-1"
             >
                 <label class="block text-sm font-medium text-gray-700"
-                    >Description</label
-                >
+                    >Description
+                    <span class="text-red-500"> * </span>
+                </label>
                 <Textarea
-                    v-model="formData.description"
+                    v-bind="$field.props"
                     placeholder="Describe the resource..."
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                     rows="3"
@@ -180,11 +168,12 @@ const validateAndNext = () => {
                 class="flex flex-col gap-1"
             >
                 <label class="block text-sm font-medium text-gray-700"
-                    >Difficulty</label
-                >
+                    >Difficulty
+                    <span class="text-red-500"> * </span>
+                </label>
                 <Select
+                    v-bind="$field.props"
                     :options="difficultiesObject"
-                    v-model="formData.difficulty"
                     option-label="label"
                     option-value="value"
                     placeholder="Select Difficulty Level"
@@ -203,11 +192,12 @@ const validateAndNext = () => {
                 class="flex flex-col gap-1"
             >
                 <label class="block text-sm font-medium text-gray-700"
-                    >Pricing</label
-                >
+                    >Pricing
+                    <span class="text-red-500"> * </span>
+                </label>
                 <Select
+                    v-bind="$field.props"
                     :options="pricingsObject"
-                    v-model="formData.pricing"
                     option-label="label"
                     option-value="value"
                     placeholder="Select Pricing"
@@ -219,13 +209,9 @@ const validateAndNext = () => {
                 />
             </FormField>
         </div>
+        <!-- continue Button -->
+        <div class="flex pt-6 justify-end">
+            <Button label="Next" icon="pi pi-arrow-right" type="submit" />
+        </div>
     </Form>
-    <!-- continue Button -->
-    <div class="flex pt-6 justify-end">
-        <Button
-            label="Next"
-            icon="pi pi-arrow-right"
-            @click="validateAndNext"
-        />
-    </div>
 </template>

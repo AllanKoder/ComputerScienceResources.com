@@ -59,7 +59,7 @@ const handleFormChange = (newFormData) => {
                     <StepPanels>
                         <StepPanel v-slot="{ activateCallback }" value="1">
                             <MandatoryFields
-                                :form="form"
+                                :formData="form"
                                 @change="handleFormChange"
                                 @next="activateCallback('2')"
                             ></MandatoryFields>

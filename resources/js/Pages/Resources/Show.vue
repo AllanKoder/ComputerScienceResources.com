@@ -68,7 +68,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                             class="flex flex-col md:flex-row items-center mb-2 gap-6"
                         >
                             <!-- Upvote column -->
-                            <div class="flex flex-row items-center mr-6 gap-6">
+                            <div class="flex flex-row items-center mr-6 gap-3">
                                 <UpvoteResource
                                     :upvotable-id="props.resource.id"
                                     :upvotable-key="'resource'"

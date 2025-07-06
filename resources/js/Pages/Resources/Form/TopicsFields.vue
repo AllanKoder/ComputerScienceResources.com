@@ -39,6 +39,7 @@ const validateAndNext = async () => {
         .validate(formData.value)
         .then((_) => {
             console.log("validated");
+            errors.value = [];
             emit("next");
         })
         .catch((error) => {
@@ -52,6 +53,7 @@ const validateAndNext = async () => {
 <template>
     <h2 class="text-2xl font-bold mb-4 text-center">
         What topics does this resource cover?
+        <span class="text-red-500"> * </span>
     </h2>
     <Form
         :resolver="resolver"
@@ -60,7 +62,6 @@ const validateAndNext = async () => {
     >
         <div class="flex flex-col gap-1 justify-center items-center">
             <!-- Tag Selector for topics -->
-             {{ formData.topic_tags }}
             <TagSelector
                 v-model="formData.topic_tags"
             ></TagSelector>
