@@ -164,6 +164,7 @@ class ComputerScienceResourceController extends Controller
             $data['resourceEdits'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy, $request) {
                     $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
+                    // TODO: ADD ERROR LOGS IF THIS MAKES IT RETURN NOTHING, SORTING SHOULD NOT CHANGE SIZE, ONLY ORDER
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
                     return $query->with('user')->paginate(10)->appends($request->query());
                 }

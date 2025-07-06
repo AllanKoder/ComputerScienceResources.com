@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Observers\ResourceEditsObserver;
 use App\Services\ResourceEditsService;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
@@ -10,7 +11,9 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy([ResourceEditsObserver::class])]
 class ResourceEdits extends Model
 {
     /** @use HasFactory<\Database\Factories\ResourceEditsFactory> */

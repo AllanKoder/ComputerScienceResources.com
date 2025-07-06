@@ -1,9 +1,9 @@
 <script setup>
 import { computed } from "vue";
-import { Head, Link } from "@inertiajs/vue3";
+import { Head, Link, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import { diffChars } from "diff";
-import { getDifficultyLabel, getPricingLabel } from "@/Helpers/labels";
+import { getDifficultyLabel, getPricingLabel, getPlatformLabel } from "@/Helpers/labels";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
 import Tag from "primevue/tag";
@@ -49,7 +49,11 @@ const fieldConfig = {
         component: SelectDiffViewer,
     },
     image_url: { label: "Image", component: ImageDiffViewer },
-    platforms: { label: "Platforms", component: TagDiffViewer },
+    platforms: {
+        label: "Platforms",
+        component: TagDiffViewer,
+        formatter: getPlatformLabel
+    },
     topic_tags: { label: "Topic Tags", component: TagDiffViewer },
     programming_language_tags: {
         label: "Programming Language Tags",
@@ -58,7 +62,7 @@ const fieldConfig = {
     general_tags: { label: "General Tags", component: TagDiffViewer },
 };
 
-// The new, simplified way to get all changed fields.
+// A simplified way to get all changed fields.
 const changedFields = computed(() => {
     const changes = props.editedResource.proposed_changes || {};
     return Object.keys(changes)
@@ -169,7 +173,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                         >
                                             <Icon
                                                 icon="mdi:plus-circle"
-                                                class="w-5 h-5 text-green-600"
+                                                class="w-5 h-5 text-primary"
                                             />
                                             Proposed Changes
                                         </h2>
@@ -210,9 +214,8 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                                 <Tag
                                                     v-for="item in field.proposedValue"
                                                     :key="item"
-                                                    :value="item"
-                                                    severity="warning"
-                                                    class="capitalize"
+                                                    :value="field.formatter ? field.formatter(item) : item"
+                                                    severity="secondary"
                                                 />
                                             </div>
                                             <div
@@ -301,9 +304,8 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                                 <Tag
                                                     v-for="item in field.originalValue"
                                                     :key="item"
-                                                    :value="item"
+                                                    :value="field.formatter ? field.formatter(item) : item"
                                                     severity="secondary"
-                                                    class="capitalize"
                                                 />
                                             </div>
                                             <div

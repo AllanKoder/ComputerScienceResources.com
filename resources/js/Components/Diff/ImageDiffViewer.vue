@@ -15,7 +15,7 @@ const proposedImage = props.field.proposedValue;
 
 <template>
     <div class="flex justify-center">
-        <ImageCompare class="sm:!w-96 sm:!h-96" v-if="originalImage && proposedImage">
+        <ImageCompare class="sm:!w-60 sm:!h-60" v-if="originalImage && proposedImage">
             <template #left>
                 <ResourceThumbnail :src="originalImage" alt="Original Image" />
             </template>

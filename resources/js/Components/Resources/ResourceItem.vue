@@ -30,16 +30,17 @@ const emit = defineEmits(["upvote", "downvote"]);
         </td>
 
         <!-- Image column -->
-        <td class="align-middle p-3">
+        <td class="align-middle p-2 w-28">
             <ResourceThumbnail
                 :src="resource.image_url"
                 :alt="resource.name"
+                class="w-24 h-24"
             />
         </td>
 
         <!-- Main content column -->
-        <td class="align-top pr-4 py-3 min-w-[400px]">
-            <div class="flex justify-between items-start mb-2 w-full">
+        <td class="align-top pr-4 py-3">
+            <div class="flex flex-col lg:flex-row justify-between items-start mb-2 w-full gap-2">
                 <div class="flex items-center gap-3">
                     <Link
                         :href="route('resources.show', { computerScienceResource: resource.id })"
@@ -58,7 +59,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                         <Icon icon="mdi:external-link" width="20" height="20" />
                     </a>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-4 flex-shrink-0">
                     <div class="flex items-center gap-2">
                         <StarRating
                             :model-value="Number(resource.review_summary?.overall_rating)"

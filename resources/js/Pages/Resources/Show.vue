@@ -10,7 +10,6 @@ import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue
 import ResourceUpvoteSorting from "@/Components/Resources/ResourceUpvoteSorting.vue";
 import { getConfigData } from "@/Helpers/config";
 import StarRating from "@/Components/StarRating/StarRating.vue";
-import ImageCompare from 'primevue/imagecompare';
 import { Icon } from "@iconify/vue";
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import { platformLabels } from "@/Helpers/labels";
@@ -351,7 +350,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                             <!-- Detailed Ratings Grid -->
                             <div class="flex-1 flex justify-center">
                                 <div
-                                    class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
+                                    class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-7"
                                 >
                                     <!-- Community Rating -->
                                     <div class="flex flex-col items-center">
@@ -493,17 +492,16 @@ const sortingType = urlParams.get("sort_by") || "top";
                                 </div>
                             </div>
                             <div
-                                class="text-xs text-gray-500 text-right space-y-1 min-w-[160px] shrink-0"
+                                class="text-xs m-6 text-gray-500 text-right space-y-1 min-w-[160px] shrink-0"
                             >
-                            <UserProfile
-                                :user="resource.user"
-                                :date="resource.created_at"
-                            ></UserProfile>
-
+                                <UserProfile
+                                    :user="resource.user"
+                                    :date="resource.created_at"
+                                ></UserProfile>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
                 <!-- Custom Tab Navigation -->
                 <div class="flex border-b mb-4 space-x-6 px-6">
@@ -551,9 +549,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                             <template #fallback>
                                 <LoadingAnimation />
                             </template>
-                            <ResourceReviews
-                                :reviews="reviews"
-                            />
+                            <ResourceReviews :reviews="reviews" />
                         </Deferred>
                     </div>
 

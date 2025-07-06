@@ -7,6 +7,7 @@ export const platformsObject = [
     { label: "Blog", value: "blog" },
     { label: "Course", value: "course" },
     { label: "Bootcamp", value: "bootcamp" },
+    { label: "Organization", value: "organization" },
     { label: "Youtube Channel", value: "youtube_channel" },
     { label: "Newsletter", value: "newsletter" },
     { label: "Podcast", value: "podcast" },
@@ -22,6 +23,7 @@ export const platformLabels = {
     book: "Book",
     blog: "Blog",
     course: "Course",
+    organization: "Organization",
     bootcamp: "Bootcamp",
     youtube_channel: "Youtube Channel",
     newsletter: "Newsletter",
@@ -78,6 +80,8 @@ export const ratingLabels = {
     user_friendliness: "User Friendliness",
     updates: "Updates",
 };
+
+export const getPlatformLabel = (platform) => platformLabels[platform] || "Unknown";
 
 /// Sorting
 export const resourceSortingLabels = [
