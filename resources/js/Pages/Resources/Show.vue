@@ -345,10 +345,10 @@ const sortingType = urlParams.get("sort_by") || "top";
                         </div>
                         <!-- Resource Link and Meta -->
                         <div
-                            class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end"
+                            class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center"
                         >
                             <!-- Detailed Ratings Grid -->
-                            <div class="flex-1 flex justify-center">
+                            <div class="flex-1 flex justify-center items-center">
                                 <div
                                     class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-7"
                                 >
@@ -492,7 +492,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                                 </div>
                             </div>
                             <div
-                                class="text-xs m-6 text-gray-500 text-right space-y-1 min-w-[160px] shrink-0"
+                                class="text-xs m-6 text-gray-500 text-right min-w-[160px] shrink-0"
                             >
                                 <UserProfile
                                     :user="resource.user"

@@ -12,14 +12,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 #[ObservedBy([ResourceEditsObserver::class])]
 class ResourceEdits extends Model
 {
     /** @use HasFactory<\Database\Factories\ResourceEditsFactory> */
     use HasFactory;
+    use CascadesDeletes;
     use HasComments;
     use HasVotes;
+
+    protected $cascadeDeletes = ['votes', 'upvoteSummary', 'comments', 'commentsCountRelationship'];
 
     protected $guarded = [];
 

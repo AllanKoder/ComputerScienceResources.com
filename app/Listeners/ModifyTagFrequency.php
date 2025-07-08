@@ -26,7 +26,7 @@ class ModifyTagFrequency
         $old = $event->oldTags ?? [];
         $new = $event->newTags ?? [];
 
-        // 1. Build diffs for every tag
+        // Build diffs for every tag
         $diffs = [];
         foreach (array_unique(array_merge(array_keys($old), array_keys($new))) as $tag) {
             $diff = ($new[$tag] ?? 0) - ($old[$tag] ?? 0);
@@ -39,7 +39,7 @@ class ModifyTagFrequency
             return;
         }
 
-        // 2. One upsert: increment (or decrement) existing, insert new
+        // One upsert: increment (or decrement) existing, insert new
         $upserts = [];
         foreach ($diffs as $tag => $count) {
             $upserts[] = [
@@ -56,7 +56,7 @@ class ModifyTagFrequency
             ]
         );
 
-        // 3. Clean out any zero-or-negative counts
+        // Clean out any zero-or-negative counts
         DB::table('tag_frequencies')
             ->where('count', '<=', 0)
             ->delete();

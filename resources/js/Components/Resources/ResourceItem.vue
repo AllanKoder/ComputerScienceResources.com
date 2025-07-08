@@ -30,7 +30,7 @@ const emit = defineEmits(["upvote", "downvote"]);
         </td>
 
         <!-- Image column -->
-        <td class="align-middle p-2 w-28">
+        <td class="align-middle p-2">
             <ResourceThumbnail
                 :src="resource.image_url"
                 :alt="resource.name"

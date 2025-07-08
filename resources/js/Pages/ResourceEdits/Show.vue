@@ -191,17 +191,11 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                             <div
                                                 v-if="field.key === 'image_url'"
                                             >
+                                                <p v-if="!field.proposedValue" class="italic">Image Removed</p>
                                                 <ResourceThumbnail
-                                                    v-if="field.proposedValue"
                                                     :src="field.proposedValue"
                                                     :alt="'Proposed Image'"
                                                 />
-                                                <p
-                                                    v-else
-                                                    class="text-gray-500 italic"
-                                                >
-                                                    Image removed
-                                                </p>
                                             </div>
                                             <div
                                                 v-else-if="
@@ -280,17 +274,11 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                             <div
                                                 v-if="field.key === 'image_url'"
                                             >
+                                                <p v-if="!field.originalValue" class="italic">Image Removed</p>
                                                 <ResourceThumbnail
-                                                    v-if="field.originalValue"
                                                     :src="field.originalValue"
                                                     :alt="'Current Image'"
                                                 />
-                                                <p
-                                                    v-else
-                                                    class="text-gray-500 italic"
-                                                >
-                                                    No image
-                                                </p>
                                             </div>
                                             <div
                                                 v-else-if="

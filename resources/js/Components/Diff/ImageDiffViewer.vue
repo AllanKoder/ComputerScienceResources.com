@@ -23,8 +23,15 @@ const proposedImage = props.field.proposedValue;
                 <ResourceThumbnail :src="proposedImage" alt="Proposed Image" />
             </template>
         </ImageCompare>
-        <div v-else class="text-sm text-gray-500 italic">
-            No image comparison available.
+        <div v-if="proposedImage"
+        class="text-sm text-gray-500 italic text-center">
+            New Image Added
+            <ResourceThumbnail :src="proposedImage" alt="Proposed Image" />
+        </div>
+        <div v-if="originalImage"
+            class="text-sm text-gray-500 italic text-center">
+            Image Removed
+            <ResourceThumbnail :src="null" alt="Proposed Image" />
         </div>
     </div>
 </template>

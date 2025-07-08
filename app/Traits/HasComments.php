@@ -2,12 +2,24 @@
 
 namespace App\Traits;
 
+use App\Models\Comment;
 use App\Models\CommentsCount;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait HasComments
 {
+    /** Get all of the comments for the HasComments
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'commentable_id', 'id')
+        ->where('commentable_type', static::class);
+    }
+
     /**
      * Define a relationship to the CommentsCount model.
      *

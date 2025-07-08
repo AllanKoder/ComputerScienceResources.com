@@ -46,9 +46,13 @@ class ResourceEditsController extends Controller
 
         $actualChanges = $this->calculateChanges($computerScienceResource, $proposedChanges);
 
-        if (isset($proposedChanges['image_file'])) {
-            $path = $proposedChanges['image_file']->store('resource_edits', 'public');
-            $actualChanges['image_url'] = Storage::url($path);
+        if (array_key_exists('image_file', $proposedChanges)) {
+            $actualChanges['image_url'] = null;
+            if (isset($proposedChanges['image_file']))
+            {
+                $path = $proposedChanges['image_file']->store('resource_edits', 'public');
+                $actualChanges['image_url'] = Storage::url($path);
+                }
             unset($actualChanges['image_file']);
         }
 
@@ -108,19 +112,23 @@ class ResourceEditsController extends Controller
         $resource = ComputerScienceResource::findOrFail($resourceEdits->computer_science_resource_id);
         $old_tag_counter = $resource->tagCounter();
 
-        $resource->name = $resourceEdits->name;
-        $resource->description = $resourceEdits->description;
-        $resource->image_url = $resourceEdits->image_url;
-        $resource->page_url = $resourceEdits->page_url;
-        $resource->platforms = $resourceEdits->platforms;
-        $resource->difficulty = $resourceEdits->difficulty;
-        $resource->pricing = $resourceEdits->pricing;
+        // Go through each property in proposed_changes, and if it exists. then set the value
+        $changes = $resourceEdits->proposed_changes;
+        $proposedFields = ['name', 'description', 'image_url', 'page_url', 'platforms', 'difficulty', 'pricing'];
+        foreach ($proposedFields as $field) {
+            if (array_key_exists($field, $changes)) {
+                $resource->$field = $changes[$field];
+            }
+        }
 
         $resource->save();
 
-        $resource->topic_tags = $resourceEdits->topic_tags;
-        $resource->programming_language_tags = $resourceEdits->programming_language_tags;
-        $resource->general_tags = $resourceEdits->general_tags;
+        $proposedTagFields = ['topic_tags', 'programming_language_tags', 'general_tags'];
+        foreach ($proposedTagFields as $field) {
+            if (array_key_exists($field, $changes)) {
+                $resource->$field = $changes[$field];
+            }
+        }
 
         // Get the new tag counter
         $new_tags = collect([$resourceEdits->topic_tags, $resourceEdits->programming_language_tags, $resourceEdits->general_tags])->flatten()->countBy()->toArray();
@@ -130,7 +138,7 @@ class ResourceEditsController extends Controller
 
         // TODO: HANDLE DELETING
         // Delete the edit since we successfully merged the changes
-        $resourceEdits->delete();
+        // $resourceEdits->delete(  );
 
         return redirect(route('resources.show', ['computerScienceResource'=>$resourceEdits->computer_science_resource_id]))
             ->with('success', 'Successfully merged new changed!');
