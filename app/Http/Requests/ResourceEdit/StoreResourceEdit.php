@@ -35,7 +35,7 @@ class StoreResourceEdit extends FormRequest
             'proposed_changes.page_url' => ['nullable', 'string', 'url:http,https', 'max:255'],
             'proposed_changes.difficulty' => ['nullable', 'string', Rule::in(config('computerScienceResource.difficulties'))],
             'proposed_changes.pricing' => ['nullable', 'string', Rule::in(config('computerScienceResource.pricings'))],
-            'proposed_changes.topic_tags' => ['nullable', 'array'],
+            'proposed_changes.topic_tags' => ['nullable', 'array', 'min:3'],
             'proposed_changes.topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
             'proposed_changes.image_file' => ['nullable', 'image', 'max:400'], // 400 kilobytes
             'proposed_changes.general_tags' => ['nullable', 'array'],

@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 // TODO: MAKE IT THE BETTER FORM
+// https://github.com/worksome/request-factories
 class ComputerScienceResourceTestResource extends JsonResource
 {
     public function toArray(Request $request): array
