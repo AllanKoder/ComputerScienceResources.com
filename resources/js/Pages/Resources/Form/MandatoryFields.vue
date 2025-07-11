@@ -80,7 +80,7 @@ watch(
             <!-- URL Field -->
             <div class="flex flex-col gap-1">
                 <label class="block text-sm font-medium text-gray-700"
-                    >Resource Website URL
+                    >Resource Website URL (Include https://)
                     <span class="text-red-500"> * </span>
                 </label>
                 <InputText

@@ -67,7 +67,6 @@ const handleFormChange = (newFormData) => {
             <div
                 class="bg-white shadow-lg rounded-lg p-6 max-w-screen-md w-full"
             >
-            {{ formData }}
                 <Stepper value="1" linear>
                     <h2 class="text-2xl font-bold mb-4 text-center">
                         Add a New Resource
