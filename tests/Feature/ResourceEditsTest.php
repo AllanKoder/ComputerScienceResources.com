@@ -162,7 +162,7 @@ class ResourceEditsTest extends TestCase
             })
         );
 
-        $oldImageURL = $resource->image_url;
+        $oldImagePath = $resource->image_path;
 
         $mergeAttempts = 10;
 
@@ -170,7 +170,7 @@ class ResourceEditsTest extends TestCase
         {
             $resource->refresh();
 
-            $editData = ComputerScienceResourceTestResource::fake();
+            $editData = [];
 
             $editData['edit_title'] = "Edit #$i";
             $editData['edit_description'] = "This is edit number $i.";
@@ -211,8 +211,8 @@ class ResourceEditsTest extends TestCase
 
             $this->assertEquals($editData['proposed_changes']['name'], $resource->name);
             $this->assertEquals($editData['proposed_changes']['description'], $resource->description);
-            $this->assertNotNull($resource->image_url);
-            $this->assertNotEquals($resource->image_url, $oldImageURL);
+            $this->assertNotNull($resource->image_path);
+            $this->assertNotEquals($resource->image_path, $oldImagePath);
             $this->assertEquals($editData['proposed_changes']['page_url'], $resource->page_url);
             $this->assertEquals($editData['proposed_changes']['difficulty'], $resource->difficulty);
             $this->assertEquals($editData['proposed_changes']['pricing'], $resource->pricing);
@@ -238,8 +238,6 @@ class ResourceEditsTest extends TestCase
                 $mock->shouldReceive('canMergeEdits')->andReturnTrue();
             })
         );
-
-        $editData = (new ComputerScienceResourceTestResource($resource))->resolve();
 
         $editData['edit_title'] = "Edit";
         $editData['edit_description'] = "This is edit";

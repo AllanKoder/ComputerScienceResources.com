@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Log;
+use Str;
 
 class ResourceEditsController extends Controller
 {
@@ -47,12 +48,12 @@ class ResourceEditsController extends Controller
         $actualChanges = $this->calculateChanges($computerScienceResource, $proposedChanges);
 
         if (array_key_exists('image_file', $proposedChanges)) {
-            $actualChanges['image_url'] = null;
+            $actualChanges['image_path'] = null;
             if (isset($proposedChanges['image_file']))
             {
-                $path = $proposedChanges['image_file']->store('resource_edits', 'public');
-                $actualChanges['image_url'] = Storage::url($path);
-                }
+                $path = $proposedChanges['image_file']->store('resource-edits', 'public');
+                $actualChanges['image_path'] = $path;
+            }
             unset($actualChanges['image_file']);
         }
 
@@ -110,16 +111,34 @@ class ResourceEditsController extends Controller
         }
 
         $resource = ComputerScienceResource::findOrFail($resourceEdits->computer_science_resource_id);
-        $old_tag_counter = $resource->tagCounter();
+        $oldTagCounter = $resource->tagCounter();
 
         // Go through each property in proposed_changes, and if it exists. then set the value
         $changes = $resourceEdits->proposed_changes;
-        $proposedFields = ['name', 'description', 'image_url', 'page_url', 'platforms', 'difficulty', 'pricing'];
+        $proposedFields = ['name', 'description', 'page_url', 'platforms', 'difficulty', 'pricing'];
         foreach ($proposedFields as $field) {
             if (array_key_exists($field, $changes)) {
                 $resource->$field = $changes[$field];
             }
         }
+
+        if (array_key_exists('image_path', $changes)) {
+            // Delete the existing resource image from storage
+            if ($resource->image_path) {
+                Storage::disk('public')->delete($resource->image_path);
+            }
+
+            // Move the new file from 'resource-edits' to 'resource'
+            $sourcePath = $changes['image_path'];        // "resource-edits/xyz.jpg"
+            $fileName = basename($sourcePath);         // "xyz.jpg"
+            $destPath = 'resource/' . $fileName;       // "resource/xyz.jpg"
+
+            Storage::disk('public')->move($sourcePath, $destPath);
+
+            // Update image_path in DB
+            $resource->image_path = $destPath;
+        }
+
 
         $resource->save();
 
@@ -131,10 +150,9 @@ class ResourceEditsController extends Controller
         }
 
         // Get the new tag counter
-        $new_tags = collect([$resourceEdits->topic_tags, $resourceEdits->programming_language_tags, $resourceEdits->general_tags])->flatten()->countBy()->toArray();
+        $newTags = collect([$resourceEdits->topic_tags, $resourceEdits->programming_language_tags, $resourceEdits->general_tags])->flatten()->countBy()->toArray();
         // Change tag frequency
-        TagFrequencyChanged::dispatch($old_tag_counter, $new_tags);
-
+        TagFrequencyChanged::dispatch($oldTagCounter, $newTags);
 
         // TODO: HANDLE DELETING
         // Delete the edit since we successfully merged the changes

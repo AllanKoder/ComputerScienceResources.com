@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Support\Facades\Storage;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 #[ObservedBy([ResourceEditsObserver::class])]
@@ -29,7 +30,7 @@ class ResourceEdits extends Model
 
     protected $with = ['votes','upvoteSummary', 'commentsCountRelationship', 'resource'];
 
-    protected $appends = ['user_vote', 'vote_score', 'comments_count', 'can_merge_edits'];
+    protected $appends = ['user_vote', 'vote_score', 'comments_count', 'can_merge_edits', 'image_url'];
 
     protected $casts = [
         'proposed_changes' => 'array',
@@ -44,6 +45,19 @@ class ResourceEdits extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Attribute to get the image_url
+     *
+     * @return Attribute
+     */
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Storage::url($this->image_path),
+        );
+    }
+
 
     /**
      * Attribute to know if the edit can be merged

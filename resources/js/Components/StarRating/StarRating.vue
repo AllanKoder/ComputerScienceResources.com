@@ -17,11 +17,15 @@ const props = defineProps({
     }
 });
 
+const formattedRating = computed(() => {
+    return parseFloat(props.modelValue.toFixed(2));
+});
+
 const stars = computed(() => {
     const rating = props.modelValue || 0;
     const fullStars = Math.floor(rating);
     const hasHalf = rating % 1 >= 0.5;
-    const emptyStars = props.maxStars - Math.ceil(rating);
+    const emptyStars = props.maxStars - fullStars - (hasHalf ? 1 : 0);
 
     return {
         full: fullStars,
@@ -43,6 +47,7 @@ const getStarClass = (type) => {
 
 <template>
     <div class="inline-flex items-center">
+        <span class="mr-1 text-sm font-medium text-gray-600">{{ formattedRating }}</span>
         <!-- Full stars -->
         <Icon
             v-for="i in stars.full"

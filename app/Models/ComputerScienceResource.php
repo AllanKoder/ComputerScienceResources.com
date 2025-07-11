@@ -13,6 +13,7 @@ use Spatie\Tags\HasTags;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Support\Facades\Storage;
 
 #[ObservedBy([ComputerScienceResourceObserver::class])]
 class ComputerScienceResource extends Model
@@ -27,12 +28,25 @@ class ComputerScienceResource extends Model
 
     protected $guarded = [];
 
-    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'vote_score', 'user_vote', 'comments_count'];
+    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'vote_score', 'user_vote', 'comments_count', 'image_url'];
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Attribute to get the image_url
+     *
+     * @return Attribute
+     */
+    protected function imageUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn() => Storage::url($this->image_path),
+        );
+    }
+
 
     /**
      * Get the review summary relationship.

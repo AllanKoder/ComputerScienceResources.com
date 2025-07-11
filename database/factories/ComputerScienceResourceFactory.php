@@ -5,8 +5,10 @@ namespace Database\Factories;
 use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Storage;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ComputerScienceResource>
@@ -25,11 +27,14 @@ class ComputerScienceResourceFactory extends Factory
         $difficulties = config('computerScienceResource.difficulties');
         $pricings = config('computerScienceResource.pricings');
 
+        $fakeImage = UploadedFile::fake()->image('resource.jpg');
+        $imagePath = $fakeImage->store('resource', 'public');
+
         return [
             'name' => fake()->name(),
             'description' => fake()->realText(),
             'user_id' => User::inRandomOrder()->first() ?? User::factory()->create(),
-            'image_url' => 'https://cdn.iconscout.com/icon/free/png-256/free-leetcode-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-vol-1-pack-logos-icons-3030025.png',
+            'image_path' => $imagePath,
             'page_url' => fake()->url(),
             'platforms' => fake()->randomElements($platforms, rand(1, 3)),
             'difficulty' => fake()->randomElement($difficulties),

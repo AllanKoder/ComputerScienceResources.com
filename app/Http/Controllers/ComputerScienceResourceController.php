@@ -75,18 +75,17 @@ class ComputerScienceResourceController extends Controller
         $validatedData = $request->validated();
         Log::debug("Called store resource with data " . json_encode($request));
 
-        $imageUrl = null;
         // Store the image onto storage
+        $path = null;
         if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file'])
         {
             $path = $imageFile->store('resource', 'public');
-            $imageUrl = Storage::url($path);
         }
 
         $resource = ComputerScienceResource::create([
             'user_id' => Auth::id(),
             'name' => $validatedData['name'],
-            'image_url' => $imageUrl,
+            'image_path' => $path,
             'description' => $validatedData['description'],
             'page_url' => $validatedData['page_url'],
             'platforms' => $validatedData['platforms'],

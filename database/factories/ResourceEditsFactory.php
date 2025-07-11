@@ -23,7 +23,7 @@ class ResourceEditsFactory extends Factory
         $possibleChanges = [
             'name' => $this->faker->name(),
             'description' => $this->faker->realText(),
-            'image_url' => 'https://cdn.iconscout.com/icon/free/png-256/free-leetcode-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-vol-1-pack-logos-icons-3030025.png',
+            'image_path' => 'https://cdn.iconscout.com/icon/free/png-256/free-leetcode-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-vol-1-pack-logos-icons-3030025.png',
             'page_url' => $this->faker->url(),
             'platforms' => $this->faker->randomElements($platforms, rand(1, 3)),
             'difficulty' => $this->faker->randomElement($difficulties),

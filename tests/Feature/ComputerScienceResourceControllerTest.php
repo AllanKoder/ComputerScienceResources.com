@@ -57,7 +57,7 @@ class ComputerScienceResourceControllerTest extends TestCase
         // Check it is created
         $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
         $this->assertNotNull($createdResource);
-        $this->assertNotNull($createdResource->image_url);
+        $this->assertNotNull($createdResource->image_path);
         Storage::disk('public')->assertExists('resource/' . $formData['image_file']->hashName());
     }
 
