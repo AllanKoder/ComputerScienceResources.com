@@ -17,7 +17,7 @@ const props = defineProps({
 const emit = defineEmits(["change", "next", "back"]);
 
 // Reactive reference for form data
-const formData = ref({ ...props.form });
+const formData = ref({ topic_tags: props.form.topic_tags || [] });
 const errors = ref([]);
 
 const schema = resourceMandatoryTags;
@@ -38,7 +38,6 @@ const validateAndNext = async () => {
     schema
         .validate(formData.value)
         .then((_) => {
-            console.log("validated");
             errors.value = [];
             emit("next");
         })
@@ -46,7 +45,6 @@ const validateAndNext = async () => {
             console.error("Validation failed:", error.errors);
             errors.value = error.errors;
         });
-    console.log(formData);
 };
 </script>
 

@@ -1,7 +1,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 
-export function useLocalStorageSaver(form, resourceId, formFields, keyPrefix = 'edit-draft') {
-    const localStorageKey = computed(() => `${keyPrefix}-${resourceId}`);
+export function useLocalStorageSaver(form, localStorageKeyId, formFields, keyPrefix = 'edit-draft') {
+    const localStorageKey = computed(() => `${keyPrefix}-${localStorageKeyId}`);
     const isSavedToLocalStorage = ref(false);
     const isDataLoaded = ref(false);
 

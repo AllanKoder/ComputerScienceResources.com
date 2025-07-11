@@ -122,7 +122,9 @@ const submitReview = async (event) => {
         >
             <!-- Title -->
             <FormField v-slot="$field" name="title">
-                <label class="font-medium">Title</label>
+                <label class="font-semibold">Title</label>
+                <span class="text-red-500"> * </span>
+
                 <InputText
                     v-model="form.title"
                     placeholder="Review title"
@@ -136,7 +138,8 @@ const submitReview = async (event) => {
 
             <!-- Description -->
             <FormField v-slot="$field" name="description">
-                <label class="font-medium">Description</label>
+                <label class="font-semibold">Description</label>
+                <span class="text-red-500"> * </span>
                 <InputTextarea
                     v-model="form.description"
                     placeholder="Write your thoughts..."
@@ -150,13 +153,17 @@ const submitReview = async (event) => {
             </FormField>
 
             <!-- Ratings (flex layout like your review page) -->
-            <div class="flex flex-wrap gap-6 mt-4">
+            <div class="flex flex-wrap gap-12 mt-4 mx-auto">
+                <div>
+                    <h2>Ratings</h2>
+                </div>
                 <FormField
                     v-slot="$field"
                     name="community"
                     class="flex flex-col items-center"
                 >
                     <span class="font-semibold mb-1">Community</span>
+
                     <Rating v-model="form.community" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"
@@ -170,6 +177,7 @@ const submitReview = async (event) => {
                     class="flex flex-col items-center"
                 >
                     <span class="font-semibold mb-1">Teaching Clarity</span>
+
                     <Rating v-model="form.teaching_clarity" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"
@@ -183,6 +191,7 @@ const submitReview = async (event) => {
                     class="flex flex-col items-center"
                 >
                     <span class="font-semibold mb-1">Engagement</span>
+
                     <Rating v-model="form.engagement" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"
@@ -196,6 +205,7 @@ const submitReview = async (event) => {
                     class="flex flex-col items-center"
                 >
                     <span class="font-semibold mb-1">Practicality</span>
+
                     <Rating v-model="form.practicality" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"
@@ -209,6 +219,7 @@ const submitReview = async (event) => {
                     class="flex flex-col items-center"
                 >
                     <span class="font-semibold mb-1">User Friendliness</span>
+
                     <Rating v-model="form.user_friendliness" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"
@@ -222,6 +233,7 @@ const submitReview = async (event) => {
                     class="flex flex-col items-center"
                 >
                     <span class="font-semibold mb-1">Updates</span>
+
                     <Rating v-model="form.updates" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"

@@ -6,26 +6,46 @@ import { Stepper, StepList, Step, StepPanel, StepPanels } from "primevue";
 import MandatoryFields from "@/Pages/Resources/Form/MandatoryFields.vue";
 import TagsFields from "@/Pages/Resources/Form/TagsFields.vue";
 import TopicsFields from "@/Pages/Resources/Form/TopicsFields.vue";
+import { useLocalStorageSaver } from "@/Composables/useLocalStorageSaver";
 
-const form = useForm("CreateResource", {
-    name: "test",
-    platforms: ["website"],
-    page_url: "http://youtube.com",
+const formFields = [
+    "name",
+    "platforms",
+    "page_url",
+    "image_file",
+    "pricing",
+    "difficulty",
+    "description",
+    "topic_tags",
+    "programming_language_tags",
+    "general_tags",
+];
+
+const formData = useForm("CreateResource", {
+    name: "",
+    platforms: [],
+    page_url: "",
     image_file: null,
-    pricing: "free",
-    difficulty: "academic",
-    description: "http://youtube.com",
-    topic_tags: ["te", "e", "sdf"],
+    pricing: "",
+    difficulty: "",
+    description: "",
+    topic_tags: [],
     programming_language_tags: [],
-    general_tags: ["a"],
+    general_tags: [],
 });
 
+const { clearLocalStorage } = useLocalStorageSaver(
+    formData,
+    "new",
+    formFields,
+    "create-draft"
+);
+
 const submitForm = () => {
-    console.log(form);
-    form.post(route("resources.store"), {
+    formData.post(route("resources.store"), {
         onSuccess: () => {
-            console.log("success");
-            // Clear the form
+            clearLocalStorage();
+            formData.reset();
         },
         onError: (errors) => {
             console.error("Errors:", errors);
@@ -36,7 +56,7 @@ const submitForm = () => {
 
 const handleFormChange = (newFormData) => {
     Object.keys(newFormData).forEach((key) => {
-        form[key] = newFormData[key];
+        formData[key] = newFormData[key];
     });
 };
 </script>
@@ -47,6 +67,7 @@ const handleFormChange = (newFormData) => {
             <div
                 class="bg-white shadow-lg rounded-lg p-6 max-w-screen-md w-full"
             >
+            {{ formData }}
                 <Stepper value="1" linear>
                     <h2 class="text-2xl font-bold mb-4 text-center">
                         Add a New Resource
@@ -59,14 +80,14 @@ const handleFormChange = (newFormData) => {
                     <StepPanels>
                         <StepPanel v-slot="{ activateCallback }" value="1">
                             <MandatoryFields
-                                :formData="form"
+                                :formData="formData"
                                 @change="handleFormChange"
                                 @next="activateCallback('2')"
                             ></MandatoryFields>
                         </StepPanel>
                         <StepPanel v-slot="{ activateCallback }" value="2">
                             <TopicsFields
-                                :form="form"
+                                :form="formData"
                                 @change="handleFormChange"
                                 @back="activateCallback('1')"
                                 @next="activateCallback('3')"
@@ -75,7 +96,7 @@ const handleFormChange = (newFormData) => {
                         <StepPanel v-slot="{ activateCallback }" value="3">
                             <div class="flex flex-col">
                                 <TagsFields
-                                    :form="form"
+                                    :form="formData"
                                     @change="handleFormChange"
                                     @back="activateCallback('2')"
                                     @next="submitForm"
