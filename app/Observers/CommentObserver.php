@@ -67,12 +67,6 @@ class CommentObserver
             $commentsCount->count = max(0, ($commentsCount->count ?? 1) - 1);
             $commentsCount->save();
         }
-
-        // Delete the upvote summary for this comment
-        UpvoteSummary::where([
-            'upvotable_id' => $comment->id,
-            'upvotable_type' => Comment::class,
-        ])->delete();
     }
 
     /**

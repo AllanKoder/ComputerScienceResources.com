@@ -4,7 +4,7 @@
             <!-- Cat with glasses animation container -->
             <div class="cat-loader relative w-fit flex items-center justify-center">
                 <img
-                    src="/images/cat_head.png"
+                    src="/images/LogoHead.svg"
                     rel="preload"
                     class="w-48 h-32 relative z-10 rounded-full"
                 />

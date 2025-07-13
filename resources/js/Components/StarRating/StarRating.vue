@@ -18,7 +18,7 @@ const props = defineProps({
 });
 
 const formattedRating = computed(() => {
-    return parseFloat(props.modelValue.toFixed(2));
+    return parseFloat((props.modelValue || 0).toFixed(2));
 });
 
 const stars = computed(() => {

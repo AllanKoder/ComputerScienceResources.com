@@ -22,7 +22,7 @@ defineProps({
     />
     <img
         v-else
-        src="/images/missing_resource.png"
+        src="/images/Logo.svg"
         :alt="alt"
         class="w-44 h-44 object-contain rounded-lg p-1"
     />

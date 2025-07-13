@@ -99,7 +99,6 @@ class ResourceEditsController extends Controller
         $resourceEdits->load('user');
 
         return Inertia::render('ResourceEdits/Show', [
-            'originalResource' => fn () => $resourceEdits->resource,
             'editedResource' => fn () => $resourceEdits,
         ]);
     }
@@ -128,12 +127,16 @@ class ResourceEditsController extends Controller
                 Storage::disk('public')->delete($resource->image_path);
             }
 
-            // Move the new file from 'resource-edits' to 'resource'
-            $sourcePath = $changes['image_path'];        // "resource-edits/xyz.jpg"
-            $fileName = basename($sourcePath);         // "xyz.jpg"
-            $destPath = 'resource/' . $fileName;       // "resource/xyz.jpg"
+            $destPath = null;
+            if (isset($changes['image_path']))
+            {
+                // Move the new file from 'resource-edits' to 'resource'
+                $sourcePath = $changes['image_path']; // "resource-edits/xyz.jpg"
+                $fileName = basename($sourcePath); // "xyz.jpg"
+                $destPath = 'resource/' . $fileName; // "resource/xyz.jpg"
 
-            Storage::disk('public')->move($sourcePath, $destPath);
+                Storage::disk('public')->move($sourcePath, $destPath);
+            }
 
             // Update image_path in DB
             $resource->image_path = $destPath;
@@ -143,18 +146,19 @@ class ResourceEditsController extends Controller
         $resource->save();
 
         $proposedTagFields = ['topic_tags', 'programming_language_tags', 'general_tags'];
+        $allTags = [];
         foreach ($proposedTagFields as $field) {
             if (array_key_exists($field, $changes)) {
                 $resource->$field = $changes[$field];
+                $allTags[] = $changes[$field];
             }
         }
 
         // Get the new tag counter
-        $newTags = collect([$resourceEdits->topic_tags, $resourceEdits->programming_language_tags, $resourceEdits->general_tags])->flatten()->countBy()->toArray();
+        $newTags = collect($allTags)->flatten()->countBy()->toArray();
         // Change tag frequency
         TagFrequencyChanged::dispatch($oldTagCounter, $newTags);
 
-        // TODO: HANDLE DELETING
         // Delete the edit since we successfully merged the changes
         $resourceEdits->delete();
 

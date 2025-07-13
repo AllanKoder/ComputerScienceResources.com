@@ -54,7 +54,7 @@ class ResourceEdits extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => Storage::url($this->image_path),
+            get: fn() => $this->image_path ? Storage::url($this->image_path) : null,
         );
     }
 

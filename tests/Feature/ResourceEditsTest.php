@@ -14,10 +14,12 @@ use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 use Illuminate\Http\UploadedFile;
 use Storage;
+use Tests\Feature\Utils\ResourceUtils;
 
 class ResourceEditsTest extends TestCase
 {
     use RefreshDatabase;
+    use ResourceUtils;
 
     protected $user;
 
@@ -280,5 +282,13 @@ class ResourceEditsTest extends TestCase
         $this->assertEqualsCanonicalizing($editData['proposed_changes']['general_tags'], $resource->general_tags);
 
         $this->assertDatabaseMissing('resource_edits', ['id' => $edit->id]);
+    }
+
+    public function test_merge_edits_deletes_all_previous_relationships(): void
+    {
+        $resource = ComputerScienceResource::factory()->create();
+
+        $this->approveChanges($resource->id, ['name'=> 'new name 123']);
+
     }
 }

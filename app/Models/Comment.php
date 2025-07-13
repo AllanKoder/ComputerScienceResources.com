@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 #[ObservedBy([CommentObserver::class])]
 class Comment extends Model
@@ -16,6 +17,9 @@ class Comment extends Model
     /** @use HasFactory<\Database\Factories\CommentFactory> */
     use HasFactory;
     use HasVotes;
+    use CascadesDeletes;
+
+    protected $cascadeDeletes = ['votes', 'upvoteSummary'];
 
     protected $with = ['votes', 'upvoteSummary'];
 

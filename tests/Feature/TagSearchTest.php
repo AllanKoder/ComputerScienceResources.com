@@ -123,13 +123,12 @@ class TagSearchTest extends TestCase
         $this->actingAs($this->user);
 
         // Create an edit with new tags
-        $editData = [];
         $editData['edit_title'] = 'Tag Update';
         $editData['edit_description'] = 'Tag change for test';
-        $editData['proposed_edits'] = [];
-        $editData['proposed_edits']['topic_tags'] = ['python', 'algorithms', 'tag1'];
-        $editData['proposed_edits']['programming_language_tags'] = ['python'];
-        $editData['proposed_edits']['general_tags'] = ['tutorial'];
+        $editData['proposed_changes'] = [];
+        $editData['proposed_changes']['topic_tags'] = ['python', 'algorithms', 'tag1'];
+        $editData['proposed_changes']['programming_language_tags'] = ['python'];
+        $editData['proposed_changes']['general_tags'] = ['tutorial'];
 
         // Create the edit
         $response = $this->post(route('resource_edits.store', ['computerScienceResource' => $resource->id]), $editData);

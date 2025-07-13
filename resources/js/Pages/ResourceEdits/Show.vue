@@ -23,15 +23,13 @@ import UserProfile from "@/Components/Profile/UserProfile.vue";
 import BackButton from "@/Components/Navigation/BackButton.vue";
 
 const props = defineProps({
-    originalResource: {
-        type: Object,
-        required: true,
-    },
     editedResource: {
         type: Object,
         required: true,
     },
 });
+
+const originalResource = props.editedResource.resource;
 
 // A map to get display labels, formatters, and diff components for each field.
 const fieldConfig = {
@@ -68,10 +66,10 @@ const changedFields = computed(() => {
     return Object.keys(changes)
         .map((key) => {
             const config = fieldConfig[key];
-            if (!config) return null; // Ignore keys not in config
+            if (config == undefined) return null; // Ignore keys not in config
 
             const proposedValue = changes[key];
-            const originalValue = props.originalResource[key];
+            const originalValue = originalResource[key];
 
             // For text diffs, pre-calculate the diff array
             const diffArray =
@@ -102,9 +100,11 @@ const hasChanges = computed(() => changedFields.value.length > 0);
 </script>
 
 <template>
-    <AppLayout :title="`Compare Versions: ${props.originalResource.name}`">
-        <Head :title="`Edit for ${props.originalResource.name}`" />
-        {{  }}
+    <AppLayout :title="`Compare Versions: ${originalResource.name}`">
+        <Head :title="`Edit for ${originalResource.name}`" />
+        {{ editedResource}}
+
+        <!-- TODO: SHOW IMAGE DIFF -->
         <div class="max-w-[90vw] mx-auto sm:px-6 py-4 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-7 sm:p-8">
@@ -114,7 +114,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                             :route="
                                 route('resources.show', {
                                     computerScienceResource:
-                                        props.originalResource.id,
+                                        originalResource.id,
                                     tab: 'edits',
                                 })
                             "
@@ -245,7 +245,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                             :href="
                                                 route('resources.show', {
                                                     computerScienceResource:
-                                                        props.originalResource
+                                                        originalResource
                                                             .id,
                                                 })
                                             "
@@ -359,7 +359,6 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                     <!-- Approval Actions -->
                     <div class="mt-8 border-t border-gray-200 pt-6">
                         <div class="flex justify-center">
-                            <!-- TODO: Add partial reload to the refresh -->
                             <Upvotable
                                 :flexRow="true"
                                 :upvotable-key="'edit'"
