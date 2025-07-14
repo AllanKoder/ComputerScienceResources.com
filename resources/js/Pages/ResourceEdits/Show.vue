@@ -102,9 +102,6 @@ const hasChanges = computed(() => changedFields.value.length > 0);
 <template>
     <AppLayout :title="`Compare Versions: ${originalResource.name}`">
         <Head :title="`Edit for ${originalResource.name}`" />
-        {{ editedResource}}
-
-        <!-- TODO: SHOW IMAGE DIFF -->
         <div class="max-w-[90vw] mx-auto sm:px-6 py-4 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-7 sm:p-8">

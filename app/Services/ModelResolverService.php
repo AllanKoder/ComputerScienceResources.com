@@ -14,16 +14,16 @@ class ModelResolverService
 
     /**
      * Finds the model that exists for the given type and id
-     * 
+     *
      * @param $type, the colloquial name for the type
      * @param $id, the id for the type
-     * 
+     *
      * returns null if no model exists, otherwise, it will return the model
      */
     public function resolve($type, $id)
     {
         $modelClass = $this->getModelClass($type);
-        
+
         if (!$modelClass) {
             return null;
         }

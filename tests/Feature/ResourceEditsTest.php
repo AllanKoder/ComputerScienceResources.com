@@ -2,8 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Comment;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
+use App\Models\Upvote;
+use App\Models\UpvoteSummary;
 use App\Models\User;
 use App\Services\ResourceEditsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -14,12 +17,12 @@ use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 use Illuminate\Http\UploadedFile;
 use Storage;
-use Tests\Feature\Utils\ResourceUtils;
+use Tests\Feature\Utils\TestingUtils;
 
 class ResourceEditsTest extends TestCase
 {
     use RefreshDatabase;
-    use ResourceUtils;
+    use TestingUtils;
 
     protected $user;
 
@@ -151,144 +154,132 @@ class ResourceEditsTest extends TestCase
      * Test that merging an edit updates the original resource.
      * We run multiple merges to simulate multiple edit merges.
      */
-
     public function test_merged_edit_reflects_changes_on_original_resource(): void
     {
         $resource = ComputerScienceResource::factory()->create();
-
-        // Stub the ResourceEditsService to always allow merging
-        $this->instance(
-            ResourceEditsService::class,
-            Mockery::mock(ResourceEditsService::class, function (MockInterface $mock) {
-                $mock->shouldReceive('canMergeEdits')->andReturnTrue();
-            })
-        );
-
-        $oldImagePath = $resource->image_path;
+        $this->actingAs($this->user);
 
         $mergeAttempts = 10;
 
         for ($i = 0; $i < $mergeAttempts; $i++)
         {
-            $resource->refresh();
+            $oldImagePath = $resource->image_path;
 
-            $editData = [];
+            $changes = [
+                'name' => "Resource Name Edited {$i}",
+                'description' => "Resource Description Changed {$i}",
+                'image_file' => UploadedFile::fake()->image('resource.jpg'),
+                'page_url' => "http://{$i}.com",
+                'difficulty' => fake()->randomElement(config('computerScienceResource.difficulties')),
+                'platforms' => fake()->randomElements(config('computerScienceResource.platforms'), fake()->numberBetween(1, 3)),
+                'pricing' => fake()->randomElement(config('computerScienceResource.pricings')),
+                'topic_tags' => ["{$i}_a", "{$i}_b", "{$i}_c"],
+                'programming_language_tags' => ["{$i}_a", "{$i}_b", "{$i}_c"],
+                'general_tags' => ["{$i}_a", "{$i}_b", "{$i}_c"],
+            ];
 
-            $editData['edit_title'] = "Edit #$i";
-            $editData['edit_description'] = "This is edit number $i.";
-
-            $editData['proposed_changes'] = [];
-            $editData['proposed_changes']['name'] = "Resource Name Edited {$i}";
-            $editData['proposed_changes']['description'] = "Resource Description Changed {$i}";
-            $newImageFile = UploadedFile::fake()->image('resource.jpg');
-            $editData['proposed_changes']['image_file'] = $newImageFile;
-            $editData['proposed_changes']['page_url'] = "http://{$i}.com";
-            $editData['proposed_changes']['difficulty'] = fake()->randomElement(config('computerScienceResource.difficulties'));
-            $editData['proposed_changes']['platforms'] = fake()->randomElements(config('computerScienceResource.platforms'), fake()->numberBetween(1, 3));
-            $editData['proposed_changes']['pricing'] = fake()->randomElement(config('computerScienceResource.pricings'));
-            $editData['proposed_changes']['topic_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"];
-
-            $editData['proposed_changes']['programming_language_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"];
-            $editData['proposed_changes']['general_tags'] = ["{$i}_a", "{$i}_b", "{$i}_c"];
-
-            // Submit the edit
-            $this->actingAs($this->user);
-            $response = $this->post(
-                route('resource_edits.store', ['computerScienceResource' => $resource->id]),
-                $editData
-            );
-            $response->assertStatus(302);
-
-            $edit = ResourceEdits::latest()->first();
-            $this->assertNotNull($edit, 'Failed to create resource edit');
-
-            // Merge the edit
-            $mergeResponse = $this->post(route('resource_edits.merge', ['resourceEdits' => $edit->id]));
-            $mergeResponse
-                ->assertRedirect(route('resources.show', ['computerScienceResource' => $resource->id]))
-                ->assertSessionHas('success', 'Successfully merged new changed!');
+            $this->makeAndApplyResourceEdits($resource->id, $changes);
 
             // Refresh and assert
             $resource->refresh();
 
-            $this->assertEquals($editData['proposed_changes']['name'], $resource->name);
-            $this->assertEquals($editData['proposed_changes']['description'], $resource->description);
-            $this->assertNotNull($resource->image_path);
-            $this->assertNotEquals($resource->image_path, $oldImagePath);
-            $this->assertEquals($editData['proposed_changes']['page_url'], $resource->page_url);
-            $this->assertEquals($editData['proposed_changes']['difficulty'], $resource->difficulty);
-            $this->assertEquals($editData['proposed_changes']['pricing'], $resource->pricing);
+            $this->assertEquals($changes['name'], $resource->name);
+            $this->assertEquals($changes['description'], $resource->description);
+            Storage::disk('public')->assertExists($resource->image_path);
+            Storage::disk('public')->assertMissing($oldImagePath);
+
+            $this->assertEquals($changes['page_url'], $resource->page_url);
+            $this->assertEquals($changes['difficulty'], $resource->difficulty);
+            $this->assertEquals($changes['pricing'], $resource->pricing);
 
             // Arrays
-            $this->assertEqualsCanonicalizing($editData['proposed_changes']['platforms'], $resource->platforms);
-            $this->assertEqualsCanonicalizing($editData['proposed_changes']['topic_tags'], $resource->topic_tags);
-            $this->assertEqualsCanonicalizing($editData['proposed_changes']['programming_language_tags'], $resource->programming_language_tags);
-            $this->assertEqualsCanonicalizing($editData['proposed_changes']['general_tags'], $resource->general_tags);
-
-            $this->assertDatabaseMissing('resource_edits', ['id' => $edit->id]);
+            $this->assertEqualsCanonicalizing($changes['platforms'], $resource->platforms);
+            $this->assertEqualsCanonicalizing($changes['topic_tags'], $resource->topic_tags);
+            $this->assertEqualsCanonicalizing($changes['programming_language_tags'], $resource->programming_language_tags);
+            $this->assertEqualsCanonicalizing($changes['general_tags'], $resource->general_tags);
         }
     }
 
     public function test_merged_delete_image_edit_reflects_changes_on_original_resource(): void
     {
         $resource = ComputerScienceResource::factory()->create();
-
-        // Stub the ResourceEditsService to always allow merging
-        $this->instance(
-            ResourceEditsService::class,
-            Mockery::mock(ResourceEditsService::class, function (MockInterface $mock) {
-                $mock->shouldReceive('canMergeEdits')->andReturnTrue();
-            })
-        );
-
-        $editData['edit_title'] = "Edit";
-        $editData['edit_description'] = "This is edit";
-
-        $editData['proposed_changes'] = [];
-        $editData['proposed_changes']['name'] = "Resource Name Edited";
-        $editData['proposed_changes']['description'] = "Resource Description Changed";
-        $editData['proposed_changes']['image_file'] = null; // Delete operation
-        $editData['proposed_changes']['topic_tags'] = ['1', '2', '3'];
-        $editData['proposed_changes']['programming_language_tags'] = [];
-        $editData['proposed_changes']['general_tags'] = [];
-
-        // Submit the edit
         $this->actingAs($this->user);
-        $response = $this->post(
-            route('resource_edits.store', ['computerScienceResource' => $resource->id]),
-            $editData
-        );
-        $response->assertStatus(302);
 
-        $edit = ResourceEdits::latest()->first();
-        $this->assertNotNull($edit, 'Failed to create resource edit');
+        $changes = [
+            'name' => "Resource Name Edited",
+            'description' => "Resource Description Changed",
+            'image_file' => null, // Delete operation
+            'topic_tags' => ['1', '2', '3'],
+            'programming_language_tags' => [],
+            'general_tags' => [],
+        ];
 
-        // Merge the edit
-        $mergeResponse = $this->post(route('resource_edits.merge', ['resourceEdits' => $edit->id]));
-        $mergeResponse
-            ->assertRedirect(route('resources.show', ['computerScienceResource' => $resource->id]))
-            ->assertSessionHas('success', 'Successfully merged new changed!');
+        $this->makeAndApplyResourceEdits($resource->id, $changes);
 
         // Refresh and assert
         $resource->refresh();
 
         $this->assertEquals("Resource Name Edited", $resource->name);
         $this->assertEquals("Resource Description Changed", $resource->description);
-        $this->assertNull($resource->image_file); // Since we unset it
+        $this->assertNull($resource->image_path);
 
         // Changes
-        $this->assertEqualsCanonicalizing($editData['proposed_changes']['topic_tags'], $resource->topic_tags);
-        $this->assertEqualsCanonicalizing($editData['proposed_changes']['programming_language_tags'], $resource->programming_language_tags);
-        $this->assertEqualsCanonicalizing($editData['proposed_changes']['general_tags'], $resource->general_tags);
-
-        $this->assertDatabaseMissing('resource_edits', ['id' => $edit->id]);
+        $this->assertEqualsCanonicalizing($changes['topic_tags'], $resource->topic_tags);
+        $this->assertEqualsCanonicalizing($changes['programming_language_tags'], $resource->programming_language_tags);
+        $this->assertEqualsCanonicalizing($changes['general_tags'], $resource->general_tags);
     }
 
     public function test_merge_edits_deletes_all_previous_relationships(): void
     {
         $resource = ComputerScienceResource::factory()->create();
 
-        $this->approveChanges($resource->id, ['name'=> 'new name 123']);
+        $edit = $this->createResourceEdit($resource->id);
 
+        // Things to delete upon deletion:
+        // upvotes, comments
+
+        // Add a upvote + upvote summary
+        $this->upvote('edit', $edit->id);
+        $this->createComment('edit', $edit->id);
+
+        // Add a comment
+        $this->approveResourceEdit($edit);
+
+        // Assert None of found for the following:
+        $this->assertEmpty(Upvote::where('upvotable_id', $edit->id)->where('upvotable_type', ResourceEdits::class)->get());
+        $this->assertEmpty(UpvoteSummary::where('upvotable_id', $edit->id)->where('upvotable_type', ResourceEdits::class)->get());
+
+        $this->assertEmpty(Comment::where('commentable_id', $edit->id)->where('commentable_type', ResourceEdits::class)->get());
+    }
+
+    public function test_merge_edits_deletes_previous_resource_image(): void
+    {
+        Storage::fake('public');
+        $this->actingAs($this->user);
+
+        // Create a resource with an initial image
+        $resource = ComputerScienceResource::factory()->create([
+            'image_path' => UploadedFile::fake()->image('initial_image.jpg')->store('resource', 'public'),
+        ]);
+        $oldImagePath = $resource->image_path;
+
+        // Ensure the initial image exists
+        Storage::disk('public')->assertExists($oldImagePath);
+
+        // Define the changes with a new image
+        $changes = [
+            'image_file' => UploadedFile::fake()->image('new_image.jpg'),
+        ];
+
+        // Apply the edit
+        $this->makeAndApplyResourceEdits($resource->id, $changes);
+
+        // Refresh the resource model from the database
+        $resource->refresh();
+
+        // Assert the old image is deleted and the new one exists
+        Storage::disk('public')->assertMissing($oldImagePath);
+        Storage::disk('public')->assertExists($resource->image_path);
+        $this->assertNotEquals($oldImagePath, $resource->image_path);
     }
 }

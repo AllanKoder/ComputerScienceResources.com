@@ -8,13 +8,13 @@ use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
-use Tests\Feature\Utils\ResourceUtils;
+use Tests\Feature\Utils\TestingUtils;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 
 class SortingManagerTest extends TestCase
 {
     use RefreshDatabase;
-    use ResourceUtils;
+    use TestingUtils;
 
     protected ResourceSortingManager $sortingManager;
 

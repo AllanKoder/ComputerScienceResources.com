@@ -10,14 +10,14 @@ use App\Models\User;
 use App\Services\ResourceEditsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
-use Tests\Feature\Utils\ResourceUtils;
+use Tests\Feature\Utils\TestingUtils;
 use Tests\TestCase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 
 class TagSearchTest extends TestCase
 {
     use RefreshDatabase;
-    use ResourceUtils;
+    use TestingUtils;
 
     protected $user;
 

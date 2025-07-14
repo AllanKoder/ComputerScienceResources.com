@@ -10,7 +10,7 @@ use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestResources\ComputerScienceResourceTestResource;
-use Tests\Feature\Utils\ResourceUtils;
+use Tests\Feature\Utils\TestingUtils;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
@@ -19,7 +19,7 @@ use Throwable;
 
 class ComputerScienceResourceFilterTest extends TestCase
 {
-    use RefreshDatabase, ResourceUtils;
+    use RefreshDatabase, TestingUtils;
 
     protected User $user;
 

@@ -8,11 +8,13 @@ use App\Models\ComputerScienceResource;
 use App\Models\UpvoteSummary;
 use App\Services\ModelResolverService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Feature\Utils\TestingUtils;
 use Tests\TestCase;
 
 class CommentsTest extends TestCase
 {
     use RefreshDatabase;
+    use TestingUtils;
 
     /**
      * Test a top-level comment can be posted.
@@ -24,18 +26,11 @@ class CommentsTest extends TestCase
 
         $resource = ComputerScienceResource::factory()->create();
 
-        $payload = [
-            'content' => 'This is a top level comment.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => null,
-        ];
-
-        $response = $this->postJson(route('comments.store'), $payload);
-        $response->assertStatus(200);
+        $commentContent = 'This is a top level comment.';
+        $this->createComment('resource', $resource->id, ['content' => $commentContent]);
 
         $this->assertDatabaseHas('comments', [
-            'content' => 'This is a top level comment.',
+            'content' => $commentContent,
             'commentable_id' => $resource->id,
             'parent_comment_id' => null,
         ]);
@@ -99,20 +94,13 @@ class CommentsTest extends TestCase
             }
 
             $commentable = $modelClass::factory()->create();
-            $payload = [
-                'content' => 'top level comment',
-                'commentable_key' => $typeKey,
-                'commentable_id' => $commentable->id,
-                'parent_comment_id' => null,
-            ];
-
-            $response = $this->postJson(route('comments.store'), $payload);
-            $response->assertStatus(200, "Failed to comment on type {$typeKey}");
+            $commentContent = 'top level comment';
+            $this->createComment($typeKey, $commentable->id, ['content' => $commentContent]);
 
             $this->assertDatabaseHas('comments', [
-                'content' => $payload['content'],
+                'content' => $commentContent,
                 'commentable_type' => $modelClass,
-                'commentable_id' => $payload['commentable_id'],
+                'commentable_id' => $commentable->id,
             ]);
         }
     }
@@ -148,26 +136,16 @@ class CommentsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
 
         // Create a top-level comment first.
-        $parentPayload = [
-            'content' => 'Top level comment.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => null,
-        ];
-        $parentResponse = $this->postJson(route('comments.store'), $parentPayload);
-        $parentResponse->assertStatus(200);
-        $parentCommentId = $parentResponse->json('new_comment.id');
+        $parentComment = $this->createComment('resource', $resource->id, ['content' => 'Top level comment.']);
 
-        // Post a reply to the top-level comment; its depth should be parent's depth + 1.
-        $replyPayload = [
+        // Post a reply to the top-level comment.
+        $replyComment = $this->createComment('resource', $resource->id, [
             'content' => 'This is a reply.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => $parentCommentId,
-        ];
-        $replyResponse = $this->postJson(route('comments.store'), $replyPayload);
-        $replyResponse->assertStatus(200);
-        $replyResponse->assertJsonFragment(['depth' => 2]);
+            'parent_comment_id' => $parentComment['id'],
+        ]);
+
+        // The depth should be parent's depth + 1.
+        $this->assertEquals(2, $replyComment['depth']);
     }
 
     /**
@@ -184,33 +162,17 @@ class CommentsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
 
         // Create a top-level comment (depth 1).
-        $parentPayload = [
-            'content' => 'Top level comment.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => null,
-        ];
-        $parentResponse = $this->postJson(route('comments.store'), $parentPayload);
-        $parentResponse->assertStatus(200);
-        $parentCommentId = $parentResponse->json('new_comment.id');
+        $parentComment = $this->createComment('resource', $resource->id, ['content' => 'Top level comment.']);
 
         // Create a reply (depth 2) – this is allowed.
-        $replyPayload = [
-            'content' => 'Reply level 2.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => $parentCommentId,
-        ];
-        $replyResponse = $this->postJson(route('comments.store'), $replyPayload);
-        $replyResponse->assertStatus(200);
-        $replyCommentId = $replyResponse->json('new_comment.id');
+        $replyComment = $this->createComment('resource', $resource->id, ['parent_comment_id' => $parentComment['id']]);
 
         // Attempt to post a nested comment (would be depth 3) – should fail.
         $nestedReplyPayload = [
             'content' => 'Reply level 3 exceeds depth limit.',
             'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
-            'parent_comment_id' => $replyCommentId,
+            'parent_comment_id' => $replyComment['id'],
         ];
         $nestedReplyResponse = $this->postJson(route('comments.store'), $nestedReplyPayload);
         $nestedReplyResponse->assertStatus(422);
@@ -230,36 +192,20 @@ class CommentsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
 
         // Create a top-level comment.
-        $payload = [
-            'content' => 'Top level comment for replies limit test.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => null,
-        ];
-        $response = $this->postJson(route('comments.store'), $payload);
-        $response->assertStatus(200);
-        $rootCommentId = $response->json('new_comment.id');
+        $rootComment = $this->createComment('resource', $resource->id);
 
         // Post replies up to the allowed maximum.
         for ($i = 1; $i <= config('comment.max_replies'); $i++) {
-            $replyPayload = [
-                'content' => "Reply $i",
-                'commentable_key' => 'resource',
-                'commentable_id' => $resource->id,
-                'parent_comment_id' => $rootCommentId,
-            ];
-            $replyResponse = $this->postJson(route('comments.store'), $replyPayload);
-            $replyResponse->assertStatus(200);
+            $this->createComment('resource', $resource->id, ['parent_comment_id' => $rootComment['id']]);
         }
 
         // Attempt one more reply, which should be rejected.
-        $extraReplyPayload = [
+        $extraReplyResponse = $this->postJson(route('comments.store'), [
             'content' => 'This reply should fail due to reply limit.',
             'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
-            'parent_comment_id' => $rootCommentId,
-        ];
-        $extraReplyResponse = $this->postJson(route('comments.store'), $extraReplyPayload);
+            'parent_comment_id' => $rootComment['id'],
+        ]);
         $extraReplyResponse->assertStatus(422);
     }
 
@@ -280,27 +226,12 @@ class CommentsTest extends TestCase
         $postedCommentIds = [];
 
         for ($i = 1; $i <= 3; $i++) {
-            $topPayload = [
-                'content' => "Top level comment $i",
-                'commentable_key' => 'resource',
-                'commentable_id' => $resource->id,
-                'parent_comment_id' => null,
-            ];
-            $topResponse = $this->postJson(route('comments.store'), $topPayload);
-            $topResponse->assertStatus(200);
-            $topId = $topResponse->json('new_comment.id');
-            $postedCommentIds[] = $topId;
+            $topComment = $this->createComment('resource', $resource->id);
+            $postedCommentIds[] = $topComment['id'];
 
             for ($j = 1; $j <= 2; $j++) {
-                $replyPayload = [
-                    'content' => "Reply $j to comment $i",
-                    'commentable_key' => 'resource',
-                    'commentable_id' => $resource->id,
-                    'parent_comment_id' => $topId,
-                ];
-                $replyResponse = $this->postJson(route('comments.store'), $replyPayload);
-                $replyResponse->assertStatus(200);
-                $postedCommentIds[] = $replyResponse->json('new_comment.id');
+                $replyComment = $this->createComment('resource', $resource->id, ['parent_comment_id' => $topComment['id']]);
+                $postedCommentIds[] = $replyComment['id'];
             }
         }
 
@@ -342,56 +273,29 @@ class CommentsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
 
         // Create a root comment
-        $rootCommentPayload = [
-            'content' => 'This is a root comment.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => null,
-        ];
-
-        $rootResponse = $this->postJson(route('comments.store'), $rootCommentPayload);
-        $rootResponse->assertStatus(200);
-        $rootCommentId = $rootResponse->json('new_comment.id');
+        $rootComment = $this->createComment('resource', $resource->id);
 
         // Verify upvote summary was created for root comment
         $this->assertDatabaseHas('upvote_summaries', [
-            'upvotable_id' => $rootCommentId,
+            'upvotable_id' => $rootComment['id'],
             'upvotable_type' => Comment::class,
         ]);
 
         // Create a reply comment
-        $replyCommentPayload = [
-            'content' => 'This is a reply comment.',
-            'commentable_key' => 'resource',
-            'commentable_id' => $resource->id,
-            'parent_comment_id' => $rootCommentId,
-        ];
-
-        $replyResponse = $this->postJson(route('comments.store'), $replyCommentPayload);
-        $replyResponse->assertStatus(200);
-        $replyCommentId = $replyResponse->json('new_comment.id');
+        $replyComment = $this->createComment('resource', $resource->id, ['parent_comment_id' => $rootComment['id']]);
 
         // Verify upvote summary was created for reply comment
         $this->assertDatabaseHas('upvote_summaries', [
-            'upvotable_id' => $replyCommentId,
+            'upvotable_id' => $replyComment['id'],
             'upvotable_type' => Comment::class,
         ]);
 
         // Also test commenting on a comment directly
-        $commentOnCommentPayload = [
-            'content' => 'This is a comment on a comment.',
-            'commentable_key' => 'comment',
-            'commentable_id' => $rootCommentId,
-            'parent_comment_id' => null,
-        ];
-
-        $commentOnCommentResponse = $this->postJson(route('comments.store'), $commentOnCommentPayload);
-        $commentOnCommentResponse->assertStatus(200);
-        $commentOnCommentId = $commentOnCommentResponse->json('new_comment.id');
+        $commentOnComment = $this->createComment('comment', $rootComment['id']);
 
         // Verify upvote summary was created for comment on comment
         $this->assertDatabaseHas('upvote_summaries', [
-            'upvotable_id' => $commentOnCommentId,
+            'upvotable_id' => $commentOnComment['id'],
             'upvotable_type' => Comment::class,
         ]);
 
@@ -401,35 +305,41 @@ class CommentsTest extends TestCase
     }
 
     /**
-     * Test that upvote summaries are cleaned up when comments are deleted.
+     * Test that upvote summaries and upvotes are cleaned up when comments are deleted.
      */
-    public function test_upvote_summaries_cleaned_up_when_comments_deleted()
+    public function test_upvote_summaries_and_upvotes_cleaned_up_when_comments_deleted()
     {
-        $user = User::factory()->create();
-        $this->actingAs($user);
+        $this->actingAs(User::factory()->create());
 
         $resource = ComputerScienceResource::factory()->create();
 
-        // Create a comment
-        $comment = Comment::factory()->create([
-            'user_id' => $user->id,
-            'commentable_type' => ComputerScienceResource::class,
-            'commentable_id' => $resource->id,
-            'content' => 'Test comment for deletion',
-        ]);
+        // Create a comment and get its data
+        $commentData = $this->createComment('resource', $resource->id);
+        $commentId = $commentData['id'];
 
-        // Verify upvote summary exists
+        // Upvote the comment
+        $this->upvote('comment', $commentId);
+
+        // Verify upvote and summary exist
+        $this->assertDatabaseHas('upvotes', [
+            'upvotable_id' => $commentId,
+            'upvotable_type' => Comment::class,
+        ]);
         $this->assertDatabaseHas('upvote_summaries', [
-            'upvotable_id' => $comment->id,
+            'upvotable_id' => $commentId,
             'upvotable_type' => Comment::class,
         ]);
 
         // Delete the comment
-        $comment->delete();
+        Comment::find($commentId)->delete();
 
-        // Verify upvote summary was deleted
+        // Verify upvote and summary were deleted
+        $this->assertDatabaseMissing('upvotes', [
+            'upvotable_id' => $commentId,
+            'upvotable_type' => Comment::class,
+        ]);
         $this->assertDatabaseMissing('upvote_summaries', [
-            'upvotable_id' => $comment->id,
+            'upvotable_id' => $commentId,
             'upvotable_type' => Comment::class,
         ]);
     }

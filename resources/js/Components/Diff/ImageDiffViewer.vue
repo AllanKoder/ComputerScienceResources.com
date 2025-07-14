@@ -30,7 +30,7 @@ const proposedImage = props.field.proposedValue;
         </div>
         <div v-else-if="originalImage"
             class="text-sm text-gray-500 italic text-center">
-            Image Removed
+            Remove the Image
             <ResourceThumbnail :src="null" alt="Proposed Image" />
         </div>
     </div>

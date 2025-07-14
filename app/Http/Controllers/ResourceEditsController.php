@@ -131,9 +131,10 @@ class ResourceEditsController extends Controller
             if (isset($changes['image_path']))
             {
                 // Move the new file from 'resource-edits' to 'resource'
-                $sourcePath = $changes['image_path']; // "resource-edits/xyz.jpg"
-                $fileName = basename($sourcePath); // "xyz.jpg"
-                $destPath = 'resource/' . $fileName; // "resource/xyz.jpg"
+                $sourcePath = $changes['image_path'];
+                $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
+                $newFileName = Str::random(40) . '.' . $fileExtension;
+                $destPath = 'resource/' . $newFileName;
 
                 Storage::disk('public')->move($sourcePath, $destPath);
             }

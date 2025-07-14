@@ -30,7 +30,7 @@ class ResourceEdits extends Model
 
     protected $with = ['votes','upvoteSummary', 'commentsCountRelationship', 'resource'];
 
-    protected $appends = ['user_vote', 'vote_score', 'comments_count', 'can_merge_edits', 'image_url'];
+    protected $appends = ['user_vote', 'vote_score', 'comments_count', 'can_merge_edits'];
 
     protected $casts = [
         'proposed_changes' => 'array',
@@ -46,18 +46,24 @@ class ResourceEdits extends Model
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Attribute to get the image_url
-     *
-     * @return Attribute
-     */
-    protected function imageUrl(): Attribute
+    protected function proposedChanges(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->image_path ? Storage::url($this->image_path) : null,
+            get: function ($value) {
+                $changes = json_decode($value, true);
+
+                if (key_exists('image_path', $changes))
+                {
+                    $changes['image_url'] = null;
+                    if ($changes['image_path']) {
+                        $changes['image_url'] = Storage::url($changes['image_path']);
+                    }
+                }
+
+                return $changes;
+            },
         );
     }
-
 
     /**
      * Attribute to know if the edit can be merged

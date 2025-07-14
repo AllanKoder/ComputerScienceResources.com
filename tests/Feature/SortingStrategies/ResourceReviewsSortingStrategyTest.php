@@ -9,14 +9,14 @@ use App\Models\User;
 use App\Services\SortingManagers\ResourceSortingManager;
 use App\Traits\HandlesResourceReviewJoins;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\Feature\Utils\ResourceUtils;
+use Tests\Feature\Utils\TestingUtils;
 use Tests\TestResources\ResourceReviewTestResource;
 
 class ResourceReviewsSortingStrategyTest extends TestCase
 {
     use RefreshDatabase;
     use HandlesResourceReviewJoins;
-    use ResourceUtils;
+    use TestingUtils;
 
     protected ResourceSortingManager $resourceSortingManager;
 
