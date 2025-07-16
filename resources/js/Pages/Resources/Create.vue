@@ -46,14 +46,14 @@ const { clearLocalStorage } = useLocalStorageSaver(
 );
 
 const showReset = ref(false);
-const stepperValue = ref('1');
+const stepperValue = ref("1");
 
 const resetForm = () => {
     clearLocalStorage();
     formData.reset();
 
     showReset.value = false;
-    stepperValue.value = '1';
+    stepperValue.value = "1";
 };
 
 const submitForm = () => {
@@ -79,88 +79,202 @@ const handleFormChange = (newFormData) => {
 <template>
     <AppLayout title="Computer Science Resources">
         <main class="py-12 flex justify-center">
-            <div
-                class="bg-white shadow-lg rounded-lg p-6 max-w-screen-md w-full relative"
-            >
-                <!-- Move Reset button to top right -->
-                <div class="flex justify-end mb-2">
-                    <SecondaryButton @click="showReset = true" type="button">
-                        Clear All
-                    </SecondaryButton>
-                </div>
-                <Stepper :value="stepperValue" linear>
-                    <h2 class="text-2xl font-bold mb-4 text-center">
-                        Add a New Resource
-                    </h2>
-                    <StepList>
-                        <Step value="1">Details</Step>
-                        <Step value="2">Topics</Step>
-                        <Step value="3">Tags</Step>
-                    </StepList>
-                    <StepPanels>
-                        <StepPanel value="1">
-                            <MandatoryFields
-                                :formData="formData"
-                                @change="handleFormChange"
-                                @next="() => stepperValue = '2'"
-                            ></MandatoryFields>
-                        </StepPanel>
-                        <StepPanel value="2">
-                            <TopicsFields
-                                :form="formData"
-                                @change="handleFormChange"
-                                @back="() => stepperValue = '1'"
-                                @next="() => stepperValue = '3'"
-                            ></TopicsFields>
-                        </StepPanel>
-                        <StepPanel value="3">
-                            <div class="flex flex-col">
-                                <TagsFields
+            <div class="w-2/3 flex gap-8">
+                <!-- Main Form Section -->
+                <div
+                    class="bg-white h-min shadow-lg rounded-lg p-6 flex-1 max-w-2xl relative"
+                >
+                    <!-- Move Reset button to top right -->
+                    <div class="flex justify-end mb-2">
+                        <SecondaryButton
+                            @click="showReset = true"
+                            type="button"
+                        >
+                            Clear All
+                        </SecondaryButton>
+                    </div>
+                    <Stepper :value="stepperValue" linear>
+                        <h2 class="text-2xl font-bold mb-4 text-center">
+                            Add a New Resource
+                        </h2>
+                        <StepList>
+                            <Step value="1">Details</Step>
+                            <Step value="2">Topics</Step>
+                            <Step value="3">Tags</Step>
+                        </StepList>
+                        <StepPanels>
+                            <StepPanel value="1">
+                                <MandatoryFields
+                                    :formData="formData"
+                                    @change="handleFormChange"
+                                    @next="() => (stepperValue = '2')"
+                                ></MandatoryFields>
+                            </StepPanel>
+                            <StepPanel value="2">
+                                <TopicsFields
                                     :form="formData"
                                     @change="handleFormChange"
-                                    @back="() => stepperValue= '2'"
-                                    @next="submitForm"
-                                />
-                            </div>
-                        </StepPanel>
-                    </StepPanels>
-                </Stepper>
+                                    @back="() => (stepperValue = '1')"
+                                    @next="() => (stepperValue = '3')"
+                                ></TopicsFields>
+                            </StepPanel>
+                            <StepPanel value="3">
+                                <div class="flex flex-col">
+                                    <TagsFields
+                                        :form="formData"
+                                        @change="handleFormChange"
+                                        @back="() => (stepperValue = '2')"
+                                        @next="submitForm"
+                                    />
+                                </div>
+                            </StepPanel>
+                        </StepPanels>
+                    </Stepper>
 
+                    <ConfirmationModal
+                        :show="showReset"
+                        @close="showReset = false"
+                    >
+                        <template #title> Reset the form </template>
 
+                        <template #content>
+                            Are you sure you want reset your fields for this
+                            potential new resource? You will lose your saved
+                            changes.
+                        </template>
 
-                <ConfirmationModal
-                    :show="showReset"
-                    @close="showReset = false"
+                        <template #footer>
+                            <SecondaryButton @click="showReset = false">
+                                Cancel
+                            </SecondaryButton>
+
+                            <DangerButton
+                                class="ms-3"
+                                :class="{
+                                    'opacity-25': formData.processing,
+                                }"
+                                :disabled="formData.processing"
+                                @click="resetForm"
+                            >
+                                Reset Form
+                            </DangerButton>
+                        </template>
+                    </ConfirmationModal>
+                </div>
+
+                <!-- Instructions Sidebar -->
+                <div
+                    class="bg-gray-50 border border-gray-200 rounded-lg p-6 w-1/3 h-fit sticky top-8"
                 >
-                    <template #title>
-                        Reset the form
-                    </template>
+                    <h3 class="text-lg font-semibold mb-4 text-gray-800">
+                        Submission Guidelines
+                    </h3>
 
-                    <template #content>
-                        Are you sure you want reset your fields for this potential new resource? You
-                        will lose your saved changes.
-                    </template>
+                    <div class="space-y-4 text-sm text-gray-700">
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-2">
+                                Resource Scope
+                            </h4>
+                            <p class="mb-2">
+                                This site features comprehensive learning
+                                resources rather than isolated materials.
+                                Resources should provide ongoing value or
+                                structured learning experiences rather than a
+                                single-use reference.
+                            </p>
+                            <p>
+                                Our goal is to provide ways for developers to
+                                hone their skills. This industry is filled with
+                                passion, so we should make it easier to find
+                                more ways to learn.
+                            </p>
+                        </div>
 
-                    <template #footer>
-                        <SecondaryButton
-                            @click="showReset = false"
-                        >
-                            Cancel
-                        </SecondaryButton>
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-2">
+                                Types of Content Accepted
+                            </h4>
+                            <ul class="list-disc list-inside space-y-1 text-xs">
+                                <li>
+                                    Platforms, websites, and tools that offer
+                                    interactive learning
+                                </li>
+                                <li>
+                                    Collections of educational content, such as
+                                    YouTube channels or book series
+                                </li>
+                                <li>
+                                    Guides or repositories that serve as
+                                    long-term learning hubs
+                                </li>
+                                <li>
+                                    Newsletters that consistently release
+                                    content to date
+                                </li>
+                                <li>
+                                    Organizations that can provide software
+                                    career advising
+                                </li>
+                            </ul>
+                            <p class="mt-2 text-xs">
+                                Anything to help people learn more about
+                                software: from hardware, system design, to
+                                project management. The more specialized the
+                                resources are, the better.
+                            </p>
+                        </div>
 
-                        <DangerButton
-                            class="ms-3"
-                            :class="{
-                                'opacity-25':
-                                    formData.processing,
-                            }"
-                            :disabled="formData.processing"
-                            @click="resetForm"
-                        >
-                            Reset Form
-                        </DangerButton>
-                    </template>
-                </ConfirmationModal>
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-2">
+                                Exceptions
+                            </h4>
+                            <ul class="list-disc list-inside space-y-1 text-xs">
+                                <li>
+                                    An individual book may be included if it is
+                                    exceptionally well-regarded and widely
+                                    recommended as a foundational resource
+                                </li>
+                                <li>
+                                    Entertainment streamers and YouTubers can be
+                                    included given that they are very popular
+                                    whilst still informative
+                                </li>
+                                <li>
+                                    Do not post your paid courses unless they
+                                    are well received - this is not a platform
+                                    to advertise unwanted courses
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-gray-800 mb-2">
+                                What's Not Included
+                            </h4>
+                            <ul class="list-disc list-inside space-y-1 text-xs">
+                                <li>
+                                    Standalone videos, single blog posts, or
+                                    one-off articles
+                                </li>
+                                <li>
+                                    Resources that are too broad and do not
+                                    contain a singular focus
+                                </li>
+                                <li>
+                                    Things not related to learning about
+                                    computer science or software engineering
+                                </li>
+                                <li>
+                                    Lifestyle or personal finance content
+                                    (beyond reasonable project management)
+                                </li>
+                            </ul>
+                            <p class="mt-2 text-xs italic">
+                                In the end, we trust you to be reasonable.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </main>
     </AppLayout>

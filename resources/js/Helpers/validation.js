@@ -5,7 +5,7 @@ import { object, string, array, number } from "yup";
 // --------------------------
 export const resourceMandatoryFields = object({
     name: string().required("Name is required").max(100, "Max 100 chars"),
-    page_url: string().url("Must be a valid URL").required("URL is required"),
+    page_url: string().url("Must be a valid URL (Need to have https://)").required("URL is required"),
     platforms: array().of(string()).min(1, "At least one platform is required"),
     description: string().required("Description is required").max(10000),
     difficulty: string().required("Difficulty level is required"),
@@ -96,7 +96,7 @@ export const resourceReviewFields = object({
 // A nullable version of the resource fields for the edit form.
 export const nullableResourceFields = object({
     name: string().max(100, "Max 100 chars"),
-    page_url: string().url("Must be a valid URL"),
+    page_url: string().url("Must be a valid URL (Need to have https://)"),
     // No validation on image_file since it will be validated on backend
     platforms: array().of(string()),
     description: string().max(10000),

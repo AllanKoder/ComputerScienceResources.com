@@ -17,7 +17,7 @@ export const platformIcons = {
     forum: 'mdi:forum',
     mobile_app: 'mdi:cellphone',
     desktop_app: 'mdi:desktop-classic',
-    magazine: 'mdi:magazine'
+    magazine: 'mdi:newspaper'
 };
 
 // Pricing icons mapping
