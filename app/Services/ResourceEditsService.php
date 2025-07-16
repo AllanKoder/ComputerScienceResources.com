@@ -16,11 +16,11 @@ class ResourceEditsService
      */
     public function requiredVotes(int $totalVotes): int
     {
-        // Either the current votes, or the log equation
-        $votes = min($totalVotes,
-            floor(log($totalVotes, 1.25)) + 1
-        );
-        return max(3, $votes); // Need to be 3 votes minimum
+        // Take the minimum of total votes OR the logarithmic calculation
+        $votes = min($totalVotes, floor(log($totalVotes, 1.25)) + 1);
+
+        // Ensure minimum of 3 votes is always required
+        return max(3, $votes);
     }
 
     /**

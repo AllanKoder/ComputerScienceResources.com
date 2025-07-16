@@ -1,17 +1,6 @@
 <script setup>
-import { defineProps, ref } from 'vue';
+import { ref } from 'vue';
 import { Icon } from '@iconify/vue';
-
-const props = defineProps({
-    question: {
-        required: true,
-        type: String,
-    },
-    answer: {
-        required: true,
-        type: String,
-    },
-})
 
 const isAnswerOpen = ref(false);
 </script>
@@ -23,7 +12,7 @@ const isAnswerOpen = ref(false);
             class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
             <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
-                {{ question }}
+                <slot name="question"></slot>
             </h3>
             <Icon
                 :icon="isAnswerOpen ? 'mdi:expand-less' : 'mdi:expand-more'"
@@ -35,7 +24,7 @@ const isAnswerOpen = ref(false);
             v-if="isAnswerOpen"
             class="px-4 pb-4 text-gray-700 dark:text-gray-300"
         >
-            <p>{{ answer }}</p>
+            <slot name="answer"></slot>
         </div>
     </div>
 </template>

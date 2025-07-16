@@ -103,8 +103,8 @@ class ComputerScienceResourceFilterTest extends TestCase
             'by platforms' => [['platforms' => ['website', 'bootcamp']]],
 
             'by difficulty & pricing' => [[
-                'difficulty' => 'beginner',
-                'pricing'    => 'free',
+                'difficulty' => ['beginner'],
+                'pricing'    => ['free'],
             ]],
 
             'by topics, languages & general tags' => [[

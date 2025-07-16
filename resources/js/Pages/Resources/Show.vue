@@ -17,6 +17,7 @@ import LoadingAnimation from "@/Components/LoadingAnimation.vue";
 import UserProfile from "@/Components/Profile/UserProfile.vue";
 import ProposeEditsButton from "@/Components/Resources/ResourceEdit/ProposeEditsButton.vue";
 import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
+import ResourceEditsFAQ from "@/Components/Resources/ResourceEdit/ResourceEditsFAQ.vue";
 
 const props = defineProps({
     tab: {
@@ -576,6 +577,7 @@ const sortingType = urlParams.get("sort_by") || "top";
 
                     <div v-else-if="props.tab === 'edits'">
                         <ProposeEditsButton :resource-id="props.resource.id" />
+                        <ResourceEditsFAQ class="mb-5" />
                         <Deferred data="resourceEdits">
                             <template #fallback>
                                 <LoadingAnimation />
