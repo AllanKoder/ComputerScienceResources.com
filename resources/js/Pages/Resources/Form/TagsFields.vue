@@ -16,17 +16,12 @@ const props = defineProps({
 
 const emit = defineEmits(["change", "next", "back"]);
 
-// Reactive reference for form data
-const localFormData = ref({
-    programming_language_tags: props.form.programming_language_tags || [],
-    general_tags: props.form.general_tags || [],
-});
 const errors = ref([]);
 const schema = optionalFields;
 const resolver = ref(yupResolver(schema));
 const validateAndNext = async () => {
     schema
-        .validate(localFormData.value)
+        .validate(props.form)
         .then(() => emit("next"))
         .catch((error) => {
             errors.value = error.errors;
@@ -35,7 +30,7 @@ const validateAndNext = async () => {
 
 // Update change
 watch(
-    localFormData,
+    () => props.form,
     (newValue) => {
         emit("change", newValue);
     },
@@ -46,7 +41,7 @@ watch(
 <template>
     <Form
         :resolver="resolver"
-        :initialValues="localFormData"
+        :initialValues="props.form"
         class="flex flex-col gap-4 w-full"
     >
         <div class="flex flex-col gap-1 justify-center items-center">
@@ -54,13 +49,13 @@ watch(
             <h2 class="text-2xl font-bold mb-4 text-center">
                 What Programming Languages are used (if any)?
             </h2>
-            <TagSelector v-model="localFormData.programming_language_tags" />
+            <TagSelector v-model="props.form.programming_language_tags" />
 
             <!-- Tag Selector for Other tags -->
             <h2 class="text-2xl font-bold mb-4 text-center">
                 What else is it related to?
             </h2>
-            <TagSelector v-model="localFormData.general_tags" />
+            <TagSelector v-model="props.form.general_tags" />
 
             <PrimeVueFormError :errors="errors" />
         </div>

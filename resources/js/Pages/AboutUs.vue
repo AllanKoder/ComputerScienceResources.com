@@ -12,7 +12,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
                     <div class="p-6 sm:p-12">
                         <!-- Header -->
                         <div class="text-center mb-12">
-                            <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                            <h1 class="text-4xl font-bold text-primary">
                                 About ComputerScienceResources.com
                             </h1>
                         </div>
@@ -64,7 +64,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
                             <h2 class="font-bold text-center my-5 text-lg">Frequently Asked Questions</h2>
                             <FrequentlyAskedQuestion
                                 question="Who is this site for?"
-                                answer="Everyone!"
+                                answer="Everyone! Everyone can all learn computer science. We include resources for seniors and children. This site is for everyone."
                             />
 
                             <FrequentlyAskedQuestion

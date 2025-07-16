@@ -23,21 +23,20 @@ const props = defineProps({
 
 const emit = defineEmits(["change", "next"]);
 
-const formData = ref({ ...props.formData });
 const errors = ref({});
 
 function onImageChange(event) {
     const file = event.target.files[0];
-    formData.value.image_file = file;
+    props.formData.image_file = file;
 }
 
 const validateAndNext = async () => {
     try {
-        await resourceMandatoryFields.validate(formData.value, {
+        await resourceMandatoryFields.validate(props.formData, {
             abortEarly: false,
         });
         errors.value = {};
-        emit("next", formData.value);
+        emit("next", props.formData);
     } catch (e) {
         const yupErrors = {};
         e.inner.forEach((error) => {
@@ -48,7 +47,7 @@ const validateAndNext = async () => {
 };
 
 watch(
-    formData,
+    () => props.formData,
     (newValue) => {
         emit("change", newValue);
     },
@@ -67,7 +66,7 @@ watch(
                 </label>
 
                 <InputText
-                    v-model="formData.name"
+                    v-model="props.formData.name"
                     placeholder="Enter the Name"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
@@ -84,7 +83,7 @@ watch(
                     <span class="text-red-500"> * </span>
                 </label>
                 <InputText
-                    v-model="formData.page_url"
+                    v-model="props.formData.page_url"
                     placeholder="Enter resource URL"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
@@ -125,7 +124,7 @@ watch(
                     <span class="text-red-500"> * </span>
                 </label>
                 <MultiSelect
-                    v-model="formData.platforms"
+                    v-model="props.formData.platforms"
                     :options="platformsObject"
                     option-label="label"
                     option-value="value"
@@ -145,7 +144,7 @@ watch(
                     <span class="text-red-500"> * </span>
                 </label>
                 <Textarea
-                    v-model="formData.description"
+                    v-model="props.formData.description"
                     placeholder="Describe the resource..."
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                     rows="3"
@@ -163,7 +162,7 @@ watch(
                     <span class="text-red-500"> * </span>
                 </label>
                 <Select
-                    v-model="formData.difficulty"
+                    v-model="props.formData.difficulty"
                     :options="difficultiesObject"
                     option-label="label"
                     option-value="value"
@@ -183,7 +182,7 @@ watch(
                     <span class="text-red-500"> * </span>
                 </label>
                 <Select
-                    v-model="formData.pricing"
+                    v-model="props.formData.pricing"
                     :options="pricingsObject"
                     option-label="label"
                     option-value="value"

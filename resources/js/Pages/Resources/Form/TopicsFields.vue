@@ -16,8 +16,6 @@ const props = defineProps({
 
 const emit = defineEmits(["change", "next", "back"]);
 
-// Reactive reference for form data
-const formData = ref({ topic_tags: props.form.topic_tags || [] });
 const errors = ref([]);
 
 const schema = resourceMandatoryTags;
@@ -26,7 +24,7 @@ const resolver = ref(yupResolver(schema));
 
 // Update change
 watch(
-    formData,
+    () => props.form,
     (newValue) => {
         emit("change", newValue);
     },
@@ -36,7 +34,7 @@ watch(
 // Function to handle form submission
 const validateAndNext = async () => {
     schema
-        .validate(formData.value)
+        .validate(props.form)
         .then((_) => {
             errors.value = [];
             emit("next");
@@ -55,13 +53,13 @@ const validateAndNext = async () => {
     </h2>
     <Form
         :resolver="resolver"
-        :initialValues="formData"
+        :initialValues="props.form"
         class="flex flex-col gap-4 w-full"
     >
         <div class="flex flex-col gap-1 justify-center items-center">
             <!-- Tag Selector for topics -->
             <TagSelector
-                v-model="formData.topic_tags"
+                v-model="props.form.topic_tags"
             ></TagSelector>
 
             <PrimeVueFormError :errors="errors" />
