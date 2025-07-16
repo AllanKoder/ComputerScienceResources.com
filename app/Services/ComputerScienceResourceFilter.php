@@ -23,8 +23,10 @@ class ComputerScienceResourceFilter
             'description' => ['nullable', 'string', 'max:1000'],
             'platforms' => ['nullable', 'array'],
             'platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
-            'difficulty' => ['nullable', 'string', Rule::in(config('computerScienceResource.difficulties'))],
-            'pricing' => ['nullable', 'string', Rule::in(config('computerScienceResource.pricings'))],
+            'difficulty' => ['nullable', 'array'],
+            'difficulty.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.difficulties'))],
+            'pricing' => ['nullable', 'array'],
+            'pricing.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.pricings'))],
             'topics' => ['nullable', 'array'],
             'topics.*' => ['required', 'distinct', 'string', 'max:50'],
             'general_tags' => ['nullable', 'array'],
@@ -32,7 +34,9 @@ class ComputerScienceResourceFilter
             'programming_languages' => ['nullable', 'array'],
             'programming_languages.*' => ['required', 'distinct', 'string', 'max:50'],
 
-            'community_rating' => ['nullable', 'integer', 'between:1,4'],
+            // Fixed field names to match frontend
+            'overall' => ['nullable', 'integer', 'between:1,4'],
+            'community' => ['nullable', 'integer', 'between:1,4'],
             'teaching_clarity' => ['nullable', 'integer', 'between:1,4'],
             'engagement' => ['nullable', 'integer', 'between:1,4'],
             'practicality' => ['nullable', 'integer', 'between:1,4'],
@@ -54,7 +58,6 @@ class ComputerScienceResourceFilter
 
     public function applyFilters($query, array $filters)
     {
-        $this->validate($filters);
 
         // Eager load relations
         $query->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);

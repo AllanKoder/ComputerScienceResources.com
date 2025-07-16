@@ -34,7 +34,7 @@ const nextLink = props.links[props.links.length - 1]?.url;
 <template>
     <nav class="flex flex-col items-center justify-center space-y-2">
         <span class="text-sm text-gray-700 dark:text-gray-400">
-            Showing <span class="font-semibold">{{ from }}</span> to <span class="font-semibold">{{ to }}</span> of <span class="font-semibold">{{ total }}</span> {{ modelName }}
+            Showing <span class="font-semibold">{{ from ?? 0 }}</span> to <span class="font-semibold">{{ to ?? 0 }}</span> of <span class="font-semibold">{{ total ?? 0 }}</span> {{ modelName }}
         </span>
         <div class="flex items-center space-x-1.5">
             <!-- Left Button -->

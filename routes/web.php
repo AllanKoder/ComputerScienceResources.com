@@ -7,6 +7,7 @@ use App\Http\Controllers\ResourceEditsController;
 use App\Http\Controllers\ResourceReviewController;
 use App\Http\Controllers\TagFrequencyController;
 use App\Http\Controllers\UpvoteController;
+use Inertia\Inertia;
 
 // Authenticated and verified
 Route::middleware([
@@ -52,6 +53,10 @@ Route::middleware([
 Route::get('/', function () {
     return redirect('/resources');
 });
+
+Route::get('/about', function () {
+    return Inertia::render('AboutUs');
+})->name('about');
 
 Route::controller(ComputerScienceResourceController::class)->group(function () {
     Route::get('/resources', 'index')->name('resources.index');

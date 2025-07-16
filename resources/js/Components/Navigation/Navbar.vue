@@ -31,6 +31,14 @@ const logout = () => {
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                         <NavLink
+                            :href="route('about')"
+                            :active="route().current('about')"
+                            class="text-primaryDark hover:text-primary"
+                        >
+                            About Us
+                        </NavLink>
+
+                        <NavLink
                             :href="route('resources.index')"
                             :active="route().current('resources.index')"
                             class="text-primaryDark hover:text-primary"
@@ -117,6 +125,14 @@ const logout = () => {
             class="sm:hidden"
         >
             <div class="pt-2 pb-3 space-y-1">
+                <ResponsiveNavLink
+                    :href="route('about')"
+                    :active="route().current('about')"
+                    class="text-primaryDark hover:text-primary"
+                >
+                    About Us
+                </ResponsiveNavLink>
+
                 <ResponsiveNavLink
                     :href="route('resources.index')"
                     :active="route().current('resources.index')"
