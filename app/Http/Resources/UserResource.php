@@ -23,5 +23,4 @@ class UserResource extends JsonResource
             'profile_photo_url' => $this->profile_photo_url,
         ];
     }
-
 }

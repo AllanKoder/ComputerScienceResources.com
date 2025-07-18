@@ -66,7 +66,7 @@ class ResourceReviewsTest extends TestCase
 
         $this->assertDatabaseHas('resource_reviews', [
             'computer_science_resource_id' => $resource->id,
-            'title' => $data['title']
+            'title' => $data['title'],
         ]);
     }
 
@@ -81,7 +81,7 @@ class ResourceReviewsTest extends TestCase
 
         $this->assertDatabaseHas('resource_reviews', [
             'computer_science_resource_id' => $resource->id,
-            'title' => $data1['title']
+            'title' => $data1['title'],
         ]);
 
         $data2 = ResourceReviewTestResource::fake();
@@ -90,7 +90,7 @@ class ResourceReviewsTest extends TestCase
 
         $this->assertDatabaseMissing('resource_reviews', [
             'computer_science_resource_id' => $resource->id,
-            'title' => $data2['title']
+            'title' => $data2['title'],
         ]);
     }
 

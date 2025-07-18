@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasCustomProfilePhoto;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -11,16 +12,15 @@ use JoelButcher\Socialstream\SetsProfilePhotoFromUrl;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use App\Traits\HasCustomProfilePhoto;
 
 class User extends Authenticatable
 {
     use HasApiTokens;
     use HasConnectedAccounts;
-    use HasFactory;
-    use HasProfilePhoto, HasCustomProfilePhoto {
+    use HasCustomProfilePhoto, HasProfilePhoto {
         HasCustomProfilePhoto::profilePhotoUrl as getPhotoUrl;
     }
+    use HasFactory;
     use Notifiable;
     use SetsProfilePhotoFromUrl;
     use TwoFactorAuthenticatable;

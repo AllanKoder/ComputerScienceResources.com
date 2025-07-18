@@ -2,13 +2,12 @@
 
 namespace Tests\Unit;
 
-use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
 use PHPUnit\Framework\TestCase;
 
 class ResourceEditsServiceTest extends TestCase
 {
-    protected $service; 
+    protected $service;
 
     protected function setUp(): void
     {
@@ -31,7 +30,6 @@ class ResourceEditsServiceTest extends TestCase
     {
         $this->assertEquals($this->service->requiredVotes(1), 3);
     }
-
 
     /**
      * 5 votes on a resource, so 5 approval is enough to merge
@@ -67,6 +65,4 @@ class ResourceEditsServiceTest extends TestCase
     {
         $this->assertEquals($this->service->requiredVotes(1_000_000), 62);
     }
-
-
 }

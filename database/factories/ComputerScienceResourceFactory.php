@@ -5,10 +5,8 @@ namespace Database\Factories;
 use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
 use App\Models\User;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Storage;
+use Illuminate\Http\UploadedFile;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\ComputerScienceResource>
@@ -18,7 +16,9 @@ class ComputerScienceResourceFactory extends Factory
     protected $model = ComputerScienceResource::class;
 
     protected ?array $topicTags = null;
+
     protected ?array $programmingLanguageTags = null;
+
     protected ?array $generalTags = null;
 
     public function definition(): array
@@ -47,6 +47,7 @@ class ComputerScienceResourceFactory extends Factory
         $this->topicTags = $topic;
         $this->programmingLanguageTags = $language;
         $this->generalTags = $general;
+
         return $this;
     }
 

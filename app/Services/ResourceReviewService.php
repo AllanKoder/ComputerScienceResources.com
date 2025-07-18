@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use App\Traits\HandlesResourceReviewJoins;
 use Illuminate\Database\Eloquent\Builder;
 use InvalidArgumentException;
-use App\Traits\HandlesResourceReviewJoins;
 
 class ResourceReviewService
 {
@@ -17,7 +17,7 @@ class ResourceReviewService
         }
 
         if ($minRating < 1 || $minRating > 5) {
-            throw new InvalidArgumentException("Rating must be between 1 and 5.");
+            throw new InvalidArgumentException('Rating must be between 1 and 5.');
         }
 
         $query = $this->ensureReviewSummaryJoined($query);
@@ -26,4 +26,3 @@ class ResourceReviewService
         return $query->where("{$reviewTable}.{$field}_rating", '>=', $minRating);
     }
 }
-

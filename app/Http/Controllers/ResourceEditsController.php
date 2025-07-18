@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Events\TagFrequencyChanged;
+use App\Http\Requests\ResourceEdit\StoreResourceEdit;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
-use App\Services\ResourceEditsService;
 use App\Services\DataNormalizationService;
-use App\Http\Requests\ResourceEdit\StoreResourceEdit;
-use App\Http\Resources\ComputerScienceResourceResource;
+use App\Services\ResourceEditsService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -18,10 +17,10 @@ use Str;
 class ResourceEditsController extends Controller
 {
     private DataNormalizationService $dataService;
+
     public function __construct(
         private DataNormalizationService $dataNormalizationService
-    )
-    {
+    ) {
         $this->dataService = $dataNormalizationService;
     }
 
@@ -33,7 +32,7 @@ class ResourceEditsController extends Controller
         $computerScienceResource->load('user');
 
         return Inertia::render('ResourceEdits/Create', [
-            'resource' => fn() => $computerScienceResource
+            'resource' => fn () => $computerScienceResource,
         ]);
     }
 
@@ -49,8 +48,7 @@ class ResourceEditsController extends Controller
 
         if (array_key_exists('image_file', $proposedChanges)) {
             $actualChanges['image_path'] = null;
-            if (isset($proposedChanges['image_file']))
-            {
+            if (isset($proposedChanges['image_file'])) {
                 $path = $proposedChanges['image_file']->store('resource-edits', 'public');
                 $actualChanges['image_path'] = $path;
             }
@@ -59,7 +57,8 @@ class ResourceEditsController extends Controller
 
         if (empty($actualChanges)) {
             Log::warning("Resource edit was submitted without any changes for resource ID: {$computerScienceResource->id}");
-            return redirect()->back()->with('warning', "Cannot submit an edit with no changes made.");
+
+            return redirect()->back()->with('warning', 'Cannot submit an edit with no changes made.');
         }
 
         $resourceEdit = ResourceEdits::create([
@@ -84,7 +83,7 @@ class ResourceEditsController extends Controller
         $normalizedOriginal = $this->dataNormalizationService->normalize($resource->toArray());
 
         foreach ($normalizedProposed as $key => $value) {
-            if (!array_key_exists($key, $normalizedOriginal) || $normalizedOriginal[$key] !== $value) {
+            if (! array_key_exists($key, $normalizedOriginal) || $normalizedOriginal[$key] !== $value) {
                 // Use the original value from the request, not the normalized one, for file uploads.
                 $actualChanges[$key] = $proposedChanges[$key];
             }
@@ -105,7 +104,7 @@ class ResourceEditsController extends Controller
 
     public function merge(ResourceEditsService $editsService, ResourceEdits $resourceEdits)
     {
-        if (!$editsService->canMergeEdits($resourceEdits)) {
+        if (! $editsService->canMergeEdits($resourceEdits)) {
             return redirect()->back()->with('warning', 'Not enough approvals');
         }
 
@@ -128,13 +127,12 @@ class ResourceEditsController extends Controller
             }
 
             $destPath = null;
-            if (isset($changes['image_path']))
-            {
+            if (isset($changes['image_path'])) {
                 // Move the new file from 'resource-edits' to 'resource'
                 $sourcePath = $changes['image_path'];
                 $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
-                $newFileName = Str::random(40) . '.' . $fileExtension;
-                $destPath = 'resource/' . $newFileName;
+                $newFileName = Str::random(40).'.'.$fileExtension;
+                $destPath = 'resource/'.$newFileName;
 
                 Storage::disk('public')->move($sourcePath, $destPath);
             }
@@ -142,7 +140,6 @@ class ResourceEditsController extends Controller
             // Update image_path in DB
             $resource->image_path = $destPath;
         }
-
 
         $resource->save();
 
@@ -163,7 +160,7 @@ class ResourceEditsController extends Controller
         // Delete the edit since we successfully merged the changes
         $resourceEdits->delete();
 
-        return redirect(route('resources.show', ['computerScienceResource'=>$resourceEdits->computer_science_resource_id]))
+        return redirect(route('resources.show', ['computerScienceResource' => $resourceEdits->computer_science_resource_id]))
             ->with('success', 'Successfully merged new changed!');
     }
 }

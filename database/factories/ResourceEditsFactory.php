@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Models\User;
-use App\Models\ComputerScienceResource;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

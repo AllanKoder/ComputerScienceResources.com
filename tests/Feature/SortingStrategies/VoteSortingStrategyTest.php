@@ -2,12 +2,12 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use App\Models\ResourceReview;
 use App\Models\UpvoteSummary;
 use App\Services\SortingManagers\GeneralVotesSortingManager;
 use Carbon\Carbon;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
 class VoteSortingStrategyTest extends TestCase
 {
@@ -19,7 +19,7 @@ class VoteSortingStrategyTest extends TestCase
     {
         parent::setUp();
 
-        $this->sortingManager = new GeneralVotesSortingManager();
+        $this->sortingManager = new GeneralVotesSortingManager;
     }
 
     public function test_it_sorts_resource_reviews_by_top_votes()

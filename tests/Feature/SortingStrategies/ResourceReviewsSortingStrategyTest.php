@@ -3,19 +3,18 @@
 namespace Tests\Feature;
 
 use App\Models\ComputerScienceResource;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Tests\TestCase;
 use App\Models\User;
 use App\Services\SortingManagers\ResourceSortingManager;
 use App\Traits\HandlesResourceReviewJoins;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\Feature\Utils\TestingUtils;
-use Tests\TestResources\ResourceReviewTestResource;
+use Tests\TestCase;
 
 class ResourceReviewsSortingStrategyTest extends TestCase
 {
-    use RefreshDatabase;
     use HandlesResourceReviewJoins;
+    use RefreshDatabase;
     use TestingUtils;
 
     protected ResourceSortingManager $resourceSortingManager;
@@ -23,7 +22,7 @@ class ResourceReviewsSortingStrategyTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->resourceSortingManager = new ResourceSortingManager();
+        $this->resourceSortingManager = new ResourceSortingManager;
     }
 
     public static function reviewFieldsProvider(): array
@@ -111,7 +110,7 @@ class ResourceReviewsSortingStrategyTest extends TestCase
         $this->assertEquals(
             [$res1->id, $res2->id, $res3->id, $res4->id],
             $sorted,
-            "Failed asserting that resources are sorted by overall_rating"
+            'Failed asserting that resources are sorted by overall_rating'
         );
     }
 
@@ -158,7 +157,7 @@ class ResourceReviewsSortingStrategyTest extends TestCase
         $this->assertEquals(
             [$res2->id, $res1->id, $res3->id, $res4->id],
             $sorted,
-            "Failed asserting that resources are sorted by overall_rating and review count"
+            'Failed asserting that resources are sorted by overall_rating and review count'
         );
     }
 }

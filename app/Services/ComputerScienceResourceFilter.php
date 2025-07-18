@@ -1,13 +1,15 @@
 <?php
+
 namespace App\Services;
 
+use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use App\Services\SortingManagers\ResourceSortingManager;
 
 class ComputerScienceResourceFilter
 {
     protected ResourceReviewService $reviewService;
+
     protected ResourceSortingManager $resourceSortingManager;
 
     public function __construct(ResourceReviewService $reviewService, ResourceSortingManager $resourceSortingManager)
@@ -63,17 +65,17 @@ class ComputerScienceResourceFilter
         $query->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
 
         // Fulltext search on name
-        if (!empty($filters['name'])) {
+        if (! empty($filters['name'])) {
             $query->whereFullText('name', $filters['name']);
         }
 
         // Fulltext search on description
-        if (!empty($filters['description'])) {
+        if (! empty($filters['description'])) {
             $query->whereFullText('description', $filters['description']);
         }
 
         // Filter by platforms (array)
-        if (!empty($filters['platforms'])) {
+        if (! empty($filters['platforms'])) {
             $query->where(function ($q) use ($filters) {
                 foreach ($filters['platforms'] as $platform) {
                     $q->orWhereRaw('FIND_IN_SET(?, platforms)', [$platform]);
@@ -82,27 +84,27 @@ class ComputerScienceResourceFilter
         }
 
         // Filter by difficulty
-        if (!empty($filters['difficulty'])) {
+        if (! empty($filters['difficulty'])) {
             $query->whereIn('difficulty', (array) $filters['difficulty']);
         }
 
         // Filter by pricing
-        if (!empty($filters['pricing'])) {
+        if (! empty($filters['pricing'])) {
             $query->whereIn('pricing', (array) $filters['pricing']);
         }
 
         // Filter by topic tags
-        if (!empty($filters['topics'])) {
+        if (! empty($filters['topics'])) {
             $query->withAnyTags((array) $filters['topics'], 'topics');
         }
 
         // Filter by programming languages
-        if (!empty($filters['programming_languages'])) {
+        if (! empty($filters['programming_languages'])) {
             $query->withAnyTags((array) $filters['programming_languages'], 'programming_languages');
         }
 
         // Filter by general tags
-        if (!empty($filters['general_tags'])) {
+        if (! empty($filters['general_tags'])) {
             $query->withAnyTags((array) $filters['general_tags'], 'general_tags');
         }
 
@@ -118,24 +120,24 @@ class ComputerScienceResourceFilter
         ];
 
         foreach ($ratingFilters as $field) {
-            if (!empty($filters[$field])) {
+            if (! empty($filters[$field])) {
                 $query = $this->reviewService->applyRatingFilter($query, $field, $filters[$field]);
             }
         }
 
         // Filter by Date posted
-        if (!empty($filters['created_from'])) {
+        if (! empty($filters['created_from'])) {
             $query->whereDate('computer_science_resources.created_at', '>=', $filters['created_from']);
         }
-        if (!empty($filters['created_to'])) {
+        if (! empty($filters['created_to'])) {
             $query->whereDate('computer_science_resources.created_at', '<=', $filters['created_to']);
         }
 
         // Filter by Date updated
-        if (!empty($filters['updated_from'])) {
+        if (! empty($filters['updated_from'])) {
             $query->whereDate('computer_science_resources.updated_at', '>=', $filters['updated_from']);
         }
-        if (!empty($filters['updated_to'])) {
+        if (! empty($filters['updated_to'])) {
             $query->whereDate('computer_science_resources.updated_at', '<=', $filters['updated_to']);
         }
 

@@ -4,8 +4,8 @@ namespace App\Observers;
 
 use App\Models\Comment;
 use App\Models\CommentsCount;
-use Illuminate\Support\Facades\Log;
 use App\Models\UpvoteSummary;
+use Illuminate\Support\Facades\Log;
 
 class CommentObserver
 {
@@ -14,9 +14,9 @@ class CommentObserver
      */
     public function created(Comment $comment): void
     {
-        Log::debug("Handling comment created", [
+        Log::debug('Handling comment created', [
             'commentable_type' => $comment->commentable_type,
-            'commentable_id' => $comment->commentable_id
+            'commentable_id' => $comment->commentable_id,
         ]);
 
         // Create the upvotes summary
@@ -28,7 +28,7 @@ class CommentObserver
         $commentsCount = CommentsCount::firstOrNew(
             [
                 'commentable_type' => $comment->commentable_type,
-                'commentable_id' => $comment->commentable_id
+                'commentable_id' => $comment->commentable_id,
             ]
         );
 
@@ -51,16 +51,16 @@ class CommentObserver
      */
     public function deleted(Comment $comment): void
     {
-        Log::debug("Handling comment deleted", [
+        Log::debug('Handling comment deleted', [
             'comment_id' => $comment->id,
             'commentable_type' => $comment->commentable_type,
-            'commentable_id' => $comment->commentable_id
+            'commentable_id' => $comment->commentable_id,
         ]);
 
         // Decrease the comment count
         $commentsCount = CommentsCount::where([
             'commentable_type' => $comment->commentable_type,
-            'commentable_id' => $comment->commentable_id
+            'commentable_id' => $comment->commentable_id,
         ])->first();
 
         if ($commentsCount) {

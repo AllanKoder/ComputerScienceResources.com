@@ -12,18 +12,15 @@ trait HasComments
 {
     /** Get all of the comments for the HasComments
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'commentable_id', 'id')
-        ->where('commentable_type', static::class);
+            ->where('commentable_type', static::class);
     }
 
     /**
      * Define a relationship to the CommentsCount model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function commentsCountRelationship(): HasOne
     {

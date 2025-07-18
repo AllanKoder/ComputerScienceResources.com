@@ -27,15 +27,14 @@ class TagSearchTest extends TestCase
         $this->user = User::factory()->create();
     }
 
-
     public function test_can_search_tags_by_prefix()
     {
         $user = User::factory()->create();
         $this->actingAs($user);
 
-        $this->createResource(['general_tags'=> ['python', 'pygame', 'java']]);
-        $this->createResource(['general_tags'=> ['python', 'pygame']]);
-        $this->createResource(['general_tags'=> ['python']]);
+        $this->createResource(['general_tags' => ['python', 'pygame', 'java']]);
+        $this->createResource(['general_tags' => ['python', 'pygame']]);
+        $this->createResource(['general_tags' => ['python']]);
 
         $response = $this->getJson(route('tags.search', ['query' => 'py']));
 
@@ -65,7 +64,7 @@ class TagSearchTest extends TestCase
         $formData = ComputerScienceResourceTestResource::fake([
             'topic_tags' => ['python', 'algorithms', 'java'],
             'programming_language_tags' => ['python'],
-            'general_tags' => ['beginner']
+            'general_tags' => ['beginner'],
         ]);
 
         $response = $this->postJson(route('resources.store'), $formData);
@@ -113,12 +112,12 @@ class TagSearchTest extends TestCase
     public function test_merging_edit_correctly_updates_tag_frequency()
     {
         $resource = ComputerScienceResource::factory()
-        ->setTags(
-            ['algorithms', 'tag1', 'tag2'],
-            ['c++'],
-            ['reference']
-        )
-        ->create();
+            ->setTags(
+                ['algorithms', 'tag1', 'tag2'],
+                ['c++'],
+                ['reference']
+            )
+            ->create();
 
         $this->actingAs($this->user);
 

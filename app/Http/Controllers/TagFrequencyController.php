@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\TagFrequency;
-use Illuminate\Http\Request;
 
 class TagFrequencyController extends Controller
 {
-    public function search(string $query = "")
+    public function search(string $query = '')
     {
-        if (strlen($query) > 50)
-        {
+        if (strlen($query) > 50) {
             return response()->json(['message' => 'Query too long.'], 422);
         }
 
@@ -20,7 +18,7 @@ class TagFrequencyController extends Controller
             ->get();
 
         return response()->json([
-            'tags' => $prefixed_tags
+            'tags' => $prefixed_tags,
         ]);
     }
 }

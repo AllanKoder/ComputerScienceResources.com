@@ -2,18 +2,16 @@
 
 namespace Tests\Feature;
 
-use App\Models\User;
 use App\Models\ComputerScienceResource;
-use Database\Factories\ComputerScienceResourceFactory;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\TestCase;
-use Tests\TestResources\ComputerScienceResourceTestResource;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\TestCase;
+use Tests\TestResources\ComputerScienceResourceTestResource;
 
 class ComputerScienceResourceControllerTest extends TestCase
 {
@@ -58,7 +56,7 @@ class ComputerScienceResourceControllerTest extends TestCase
         $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
         $this->assertNotNull($createdResource);
         $this->assertNotNull($createdResource->image_path);
-        Storage::disk('public')->assertExists('resource/' . $formData['image_file']->hashName());
+        Storage::disk('public')->assertExists('resource/'.$formData['image_file']->hashName());
     }
 
     public function test_cannot_post_resource_unauthed()
@@ -105,7 +103,7 @@ class ComputerScienceResourceControllerTest extends TestCase
         $this->assertEquals(
             422,
             $response->status(),
-            "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: " . $response->status()
+            "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: ".$response->status()
         );
 
         $not_created_resource = ComputerScienceResource::first();

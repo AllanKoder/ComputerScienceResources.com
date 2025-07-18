@@ -1,12 +1,12 @@
 <?php
 
 use App\Http\Controllers\CommentController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ComputerScienceResourceController;
 use App\Http\Controllers\ResourceEditsController;
 use App\Http\Controllers\ResourceReviewController;
 use App\Http\Controllers\TagFrequencyController;
 use App\Http\Controllers\UpvoteController;
+use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // Authenticated and verified

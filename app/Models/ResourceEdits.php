@@ -6,29 +6,30 @@ use App\Observers\ResourceEditsObserver;
 use App\Services\ResourceEditsService;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 #[ObservedBy([ResourceEditsObserver::class])]
 class ResourceEdits extends Model
 {
+    use CascadesDeletes;
+
+    use HasComments;
     /** @use HasFactory<\Database\Factories\ResourceEditsFactory> */
     use HasFactory;
-    use CascadesDeletes;
-    use HasComments;
     use HasVotes;
 
     protected $cascadeDeletes = ['votes', 'upvoteSummary', 'comments', 'commentsCountRelationship'];
 
     protected $guarded = [];
 
-    protected $with = ['votes','upvoteSummary', 'commentsCountRelationship', 'resource'];
+    protected $with = ['votes', 'upvoteSummary', 'commentsCountRelationship', 'resource'];
 
     protected $appends = ['user_vote', 'vote_score', 'comments_count', 'can_merge_edits'];
 
@@ -52,8 +53,7 @@ class ResourceEdits extends Model
             get: function ($value) {
                 $changes = json_decode($value, true);
 
-                if (key_exists('image_path', $changes))
-                {
+                if (array_key_exists('image_path', $changes)) {
                     $changes['image_url'] = null;
                     if ($changes['image_path']) {
                         $changes['image_url'] = Storage::url($changes['image_path']);
@@ -67,8 +67,6 @@ class ResourceEdits extends Model
 
     /**
      * Attribute to know if the edit can be merged
-     *
-     * @return Attribute
      */
     protected function canMergeEdits(): Attribute
     {

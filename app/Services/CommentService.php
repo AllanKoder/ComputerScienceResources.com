@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\UserResource;
-use App\Services\SortingManagers\GeneralVotesSortingManager;
 use App\Models\Comment;
+use App\Services\SortingManagers\GeneralVotesSortingManager;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +15,7 @@ class CommentService
 {
     protected $modelResolver;
 
-    function __construct(ModelResolverService $resolver)
+    public function __construct(ModelResolverService $resolver)
     {
         $this->modelResolver = $resolver;
     }
@@ -23,15 +23,11 @@ class CommentService
     /**
      * Get paginated comments with custom logic.
      *
-     * @param string $commentableType
-     * @param int    $commentableId
-     * @param int    $index
-     * @return array
+     * @param  string  $commentableType
      */
     public function getPaginatedComments(string $commentableKey, int $commentableId, int $index, int $paginationLimit = -1, string $sortBy = 'top'): array
     {
-        if ($paginationLimit == -1)
-        {
+        if ($paginationLimit == -1) {
             $paginationLimit = config('comment.default_pagination_limit');
         }
 
@@ -42,16 +38,16 @@ class CommentService
         ], [
             'index' => ['required', 'integer', 'min:0'],
             'commentable_key' => ['required', Rule::in(config('comment.commentable_keys'))],
-            'pagination_limit' => ['required', 'integer', 'max:' . config('comment.pagination_limit')],
+            'pagination_limit' => ['required', 'integer', 'max:'.config('comment.pagination_limit')],
         ]);
 
         $commentableType = $this->modelResolver->getModelClass($commentableKey);
-        Log::debug("Getting paginated comments", [
+        Log::debug('Getting paginated comments', [
             'commentable_type' => $commentableType,
             'commentable_id' => $commentableId,
             'index' => $index,
             'sort_by' => $sortBy,
-            'pagination_limit' => $paginationLimit
+            'pagination_limit' => $paginationLimit,
         ]);
 
         // Get the root comments:
@@ -65,10 +61,10 @@ class CommentService
         $query = app(GeneralVotesSortingManager::class)->applySort($query, $sortBy, Comment::class);
 
         $rootComments = $query->get();
-        Log::debug("Root comments retrieved", [
+        Log::debug('Root comments retrieved', [
             'count' => $rootComments->count(),
             'commentable_type' => $commentableType,
-            'commentable_id' => $commentableId
+            'commentable_id' => $commentableId,
         ]);
 
         // Initialize variables
@@ -89,6 +85,7 @@ class CommentService
                         $currentCommentsSum += $childrenCount;
                     }
                     $currentIndex++;
+
                     continue;
                 }
 
@@ -102,7 +99,7 @@ class CommentService
                 break;
             }
             // Only add comments for the desired index
-            else if ($currentIndex === $index) {
+            elseif ($currentIndex === $index) {
                 $resultingPaginatedComments[] = $comment;
             }
             $currentCommentsSum += $childrenCount;
@@ -140,12 +137,13 @@ class CommentService
             }
         }
 
-        Log::debug("Returning paginated comments", [
+        Log::debug('Returning paginated comments', [
             'comments_count' => $flattenedComments->count(),
             'users_count' => $users->count(),
             'has_more_comments' => $hasMoreComments,
-            'current_index' => $index
+            'current_index' => $index,
         ]);
+
         return [
             'comments' => $flattenedComments,
             'users' => $users->values(),

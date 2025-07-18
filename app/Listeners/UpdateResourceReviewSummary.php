@@ -5,8 +5,6 @@ namespace App\Listeners;
 use App\Events\ResourceReviewProcessed;
 use App\Models\ResourceReviewSummary;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 
 class UpdateResourceReviewSummary
 {
@@ -23,17 +21,18 @@ class UpdateResourceReviewSummary
      */
     public function handle(ResourceReviewProcessed $event): void
     {
-        Log::debug("Handling ResourceReviewProcessed", [
+        Log::debug('Handling ResourceReviewProcessed', [
             'resource_id' => $event->resource,
             'old_review' => $event->oldReview,
-            'new_review' => $event->newReview
+            'new_review' => $event->newReview,
         ]);
 
         if ($event->oldReview == null && $event->newReview == null) {
-            Log::critical("Update Resource Review Summary Listener reached impossible condition", [
+            Log::critical('Update Resource Review Summary Listener reached impossible condition', [
                 'resource_id' => $event->resource,
-                'error' => 'Both oldReview and newReview are null'
+                'error' => 'Both oldReview and newReview are null',
             ]);
+
             return;
         }
 

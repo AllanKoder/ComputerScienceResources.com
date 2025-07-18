@@ -23,7 +23,7 @@
         "beyondcode/laravel-query-detector": "^2.0",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.1",
-        "laravel/pint": "^1.13",
+        "laravel/pint": "^1.24",
         "laravel/sail": "^1.40",
         "laravel/telescope": "^5.3",
         "mockery/mockery": "^1.6",

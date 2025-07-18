@@ -3,9 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Database\Factories\ComputerScienceResourceFactory;
 use Hash;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Log;
 
@@ -19,7 +17,7 @@ class UserSeeder extends Seeder
         Log::info('Running UserSeeder');
         User::factory(10)->create();
 
-        if (!User::where('name','Allan Kong')->exists()) {
+        if (! User::where('name', 'Allan Kong')->exists()) {
             User::factory()->create(
                 [
                     'name' => 'Allan Kong',

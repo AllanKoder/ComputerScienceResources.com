@@ -4,9 +4,9 @@ namespace Tests\TestResources;
 
 use App\Events\ResourceReviewProcessed;
 use App\Models\ResourceReview;
+use Event;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Event;
 
 class ResourceReviewTestResource extends JsonResource
 {
@@ -14,15 +14,15 @@ class ResourceReviewTestResource extends JsonResource
     {
         return [
             'title' => $this->title,
-            'description'=> $this->description,
-            'community'=> $this->community,
-            'teaching_clarity'=> $this->teaching_clarity,
-            'engagement'=> $this->engagement,
-            'practicality'=> $this->practicality,
-            'user_friendliness'=> $this->user_friendliness,
-            'updates'=> $this->updates,
-            'pros'=> $this->pros,
-            'cons'=> $this->cons,
+            'description' => $this->description,
+            'community' => $this->community,
+            'teaching_clarity' => $this->teaching_clarity,
+            'engagement' => $this->engagement,
+            'practicality' => $this->practicality,
+            'user_friendliness' => $this->user_friendliness,
+            'updates' => $this->updates,
+            'pros' => $this->pros,
+            'cons' => $this->cons,
         ];
     }
 

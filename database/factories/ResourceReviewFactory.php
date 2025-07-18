@@ -3,8 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\ComputerScienceResource;
-use App\Models\ResourceReview;
-use App\Models\UpvoteSummary;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

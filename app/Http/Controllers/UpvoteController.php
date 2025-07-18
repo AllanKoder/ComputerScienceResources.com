@@ -2,18 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\UpvoteSummary;
 use App\Services\ModelResolverService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class UpvoteController extends Controller
 {
     protected $modelResolver;
 
-    function __construct(ModelResolverService $modelResolver)
+    public function __construct(ModelResolverService $modelResolver)
     {
         $this->modelResolver = $modelResolver;
     }
@@ -28,13 +25,13 @@ class UpvoteController extends Controller
                 'type_key' => $typeKey,
             ],
             [
-                'type_key' => ['required', Rule::in(config('upvotes.upvotable_keys'))]
+                'type_key' => ['required', Rule::in(config('upvotes.upvotable_keys'))],
             ]
         )->validate();
 
         $model = $this->modelResolver->resolve($typeKey, $id);
 
-        if (!$model) {
+        if (! $model) {
             return response()->json(['message' => 'Model not found'], 404);
         }
 
@@ -43,7 +40,7 @@ class UpvoteController extends Controller
 
         return response()->json([
             'userVote' => $result['userVote'],
-            'changeFromVote' => $result['changeFromVote']
+            'changeFromVote' => $result['changeFromVote'],
         ]);
     }
 
@@ -57,13 +54,13 @@ class UpvoteController extends Controller
                 'type_key' => $typeKey,
             ],
             [
-                'type_key' => ['required', Rule::in(config('upvotes.upvotable_keys'))]
+                'type_key' => ['required', Rule::in(config('upvotes.upvotable_keys'))],
             ]
         )->validate();
 
         $model = $this->modelResolver->resolve($typeKey, $id);
 
-        if (!$model) {
+        if (! $model) {
             return response()->json(['message' => 'Model not found'], 404);
         }
 
@@ -72,7 +69,7 @@ class UpvoteController extends Controller
 
         return response()->json([
             'userVote' => $result['userVote'],
-            'changeFromVote' => $result['changeFromVote']
+            'changeFromVote' => $result['changeFromVote'],
         ]);
     }
 }

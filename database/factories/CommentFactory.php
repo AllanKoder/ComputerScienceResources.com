@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\User;
 use App\Models\Comment;
+use App\Models\User;
 use App\Services\ModelResolverService;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
@@ -18,7 +18,7 @@ class CommentFactory extends Factory
      * @return array<string, mixed>
      */
 
-     // TODO: Double check this logic
+    // TODO: Double check this logic
     public function definition(): array
     {
         // Pick a random commentable type from config.

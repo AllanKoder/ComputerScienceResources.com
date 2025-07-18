@@ -1,10 +1,10 @@
 <?php
 
 use App\Models\Comment;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use App\Models\User;
 
 return new class extends Migration
 {
@@ -16,16 +16,16 @@ return new class extends Migration
         Schema::create('comments', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->morphs("commentable");
-            $table->foreignIdFor(Comment::class, "root_comment_id")->nullable();
-            $table->foreignIdFor(Comment::class, "parent_comment_id")->nullable();
+            $table->morphs('commentable');
+            $table->foreignIdFor(Comment::class, 'root_comment_id')->nullable();
+            $table->foreignIdFor(Comment::class, 'parent_comment_id')->nullable();
             $table->foreignIdFor(User::class);
 
-            $table->text("content");
+            $table->text('content');
 
-            $table->smallInteger("depth")->default(1)->index();
+            $table->smallInteger('depth')->default(1)->index();
             // Only root comment uses this
-            $table->unsignedInteger("children_count")->default(0);
+            $table->unsignedInteger('children_count')->default(0);
         });
     }
 

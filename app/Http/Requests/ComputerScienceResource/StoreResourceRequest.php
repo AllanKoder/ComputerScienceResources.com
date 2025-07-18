@@ -2,13 +2,12 @@
 
 namespace App\Http\Requests\ComputerScienceResource;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class StoreResourceRequest extends FormRequest
 {
-
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -36,7 +35,7 @@ class StoreResourceRequest extends FormRequest
             'topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
 
             // Optional, can just be omitted
-            'image_file' => ['nullable', 'image','max:400'], // 400 kiloBytes
+            'image_file' => ['nullable', 'image', 'max:400'], // 400 kiloBytes
             'general_tags' => ['array'],
             'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],
             'programming_language_tags' => ['array'],

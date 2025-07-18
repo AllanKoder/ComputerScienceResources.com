@@ -20,13 +20,13 @@ trait TestingUtils
         $resourceForm = ComputerScienceResourceTestResource::fake($overrides);
         $response = $this->postJson(route('resources.store'), $resourceForm);
         $response->assertStatus(302); // Assert redirection is successful post
+
         return ComputerScienceResource::where('name', $resourceForm['name'])->first();
     }
 
     public function createReview(int $id, array $overrides = [], bool $newUser = false): ResourceReview
     {
-        if ($newUser)
-        {
+        if ($newUser) {
             $user = User::factory()->create();
             $this->actingAs($user);
         }
@@ -52,7 +52,7 @@ trait TestingUtils
 
         $editData = [
             'edit_title' => Str::uuid(),
-            'edit_description' => "This is a test edit.",
+            'edit_description' => 'This is a test edit.',
             'proposed_changes' => $changes,
         ];
 

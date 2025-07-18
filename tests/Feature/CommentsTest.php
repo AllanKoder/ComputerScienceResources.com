@@ -3,9 +3,9 @@
 namespace Tests\Feature;
 
 use App\Models\Comment;
-use App\Models\User;
 use App\Models\ComputerScienceResource;
 use App\Models\UpvoteSummary;
+use App\Models\User;
 use App\Services\ModelResolverService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utils\TestingUtils;

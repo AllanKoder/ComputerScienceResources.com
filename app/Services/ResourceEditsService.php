@@ -25,9 +25,8 @@ class ResourceEditsService
 
     /**
      * Handles determining if a resource edit is mergeable, by getting the upvotes for the resource edit
-     *
      */
-    public function canMergeEdits(ResourceEdits $edits) : bool
+    public function canMergeEdits(ResourceEdits $edits): bool
     {
         if (app()->isLocal()) {
             return true;

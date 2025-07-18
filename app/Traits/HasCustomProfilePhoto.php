@@ -8,8 +8,6 @@ trait HasCustomProfilePhoto
 {
     /**
      * Get the profile photo URL accessor.
-     *
-     * @return Attribute
      */
     protected function profilePhotoUrl(): Attribute
     {

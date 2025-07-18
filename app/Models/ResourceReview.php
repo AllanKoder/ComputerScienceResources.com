@@ -2,22 +2,23 @@
 
 namespace App\Models;
 
+use App\Observers\ResourceReviewObserver;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use App\Observers\ResourceReviewObserver;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 #[ObservedBy([ResourceReviewObserver::class])]
 class ResourceReview extends Model
 {
+    use HasComments;
+
     /** @use HasFactory<\Database\Factories\ResourceReviewFactory> */
     use HasFactory;
     use HasVotes;
-    use HasComments;
 
     protected $guarded = [];
 
@@ -37,8 +38,6 @@ class ResourceReview extends Model
 
     /**
      * Get the average review score.
-     *
-     * @return Attribute
      */
     protected function averageScore(): Attribute
     {

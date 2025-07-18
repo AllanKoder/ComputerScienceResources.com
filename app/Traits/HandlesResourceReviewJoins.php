@@ -2,14 +2,14 @@
 
 namespace App\Traits;
 
-use Illuminate\Database\Eloquent\Builder;
 use App\Models\ResourceReviewSummary;
+use Illuminate\Database\Eloquent\Builder;
 
 trait HandlesResourceReviewJoins
 {
     protected function ensureReviewSummaryJoined(Builder $query): Builder
     {
-        $reviewTable = (new ResourceReviewSummary())->getTable();
+        $reviewTable = (new ResourceReviewSummary)->getTable();
 
         $joins = $query->getQuery()->joins ?? [];
 
@@ -32,7 +32,7 @@ trait HandlesResourceReviewJoins
 
     protected function getReviewSummaryTable(): string
     {
-        return (new ResourceReviewSummary())->getTable();
+        return (new ResourceReviewSummary)->getTable();
     }
 
     protected function getAllowedReviewFields(): array

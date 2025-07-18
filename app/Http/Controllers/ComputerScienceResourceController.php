@@ -7,7 +7,6 @@ use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
-use App\Models\UpvoteSummary;
 use App\Services\CommentService;
 use App\Services\ComputerScienceResourceFilter;
 use App\Services\ResourceReviewService;
@@ -17,18 +16,19 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class ComputerScienceResourceController extends Controller
 {
     protected $commentService;
+
     protected $generalVotesSortingManager;
+
     protected $reviewService;
+
     protected $resourceSortingManager;
 
-    function __construct(
+    public function __construct(
         CommentService $commentService,
         GeneralVotesSortingManager $generalVotesSortingManager,
         ResourceReviewService $reviewService,
@@ -73,12 +73,11 @@ class ComputerScienceResourceController extends Controller
     public function store(StoreResourceRequest $request)
     {
         $validatedData = $request->validated();
-        Log::debug("Called store resource with data " . json_encode($request));
+        Log::debug('Called store resource with data '.json_encode($request));
 
         // Store the image onto storage
         $path = null;
-        if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file'])
-        {
+        if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file']) {
             $path = $imageFile->store('resource', 'public');
         }
 
@@ -109,7 +108,7 @@ class ComputerScienceResourceController extends Controller
         // Dispatch tag frequency change event
         TagFrequencyChanged::dispatch(null, $resource->tagCounter());
 
-        Log::debug("Created resource " . json_encode($resource));
+        Log::debug('Created resource '.json_encode($resource));
 
         return redirect(route('resources.show', ['computerScienceResource' => $resource->id]))
             ->with('success', 'Created Resource Succesfully!');
@@ -120,13 +119,13 @@ class ComputerScienceResourceController extends Controller
      */
     public function show(Request $request, ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
     {
-        # Get the review summaries
+        // Get the review summaries
         $computerScienceResource->load('reviewSummary');
         $computerScienceResource->load('user');
 
         $validTabs = ['reviews', 'discussion', 'edits'];
 
-        if (!in_array($tab, $validTabs)) {
+        if (! in_array($tab, $validTabs)) {
             // Redirect to default if invalid
             return redirect()->route('resources.show', [
                 'computerScienceResource' => $computerScienceResource->id,
@@ -144,8 +143,7 @@ class ComputerScienceResourceController extends Controller
         // Load only the necessary tab data
         if ($tab === 'reviews') {
             $userReview = null;
-            if ($userId = Auth::id())
-            {
+            if ($userId = Auth::id()) {
                 $userReview = ResourceReview::where('user_id', $userId)->first();
             }
 
@@ -165,19 +163,18 @@ class ComputerScienceResourceController extends Controller
                     $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
                     // TODO: ADD ERROR LOGS IF THIS MAKES IT RETURN NOTHING, SORTING SHOULD NOT CHANGE SIZE, ONLY ORDER
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
+
                     return $query->with('user')->paginate(10)->appends($request->query());
                 }
             );
         } elseif ($tab === 'discussion') {
             $data['discussion'] = Inertia::defer(
-                fn() =>
-                $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
+                fn () => $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
             );
         }
 
         return Inertia::render('Resources/Show', $data);
     }
-
 
     /**
      * Remove the specified resource from storage.

@@ -8,16 +8,13 @@ use App\Models\ResourceEdits;
 use App\Models\Upvote;
 use App\Models\UpvoteSummary;
 use App\Models\User;
-use App\Services\ResourceEditsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Mockery;
-use Mockery\MockInterface;
-use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\TestCase;
-use Tests\TestResources\ComputerScienceResourceTestResource;
 use Illuminate\Http\UploadedFile;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Storage;
 use Tests\Feature\Utils\TestingUtils;
+use Tests\TestCase;
+use Tests\TestResources\ComputerScienceResourceTestResource;
 
 class ResourceEditsTest extends TestCase
 {
@@ -71,13 +68,13 @@ class ResourceEditsTest extends TestCase
 
         $this->assertTrue(
             $response->status() === 422,
-            "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: " . $response->status()
+            "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: ".$response->status()
         );
 
         $notCreatedEdit = ResourceEdits::first();
         $this->assertNull(
             $notCreatedEdit,
-            "Failed asserting that a resource edit was not created. Invalid field: " . $field
+            'Failed asserting that a resource edit was not created. Invalid field: '.$field
         );
     }
 
@@ -90,13 +87,12 @@ class ResourceEditsTest extends TestCase
 
         $times = 7;
 
-        for ($i = 0; $i < $times; $i++)
-        {
+        for ($i = 0; $i < $times; $i++) {
             // Create the original resource.
             $resource = ComputerScienceResource::factory()->create();
 
             // Create valid edit payload, then set fields to exactly match the resource.
-            $editData = array();
+            $editData = [];
             // Add required edit-specific fields.
             $editData['edit_title'] = 'Proposed edit with no changes';
             $editData['edit_description'] = 'This edit does nothing.';
@@ -121,7 +117,7 @@ class ResourceEditsTest extends TestCase
         }
     }
 
-        /**
+    /**
      * Test that a valid resource edit can be posted.
      */
     public function test_can_post_valid_resource_edit(): void
@@ -136,13 +132,13 @@ class ResourceEditsTest extends TestCase
         $editData['edit_title'] = 'Proposed Update';
         $editData['edit_description'] = 'Proposing an update to the resource';
 
-        $editData['proposed_changes']['name'] = $resource->name . ' Updated';
+        $editData['proposed_changes']['name'] = $resource->name.' Updated';
 
         $response = $this->post(route('resource_edits.store', $resource), $editData);
 
         // Expect redirection to the edit show page with a success message.
         $response->assertRedirect()
-            ->assertSessionHas('success', "The proposed edits were created. Others can now view it.");
+            ->assertSessionHas('success', 'The proposed edits were created. Others can now view it.');
 
         $this->assertDatabaseHas('resource_edits', [
             'computer_science_resource_id' => $resource->id,
@@ -161,8 +157,7 @@ class ResourceEditsTest extends TestCase
 
         $mergeAttempts = 10;
 
-        for ($i = 0; $i < $mergeAttempts; $i++)
-        {
+        for ($i = 0; $i < $mergeAttempts; $i++) {
             $oldImagePath = $resource->image_path;
 
             $changes = [
@@ -206,8 +201,8 @@ class ResourceEditsTest extends TestCase
         $this->actingAs($this->user);
 
         $changes = [
-            'name' => "Resource Name Edited",
-            'description' => "Resource Description Changed",
+            'name' => 'Resource Name Edited',
+            'description' => 'Resource Description Changed',
             'image_file' => null, // Delete operation
             'topic_tags' => ['1', '2', '3'],
             'programming_language_tags' => [],
@@ -219,8 +214,8 @@ class ResourceEditsTest extends TestCase
         // Refresh and assert
         $resource->refresh();
 
-        $this->assertEquals("Resource Name Edited", $resource->name);
-        $this->assertEquals("Resource Description Changed", $resource->description);
+        $this->assertEquals('Resource Name Edited', $resource->name);
+        $this->assertEquals('Resource Description Changed', $resource->description);
         $this->assertNull($resource->image_path);
 
         // Changes

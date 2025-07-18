@@ -26,13 +26,14 @@ class ResourceReviewController extends Controller
                 'user_id' => Auth::id(),
                 'computer_science_resource_id' => $computerScienceResource->id,
             ]);
+
             return response()->json([], 400);
         }
 
-        Log::debug("Storing resource review", [
+        Log::debug('Storing resource review', [
             'user_id' => Auth::id(),
             'computer_science_resource_id' => $computerScienceResource->id,
-            'review_data' => $validatedData
+            'review_data' => $validatedData,
         ]);
 
         // Create the resource review
@@ -64,18 +65,19 @@ class ResourceReviewController extends Controller
             'computer_science_resource_id' => $computerScienceResource->id,
         ])->first();
 
-        if (!$existingReview) {
-            Log::warning("User has not posted a review, yet is trying to edit theirs", [
+        if (! $existingReview) {
+            Log::warning('User has not posted a review, yet is trying to edit theirs', [
                 'user_id' => Auth::id(),
                 'computer_science_resource_id' => $computerScienceResource->id,
             ]);
+
             return response()->json([], 400);
         }
 
-        Log::debug("Updating resource review", [
+        Log::debug('Updating resource review', [
             'user_id' => Auth::id(),
             'computer_science_resource_id' => $computerScienceResource->id,
-            'review_data' => $validatedData
+            'review_data' => $validatedData,
         ]);
 
         // Update the existing review

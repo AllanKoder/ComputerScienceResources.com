@@ -18,7 +18,7 @@ return new class extends Migration
             $table->foreignIdFor(User::class)->index();
             $table->morphs('upvotable');
 
-            $table->unique(['upvotable_id','upvotable_type', 'user_id']);
+            $table->unique(['upvotable_id', 'upvotable_type', 'user_id']);
         });
     }
 

@@ -33,14 +33,14 @@ class StoreCommentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "commentable_id" => ['required', 'integer'],
-            "commentable_key" => [
+            'commentable_id' => ['required', 'integer'],
+            'commentable_key' => [
                 'required',
                 'string',
                 Rule::in(config('comment.commentable_keys')),
             ],
-            "content" => ["required", "string", "max:4000"],
-            "parent_comment_id" => ["nullable", "exists:App\Models\Comment,id"]
+            'content' => ['required', 'string', 'max:4000'],
+            'parent_comment_id' => ['nullable', "exists:App\Models\Comment,id"],
         ];
     }
 }

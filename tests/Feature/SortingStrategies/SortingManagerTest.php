@@ -6,10 +6,8 @@ use App\Models\ComputerScienceResource;
 use App\Models\User;
 use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
 use Tests\Feature\Utils\TestingUtils;
-use Tests\TestResources\ComputerScienceResourceTestResource;
+use Tests\TestCase;
 
 class SortingManagerTest extends TestCase
 {
@@ -21,7 +19,7 @@ class SortingManagerTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->sortingManager = new ResourceSortingManager();
+        $this->sortingManager = new ResourceSortingManager;
 
         $user = User::factory()->create();
         $this->actingAs($user);
@@ -32,16 +30,16 @@ class SortingManagerTest extends TestCase
         $resource3 = $this->createResource(['name' => 'name3']);
         $resource4 = $this->createResource(['name' => 'name4']);
 
-        # Set the resource's dates in descending order
-        $resource1->created_at = "2025-05-25 18:17:19";
-        $resource2->created_at = "2025-05-25 18:17:18";
-        $resource3->created_at = "2024-05-25 18:17:18";
-        $resource4->created_at = "2024-05-24 18:17:18";
+        // Set the resource's dates in descending order
+        $resource1->created_at = '2025-05-25 18:17:19';
+        $resource2->created_at = '2025-05-25 18:17:18';
+        $resource3->created_at = '2024-05-25 18:17:18';
+        $resource4->created_at = '2024-05-24 18:17:18';
 
-        $resource1->updated_at = "2025-05-25 18:17:19";
-        $resource2->updated_at = "2025-05-25 18:17:18";
-        $resource3->updated_at = "2024-05-25 18:17:18";
-        $resource4->updated_at = "2024-05-24 18:17:18";
+        $resource1->updated_at = '2025-05-25 18:17:19';
+        $resource2->updated_at = '2025-05-25 18:17:18';
+        $resource3->updated_at = '2024-05-25 18:17:18';
+        $resource4->updated_at = '2024-05-24 18:17:18';
 
         $resource1->save();
         $resource2->save();
@@ -105,7 +103,7 @@ class SortingManagerTest extends TestCase
         $this->assertEquals(
             $defaultOrder,
             $sorted,
-            "SortingManager should not modify order when sorting by invalid field."
+            'SortingManager should not modify order when sorting by invalid field.'
         );
     }
 
@@ -127,7 +125,6 @@ class SortingManagerTest extends TestCase
             $resource1->id,
         ], $reverseSorted);
     }
-
 
     public function test_can_sort_by_latest_changes()
     {

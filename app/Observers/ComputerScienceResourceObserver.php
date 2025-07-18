@@ -2,9 +2,9 @@
 
 namespace App\Observers;
 
+use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
 use App\Models\UpvoteSummary;
-use App\Events\TagFrequencyChanged;
 
 class ComputerScienceResourceObserver
 {
@@ -20,7 +20,7 @@ class ComputerScienceResourceObserver
         ]);
 
         // TagFrequencyChanged is in store ComputerScienceResource controller
-   }
+    }
 
     /**
      * Handle the ComputerScienceResource "updated" event.

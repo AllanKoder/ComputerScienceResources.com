@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
 use App\Services\ModelResolverService;
+use Illuminate\Support\ServiceProvider;
 
 class ModelResolverServiceProvider extends ServiceProvider
 {
@@ -13,7 +13,7 @@ class ModelResolverServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(ModelResolverService::class, function ($app) {
-            return new ModelResolverService();
+            return new ModelResolverService;
         });
     }
 

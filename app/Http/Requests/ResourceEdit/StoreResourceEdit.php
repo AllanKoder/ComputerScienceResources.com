@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests\ResourceEdit;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class StoreResourceEdit extends FormRequest

@@ -3,8 +3,8 @@
 namespace App\SortingStrategies;
 
 use App\Contracts\SortingStrategy;
-use Illuminate\Database\Eloquent\Builder;
 use App\Traits\HandlesResourceReviewJoins;
+use Illuminate\Database\Eloquent\Builder;
 
 class ResourceReviewsSortingStrategy implements SortingStrategy
 {
@@ -17,7 +17,7 @@ class ResourceReviewsSortingStrategy implements SortingStrategy
 
     public static function apply(Builder $query, string $sortBy): Builder
     {
-        $instance = new self();
+        $instance = new self;
         $resourceTable = $query->getModel()->getTable();
         $query = $instance->ensureReviewSummaryJoined($query);
         $reviewTable = $instance->getReviewSummaryTable();

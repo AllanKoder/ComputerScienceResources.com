@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
-use App\Models\Comment;
-use App\Services\ModelResolverService;
 use App\Http\Resources\UserResource;
+use App\Models\Comment;
 use App\Services\CommentService;
+use App\Services\ModelResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -17,6 +17,7 @@ use Log;
 class CommentController extends Controller
 {
     protected $modelResolver;
+
     protected $commentService;
 
     public function __construct(ModelResolverService $modelResolver, CommentService $commentService)
@@ -31,7 +32,7 @@ class CommentController extends Controller
     public function store(StoreCommentRequest $request)
     {
         $validatedData = $request->validated();
-        Log::debug("Comment Controller Store", ['validated data' => $validatedData]);
+        Log::debug('Comment Controller Store', ['validated data' => $validatedData]);
 
         $comment = new Comment;
         $comment->content = $validatedData['content'];
@@ -42,7 +43,7 @@ class CommentController extends Controller
 
         // Ensure that the model exists
         $model = $this->modelResolver->resolve($validatedData['commentable_key'], $commentableId);
-        if (!$model) {
+        if (! $model) {
             return response()->json(['message' => 'Model not found'], 404);
         }
 
@@ -52,7 +53,7 @@ class CommentController extends Controller
 
         // Top level comment
         $parentCommentId = $validatedData['parent_comment_id'];
-        if (!$parentCommentId) {
+        if (! $parentCommentId) {
             $comment->parent_comment_id = null;
             $comment->depth = 1;
             $comment->children_count = 0;
@@ -81,7 +82,7 @@ class CommentController extends Controller
                     'commentable_id' => $commentableId,
                     'commentable_type' => $commentableType,
                     'depth' => $new_comment_depth,
-                    'replies_count' => $replies_count
+                    'replies_count' => $replies_count,
                 ],
                 [
                     'commentable_id' => [
@@ -96,14 +97,14 @@ class CommentController extends Controller
                     'depth' => [
                         'required',
                         'integer',
-                        'lte:' . (config('comment.max_depth'))
+                        'lte:'.(config('comment.max_depth')),
                     ],
                     // Cannot exceed max replies
                     'replies_count' => [
                         'required',
                         'integer',
-                        'lt:' . (config('comment.max_replies'))
-                    ]
+                        'lt:'.(config('comment.max_replies')),
+                    ],
                 ]
             );
 
@@ -123,13 +124,14 @@ class CommentController extends Controller
 
         $comment->save();
 
-        Log::debug("New comment saved", [
+        Log::debug('New comment saved', [
             'comment_id' => $comment->id,
             'user_id' => $comment->user_id,
             'commentable_type' => $comment->commentable_type,
             'commentable_id' => $comment->commentable_id,
-            'depth' => $comment->depth
+            'depth' => $comment->depth,
         ]);
+
         return response()->json([
             'new_comment' => new CommentResource($comment),
             'user' => new UserResource(Auth::user()),
@@ -141,19 +143,18 @@ class CommentController extends Controller
      */
     public function show(Request $request, string $commentableKey, int $commentableId, int $index, int $paginationLimit = -1)
     {
-        if ($paginationLimit == -1)
-        {
+        if ($paginationLimit == -1) {
             $paginationLimit = config('comment.default_pagination_limit');
         }
 
         $sortBy = $request->query('sort_by', 'top');
 
-        Log::debug("Processing comment show request", [
+        Log::debug('Processing comment show request', [
             'commentable_key' => $commentableKey,
             'commentable_id' => $commentableId,
             'index' => $index,
             'sort_by' => $sortBy,
-            'pagination_limit' => $paginationLimit
+            'pagination_limit' => $paginationLimit,
         ]);
         $paginatedResults = $this->commentService->getPaginatedComments($commentableKey, $commentableId, $index, $paginationLimit, $sortBy);
 
