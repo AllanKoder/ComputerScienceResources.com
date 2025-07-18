@@ -63,14 +63,16 @@ class ComputerScienceResourceFilterTest extends TestCase
             'programming_languages not array' => ['programming_languages', 'not-an-array'],
             'programming_languages item too long' => ['programming_languages', [str_repeat('a', 51)]],
             'programming_languages not distinct' => ['programming_languages', ['js', 'js']],
-            'community_rating too low' => ['community_rating', 0],
-            'community_rating too high' => ['community_rating', 5],
+            'community too low' => ['community', 0],
+            'community too high' => ['community', 5],
             'teaching_clarity not integer' => ['teaching_clarity', 'high'],
             'engagement invalid' => ['engagement', 100],
             'practicality invalid' => ['practicality', -1],
             'user_friendliness invalid' => ['user_friendliness', 999],
             'updates not integer' => ['updates', 'often'],
             'updates too high' => ['updates', 6],
+            'overall too low' => ['overall', 0],
+            'overall too high' => ['overall', 5],
             'created_from not a date' => ['created_from', 'not-a-date'],
             'created_to not a date' => ['created_to', '2023-02-30'],
             'updated_from not a date' => ['updated_from', 'not-a-date'],
@@ -95,7 +97,6 @@ class ComputerScienceResourceFilterTest extends TestCase
     public static function filterProvider(): array
     {
         return [
-
             'by name' => [['name' => 'Graph Theory']],
 
             'by description' => [['description' => 'unit testing best practices']],
@@ -114,7 +115,7 @@ class ComputerScienceResourceFilterTest extends TestCase
             ]],
 
             'by ratings' => [[
-                'community_rating' => 4,
+                'community' => 4,
                 'teaching_clarity' => 3,
                 'engagement' => 2,
                 'practicality' => 4,
@@ -139,12 +140,12 @@ class ComputerScienceResourceFilterTest extends TestCase
                 'name' => 'Graph',
                 'description' => 'algorithm analysis',
                 'platforms' => ['podcast', 'website'],
-                'difficulty' => 'industry_simple',
-                'pricing' => 'free',
+                'difficulty' => ['industry_simple'],
+                'pricing' => ['free'],
                 'topics' => ['algorithms', 'recursion', 'data-structures'],
                 'programming_languages' => ['python'],
                 'general_tags' => ['interactive', 'educational', 'advanced'],
-                'community_rating' => 4,
+                'community' => 4,
                 'teaching_clarity' => 4,
                 'overall' => 4,
                 'created_from' => '2025-01-15',
@@ -198,14 +199,14 @@ class ComputerScienceResourceFilterTest extends TestCase
 
         // Difficulty
         if (! empty($filters['difficulty'])) {
-            foreach ((array) $filters['difficulty'] as $difficulty) {
+            foreach ($filters['difficulty'] as $difficulty) {
                 $this->assertContains($difficulty, $bindings);
             }
         }
 
         // Pricing
         if (! empty($filters['pricing'])) {
-            foreach ((array) $filters['pricing'] as $pricing) {
+            foreach ($filters['pricing'] as $pricing) {
                 $this->assertContains($pricing, $bindings);
             }
         }

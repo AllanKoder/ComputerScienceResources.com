@@ -35,10 +35,12 @@ class CommentService
             'index' => $index,
             'commentable_key' => $commentableKey,
             'pagination_limit' => $paginationLimit,
+            'sort_by' => $sortBy,
         ], [
             'index' => ['required', 'integer', 'min:0'],
             'commentable_key' => ['required', Rule::in(config('comment.commentable_keys'))],
             'pagination_limit' => ['required', 'integer', 'max:'.config('comment.pagination_limit')],
+            'sort_by' => ['required', 'string'],
         ]);
 
         $commentableType = $this->modelResolver->getModelClass($commentableKey);

@@ -50,8 +50,8 @@ class ComputerScienceResourceFilter
             'updated_from' => ['nullable', 'date'],
             'updated_to' => ['nullable', 'date'],
 
-            'sort_by' => ['nullable', 'string'],
-            'reverse' => ['nullable', 'string'],
+            'sort_by' => ['string'],
+            'reverse' => ['string'],
         ];
 
         $validator = Validator::make($request, $rules);
@@ -60,6 +60,7 @@ class ComputerScienceResourceFilter
 
     public function applyFilters($query, array $filters)
     {
+        $this->validate($filters);
 
         // Eager load relations
         $query->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
