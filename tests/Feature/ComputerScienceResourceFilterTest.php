@@ -13,8 +13,8 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\Utils\TestingUtils;
-use Tests\TestCase;
 use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
+use Tests\TestCase;
 use Throwable;
 
 class ComputerScienceResourceFilterTest extends TestCase

@@ -10,8 +10,8 @@ use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use Tests\TestCase;
 use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
+use Tests\TestCase;
 
 class ComputerScienceResourceControllerTest extends TestCase
 {

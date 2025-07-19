@@ -10,8 +10,8 @@ use App\Services\ResourceEditsService;
 use Mockery;
 use Mockery\MockInterface;
 use Str;
-use Tests\RequestFactories\ResourceReview\StoreResourceReviewFactory;
 use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
+use Tests\RequestFactories\ResourceReview\StoreResourceReviewFactory;
 
 trait TestingUtils
 {

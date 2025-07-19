@@ -11,8 +11,8 @@ use App\Services\ResourceEditsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\Feature\Utils\TestingUtils;
-use Tests\TestCase;
 use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
+use Tests\TestCase;
 
 class TagSearchTest extends TestCase
 {

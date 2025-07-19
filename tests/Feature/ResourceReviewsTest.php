@@ -41,6 +41,7 @@ class ResourceReviewsTest extends TestCase
             'Cons item too long' => ['cons', [str_repeat('a', 201)]],
         ];
     }
+
     #[DataProvider('invalidFieldProvider')]
     #[Group('slow')]
     public function test_invalid_data_missing_required_fields(string $field, mixed $invalidValue): void
@@ -59,7 +60,6 @@ class ResourceReviewsTest extends TestCase
     {
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
-
 
         $data = StoreResourceReviewFactory::new()->create();
 
@@ -165,7 +165,6 @@ class ResourceReviewsTest extends TestCase
             'updates' => 0,
         ];
 
-
         foreach ($users as $user) {
             $data = StoreResourceReviewFactory::new()->create();
             foreach (array_keys($total) as $key) {
@@ -187,7 +186,6 @@ class ResourceReviewsTest extends TestCase
             'user_friendliness' => 0,
             'updates' => 0,
         ];
-
 
         foreach ($users as $user) {
             // Update to new review
