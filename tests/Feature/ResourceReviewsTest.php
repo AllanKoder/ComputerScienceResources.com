@@ -5,53 +5,54 @@ namespace Tests\Feature;
 use App\Models\ComputerScienceResource;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
+use Tests\RequestFactories\ResourceReview\StoreResourceReviewFactory;
 use Tests\TestCase;
-use Tests\TestResources\ResourceReviewTestResource;
 
 class ResourceReviewsTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_invalid_data_missing_required_fields(): void
+    public static function invalidFieldProvider(): array
     {
-        $user = User::factory()->create();
-        $resource = ComputerScienceResource::factory()->create();
-
-        $invalidData = ResourceReviewTestResource::fake();
-        unset($invalidData['title'], $invalidData['description']);
-
-        $response = $this->actingAs($user)
-            ->post(route('reviews.store', $resource), $invalidData);
-
-        $response->assertSessionHasErrors(['title', 'description']);
+        return [
+            'No Title' => ['title', null],
+            'No Description' => ['description', null],
+            'Title Too Long' => ['title', str_repeat('a', 256)],
+            'Description Too Long' => ['description', str_repeat('a', 4001)],
+            'Community Score too low' => ['community', 0],
+            'Community Score too high' => ['community', 6],
+            'Teaching Clarity too low' => ['teaching_clarity', 0],
+            'Teaching Clarity too high' => ['teaching_clarity', 6],
+            'Engagement too low' => ['engagement', 0],
+            'Engagement too high' => ['engagement', 6],
+            'Practicality too low' => ['practicality', 0],
+            'Practicality too high' => ['practicality', 6],
+            'User Friendliness too low' => ['user_friendliness', 0],
+            'User Friendliness too high' => ['user_friendliness', 6],
+            'Updates too low' => ['updates', 0],
+            'Updates too high' => ['updates', 6],
+            'Pros is not an array' => ['pros', 0],
+            'Cons is not an array' => ['cons', 0],
+            'Pros too many items' => ['pros', array_fill(0, 11, 'good')],
+            'Cons too many items' => ['cons', array_fill(0, 11, 'bad')],
+            'Pros item too long' => ['pros', [str_repeat('a', 201)]],
+            'Cons item too long' => ['cons', [str_repeat('a', 201)]],
+        ];
     }
-
-    public function test_invalid_data_invalid_rating(): void
+    #[DataProvider('invalidFieldProvider')]
+    #[Group('slow')]
+    public function test_invalid_data_missing_required_fields(string $field, mixed $invalidValue): void
     {
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
 
-        $invalidData = ResourceReviewTestResource::fake();
-        $invalidData['community'] = 0;
+        $invalidData = StoreResourceReviewFactory::new()->create([$field => $invalidValue]);
 
         $response = $this->actingAs($user)
-            ->post(route('reviews.store', $resource), $invalidData);
-
-        $response->assertSessionHasErrors(['community']);
-    }
-
-    public function test_invalid_data_invalid_pros_field(): void
-    {
-        $user = User::factory()->create();
-        $resource = ComputerScienceResource::factory()->create();
-
-        $invalidData = ResourceReviewTestResource::fake();
-        $invalidData['pros'] = 'Not an array';
-
-        $response = $this->actingAs($user)
-            ->post(route('reviews.store', $resource), $invalidData);
-
-        $response->assertSessionHasErrors(['pros']);
+            ->postJson(route('reviews.store', $resource), $invalidData);
+        $response->assertStatus(422);
     }
 
     public function test_resource_review_can_be_posted(): void
@@ -59,7 +60,8 @@ class ResourceReviewsTest extends TestCase
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
 
-        $data = ResourceReviewTestResource::fake();
+
+        $data = StoreResourceReviewFactory::new()->create();
 
         $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data);
@@ -75,7 +77,7 @@ class ResourceReviewsTest extends TestCase
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
 
-        $data1 = ResourceReviewTestResource::fake();
+        $data1 = StoreResourceReviewFactory::new()->create();
         $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data1);
 
@@ -84,7 +86,7 @@ class ResourceReviewsTest extends TestCase
             'title' => $data1['title'],
         ]);
 
-        $data2 = ResourceReviewTestResource::fake();
+        $data2 = StoreResourceReviewFactory::new()->create();
         $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data2);
 
@@ -99,7 +101,7 @@ class ResourceReviewsTest extends TestCase
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
 
-        $data = ResourceReviewTestResource::fake();
+        $data = StoreResourceReviewFactory::new()->create();
 
         $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data);
@@ -132,7 +134,7 @@ class ResourceReviewsTest extends TestCase
 
         for ($i = 0; $i < $reviewCount; $i++) {
             $user = User::factory()->create();
-            $data = ResourceReviewTestResource::fake();
+            $data = StoreResourceReviewFactory::new()->create();
 
             // Add to total for averaging later
             foreach (array_keys($total) as $key) {
@@ -163,12 +165,12 @@ class ResourceReviewsTest extends TestCase
             'updates' => 0,
         ];
 
+
         foreach ($users as $user) {
-            $data = ResourceReviewTestResource::fake();
+            $data = StoreResourceReviewFactory::new()->create();
             foreach (array_keys($total) as $key) {
                 $total[$key] += $data[$key];
             }
-
             $this->actingAs($user)->post(route('reviews.store', $resource), $data);
         }
 
@@ -186,13 +188,13 @@ class ResourceReviewsTest extends TestCase
             'updates' => 0,
         ];
 
+
         foreach ($users as $user) {
             // Update to new review
-            $newData = ResourceReviewTestResource::fake();
+            $newData = StoreResourceReviewFactory::new()->create();
             foreach (array_keys($total) as $key) {
                 $total[$key] += $newData[$key];
             }
-
             $this->actingAs($user)->put(route('reviews.update', $resource), $newData);
         }
 
