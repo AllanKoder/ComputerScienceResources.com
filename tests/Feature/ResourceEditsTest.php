@@ -13,8 +13,8 @@ use Illuminate\Http\UploadedFile;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Storage;
 use Tests\Feature\Utils\TestingUtils;
+use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
 use Tests\TestCase;
-use Tests\TestResources\ComputerScienceResourceTestResource;
 
 class ResourceEditsTest extends TestCase
 {
@@ -128,7 +128,7 @@ class ResourceEditsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
 
         // Create valid edit payload and change at least one attribute.
-        $editData = ComputerScienceResourceTestResource::fake();
+        $editData = StoreResourceRequestFactory::new()->create();
         $editData['edit_title'] = 'Proposed Update';
         $editData['edit_description'] = 'Proposing an update to the resource';
 

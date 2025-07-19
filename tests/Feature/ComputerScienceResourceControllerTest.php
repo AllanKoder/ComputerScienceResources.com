@@ -11,7 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
-use Tests\TestResources\ComputerScienceResourceTestResource;
+use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
 
 class ComputerScienceResourceControllerTest extends TestCase
 {
@@ -29,7 +29,7 @@ class ComputerScienceResourceControllerTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        $formData = ComputerScienceResourceTestResource::fake();
+        $formData = StoreResourceRequestFactory::new()->create();
 
         $response = $this->postJson(route('resources.store'), $formData);
 
@@ -45,7 +45,7 @@ class ComputerScienceResourceControllerTest extends TestCase
         Storage::fake('public');
         $this->actingAs($this->user);
 
-        $formData = ComputerScienceResourceTestResource::fake();
+        $formData = StoreResourceRequestFactory::new()->create();
         $formData['image_file'] = UploadedFile::fake()->image('avatar.jpg');
 
         $response = $this->post(route('resources.store'), $formData);
@@ -61,7 +61,7 @@ class ComputerScienceResourceControllerTest extends TestCase
 
     public function test_cannot_post_resource_unauthed()
     {
-        $formData = ComputerScienceResourceTestResource::fake();
+        $formData = StoreResourceRequestFactory::new()->create();
 
         $response = $this->postJson(route('resources.store'), $formData);
 
@@ -95,7 +95,7 @@ class ComputerScienceResourceControllerTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        $validData = ComputerScienceResourceTestResource::fake();
+        $validData = StoreResourceRequestFactory::new()->create();
         $validData[$field] = $invalidValue;
 
         $response = $this->postJson(route('resources.store'), $validData);

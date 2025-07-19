@@ -14,7 +14,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\Utils\TestingUtils;
 use Tests\TestCase;
-use Tests\TestResources\ComputerScienceResourceTestResource;
+use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
 use Throwable;
 
 class ComputerScienceResourceFilterTest extends TestCase
@@ -87,7 +87,7 @@ class ComputerScienceResourceFilterTest extends TestCase
     #[Group('slow')]
     public function test_cannot_filter_with_invalid_fields(string $field, mixed $invalidValue)
     {
-        $validData = ComputerScienceResourceTestResource::fake();
+        $validData = StoreResourceRequestFactory::new()->create();
         $validData[$field] = $invalidValue;
 
         $response = $this->getJson(route('resources.index', $validData));

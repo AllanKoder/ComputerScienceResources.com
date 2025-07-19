@@ -12,7 +12,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Mockery;
 use Tests\Feature\Utils\TestingUtils;
 use Tests\TestCase;
-use Tests\TestResources\ComputerScienceResourceTestResource;
+use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
 
 class TagSearchTest extends TestCase
 {
@@ -61,7 +61,7 @@ class TagSearchTest extends TestCase
     {
         $this->actingAs($this->user);
 
-        $formData = ComputerScienceResourceTestResource::fake([
+        $formData = StoreResourceRequestFactory::new()->create([
             'topic_tags' => ['python', 'algorithms', 'java'],
             'programming_language_tags' => ['python'],
             'general_tags' => ['beginner'],

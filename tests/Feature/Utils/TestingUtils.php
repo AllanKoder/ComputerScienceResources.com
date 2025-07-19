@@ -10,14 +10,14 @@ use App\Services\ResourceEditsService;
 use Mockery;
 use Mockery\MockInterface;
 use Str;
-use Tests\TestResources\ComputerScienceResourceTestResource;
 use Tests\RequestFactories\ResourceReview\StoreResourceReviewFactory;
+use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
 
 trait TestingUtils
 {
     public function createResource(array $overrides = []): ComputerScienceResource
     {
-        $resourceForm = ComputerScienceResourceTestResource::fake($overrides);
+        $resourceForm = StoreResourceRequestFactory::new()->create($overrides);
         $response = $this->postJson(route('resources.store'), $resourceForm);
         $response->assertStatus(302); // Assert redirection is successful post
 
