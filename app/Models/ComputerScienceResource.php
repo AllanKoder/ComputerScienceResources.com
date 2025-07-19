@@ -14,14 +14,16 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Tags\HasTags;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 #[ObservedBy([ComputerScienceResourceObserver::class])]
 class ComputerScienceResource extends Model
 {
+    use HasFactory;
+    use Sluggable;
+
     use HasComments;
 
-    /** @use HasFactory<\Database\Factories\ComputerScienceResourceFactory> */
-    use HasFactory;
     use HasTags;
     use HasVotes;
 
@@ -30,6 +32,31 @@ class ComputerScienceResource extends Model
     protected $guarded = [];
 
     protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'vote_score', 'user_vote', 'comments_count', 'image_url'];
+
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'name'
+            ]
+        ];
+    }
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'slug';
+    }
+
 
     public function user(): BelongsTo
     {

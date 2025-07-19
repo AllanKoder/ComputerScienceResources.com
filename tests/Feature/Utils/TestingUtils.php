@@ -79,7 +79,7 @@ trait TestingUtils
         // Merge the edit
         $mergeResponse = $this->post(route('resource_edits.merge', ['resourceEdits' => $edit->id]));
         $mergeResponse
-            ->assertRedirect(route('resources.show', ['computerScienceResource' => $edit->computer_science_resource_id]))
+            ->assertRedirect(route('resources.show', ['computerScienceResource' => $edit->resource->slug]))
             ->assertSessionHas('success', 'Successfully merged new changed!');
     }
 

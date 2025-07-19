@@ -4,8 +4,8 @@ import { defineProps } from 'vue';
 import SortUpvotesByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
 
 const props = defineProps({
-    resourceId: {
-        type: Number,
+    resourceSlug: {
+        type: String,
         required: true
     },
     initialValue: {
@@ -21,7 +21,7 @@ const props = defineProps({
 function handleSortChange(newSortType) {
     // Change the sort_by parameter
     const baseUrl = route('resources.show', {
-        computerScienceResource: props.resourceId,
+        computerScienceResource: props.resourceSlug,
         tab: props.tab,
     });
 

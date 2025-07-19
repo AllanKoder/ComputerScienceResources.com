@@ -15,7 +15,7 @@ return new class extends Migration
         if (! Schema::hasTable('computer_science_resources')) {
             Schema::create('computer_science_resources', function (Blueprint $table) {
                 $table->id();
-
+                $table->string('slug')->unique();
                 // User who posted
                 $table->foreignIdFor(User::class);
 

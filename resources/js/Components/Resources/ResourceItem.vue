@@ -43,7 +43,7 @@ const emit = defineEmits(["upvote", "downvote"]);
             <div class="flex flex-col lg:flex-row justify-between items-start mb-2 w-full gap-2">
                 <div class="flex items-center gap-3">
                     <Link
-                        :href="route('resources.show', { computerScienceResource: resource.id })"
+                        :href="route('resources.show', { computerScienceResource: resource.slug })"
                         class="group"
                     >
                         <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors duration-200 font-sans">

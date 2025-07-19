@@ -13,6 +13,10 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    resourceSlug: {
+        type: String,
+        required: true,
+    },
 });
 
 const isEditingMode = computed(() => props.userReview !== null);
@@ -51,6 +55,7 @@ const buttonIcon = computed(() => {
         <div v-show="showForm" class="mb-8">
             <CreateResourceReview
                 :resource-id="props.resourceId"
+                :resource-slug="props.resourceSlug"
                 :resource-review="props.userReview"
                 :is-editing-mode="isEditingMode"
             />

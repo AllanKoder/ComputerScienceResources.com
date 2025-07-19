@@ -110,7 +110,7 @@ class ComputerScienceResourceController extends Controller
 
         Log::debug('Created resource '.json_encode($resource));
 
-        return redirect(route('resources.show', ['computerScienceResource' => $resource->id]))
+        return redirect(route('resources.show', ['computerScienceResource' => $resource->slug]))
             ->with('success', 'Created Resource Succesfully!');
     }
 
@@ -128,7 +128,7 @@ class ComputerScienceResourceController extends Controller
         if (! in_array($tab, $validTabs)) {
             // Redirect to default if invalid
             return redirect()->route('resources.show', [
-                'computerScienceResource' => $computerScienceResource->id,
+                'computerScienceResource' => $computerScienceResource->slug,
                 'tab' => 'reviews',
             ]);
         }

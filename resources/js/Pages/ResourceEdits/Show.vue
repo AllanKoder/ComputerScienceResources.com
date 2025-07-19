@@ -111,7 +111,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                             :route="
                                 route('resources.show', {
                                     computerScienceResource:
-                                        originalResource.id,
+                                        originalResource.slug,
                                     tab: 'edits',
                                 })
                             "
@@ -243,7 +243,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                                 route('resources.show', {
                                                     computerScienceResource:
                                                         originalResource
-                                                            .id,
+                                                            .slug,
                                                 })
                                             "
                                             class="group"

@@ -47,7 +47,7 @@ const getStarClass = (type) => {
 
 <template>
     <div class="inline-flex items-center">
-        <span class="mr-1 text-sm font-medium text-gray-600">{{ formattedRating }}</span>
+        <span class="mr-1/2 text-sm font-medium text-gray-600">{{ formattedRating }}</span>
         <!-- Full stars -->
         <Icon
             v-for="i in stars.full"

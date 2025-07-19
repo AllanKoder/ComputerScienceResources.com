@@ -523,7 +523,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                             cache-for="10s"
                             :href="
                                 route('resources.show', {
-                                    computerScienceResource: props.resource.id,
+                                    computerScienceResource: props.resource.slug,
                                     tab: tab.value,
                                 })
                             "
@@ -536,7 +536,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                 <!-- Tab Panels -->
                 <div class="px-6 pb-6">
                     <ResourceUpvoteSorting
-                        :resource-id="props.resource.id"
+                        :resource-slug="props.resource.slug"
                         :initial-value="sortingType"
                         :tab="props.tab"
                     ></ResourceUpvoteSorting>
@@ -545,6 +545,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                         <ToggleCreateReview
                             :user-review="userReview"
                             :resource-id="props.resource.id"
+                            :resource-slug="props.resource.slug"
                         />
                         <Deferred data="reviews">
                             <template #fallback>

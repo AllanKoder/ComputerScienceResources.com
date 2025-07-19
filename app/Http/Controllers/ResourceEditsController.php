@@ -160,7 +160,7 @@ class ResourceEditsController extends Controller
         // Delete the edit since we successfully merged the changes
         $resourceEdits->delete();
 
-        return redirect(route('resources.show', ['computerScienceResource' => $resourceEdits->computer_science_resource_id]))
+        return redirect(route('resources.show', ['computerScienceResource' => $resource->slug]))
             ->with('success', 'Successfully merged new changed!');
     }
 }

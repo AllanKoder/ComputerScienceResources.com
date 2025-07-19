@@ -21,6 +21,10 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    resourceSlug: {
+        type: String,
+        required: true,
+    },
     isEditingMode: {
         type: Boolean,
         default: false,
@@ -81,8 +85,8 @@ const submitReview = async (event) => {
     isSubmitting.value = true;
 
     const url = props.isEditingMode
-        ? route("reviews.update", { computerScienceResource: props.resourceId })
-        : route("reviews.store", { computerScienceResource: props.resourceId });
+        ? route("reviews.update", { computerScienceResource: props.resourceSlug })
+        : route("reviews.store", { computerScienceResource: props.resourceSlug });
 
     const method = props.isEditingMode ? "put" : "post";
 
@@ -91,14 +95,15 @@ const submitReview = async (event) => {
             // Clear localStorage on successful submission
             clearLocalStorage();
 
-            const routeParams = { computerScienceResource: props.resourceId };
+            const routeParams = { computerScienceResource: props.resourceSlug };
             if (props.isEditingMode) {
                 routeParams.tab = "reviews";
                 routeParams.sort_by = "recently_updated";
             } else {
                 routeParams.sort_by = "latest";
             }
-            router.visit(route("resources.show", routeParams));
+            console.log(routeParams);
+            router.visit(route('resources.show', routeParams));
         })
         .catch((err) => {
             isSubmitting.value = false;
@@ -115,6 +120,7 @@ const submitReview = async (event) => {
         v-if="isDataLoaded"
         class="mx-auto bg-white shadow-lg rounded-2xl p-6 relative"
     >
+    {{ props }}
         <FormSaverChip
             :is-saved="isSavedToLocalStorage"
             :has-content="hasFormContent"

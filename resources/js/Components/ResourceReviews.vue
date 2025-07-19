@@ -20,6 +20,10 @@ const props = defineProps({
         type: Number,
         required: true,
     },
+    resourceSlug: {
+        type: String,
+        required: true,
+    },
 });
 
 const showForm = ref(false);
@@ -52,6 +56,7 @@ const iconClose = isEdittingMode ? "mdi:close" : "mdi:eye-off";
         <div v-show="showForm" class="mb-8">
             <CreateResourceReview
             :resource-id="props.resourceId"
+            :resource-slug="props.resourceSlug"
             :resource-review="props.userReview"
             :is-editing-mode="isEdittingMode"
             />
