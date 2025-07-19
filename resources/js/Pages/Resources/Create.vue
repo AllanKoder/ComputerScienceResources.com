@@ -78,6 +78,7 @@ const handleFormChange = (newFormData) => {
 
 <template>
     <AppLayout title="Computer Science Resources">
+        {{ formData }}
         <main class="py-12 flex justify-center">
             <div class="w-2/3 flex gap-8">
                 <!-- Main Form Section -->

@@ -28,7 +28,7 @@ return new class extends Migration
 
                 $table->set('platforms', ['book', 'podcast', 'youtube_channel', 'blog', 'website', 'organization', 'service', 'bootcamp', 'newsletter', 'workshop', 'course', 'forum', 'mobile_app', 'desktop_app', 'magazine'])
                     ->index();
-                $table->enum('difficulty', ['beginner', 'industry_simple', 'industry_standard', 'industry_professional', 'academic'])
+                $table->enum('difficulty', ['children', 'beginner', 'industry_simple', 'industry_standard', 'industry_professional', 'academic'])
                     ->index();
                 $table->enum('pricing', ['free', 'premium', 'paid', 'freemium'])
                     ->index();
