@@ -21,7 +21,7 @@ const isAnswerOpen = ref(false);
         </button>
 
         <div
-            v-if="isAnswerOpen"
+            v-show="isAnswerOpen"
             class="px-4 pb-4 text-gray-700 dark:text-gray-300"
         >
             <slot name="answer"></slot>

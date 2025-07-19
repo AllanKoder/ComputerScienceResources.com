@@ -223,6 +223,11 @@ import FrequentlyAskedQuestion from "@/Components/FrequentlyAskedQuestion.vue";
                             </li>
                         </ul>
                     </div>
+
+                    <div>
+                        <h4 class="font-semibold mb-2">Will this system change?</h4>
+                        <p>Yes, this is how I set the voting system for the initial release. But it will change depending on the community's feedback.</p>
+                    </div>
                 </div>
             </template>
         </FrequentlyAskedQuestion>

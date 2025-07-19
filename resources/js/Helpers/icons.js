@@ -10,6 +10,7 @@ export const platformIcons = {
     blog: 'mdi:post-outline',
     website: 'mdi:web',
     organization: 'mdi:domain',
+    service: 'mdi:handshake-outline',
     bootcamp: 'mdi:school',
     newsletter: 'mdi:email-newsletter',
     workshop: 'mdi:tools',

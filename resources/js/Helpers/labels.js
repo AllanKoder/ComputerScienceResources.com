@@ -8,6 +8,7 @@ export const platformsObject = [
     { label: "Course", value: "course" },
     { label: "Bootcamp", value: "bootcamp" },
     { label: "Organization", value: "organization" },
+    { label: "Service", value: "service" },
     { label: "Youtube Channel", value: "youtube_channel" },
     { label: "Newsletter", value: "newsletter" },
     { label: "Podcast", value: "podcast" },
@@ -24,6 +25,7 @@ export const platformLabels = {
     blog: "Blog",
     course: "Course",
     organization: "Organization",
+    service: "Service",
     bootcamp: "Bootcamp",
     youtube_channel: "Youtube Channel",
     newsletter: "Newsletter",
@@ -49,6 +51,7 @@ export const pricingLabels = {
 };
 
 export const difficultiesObject = [
+    { label: "Children - Elementary", value: "children" },
     { label: "Beginners - Non-technical", value: "beginner" },
     { label: "Industry Simple - Jr Engineer", value: "industry_simple" },
     { label: "Industry Standard - Engineer", value: "industry_standard" },
@@ -60,6 +63,7 @@ export const difficultiesObject = [
 ];
 
 export const difficultyLabels = {
+    children: "Children",
     beginner: "Beginner",
     industry_simple: "Industry Simple",
     industry_standard: "Industry Standard",
