@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\ModelResolverService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utils\TestingUtils;
+use Tests\RequestFactories\Comment\StoreCommentRequestFactory;
 use Tests\TestCase;
 
 class CommentsTest extends TestCase
@@ -47,11 +48,11 @@ class CommentsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
 
         // Omitting the 'content' field should trigger a validation error.
-        $payload = [
+        $payload = StoreCommentRequestFactory::new()->create([
             'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
-            'parent_comment_id' => null,
-        ];
+        ]);
+        unset($payload['content']);
 
         $response = $this->postJson(route('comments.store'), $payload);
         $response->assertStatus(422);
@@ -66,12 +67,11 @@ class CommentsTest extends TestCase
         $this->actingAs($user);
 
         // Resource does not exist
-        $payload = [
-            'content' => 'test',
+        $payload = StoreCommentRequestFactory::new()->create([
             'commentable_key' => 'resource',
             'commentable_id' => 0, // does not exist
-            'parent_comment_id' => null,
-        ];
+            'content' => 'test',
+        ]);
 
         $response = $this->postJson(route('comments.store'), $payload);
         $response->assertStatus(404);
@@ -114,12 +114,11 @@ class CommentsTest extends TestCase
         $this->actingAs($user);
 
         // Comment does not exist
-        $payload = [
-            'content' => 'test',
+        $payload = StoreCommentRequestFactory::new()->create([
             'commentable_key' => 'comment',
             'commentable_id' => 0,
-            'parent_comment_id' => null,
-        ];
+            'content' => 'test',
+        ]);
 
         $response = $this->postJson(route('comments.store'), $payload);
         $response->assertStatus(404);
@@ -168,12 +167,12 @@ class CommentsTest extends TestCase
         $replyComment = $this->createComment('resource', $resource->id, ['parent_comment_id' => $parentComment['id']]);
 
         // Attempt to post a nested comment (would be depth 3) – should fail.
-        $nestedReplyPayload = [
+        $nestedReplyPayload = StoreCommentRequestFactory::new()->create([
             'content' => 'Reply level 3 exceeds depth limit.',
             'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => $replyComment['id'],
-        ];
+        ]);
         $nestedReplyResponse = $this->postJson(route('comments.store'), $nestedReplyPayload);
         $nestedReplyResponse->assertStatus(422);
     }
@@ -200,12 +199,13 @@ class CommentsTest extends TestCase
         }
 
         // Attempt one more reply, which should be rejected.
-        $extraReplyResponse = $this->postJson(route('comments.store'), [
+        $extraReplyPayload = StoreCommentRequestFactory::new()->create([
             'content' => 'This reply should fail due to reply limit.',
             'commentable_key' => 'resource',
             'commentable_id' => $resource->id,
             'parent_comment_id' => $rootComment['id'],
         ]);
+        $extraReplyResponse = $this->postJson(route('comments.store'), $extraReplyPayload);
         $extraReplyResponse->assertStatus(422);
     }
 

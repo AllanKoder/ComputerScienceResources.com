@@ -9,8 +9,9 @@ use App\Models\User;
 use App\Services\ResourceEditsService;
 use Mockery;
 use Mockery\MockInterface;
-use Str;
+use Tests\RequestFactories\Comment\StoreCommentRequestFactory;
 use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
+use Tests\RequestFactories\ResourceEdit\StoreResourceEditFactory;
 use Tests\RequestFactories\ResourceReview\StoreResourceReviewFactory;
 
 trait TestingUtils
@@ -46,15 +47,10 @@ trait TestingUtils
 
     public function createResourceEdit($resourceId, $changes = []): ResourceEdits
     {
-        if (empty($changes)) {
-            $changes['name'] = 'default change';
+        $editData = StoreResourceEditFactory::new()->create();
+        if (! empty($changes)) {
+            $editData['proposed_changes'] = array_merge($editData['proposed_changes'], $changes);
         }
-
-        $editData = [
-            'edit_title' => Str::uuid(),
-            'edit_description' => 'This is a test edit.',
-            'proposed_changes' => $changes,
-        ];
 
         // Submit the edit
         $this->actingAs($this->user);
@@ -89,12 +85,10 @@ trait TestingUtils
 
     public function createComment(string $commentableKey, int $commentableId, array $overrides = [])
     {
-        $payload = array_merge([
-            'content' => fake()->sentence(),
+        $payload = StoreCommentRequestFactory::new()->create(array_merge([
             'commentable_key' => $commentableKey,
             'commentable_id' => $commentableId,
-            'parent_comment_id' => null,
-        ], $overrides);
+        ], $overrides));
 
         $response = $this->postJson(route('comments.store'), $payload);
         $response->assertStatus(200);

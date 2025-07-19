@@ -46,7 +46,7 @@ class ComputerScienceResourceControllerTest extends TestCase
         $this->actingAs($this->user);
 
         $formData = StoreResourceRequestFactory::new()->create();
-        $formData['image_file'] = UploadedFile::fake()->image('avatar.jpg');
+        $formData['image_file'] = UploadedFile::fake()->image('resource_image.jpg');
 
         $response = $this->post(route('resources.store'), $formData);
 

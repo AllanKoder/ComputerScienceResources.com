@@ -13,7 +13,7 @@ use Illuminate\Http\UploadedFile;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Storage;
 use Tests\Feature\Utils\TestingUtils;
-use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
+use Tests\RequestFactories\ResourceEdit\StoreResourceEditFactory;
 use Tests\TestCase;
 
 class ResourceEditsTest extends TestCase
@@ -57,14 +57,12 @@ class ResourceEditsTest extends TestCase
 
         $resource = ComputerScienceResource::factory()->create();
 
-        $testData['edit_title'] = 'title';
-        $testData['edit_description'] = 'description';
-        $testData['proposed_changes'] = [];
-        $testData['proposed_changes'][$field] = $invalidValue;
+        $editData = StoreResourceEditFactory::new()->create();
+        $editData['proposed_changes'][$field] = $invalidValue;
 
         $response = $this->postJson(route('resource_edits.store', [
             'computerScienceResource' => $resource->id,
-        ]), $testData);
+        ]), $editData);
 
         $this->assertTrue(
             $response->status() === 422,
@@ -128,10 +126,7 @@ class ResourceEditsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
 
         // Create valid edit payload and change at least one attribute.
-        $editData = StoreResourceRequestFactory::new()->create();
-        $editData['edit_title'] = 'Proposed Update';
-        $editData['edit_description'] = 'Proposing an update to the resource';
-
+        $editData = StoreResourceEditFactory::new()->create();
         $editData['proposed_changes']['name'] = $resource->name.' Updated';
 
         $response = $this->post(route('resource_edits.store', $resource), $editData);
