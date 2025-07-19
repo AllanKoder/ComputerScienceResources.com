@@ -12,6 +12,7 @@ use Mockery\MockInterface;
 use Str;
 use Tests\TestResources\ComputerScienceResourceTestResource;
 use Tests\TestResources\ResourceReviewTestResource;
+use Tests\RequestFactories\ResourceReview\StoreResourceReviewFactory;
 
 trait TestingUtils
 {
@@ -31,7 +32,7 @@ trait TestingUtils
             $this->actingAs($user);
         }
 
-        $reviewForm = ResourceReviewTestResource::fake($overrides);
+        $reviewForm = StoreResourceReviewFactory::new()->create($overrides);
         $response = $this->post(route('reviews.store', $id), $reviewForm);
         $response->assertStatus(200); // Success
 
