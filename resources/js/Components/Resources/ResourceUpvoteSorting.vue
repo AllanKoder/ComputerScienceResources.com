@@ -21,7 +21,7 @@ const props = defineProps({
 function handleSortChange(newSortType) {
     // Change the sort_by parameter
     const baseUrl = route('resources.show', {
-        computerScienceResource: props.resourceSlug,
+        slug: props.resourceSlug,
         tab: props.tab,
     });
 

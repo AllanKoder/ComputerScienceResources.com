@@ -95,7 +95,7 @@ const submitReview = async (event) => {
             // Clear localStorage on successful submission
             clearLocalStorage();
 
-            const routeParams = { computerScienceResource: props.resourceSlug };
+            const routeParams = { slug: props.resourceSlug };
             if (props.isEditingMode) {
                 routeParams.tab = "reviews";
                 routeParams.sort_by = "recently_updated";

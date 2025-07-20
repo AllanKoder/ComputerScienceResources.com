@@ -110,8 +110,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                         <BackButton
                             :route="
                                 route('resources.show', {
-                                    computerScienceResource:
-                                        originalResource.slug,
+                                    slug: originalResource.slug,
                                     tab: 'edits',
                                 })
                             "
@@ -241,9 +240,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                         <Link
                                             :href="
                                                 route('resources.show', {
-                                                    computerScienceResource:
-                                                        originalResource
-                                                            .slug,
+                                                    slug: originalResource.slug,
                                                 })
                                             "
                                             class="group"

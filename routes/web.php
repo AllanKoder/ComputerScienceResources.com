@@ -60,7 +60,7 @@ Route::get('/about', function () {
 
 Route::controller(ComputerScienceResourceController::class)->group(function () {
     Route::get('/resources', 'index')->name('resources.index');
-    Route::get('/resources/{computerScienceResource}/{tab?}', 'show')->name('resources.show');
+    Route::get('/resources/{slug}/{tab?}', 'show')->name('resources.show');
 });
 
 // Comments

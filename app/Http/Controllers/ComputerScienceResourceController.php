@@ -110,15 +110,16 @@ class ComputerScienceResourceController extends Controller
 
         Log::debug('Created resource '.json_encode($resource));
 
-        return redirect(route('resources.show', ['computerScienceResource' => $resource->slug]))
+        return redirect(route('resources.show', ['slug' => $resource->slug]))
             ->with('success', 'Created Resource Succesfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, ComputerScienceResource $computerScienceResource, string $tab = 'reviews')
+    public function show(Request $request, string $slug, string $tab = 'reviews')
     {
+        $computerScienceResource = ComputerScienceResource::where('slug', $slug)->firstOrFail();
         // Get the review summaries
         $computerScienceResource->load('reviewSummary');
         $computerScienceResource->load('user');
@@ -128,7 +129,7 @@ class ComputerScienceResourceController extends Controller
         if (! in_array($tab, $validTabs)) {
             // Redirect to default if invalid
             return redirect()->route('resources.show', [
-                'computerScienceResource' => $computerScienceResource->slug,
+                'slug' => $computerScienceResource->slug,
                 'tab' => 'reviews',
             ]);
         }

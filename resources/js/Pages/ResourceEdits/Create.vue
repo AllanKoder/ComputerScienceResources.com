@@ -144,7 +144,7 @@ const submit = async () => {
                         <BackButton
                             :route="
                                 route('resources.show', {
-                                    computerScienceResource: props.resource.slug,
+                                    slug: props.resource.slug,
                                     tab: 'edits',
                                 })
                             "
