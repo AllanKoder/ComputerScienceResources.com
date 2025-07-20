@@ -12,6 +12,11 @@ class StoreResourceEditFactory extends RequestFactory
         $difficulties = config('computerScienceResource.difficulties');
         $pricings = config('computerScienceResource.pricings');
 
+        // Ensure at least 3 unique topic tags
+        do {
+            $topicTags = array_unique($this->faker->words(mt_rand(4, 9)));
+        } while (count($topicTags) < 3);
+
         $possibleChanges = [
             'name' => $this->faker->words(mt_rand(2, 4), true),
             'description' => $this->faker->paragraphs(2, true),
@@ -20,7 +25,7 @@ class StoreResourceEditFactory extends RequestFactory
             'platforms' => $this->faker->randomElements($platforms, rand(1, 3)),
             'difficulty' => $this->faker->randomElement($difficulties),
             'pricing' => $this->faker->randomElement($pricings),
-            'topic_tags' => array_unique($this->faker->words(mt_rand(3, 7))),
+            'topic_tags' => array_values($topicTags),
             'programming_language_tags' => array_unique($this->faker->words(mt_rand(1, 3))),
             'general_tags' => array_unique($this->faker->words(mt_rand(1, 3))),
         ];

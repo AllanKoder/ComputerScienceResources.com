@@ -15,7 +15,9 @@ return new class extends Migration
         if (! Schema::hasTable('computer_science_resources')) {
             Schema::create('computer_science_resources', function (Blueprint $table) {
                 $table->id();
+                $table->timestamps();
                 $table->string('slug')->unique();
+
                 // User who posted
                 $table->foreignIdFor(User::class);
 
@@ -33,7 +35,6 @@ return new class extends Migration
                 $table->enum('pricing', ['free', 'premium', 'paid', 'freemium'])
                     ->index();
 
-                $table->timestamps();
             });
         }
     }

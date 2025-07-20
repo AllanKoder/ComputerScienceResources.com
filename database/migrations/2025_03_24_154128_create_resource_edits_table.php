@@ -18,6 +18,8 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->timestamps();
 
+            $table->softDeletes();
+
             // The resource we are editting
             $table->foreignIdFor(ComputerScienceResource::class)->constrained()->cascadeOnDelete();
             // The user who created the edit

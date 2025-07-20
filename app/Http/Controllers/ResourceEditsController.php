@@ -18,7 +18,7 @@ class ResourceEditsController extends Controller
 {
     public function __construct(
         private DataNormalizationService $dataNormalizationService
-    ) { }
+    ) {}
 
     /**
      * Return the form to create a edit.
@@ -120,20 +120,17 @@ class ResourceEditsController extends Controller
         }
 
         if (array_key_exists('image_path', $changes)) {
-            // Delete the existing resource image from storage
-            if ($resource->image_path) {
-                Storage::disk('public')->delete($resource->image_path);
-            }
+            // Removed code to delete photo, will be handled in a cron job
 
             $destPath = null;
             if (isset($changes['image_path'])) {
-                // Move the new file from 'resource-edits' to 'resource'
+                // Copy the new file from 'resource-edits' to 'resource' (do not delete the old one)
                 $sourcePath = $changes['image_path'];
                 $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
                 $newFileName = Str::random(40).'.'.$fileExtension;
                 $destPath = 'resource/'.$newFileName;
 
-                Storage::disk('public')->move($sourcePath, $destPath);
+                Storage::disk('public')->copy($sourcePath, $destPath);
             }
 
             // Update image_path in DB

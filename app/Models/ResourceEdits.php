@@ -6,26 +6,29 @@ use App\Observers\ResourceEditsObserver;
 use App\Services\ResourceEditsService;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
-use Cviebrock\EloquentSluggable\Sluggable;
 
 #[ObservedBy([ResourceEditsObserver::class])]
 class ResourceEdits extends Model
 {
     use CascadesDeletes;
-    use Sluggable;
-
     use HasComments;
     /** @use HasFactory<\Database\Factories\ResourceEditsFactory> */
     use HasFactory;
     use HasVotes;
+
+    use Sluggable;
+
+    use SoftDeletes;
 
     protected $cascadeDeletes = ['votes', 'upvoteSummary', 'comments', 'commentsCountRelationship'];
 
@@ -41,15 +44,13 @@ class ResourceEdits extends Model
 
     /**
      * Return the sluggable configuration array for this model.
-     *
-     * @return array
      */
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'edit_title'
-            ]
+                'source' => 'edit_title',
+            ],
         ];
     }
 

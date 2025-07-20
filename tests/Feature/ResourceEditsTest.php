@@ -153,8 +153,6 @@ class ResourceEditsTest extends TestCase
         $mergeAttempts = 10;
 
         for ($i = 0; $i < $mergeAttempts; $i++) {
-            $oldImagePath = $resource->image_path;
-
             $changes = [
                 'name' => "Resource Name Edited {$i}",
                 'description' => "Resource Description Changed {$i}",
@@ -176,7 +174,6 @@ class ResourceEditsTest extends TestCase
             $this->assertEquals($changes['name'], $resource->name);
             $this->assertEquals($changes['description'], $resource->description);
             Storage::disk('public')->assertExists($resource->image_path);
-            Storage::disk('public')->assertMissing($oldImagePath);
 
             $this->assertEquals($changes['page_url'], $resource->page_url);
             $this->assertEquals($changes['difficulty'], $resource->difficulty);
@@ -240,10 +237,14 @@ class ResourceEditsTest extends TestCase
         $this->assertEmpty(UpvoteSummary::where('upvotable_id', $edit->id)->where('upvotable_type', ResourceEdits::class)->get());
 
         $this->assertEmpty(Comment::where('commentable_id', $edit->id)->where('commentable_type', ResourceEdits::class)->get());
+
+        // Check that the resource edit still edits (soft deleted)
+        $this->assertNotEmpty(ResourceEdits::withTrashed()->find($edit->id));
     }
 
-    public function test_merge_edits_deletes_previous_resource_image(): void
+    public function test_merge_edits_keep_previous_resource_image(): void
     {
+        // We want the image to remain for a period of time
         Storage::fake('public');
         $this->actingAs($this->user);
 
@@ -267,8 +268,8 @@ class ResourceEditsTest extends TestCase
         // Refresh the resource model from the database
         $resource->refresh();
 
-        // Assert the old image is deleted and the new one exists
-        Storage::disk('public')->assertMissing($oldImagePath);
+        // Assert the old image is still there and the new one exists
+        Storage::disk('public')->assertExists($oldImagePath);
         Storage::disk('public')->assertExists($resource->image_path);
         $this->assertNotEquals($oldImagePath, $resource->image_path);
     }

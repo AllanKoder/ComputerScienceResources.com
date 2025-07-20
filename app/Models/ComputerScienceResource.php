@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Observers\ComputerScienceResourceObserver;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
+use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,18 +15,15 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Tags\HasTags;
-use Cviebrock\EloquentSluggable\Sluggable;
 
 #[ObservedBy([ComputerScienceResourceObserver::class])]
 class ComputerScienceResource extends Model
 {
-    use HasFactory;
-    use Sluggable;
-
     use HasComments;
-
+    use HasFactory;
     use HasTags;
     use HasVotes;
+    use Sluggable;
 
     protected $table = 'computer_science_resources';
 
@@ -35,15 +33,13 @@ class ComputerScienceResource extends Model
 
     /**
      * Return the sluggable configuration array for this model.
-     *
-     * @return array
      */
     public function sluggable(): array
     {
         return [
             'slug' => [
-                'source' => 'name'
-            ]
+                'source' => 'name',
+            ],
         ];
     }
 
