@@ -36,7 +36,7 @@ const props = defineProps({
                         <Link
                             :href="
                                 route('resource_edits.show', {
-                                    resourceEdits: edit.id,
+                                    slug: edit.slug,
                                 })
                                 "
                         >

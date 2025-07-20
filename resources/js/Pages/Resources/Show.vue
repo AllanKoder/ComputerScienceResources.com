@@ -174,7 +174,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                     </div>
 
                     <div v-else-if="props.tab === 'edits'">
-                        <ProposeEditsButton :resource-id="props.resource.id" />
+                        <ProposeEditsButton :resource-slug="props.resource.slug" />
                         <ResourceEditsFAQ class="mb-5" />
                         <Deferred data="resourceEdits">
                             <template #fallback>

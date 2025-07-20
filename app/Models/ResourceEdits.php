@@ -14,11 +14,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
+use Cviebrock\EloquentSluggable\Sluggable;
 
 #[ObservedBy([ResourceEditsObserver::class])]
 class ResourceEdits extends Model
 {
     use CascadesDeletes;
+    use Sluggable;
 
     use HasComments;
     /** @use HasFactory<\Database\Factories\ResourceEditsFactory> */
@@ -36,6 +38,20 @@ class ResourceEdits extends Model
     protected $casts = [
         'proposed_changes' => 'array',
     ];
+
+    /**
+     * Return the sluggable configuration array for this model.
+     *
+     * @return array
+     */
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'edit_title'
+            ]
+        ];
+    }
 
     public function resource(): BelongsTo
     {

@@ -36,7 +36,7 @@ Route::middleware([
 
     // Resource Edits
     Route::controller(ResourceEditsController::class)->group(function () {
-        Route::get('/resource/{computerScienceResource}/edit/create', 'create')->name('resource_edits.create');
+        Route::get('/resource/{slug}/edit/create', 'create')->name('resource_edits.create');
         Route::post('/resource/{computerScienceResource}/edit/', 'store')->name('resource_edits.store');
         Route::post('/resourceEdits/{resourceEdits}/merge/', 'merge')->name('resource_edits.merge');
     });
@@ -74,7 +74,7 @@ Route::controller(TagFrequencyController::class)->group(function () {
 
 // Resource Edits
 Route::controller(ResourceEditsController::class)->group(function () {
-    Route::get('/resource/edit/{resourceEdits}', 'show')->name('resource_edits.show');
+    Route::get('/resource/edit/{slug}', 'show')->name('resource_edits.show');
 });
 
 require __DIR__.'/socialstream.php';

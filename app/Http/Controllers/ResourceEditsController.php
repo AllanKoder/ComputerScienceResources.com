@@ -16,19 +16,16 @@ use Str;
 
 class ResourceEditsController extends Controller
 {
-    private DataNormalizationService $dataService;
-
     public function __construct(
         private DataNormalizationService $dataNormalizationService
-    ) {
-        $this->dataService = $dataNormalizationService;
-    }
+    ) { }
 
     /**
      * Return the form to create a edit.
      */
-    public function create(ComputerScienceResource $computerScienceResource)
+    public function create(string $slug)
     {
+        $computerScienceResource = ComputerScienceResource::where('slug', $slug)->firstOrFail();
         $computerScienceResource->load('user');
 
         return Inertia::render('ResourceEdits/Create', [
@@ -69,7 +66,7 @@ class ResourceEditsController extends Controller
             'proposed_changes' => $actualChanges,
         ]);
 
-        return redirect()->route('resource_edits.show', ['resourceEdits' => $resourceEdit->id])
+        return redirect()->route('resource_edits.show', ['slug' => $resourceEdit->slug])
             ->with('success', 'The proposed edits were created. Others can now view it.');
     }
 
@@ -92,8 +89,10 @@ class ResourceEditsController extends Controller
         return $actualChanges;
     }
 
-    public function show(ResourceEdits $resourceEdits)
+    public function show(string $slug)
     {
+        $resourceEdits = ResourceEdits::where('slug', $slug)->firstOrFail();
+
         $resourceEdits->load('resource');
         $resourceEdits->load('user');
 

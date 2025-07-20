@@ -1,6 +1,6 @@
 <script setup>
 import { ref, defineEmits } from "vue";
-import Dropdown from 'primevue/dropdown';
+import { Select } from "primevue";
 
 const props = defineProps({
     initialValue: {
@@ -28,7 +28,7 @@ const emit = defineEmits(['change'])
 <template>
     <div class="flex items-center gap-2 py-4">
         <label class="font-semibold text-gray-700">Sort by:</label>
-        <Dropdown
+        <Select
             v-model="selectedSort"
             :options="sortOptions"
             optionLabel="label"

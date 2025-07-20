@@ -20,15 +20,6 @@ const logout = () => {
     router.post(route('logout'));
 };
 
-const alignmentClasses = computed(() => {
-    if (props.align === 'left') {
-        return 'origin-top-left left-0';
-    } else if (props.align === 'right') {
-        return 'origin-top-right right-0';
-    } else {
-        return 'origin-top';
-    }
-});
 </script>
 
 <template>
