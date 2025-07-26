@@ -16,6 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 #[ObservedBy([ResourceEditsObserver::class])]
 class ResourceEdits extends Model
@@ -25,6 +27,7 @@ class ResourceEdits extends Model
     /** @use HasFactory<\Database\Factories\ResourceEditsFactory> */
     use HasFactory;
     use HasVotes;
+    use LogsActivity;
 
     use Sluggable;
 
@@ -41,6 +44,13 @@ class ResourceEdits extends Model
     protected $casts = [
         'proposed_changes' => 'array',
     ];
+
+    protected static $recordEvents = ['created', 'updated'];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logUnguarded();
+    }
 
     /**
      * Return the sluggable configuration array for this model.
@@ -88,7 +98,7 @@ class ResourceEdits extends Model
     protected function canMergeEdits(): Attribute
     {
         return Attribute::make(
-            get: fn () => app(ResourceEditsService::class)->canMergeEdits($this) && Auth::id() === $this->user_id,
+            get: fn() => app(ResourceEditsService::class)->canMergeEdits($this) && Auth::id() === $this->user_id,
         );
     }
 }

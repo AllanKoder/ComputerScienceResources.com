@@ -85,8 +85,8 @@ const submitReview = async (event) => {
     isSubmitting.value = true;
 
     const url = props.isEditingMode
-        ? route("reviews.update", { computerScienceResource: props.resourceSlug })
-        : route("reviews.store", { computerScienceResource: props.resourceSlug });
+        ? route("reviews.update", { computerScienceResource: props.resourceId })
+        : route("reviews.store", { computerScienceResource: props.resourceId });
 
     const method = props.isEditingMode ? "put" : "post";
 
@@ -120,7 +120,6 @@ const submitReview = async (event) => {
         v-if="isDataLoaded"
         class="mx-auto bg-white shadow-lg rounded-2xl p-6 relative"
     >
-    {{ props }}
         <FormSaverChip
             :is-saved="isSavedToLocalStorage"
             :has-content="hasFormContent"
