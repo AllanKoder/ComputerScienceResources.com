@@ -59,6 +59,11 @@ class CommentController extends Controller
             throw $e; // Let Laravel handle validation errors (422)
         } catch(NotFoundHttpException $e) {
             DB::rollBack();
+            Log::warning('Comment target not found', [
+                'error' => $e->getMessage(),
+                'validated_data' => $validatedData,
+                'user_id' => Auth::id(),
+            ]);
             throw $e; // Let Laravel handle 404 errors
         } catch (Throwable $e) {
             DB::rollBack();

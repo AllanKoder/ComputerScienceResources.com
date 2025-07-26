@@ -37,6 +37,11 @@ class UpvoteController extends Controller
             $model = $this->modelResolver->resolve($typeKey, $id);
 
             if (! $model) {
+                Log::warning('Upvote failed: Model not found', [
+                    'user_id' => Auth::id(),
+                    'type_key' => $typeKey,
+                    'id' => $id,
+                ]);
                 return response()->json(['message' => 'Model not found'], 404);
             }
 
@@ -44,6 +49,13 @@ class UpvoteController extends Controller
             $result = $model->upvote($user_id);
 
             DB::commit();
+
+            Log::debug('User upvoted model', [
+                'user_id' => $user_id,
+                'type_key' => $typeKey,
+                'id' => $id,
+                'result' => $result,
+            ]);
 
             return response()->json([
                 'userVote' => $result['userVote'],
@@ -81,6 +93,11 @@ class UpvoteController extends Controller
             $model = $this->modelResolver->resolve($typeKey, $id);
 
             if (! $model) {
+                Log::warning('Downvote failed: Model not found', [
+                    'user_id' => Auth::id(),
+                    'type_key' => $typeKey,
+                    'id' => $id,
+                ]);
                 return response()->json(['message' => 'Model not found'], 404);
             }
 
@@ -88,6 +105,13 @@ class UpvoteController extends Controller
             $result = $model->downvote($user_id);
 
             DB::commit();
+
+            Log::debug('User downvoted model', [
+                'user_id' => $user_id,
+                'type_key' => $typeKey,
+                'id' => $id,
+                'result' => $result,
+            ]);
 
             return response()->json([
                 'userVote' => $result['userVote'],

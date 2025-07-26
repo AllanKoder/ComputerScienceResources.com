@@ -19,12 +19,6 @@ class CommentObserver
             'commentable_id' => $comment->commentable_id,
         ]);
 
-        // Create the upvotes summary
-        UpvoteSummary::create([
-            'upvotable_id' => $comment->id,
-            'upvotable_type' => Comment::class,
-        ]);
-
         $commentsCount = CommentsCount::firstOrNew(
             [
                 'commentable_type' => $comment->commentable_type,

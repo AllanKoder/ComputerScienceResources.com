@@ -3,7 +3,6 @@
 namespace App\Observers;
 
 use App\Models\ResourceEdits;
-use App\Models\UpvoteSummary;
 
 class ResourceEditsObserver
 {
@@ -12,11 +11,7 @@ class ResourceEditsObserver
      */
     public function created(ResourceEdits $resourceEdits): void
     {
-        // Create the upvotes summary
-        UpvoteSummary::create([
-            'upvotable_id' => $resourceEdits->id,
-            'upvotable_type' => ResourceEdits::class,
-        ]);
+
     }
 
     /**

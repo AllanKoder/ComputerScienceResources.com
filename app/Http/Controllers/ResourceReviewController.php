@@ -37,7 +37,7 @@ class ResourceReviewController extends Controller
         ]);
 
         // Create the resource review
-        ResourceReview::create([
+        $review = ResourceReview::create([
             'user_id' => Auth::id(),
             'computer_science_resource_id' => $computerScienceResource->id,
             'title' => $validatedData['title'],
@@ -50,6 +50,12 @@ class ResourceReviewController extends Controller
             'updates' => $validatedData['updates'],
             'pros' => $validatedData['pros'],
             'cons' => $validatedData['cons'],
+        ]);
+
+        Log::info('Resource review created', [
+            'user_id' => Auth::id(),
+            'computer_science_resource_id' => $computerScienceResource->id,
+            'review_id' => $review->id,
         ]);
 
         return response()->json();
@@ -92,6 +98,12 @@ class ResourceReviewController extends Controller
             'updates' => $validatedData['updates'],
             'pros' => $validatedData['pros'],
             'cons' => $validatedData['cons'],
+        ]);
+
+        Log::info('Resource review updated', [
+            'user_id' => Auth::id(),
+            'computer_science_resource_id' => $computerScienceResource->id,
+            'review_id' => $existingReview->id,
         ]);
 
         return response()->json();

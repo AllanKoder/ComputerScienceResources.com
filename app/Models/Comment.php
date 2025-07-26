@@ -10,6 +10,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 #[ObservedBy([CommentObserver::class])]
 class Comment extends Model
@@ -19,12 +21,18 @@ class Comment extends Model
     /** @use HasFactory<\Database\Factories\CommentFactory> */
     use HasFactory;
     use HasVotes;
+    use LogsActivity;
 
     protected $cascadeDeletes = ['votes', 'upvoteSummary'];
 
     protected $with = ['votes', 'upvoteSummary'];
 
     protected $appends = ['vote_score', 'user_vote'];
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()->logAll();
+    }
 
     public function replies(): HasMany
     {

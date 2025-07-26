@@ -113,7 +113,13 @@ class ComputerScienceResourceController extends Controller
 
             DB::commit();
 
-            Log::debug('Created resource '.json_encode($resource));
+            Log::info('Resource created', [
+                'resource_id' => $resource->id,
+                'user_id' => Auth::id(),
+                'name' => $resource->name,
+                'slug' => $resource->slug,
+                'platforms' => $resource->platforms,
+            ]);
 
             return redirect(route('resources.show', ['slug' => $resource->slug]))
                 ->with('success', 'Created Resource Succesfully!');

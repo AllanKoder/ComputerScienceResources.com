@@ -161,6 +161,14 @@ class ResourceEditsController extends Controller
 
             DB::commit();
 
+            Log::info('Resource edit merged', [
+                'resource_id' => $resource->id,
+                'resource_edit_id' => $resourceEdits->id,
+                'user_id' => Auth::id(),
+                'edit_title' => $resourceEdits->edit_title,
+                'edit_description' => $resourceEdits->edit_description,
+            ]);
+
             return redirect(route('resources.show', ['slug' => $resource->slug]))
                 ->with('success', 'Successfully merged new changed!');
         } catch (Throwable $e) {

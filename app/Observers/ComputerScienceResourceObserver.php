@@ -13,12 +13,6 @@ class ComputerScienceResourceObserver
      */
     public function created(ComputerScienceResource $computerScienceResource): void
     {
-        // Create the upvotes summary
-        UpvoteSummary::create([
-            'upvotable_id' => $computerScienceResource->id,
-            'upvotable_type' => ComputerScienceResource::class,
-        ]);
-
         // TagFrequencyChanged is in store ComputerScienceResource controller
     }
 

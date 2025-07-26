@@ -13,6 +13,19 @@ use Illuminate\Support\Facades\Auth;
 trait HasVotes
 {
     /**
+     * Automatically create an UpvoteSummary when the model is created.
+     */
+    protected static function bootHasVotes()
+    {
+        static::created(function ($model) {
+            UpvoteSummary::firstOrCreate([
+                'upvotable_id' => $model->id,
+                'upvotable_type' => get_class($model),
+            ]);
+        });
+    }
+
+    /**
      * Accessor to get the current user's vote.
      */
     protected function userVote(): Attribute

@@ -13,12 +13,6 @@ class ResourceReviewObserver
      */
     public function created(ResourceReview $resourceReview): void
     {
-        // Create the upvotes summary
-        UpvoteSummary::create([
-            'upvotable_id' => $resourceReview->id,
-            'upvotable_type' => ResourceReview::class,
-        ]);
-
         ResourceReviewProcessed::dispatch(
             $resourceReview->computer_science_resource_id,
             null,
@@ -43,7 +37,11 @@ class ResourceReviewObserver
      */
     public function deleted(ResourceReview $resourceReview): void
     {
-        //
+        ResourceReviewProcessed::dispatch(
+            $resourceReview->computer_science_resource_id,
+            $resourceReview->attributesToArray(),
+            null,
+        );
     }
 
     /**

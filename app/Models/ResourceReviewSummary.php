@@ -3,13 +3,11 @@
 namespace App\Models;
 
 use App\Traits\HasComments;
-use App\Traits\HasVotes;
 use Illuminate\Database\Eloquent\Model;
 
 class ResourceReviewSummary extends Model
 {
     use HasComments;
-    use HasVotes;
 
     public $timestamps = false;
 

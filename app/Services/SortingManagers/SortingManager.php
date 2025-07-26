@@ -2,7 +2,6 @@
 
 namespace App\Services\SortingManagers;
 
-use App\Contracts\SortStrategy;
 use Illuminate\Database\Eloquent\Builder;
 
 class SortingManager
