@@ -5,14 +5,15 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Comment\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\UserResource;
-use App\Models\Comment;
 use App\Services\CommentService;
 use App\Services\ModelResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\Rule;
-use Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 class CommentController extends Controller
 {
@@ -34,108 +35,41 @@ class CommentController extends Controller
         $validatedData = $request->validated();
         Log::debug('Comment Controller Store', ['validated data' => $validatedData]);
 
-        $comment = new Comment;
-        $comment->content = $validatedData['content'];
-        $comment->user_id = Auth::id();
+        try {
+            DB::beginTransaction();
 
-        $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_key']);
-        $commentableId = $validatedData['commentable_id'];
+            $comment = $this->commentService->createComment($validatedData);
 
-        // Ensure that the model exists
-        $model = $this->modelResolver->resolve($validatedData['commentable_key'], $commentableId);
-        if (! $model) {
-            return response()->json(['message' => 'Model not found'], 404);
+            Log::debug('New comment saved', [
+                'comment_id' => $comment->id,
+                'user_id' => $comment->user_id,
+                'commentable_type' => $comment->commentable_type,
+                'commentable_id' => $comment->commentable_id,
+                'depth' => $comment->depth,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'new_comment' => new CommentResource($comment),
+                'user' => new UserResource(Auth::user()),
+            ]);
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            throw $e; // Let Laravel handle validation errors (422)
+        } catch(NotFoundHttpException $e) {
+            DB::rollBack();
+            throw $e; // Let Laravel handle 404 errors
+        } catch (Throwable $e) {
+            DB::rollBack();
+            Log::critical('Failed to save comment', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'validated_data' => $validatedData,
+                'user_id' => Auth::id(),
+            ]);
+            return response()->json(['message' => 'Failed to save comment'], 500);
         }
-
-        // Set the commentable type
-        $comment->commentable_type = $commentableType;
-        $comment->commentable_id = $commentableId;
-
-        // Top level comment
-        $parentCommentId = $validatedData['parent_comment_id'];
-        if (! $parentCommentId) {
-            $comment->parent_comment_id = null;
-            $comment->depth = 1;
-            $comment->children_count = 0;
-        }
-        // Is reply to a comment
-        else {
-            $parent = Comment::find($parentCommentId);
-            $new_comment_depth = $parent->depth + 1;
-
-            // Check if the parent is the root comment
-            if ($parent->depth == 1) {
-                $root_comment = $parent;
-                $root_comment_id = $parent->id;
-            } else {
-                // If not, fetch the root comment
-                $root_comment_id = $parent->root_comment_id;
-                $root_comment = Comment::find($root_comment_id);
-            }
-
-            $replies_count = $root_comment->children_count ?? 0;
-
-            // Ensure that they are commenting to the same root
-            // And the depth is not exceeded
-            Validator::validate(
-                [
-                    'commentable_id' => $commentableId,
-                    'commentable_type' => $commentableType,
-                    'depth' => $new_comment_depth,
-                    'replies_count' => $replies_count,
-                ],
-                [
-                    'commentable_id' => [
-                        'required',
-                        Rule::in([$parent->commentable_id]),
-                    ],
-                    'commentable_type' => [
-                        'required',
-                        Rule::in([$parent->commentable_type]),
-                    ],
-                    // Cannot exceed the max depth
-                    'depth' => [
-                        'required',
-                        'integer',
-                        'lte:'.(config('comment.max_depth')),
-                    ],
-                    // Cannot exceed max replies
-                    'replies_count' => [
-                        'required',
-                        'integer',
-                        'lt:'.(config('comment.max_replies')),
-                    ],
-                ]
-            );
-
-            // Set the parent id
-            $comment->parent_comment_id = $parentCommentId;
-
-            // Set the parent's root as this comment's root, unless it is the root itself.
-            $comment->root_comment_id = $root_comment_id;
-
-            // Set the new depth
-            $comment->depth = $new_comment_depth;
-
-            // Update the children count for root
-            $root_comment->children_count = $root_comment->children_count + 1;
-            $root_comment->save();
-        }
-
-        $comment->save();
-
-        Log::debug('New comment saved', [
-            'comment_id' => $comment->id,
-            'user_id' => $comment->user_id,
-            'commentable_type' => $comment->commentable_type,
-            'commentable_id' => $comment->commentable_id,
-            'depth' => $comment->depth,
-        ]);
-
-        return response()->json([
-            'new_comment' => new CommentResource($comment),
-            'user' => new UserResource(Auth::user()),
-        ]);
     }
 
     /**

@@ -11,8 +11,10 @@ use App\Services\ResourceEditsService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Str;
+use Throwable;
 
 class ResourceEditsController extends Controller
 {
@@ -107,56 +109,68 @@ class ResourceEditsController extends Controller
             return redirect()->back()->with('warning', 'Not enough approvals');
         }
 
-        $resource = ComputerScienceResource::findOrFail($resourceEdits->computer_science_resource_id);
-        $oldTagCounter = $resource->tagCounter();
+        DB::beginTransaction();
+        try {
+            $resource = ComputerScienceResource::findOrFail($resourceEdits->computer_science_resource_id);
+            $oldTagCounter = $resource->tagCounter();
 
-        // Go through each property in proposed_changes, and if it exists. then set the value
-        $changes = $resourceEdits->proposed_changes;
-        $proposedFields = ['name', 'description', 'page_url', 'platforms', 'difficulty', 'pricing'];
-        foreach ($proposedFields as $field) {
-            if (array_key_exists($field, $changes)) {
-                $resource->$field = $changes[$field];
-            }
-        }
-
-        if (array_key_exists('image_path', $changes)) {
-            // Removed code to delete photo, will be handled in a cron job
-
-            $destPath = null;
-            if (isset($changes['image_path'])) {
-                // Copy the new file from 'resource-edits' to 'resource' (do not delete the old one)
-                $sourcePath = $changes['image_path'];
-                $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
-                $newFileName = Str::random(40).'.'.$fileExtension;
-                $destPath = 'resource/'.$newFileName;
-
-                Storage::disk('public')->copy($sourcePath, $destPath);
+            // Go through each property in proposed_changes, and if it exists. then set the value
+            $changes = $resourceEdits->proposed_changes;
+            $proposedFields = ['name', 'description', 'page_url', 'platforms', 'difficulty', 'pricing'];
+            foreach ($proposedFields as $field) {
+                if (array_key_exists($field, $changes)) {
+                    $resource->$field = $changes[$field];
+                }
             }
 
-            // Update image_path in DB
-            $resource->image_path = $destPath;
-        }
+            if (array_key_exists('image_path', $changes)) {
+                // Removed code to delete photo, will be handled in a cron job
+                $destPath = null;
+                if (isset($changes['image_path'])) {
+                    // Copy the new file from 'resource-edits' to 'resource' (do not delete the old one)
+                    $sourcePath = $changes['image_path'];
+                    $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
+                    $newFileName = Str::random(40).'.'.$fileExtension;
+                    $destPath = 'resource/'.$newFileName;
 
-        $resource->save();
+                    Storage::disk('public')->copy($sourcePath, $destPath);
+                }
 
-        $proposedTagFields = ['topic_tags', 'programming_language_tags', 'general_tags'];
-        $allTags = [];
-        foreach ($proposedTagFields as $field) {
-            if (array_key_exists($field, $changes)) {
-                $resource->$field = $changes[$field];
-                $allTags[] = $changes[$field];
+                // Update image_path in DB
+                $resource->image_path = $destPath;
             }
+
+            $resource->save();
+
+            $proposedTagFields = ['topic_tags', 'programming_language_tags', 'general_tags'];
+            $allTags = [];
+            foreach ($proposedTagFields as $field) {
+                if (array_key_exists($field, $changes)) {
+                    $resource->$field = $changes[$field];
+                    $allTags[] = $changes[$field];
+                }
+            }
+
+            // Get the new tag counter
+            $newTags = collect($allTags)->flatten()->countBy()->toArray();
+            // Change tag frequency
+            TagFrequencyChanged::dispatch($oldTagCounter, $newTags);
+
+            // Delete the edit since we successfully merged the changes
+            $resourceEdits->delete();
+
+            DB::commit();
+
+            return redirect(route('resources.show', ['slug' => $resource->slug]))
+                ->with('success', 'Successfully merged new changed!');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            Log::critical('Failed to merge resource edits', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'resource_edit_id' => $resourceEdits->id,
+            ]);
+            return redirect()->back()->withErrors(['error' => 'Failed to merge resource edits. Please try again.']);
         }
-
-        // Get the new tag counter
-        $newTags = collect($allTags)->flatten()->countBy()->toArray();
-        // Change tag frequency
-        TagFrequencyChanged::dispatch($oldTagCounter, $newTags);
-
-        // Delete the edit since we successfully merged the changes
-        $resourceEdits->delete();
-
-        return redirect(route('resources.show', ['slug' => $resource->slug]))
-            ->with('success', 'Successfully merged new changed!');
     }
 }

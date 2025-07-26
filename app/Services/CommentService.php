@@ -6,10 +6,13 @@ use App\Http\Resources\CommentResource;
 use App\Http\Resources\UserResource;
 use App\Models\Comment;
 use App\Services\SortingManagers\GeneralVotesSortingManager;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CommentService
 {
@@ -151,5 +154,107 @@ class CommentService
             'users' => $users->values(),
             'has_more_comments' => $hasMoreComments,
         ];
+    }
+
+    /**
+     * Create and save a comment
+     *
+     * @param array $validatedData
+     * @return Comment
+     * @throws Exception
+     */
+    public function createComment(array $validatedData): Comment
+    {
+        $comment = new Comment;
+        $comment->content = $validatedData['content'];
+        $comment->user_id = Auth::id();
+
+        $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_key']);
+        $commentableId = $validatedData['commentable_id'];
+
+        // Ensure that the model exists
+        $model = $this->modelResolver->resolve($validatedData['commentable_key'], $commentableId);
+        if (! $model) {
+            throw new NotFoundHttpException();
+        }
+
+        // Set the commentable type
+        $comment->commentable_type = $commentableType;
+        $comment->commentable_id = $commentableId;
+
+        // Top level comment
+        $parentCommentId = $validatedData['parent_comment_id'];
+        if (! $parentCommentId) {
+            $comment->parent_comment_id = null;
+            $comment->depth = 1;
+            $comment->children_count = 0;
+        }
+        // Is reply to a comment
+        else {
+            $parent = Comment::find($parentCommentId);
+            $new_comment_depth = $parent->depth + 1;
+
+            // Check if the parent is the root comment
+            if ($parent->depth == 1) {
+                $root_comment = $parent;
+                $root_comment_id = $parent->id;
+            } else {
+                // If not, fetch the root comment
+                $root_comment_id = $parent->root_comment_id;
+                $root_comment = Comment::find($root_comment_id);
+            }
+
+            $replies_count = $root_comment->children_count ?? 0;
+
+            // Ensure that they are commenting to the same root
+            // And the depth is not exceeded
+            Validator::validate(
+                [
+                    'commentable_id' => $commentableId,
+                    'commentable_type' => $commentableType,
+                    'depth' => $new_comment_depth,
+                    'replies_count' => $replies_count,
+                ],
+                [
+                    'commentable_id' => [
+                        'required',
+                        Rule::in([$parent->commentable_id]),
+                    ],
+                    'commentable_type' => [
+                        'required',
+                        Rule::in([$parent->commentable_type]),
+                    ],
+                    // Cannot exceed the max depth
+                    'depth' => [
+                        'required',
+                        'integer',
+                        'lte:'.(config('comment.max_depth')),
+                    ],
+                    // Cannot exceed max replies
+                    'replies_count' => [
+                        'required',
+                        'integer',
+                        'lt:'.(config('comment.max_replies')),
+                    ],
+                ]
+            );
+
+            // Set the parent id
+            $comment->parent_comment_id = $parentCommentId;
+
+            // Set the parent's root as this comment's root, unless it is the root itself.
+            $comment->root_comment_id = $root_comment_id;
+
+            // Set the new depth
+            $comment->depth = $new_comment_depth;
+
+            // Update the children count for root
+            $root_comment->children_count = $root_comment->children_count + 1;
+            $root_comment->save();
+        }
+
+        $comment->save();
+
+        return $comment;
     }
 }

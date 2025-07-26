@@ -14,9 +14,10 @@ use App\Services\SortingManagers\GeneralVotesSortingManager;
 use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Throwable;
 
 class ComputerScienceResourceController extends Controller
 {
@@ -75,43 +76,57 @@ class ComputerScienceResourceController extends Controller
         $validatedData = $request->validated();
         Log::debug('Called store resource with data '.json_encode($request));
 
-        // Store the image onto storage
-        $path = null;
-        if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file']) {
-            $path = $imageFile->store('resource', 'public');
+        DB::beginTransaction();
+        try {
+            // Store the image onto storage
+            $path = null;
+            if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file']) {
+                $path = $imageFile->store('resource', 'public');
+            }
+
+            $resource = ComputerScienceResource::create([
+                'user_id' => Auth::id(),
+                'name' => $validatedData['name'],
+                'image_path' => $path,
+                'description' => $validatedData['description'],
+                'page_url' => $validatedData['page_url'],
+                'platforms' => $validatedData['platforms'],
+                'difficulty' => $validatedData['difficulty'],
+                'pricing' => $validatedData['pricing'],
+            ]);
+
+            // Add topics as tags
+            $resource->topic_tags = $validatedData['topic_tags'];
+
+            // Add programming languages as tags (if provided)
+            if (isset($validatedData['programming_language_tags'])) {
+                $resource->programming_language_tags = $validatedData['programming_language_tags'];
+            }
+
+            // Add general tags (if provided)
+            if (isset($validatedData['general_tags'])) {
+                $resource->general_tags = $validatedData['general_tags'];
+            }
+
+            // Dispatch tag frequency change event
+            TagFrequencyChanged::dispatch(null, $resource->tagCounter());
+
+            DB::commit();
+
+            Log::debug('Created resource '.json_encode($resource));
+
+            return redirect(route('resources.show', ['slug' => $resource->slug]))
+                ->with('success', 'Created Resource Succesfully!');
+        } catch (Throwable $e) {
+            DB::rollBack();
+            Log::critical('Failed to create resource', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => Auth::id(),
+                'data' => $validatedData,
+            ]);
+            return back()->withErrors(['error' => 'Failed to create resource. Please try again.']);
         }
-
-        $resource = ComputerScienceResource::create([
-            'user_id' => Auth::id(),
-            'name' => $validatedData['name'],
-            'image_path' => $path,
-            'description' => $validatedData['description'],
-            'page_url' => $validatedData['page_url'],
-            'platforms' => $validatedData['platforms'],
-            'difficulty' => $validatedData['difficulty'],
-            'pricing' => $validatedData['pricing'],
-        ]);
-
-        // Add topics as tags
-        $resource->topic_tags = $validatedData['topic_tags'];
-
-        // Add programming languages as tags (if provided)
-        if (isset($validatedData['programming_language_tags'])) {
-            $resource->programming_language_tags = $validatedData['programming_language_tags'];
-        }
-
-        // Add general tags (if provided)
-        if (isset($validatedData['general_tags'])) {
-            $resource->general_tags = $validatedData['general_tags'];
-        }
-
-        // Dispatch tag frequency change event
-        TagFrequencyChanged::dispatch(null, $resource->tagCounter());
-
-        Log::debug('Created resource '.json_encode($resource));
-
-        return redirect(route('resources.show', ['slug' => $resource->slug]))
-            ->with('success', 'Created Resource Succesfully!');
     }
 
     /**
@@ -162,7 +177,6 @@ class ComputerScienceResourceController extends Controller
             $data['resourceEdits'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy, $request) {
                     $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
-                    // TODO: ADD ERROR LOGS IF THIS MAKES IT RETURN NOTHING, SORTING SHOULD NOT CHANGE SIZE, ONLY ORDER
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
 
                     return $query->with('user')->paginate(10)->appends($request->query());
