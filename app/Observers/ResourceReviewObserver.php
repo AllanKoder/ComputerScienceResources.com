@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Events\ResourceReviewProcessed;
 use App\Models\ResourceReview;
-use App\Models\UpvoteSummary;
 
 class ResourceReviewObserver
 {

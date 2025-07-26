@@ -21,25 +21,12 @@ use Throwable;
 
 class ComputerScienceResourceController extends Controller
 {
-    protected $commentService;
-
-    protected $generalVotesSortingManager;
-
-    protected $reviewService;
-
-    protected $resourceSortingManager;
-
     public function __construct(
-        CommentService $commentService,
-        GeneralVotesSortingManager $generalVotesSortingManager,
-        ResourceReviewService $reviewService,
-        ResourceSortingManager $resourceSortingManager,
-    ) {
-        $this->commentService = $commentService;
-        $this->generalVotesSortingManager = $generalVotesSortingManager;
-        $this->reviewService = $reviewService;
-        $this->resourceSortingManager = $resourceSortingManager;
-    }
+        protected CommentService $commentService,
+        protected GeneralVotesSortingManager $generalVotesSortingManager,
+        protected ResourceReviewService $reviewService,
+        protected ResourceSortingManager $resourceSortingManager,
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -131,6 +118,7 @@ class ComputerScienceResourceController extends Controller
                 'user_id' => Auth::id(),
                 'data' => $validatedData,
             ]);
+
             return back()->withErrors(['error' => 'Failed to create resource. Please try again.']);
         }
     }

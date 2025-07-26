@@ -15,8 +15,8 @@ class ModelResolverService
     /**
      * Finds the model that exists for the given key and id
      *
-     * @param  $key, the colloquial name for the key
-     * @param  $id, the id for the key
+     * @param  $key,  the colloquial name for the key
+     * @param  $id,  the id for the key
      *
      * returns null if no model exists, otherwise, it will return the model
      */

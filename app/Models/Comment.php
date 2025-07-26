@@ -20,6 +20,7 @@ class Comment extends Model
 
     /** @use HasFactory<\Database\Factories\CommentFactory> */
     use HasFactory;
+
     use HasVotes;
     use LogsActivity;
 

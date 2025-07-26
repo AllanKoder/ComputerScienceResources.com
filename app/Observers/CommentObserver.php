@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Models\Comment;
 use App\Models\CommentsCount;
-use App\Models\UpvoteSummary;
 use Illuminate\Support\Facades\Log;
 
 class CommentObserver

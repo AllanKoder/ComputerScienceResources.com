@@ -4,7 +4,6 @@ namespace App\Observers;
 
 use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
-use App\Models\UpvoteSummary;
 
 class ComputerScienceResourceObserver
 {

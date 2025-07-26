@@ -14,9 +14,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
-use Spatie\Tags\HasTags;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Tags\HasTags;
 
 #[ObservedBy([ComputerScienceResourceObserver::class])]
 class ComputerScienceResource extends Model
@@ -25,8 +25,9 @@ class ComputerScienceResource extends Model
     use HasFactory;
     use HasTags;
     use HasVotes;
-    use Sluggable;
     use LogsActivity;
+    use Sluggable;
+
     protected $table = 'computer_science_resources';
 
     protected $guarded = [];
@@ -61,7 +62,7 @@ class ComputerScienceResource extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->image_path ? Storage::url($this->image_path) : null,
+            get: fn () => $this->image_path ? Storage::url($this->image_path) : null,
         );
     }
 
@@ -92,8 +93,8 @@ class ComputerScienceResource extends Model
     protected function platforms(): Attribute
     {
         return Attribute::make(
-            get: fn($value) => explode(',', $value),
-            set: fn($value) => implode(',', $value)
+            get: fn ($value) => explode(',', $value),
+            set: fn ($value) => implode(',', $value)
         );
     }
 
@@ -103,8 +104,8 @@ class ComputerScienceResource extends Model
     protected function topicTags(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->tagsWithType('topics')->pluck('name')->toArray(),
-            set: fn(array $value) => $this->syncTagsWithType($value, 'topics')
+            get: fn () => $this->tagsWithType('topics')->pluck('name')->toArray(),
+            set: fn (array $value) => $this->syncTagsWithType($value, 'topics')
         );
     }
 
@@ -114,8 +115,8 @@ class ComputerScienceResource extends Model
     protected function programmingLanguageTags(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->tagsWithType('programming_languages')->pluck('name')->toArray(),
-            set: fn(array $value) => $this->syncTagsWithType($value, 'programming_languages')
+            get: fn () => $this->tagsWithType('programming_languages')->pluck('name')->toArray(),
+            set: fn (array $value) => $this->syncTagsWithType($value, 'programming_languages')
         );
     }
 
@@ -125,8 +126,8 @@ class ComputerScienceResource extends Model
     protected function generalTags(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->tagsWithType('general_tags')->pluck('name')->toArray(),
-            set: fn(array $value) => $this->syncTagsWithType($value, 'general_tags')
+            get: fn () => $this->tagsWithType('general_tags')->pluck('name')->toArray(),
+            set: fn (array $value) => $this->syncTagsWithType($value, 'general_tags')
         );
     }
 
