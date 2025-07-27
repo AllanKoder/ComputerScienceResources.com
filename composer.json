@@ -8,6 +8,8 @@
     "require": {
         "php": "^8.2",
         "cviebrock/eloquent-sluggable": "^11.0",
+        "filament/filament": "^3.3",
+        "filament/tables": "^3.3",
         "inertiajs/inertia-laravel": "^2.0",
         "joelbutcher/socialstream": "^6.2",
         "laravel/framework": "^11.31",
@@ -48,7 +50,8 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
@@ -68,7 +71,9 @@
     },
     "extra": {
         "laravel": {
-            "dont-discover": ["laravel/telescope"]
+            "dont-discover": [
+                "laravel/telescope"
+            ]
         }
     },
     "config": {
