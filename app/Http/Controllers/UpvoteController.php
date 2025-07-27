@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Services\ModelResolverService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Throwable;
 
 class UpvoteController extends Controller
@@ -42,6 +42,7 @@ class UpvoteController extends Controller
                     'type_key' => $typeKey,
                     'id' => $id,
                 ]);
+
                 return response()->json(['message' => 'Model not found'], 404);
             }
 
@@ -70,6 +71,7 @@ class UpvoteController extends Controller
                 'id' => $id,
                 'user_id' => Auth::id(),
             ]);
+
             return response()->json(['message' => 'Failed to upvote. Please try again.'], 500);
         }
     }
@@ -98,6 +100,7 @@ class UpvoteController extends Controller
                     'type_key' => $typeKey,
                     'id' => $id,
                 ]);
+
                 return response()->json(['message' => 'Model not found'], 404);
             }
 
@@ -126,6 +129,7 @@ class UpvoteController extends Controller
                 'id' => $id,
                 'user_id' => Auth::id(),
             ]);
+
             return response()->json(['message' => 'Failed to downvote. Please try again.'], 500);
         }
     }

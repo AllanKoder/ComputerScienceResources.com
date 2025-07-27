@@ -131,6 +131,7 @@ class ComputerScienceResourceController extends Controller
                 'user_id' => Auth::id(),
                 'data' => $validatedData,
             ]);
+
             return back()->withErrors(['error' => 'Failed to create resource. Please try again.']);
         }
     }
