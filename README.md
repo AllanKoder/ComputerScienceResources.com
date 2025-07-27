@@ -2,6 +2,7 @@
 # ComputerScienceResources.com
 
 [![Feature Tests](https://github.com/AllanKoder/ComputerScienceResources.com/actions/workflows/feature-tests.yml/badge.svg?branch=master)](https://github.com/AllanKoder/ComputerScienceResources.com/actions/workflows/feature-tests.yml)
+[![Fix Code Style](https://github.com/AllanKoder/ComputerScienceResources.com/actions/workflows/lint.yml/badge.svg)](https://github.com/AllanKoder/ComputerScienceResources.com/actions/workflows/lint.yml)
 
 Welcome to the codebase for [ComputerScienceResources.com](https://computerscienceresources.com) — a curated platform for discovering, reviewing, and sharing the best resources in computer science and software engineering.
 
@@ -172,9 +173,15 @@ Xdebug is pre-configured in the Sail Docker environment for local debugging.
    - Start the "Listen for Xdebug" configuration in VS Code.
    - Trigger a request (web, test, or CLI) and Xdebug will connect to VS Code.
 
+
+## Documentation
+
+- [Project Roadmap](docs/ROADMAP.md): See the planned phases and milestones for the project.
+- [Application Routes & UI Previews](docs/ROUTES.md): Browse all main routes and their associated UI images.
+
 ## Contributing
 
-We welcome contributions! Please open issues or pull requests. For suggestions of features, please resort to the Discussions tab.
+We welcome contributions! Please open issues or pull requests. For suggestions of features, please use the Discussions tab.
 
 
 ## License
