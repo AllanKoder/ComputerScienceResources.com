@@ -24,13 +24,13 @@ class ResourceEdits extends Model
 {
     use CascadesDeletes;
     use HasComments;
+
     /** @use HasFactory<\Database\Factories\ResourceEditsFactory> */
     use HasFactory;
+
     use HasVotes;
     use LogsActivity;
-
     use Sluggable;
-
     use SoftDeletes;
 
     protected $cascadeDeletes = ['votes', 'upvoteSummary', 'comments', 'commentsCountRelationship'];
@@ -98,7 +98,7 @@ class ResourceEdits extends Model
     protected function canMergeEdits(): Attribute
     {
         return Attribute::make(
-            get: fn() => app(ResourceEditsService::class)->canMergeEdits($this) && Auth::id() === $this->user_id,
+            get: fn () => app(ResourceEditsService::class)->canMergeEdits($this) && Auth::id() === $this->user_id,
         );
     }
 }

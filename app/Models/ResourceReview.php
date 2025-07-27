@@ -18,6 +18,7 @@ class ResourceReview extends Model
 
     /** @use HasFactory<\Database\Factories\ResourceReviewFactory> */
     use HasFactory;
+
     use HasVotes;
 
     protected $guarded = [];

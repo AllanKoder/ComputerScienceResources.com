@@ -9,10 +9,7 @@ class ResourceEditsObserver
     /**
      * Handle the ResourceEdits "created" event.
      */
-    public function created(ResourceEdits $resourceEdits): void
-    {
-
-    }
+    public function created(ResourceEdits $resourceEdits): void {}
 
     /**
      * Handle the ResourceEdits "updated" event.

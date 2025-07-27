@@ -159,8 +159,6 @@ class CommentService
     /**
      * Create and save a comment
      *
-     * @param array $validatedData
-     * @return Comment
      * @throws Exception
      */
     public function createComment(array $validatedData): Comment
@@ -175,7 +173,7 @@ class CommentService
         // Ensure that the model exists
         $model = $this->modelResolver->resolve($validatedData['commentable_key'], $commentableId);
         if (! $model) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         // Set the commentable type

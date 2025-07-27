@@ -9,10 +9,10 @@ use App\Models\ResourceEdits;
 use App\Services\DataNormalizationService;
 use App\Services\ResourceEditsService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
 use Str;
 use Throwable;
 
@@ -178,6 +178,7 @@ class ResourceEditsController extends Controller
                 'trace' => $e->getTraceAsString(),
                 'resource_edit_id' => $resourceEdits->id,
             ]);
+
             return redirect()->back()->withErrors(['error' => 'Failed to merge resource edits. Please try again.']);
         }
     }
