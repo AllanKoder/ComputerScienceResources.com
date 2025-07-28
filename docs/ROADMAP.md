@@ -3,10 +3,11 @@
 
 This document outlines the planned phases and major milestones for ComputerScienceResources.com. It is intended for contributors and anyone interested in the long-term vision of the project.
 
+This project is actually version 2/a complete redesign, which originally used blade, alpine, and htmx over inertia.
 ---
 
 ## Phase 0: Planning (Completed January 2025)
-**Goal:** Establish a solid foundation for the application.
+**Goal:** Establish a solid foundation for the application rewrite.
 - Define requirements and specifications
 - Create paper UI designs
 - Set PHP conventions and development environment
