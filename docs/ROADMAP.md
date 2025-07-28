@@ -4,6 +4,7 @@
 This document outlines the planned phases and major milestones for ComputerScienceResources.com. It is intended for contributors and anyone interested in the long-term vision of the project.
 
 This project is actually version 2/a complete redesign, which originally used blade, alpine, and htmx over inertia.
+
 ---
 
 ## Phase 0: Planning (Completed January 2025)
