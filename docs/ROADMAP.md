@@ -93,7 +93,6 @@ This document outlines the planned phases and major milestones for ComputerScien
 
 ## Phase 9: Community & Feature Expansion (Ongoing)
 **Goal:** Foster community engagement and expand features based on feedback.
-- Add Discussions, Bugs, and Feature Request sections
 - Enhance moderation and quality control
 - Add learning paths, resource lists, and favoriting
 - Support for alternative/similar resources, prerequisites, and certifications

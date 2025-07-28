@@ -6,25 +6,33 @@
 
 Welcome to the codebase for [ComputerScienceResources.com](https://computerscienceresources.com) — a curated platform for discovering, reviewing, and sharing the best resources in computer science and software engineering.
 
-![Computer Science Logo](public/images/Logo.svg)
-<p align="center"><em>This is our mascot, look how studious this little guy is!</em></p>
+<p align="center">
+<img src="public/images/Logo.svg" alt = "Computer Science Resources Logo"/>
+<em>This is our mascot, look how studious this little guy is!</em>
+</p>
 
 This website helps developers and learners find high-quality, structured, and community-reviewed resources across all areas of computer science. Our mission is to make learning easier by organizing and highlighting the best content, and to empower the community to contribute, review, and improve resource listings.
 
 
 ## App Features
 
-Here's what you can do on ComputerScienceResources.com — all designed to make your learning journey easier, more fun, and community-driven:
+Here's what you can do on ComputerScienceResources.com — all designed to make your learning journey easier:
 
 - **Add New Resources:** Share your favorite computer science and software engineering resources with the world.
 - **Upvote & Downvote:** Show your support (or not!) for resources, reviews, and comments. Change your mind? You can always update or remove your vote.
 - **Write Reviews:** Leave thoughtful reviews for resources you’ve tried. Each user can post one review per resource, and reviews can be upvoted, commented on, and edited.
-- **Comment Anywhere:** Start conversations on resources, reviews, or even other comments. Comments are nested, paginated, and easy to follow — just like your favorite forums.
+- **Comment Anywhere:** Start conversations on resources, reviews, or even other comments. Comments are nested, paginated, and easy to follow — just like your favorite forums: Reddit and Hackernews.
 - **Suggest Edits:** See something that could be improved? Propose edits to any resource. The community can discuss, vote, and help merge the best changes.
 - **Resource Filtering:** Filter resources by name, description, platform, difficulty, pricing, tags, upvotes, review scores, and more — so you always find what you need.
 - **Community-Driven:** Everything is built to encourage helpfulness, kindness, and collaboration. Your feedback, reviews, and suggestions shape the site!
 
 We’re always improving and adding new features. If you have ideas or want to help, check out the Contributing section below!
+
+## Contributing
+
+We welcome contributions! Please open issues or pull requests. For suggestions of features, please use the Discussions tab.
+
+Don't be afraid to put up a PR or address any of the open issues in the tabs!
 
 ## Getting Started
 
@@ -178,11 +186,6 @@ Xdebug is pre-configured in the Sail Docker environment for local debugging.
 
 - [Project Roadmap](docs/ROADMAP.md): See the planned phases and milestones for the project.
 - [Application Routes & UI Previews](docs/ROUTES.md): Browse all main routes and their associated UI images.
-
-## Contributing
-
-We welcome contributions! Please open issues or pull requests. For suggestions of features, please use the Discussions tab.
-
 
 ## License
 
