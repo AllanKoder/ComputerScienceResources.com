@@ -16,20 +16,25 @@ This document groups the main routes of ComputerScienceResources.com by category
 
 ## Resource-Related Routes
 
-- `/` — Home (redirects to resource index)
-  - ![Home](routes-images/home.png)
+- `/` — Resources (redirects to resource index)
+  - ![Resources](routes-images/resources.png)
+  - Filter Bar
+    ![Resource Filter Bar](routes-images/resources-filter-bar.png)
 - `/about` — About page
-  - ![About](routes-images/about.png)
-- `/resources` — Resource index (list, filter, search)
-  - ![Resource Index](routes-images/resources-index.png)
+  - ![About](routes-images/about-us.png)
 - `/resources/create` — Create a new resource
   - ![Create Resource](routes-images/create-resource.png)
 - `/resources/{slug}` — Resource details (reviews, comments, tags)
-  - ![Resource Details](routes-images/resource-details.png)
-- `/resources/{slug}/{tab?}` — Resource details with optional tab (e.g., reviews, comments)
+  - ![Resource Details Reviews](routes-images/resource-reviews.png)
+  - ![Resource Details Comments](routes-images/resource-comments.png)
+  - ![Resource Details Proposed Edits](routes-images/resource-proposed-edits.png)
 - `/resource/{slug}/edit/create` — Propose edits to a resource
-  - ![Edit Resource](routes-images/edit-resource.png)
+  - ![Edit Resource](routes-images/edits-create.png)
 - `/resource/edit/{slug}` — View pending edits for a resource
+  - ![Pending Edits Split Diff](routes-images/edits-show.png)
+  - ![Pending Edits Unified View](routes-images/edits-show-diff.png)
+
+
 
 ## Comment-Related Routes
 
@@ -37,18 +42,27 @@ This document groups the main routes of ComputerScienceResources.com by category
   - ![Comments](routes-images/comments.png)
 - `/comments` — Post a new comment (API)
 
+
+
 ## Voting Routes
 
 - `/upvote/{typeKey}/{id}` — Upvote a resource, review, or comment (API)
+  - ![Upvote Example](routes-images/votes-upvote.png)
 - `/downvote/{typeKey}/{id}` — Downvote a resource, review, or comment (API)
+  - ![Downvote Example](routes-images/votes-downvote.png)
+
 
 ## Review Routes
 
 - `/reviews/{computerScienceResource}` — Post or update a review (API)
+  - ![Write Review](routes-images/create-review.png)
+
+
 
 ## Other Routes
 
-- `/tags/search/{query}` — API endpoint for searching tags (no UI screenshot)
+- `/tags/search/{query}` — API endpoint for searching tags
+  - ![Tag Search](routes-images/tag-search.png)
 
 ---
 
