@@ -8,6 +8,7 @@ Welcome to the codebase for [ComputerScienceResources.com](https://computerscien
 
 <p align="center">
 <img src="public/images/Logo.svg" alt = "Computer Science Resources Logo"/>
+    </br>
 <em>This is our mascot, look how studious this little guy is!</em>
 </p>
 
