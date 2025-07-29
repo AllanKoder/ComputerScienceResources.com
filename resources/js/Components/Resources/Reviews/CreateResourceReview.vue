@@ -102,7 +102,6 @@ const submitReview = async (event) => {
             } else {
                 routeParams.sort_by = "latest";
             }
-            console.log(routeParams);
             router.visit(route('resources.show', routeParams));
         })
         .catch((err) => {
