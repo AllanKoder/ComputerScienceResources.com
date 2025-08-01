@@ -10,7 +10,7 @@ class GuestOrVerified
 {
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && !Auth::user()->hasVerifiedEmail()) {
+        if (Auth::check() && ! Auth::user()->hasVerifiedEmail()) {
             return redirect()->route('verification.notice');
         }
 

@@ -3,19 +3,14 @@
 namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\ComputerScienceResource\Pages;
-use App\Filament\Admin\Resources\ComputerScienceResource\RelationManagers;
 use App\Filament\Admin\Resources\UserResource\RelationManagers\UserRelationManager;
-use App\Models\ComputerScience;
 use App\Models\ComputerScienceResource as ModelsComputerScienceResource;
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class ComputerScienceResource extends Resource
 {
@@ -58,7 +53,7 @@ class ComputerScienceResource extends Resource
             ->filters([
                 SelectFilter::make('user')
                     ->relationship('user', 'name')
-                    ->searchable()
+                    ->searchable(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -84,6 +79,7 @@ class ComputerScienceResource extends Resource
             'edit' => Pages\EditComputerScience::route('/{record}/edit'),
         ];
     }
+
     public static function canCreate(): bool
     {
         return false;
