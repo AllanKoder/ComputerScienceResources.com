@@ -1,12 +1,12 @@
 <script setup>
 import { ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
-import ApplicationMark from "@/Components/ApplicationMark.vue";
 import { Icon } from "@iconify/vue";
 import UserDropdown from "@/Components/Navbar/UserDropdown.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import ApplicationHeaderLogo from "@/Components/ApplicationHeaderLogo.vue";
 
 const showingNavigationDropdown = ref(false);
 
@@ -24,7 +24,7 @@ const logout = () => {
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center">
                         <Link :href="route('resources.index')">
-                            <ApplicationMark class="block h-9 w-auto" />
+                            <ApplicationHeaderLogo class="block h-9 w-auto" />
                         </Link>
                     </div>
 

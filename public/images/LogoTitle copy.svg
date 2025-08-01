@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
-   width="7000"
+   width="2727"
    height="752"
-   viewBox="0 0 7000 752"
+   viewBox="0 0 2727 752"
    version="1.1"
    id="svg90"
    sodipodi:docname="LogoTitle.svg"
@@ -20,9 +20,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="0.125"
-     inkscape:cx="4795.9999"
-     inkscape:cy="1188"
+     inkscape:zoom="0.1767767"
+     inkscape:cx="3809.8912"
+     inkscape:cy="1207.7383"
      inkscape:window-width="2400"
      inkscape:window-height="1261"
      inkscape:window-x="2391"
@@ -77,10 +77,10 @@
   <defs
      id="defs10">
     <rect
-       x="696"
-       y="92"
-       width="312"
-       height="608"
+       x="695.99998"
+       y="91.999997"
+       width="311.99999"
+       height="607.99998"
        id="rect1" />
     <linearGradient
        id="gradient_0"
@@ -617,19 +617,29 @@
      style="font-size:666.667px;white-space:pre;shape-inside:url(#rect1);display:inline;fill:#5e86dc"><tspan
        x="696"
        y="1308.2205"
-       id="tspan3"><tspan
+       id="tspan6"><tspan
          style="font-size:192px"
-         id="tspan2">C</tspan></tspan></text>
+         id="tspan4">C</tspan></tspan></text>
   <text
      xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:462.172px;font-family:'Tw Cen MT';-inkscape-font-specification:'Tw Cen MT';fill:#2a2330;fill-opacity:1;stroke-width:1.73315"
-     x="751.6189"
-     y="492.09271"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:199.391px;font-family:'Tw Cen MT';-inkscape-font-specification:'Tw Cen MT';fill:#2a2330;fill-opacity:1;stroke-width:0.747717"
+     x="716.77661"
+     y="188.3714"
      id="text2"
      transform="scale(0.98199106,1.0183392)"><tspan
        sodipodi:role="line"
-       x="751.6189"
-       y="492.09271"
-       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Tw Cen MT';-inkscape-font-specification:'Tw Cen MT Bold';fill:#2a2330;fill-opacity:1;stroke-width:1.73315"
-       id="tspan5">Computer Science Resources.com</tspan></text>
+       id="tspan2"
+       x="716.77661"
+       y="188.3714"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Tw Cen MT';-inkscape-font-specification:'Tw Cen MT Bold';fill:#2a2330;fill-opacity:1;stroke-width:0.747717">Computer</tspan><tspan
+       sodipodi:role="line"
+       x="716.77661"
+       y="437.61017"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Tw Cen MT';-inkscape-font-specification:'Tw Cen MT Bold';fill:#2a2330;fill-opacity:1;stroke-width:0.747717"
+       id="tspan3">Science</tspan><tspan
+       sodipodi:role="line"
+       x="716.77661"
+       y="686.84894"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:'Tw Cen MT';-inkscape-font-specification:'Tw Cen MT Bold';fill:#2a2330;fill-opacity:1;stroke-width:0.747717"
+       id="tspan5">Resources.com</tspan></text>
 </svg>
