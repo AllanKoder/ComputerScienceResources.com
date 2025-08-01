@@ -12,8 +12,11 @@ use JoelButcher\Socialstream\SetsProfilePhotoFromUrl;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use HasApiTokens;
     use HasConnectedAccounts;
@@ -77,5 +80,11 @@ class User extends Authenticatable
         return filter_var($this->profile_photo_path, FILTER_VALIDATE_URL)
             ? Attribute::get(fn () => $this->profile_photo_path)
             : $this->getPhotoUrl();
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
+        return str_ends_with($this->email, '@computerscienceresources.com') && $this->hasVerifiedEmail();
     }
 }

@@ -10,6 +10,7 @@
         "cviebrock/eloquent-sluggable": "^11.0",
         "filament/filament": "^3.3",
         "filament/tables": "^3.3",
+        "flowframe/laravel-trend": "^0.4.0",
         "inertiajs/inertia-laravel": "^2.0",
         "joelbutcher/socialstream": "^6.2",
         "laravel/framework": "^11.31",

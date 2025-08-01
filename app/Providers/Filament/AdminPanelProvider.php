@@ -17,6 +17,8 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use App\Filament\Admin\Resources\ComputerScienceResource\Widgets\ResourcesTrendChart;
+use App\Filament\Admin\Resources\UserResource\Widgets\UsersTrendChart;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -38,6 +40,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\AccountWidget::class,
                 Widgets\FilamentInfoWidget::class,
+                ResourcesTrendChart::class,
+                UsersTrendChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,
