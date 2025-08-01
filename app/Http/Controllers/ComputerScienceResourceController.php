@@ -47,7 +47,7 @@ class ComputerScienceResourceController extends Controller
 
         return Inertia::render('Resources/Index', [
             'resources' => $resources,
-            'news_posts' => $news
+            'news_posts' => $news,
         ]);
     }
 

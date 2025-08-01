@@ -4,25 +4,26 @@ namespace App\Filament\Admin\Resources;
 
 use App\Filament\Admin\Resources\NewsPostResource\Pages;
 use App\Models\NewsPost;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Support\Str;
+use Filament\Tables\Table;
 
 class NewsPostResource extends Resource
 {
     protected static ?string $model = NewsPost::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
     protected static ?string $navigationGroup = 'Content';
+
     protected static ?string $label = 'News Post';
+
     protected static ?string $pluralLabel = 'News Posts';
 
     public static function form(Form $form): Form
