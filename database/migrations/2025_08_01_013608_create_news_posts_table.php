@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('news_posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('cover_image_path')->nullable();
+            $table->string('thumbnail_path')->nullable();
             $table->string('slug')->unique();
             $table->text('excerpt')->nullable();
             $table->longText('content');

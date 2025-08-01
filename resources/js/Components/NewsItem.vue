@@ -9,13 +9,13 @@ defineProps({
 
 <template>
     <div class="my-4">
-        <h3 class="font-semibold text-lg">
+        <h3 class="font-bold mb-2 text-lg">
             {{ news.title }}
         </h3>
 
         <img
-            v-if="news.thumbnail"
-            :src="news.thumbnail"
+            v-if="news.thumbnail_url"
+            :src="news.thumbnail_url"
             :alt="news.title"
             class="w-full h-48 object-cover rounded mb-2"
         />

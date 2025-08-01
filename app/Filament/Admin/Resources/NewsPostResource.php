@@ -33,7 +33,7 @@ class NewsPostResource extends Resource
                     ->required()
                     ->live(onBlur: true),
 
-                FileUpload::make('cover_image_path')
+                FileUpload::make('thumbnail_path')
                     ->image()
                     ->directory('news-posts/covers')
                     ->imageResizeMode('cover')
