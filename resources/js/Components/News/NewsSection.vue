@@ -5,7 +5,7 @@ import NewsDialog from "@/Components/News/NewsDialog.vue";
 import { Icon } from "@iconify/vue";
 
 const props = defineProps({
-    newsItems: {
+    newsPosts: {
         type: Array,
         required: true
     }
@@ -23,7 +23,7 @@ const showNewsDialog = ref(false);
         </div>
         <div class="space-y-4">
             <NewsItem
-                v-for="(news, index) in newsItems"
+                v-for="(news, index) in newsPosts"
                 :key="index"
                 :news="news"
             />
@@ -41,7 +41,7 @@ const showNewsDialog = ref(false);
     <!-- News Dialog for Mobile -->
     <NewsDialog
         :show="showNewsDialog"
-        :news-items="newsItems"
+        :news-items="newsPosts"
         @close="showNewsDialog = false"
     />
 </template>
