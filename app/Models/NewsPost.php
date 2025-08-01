@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Cviebrock\EloquentSluggable\Sluggable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 
 class NewsPost extends Model
@@ -21,7 +21,6 @@ class NewsPost extends Model
             get: fn () => Storage::url($this->thumbnail_path)
         );
     }
-
 
     /**
      * Return the sluggable configuration array for this model.
