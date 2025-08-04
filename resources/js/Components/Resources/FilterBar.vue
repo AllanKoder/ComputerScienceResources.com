@@ -545,10 +545,10 @@ function resetFilters() {
         </div>
 
         <!-- Action Buttons -->
-        <div class="px-4 py-3 bg-white rounded-b-xl flex items-center justify-between border-t border-primary/10">
+        <div class="px-4 py-3 gap-2 bg-white rounded-b-xl flex items-center justify-between border-t border-primary/10">
             <button
                 type="button"
-                class="flex items-center gap-2 text-sm text-primary hover:text-primaryDark focus:outline-none"
+                class="flex items-center text-sm text-primary hover:text-primaryDark focus:outline-none"
                 @click="advancedOpen = !advancedOpen"
             >
                 <Icon
