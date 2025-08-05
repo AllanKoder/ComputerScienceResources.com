@@ -34,9 +34,14 @@ const nextLink = props.links[props.links.length - 1]?.url;
 <template>
     <nav class="flex flex-col items-center justify-center space-y-2">
         <span class="text-sm text-gray-700 dark:text-gray-400">
-            Showing <span class="font-semibold">{{ from ?? 0 }}</span> to <span class="font-semibold">{{ to ?? 0 }}</span> of <span class="font-semibold">{{ total ?? 0 }}</span> {{ modelName }}
+            <template v-if="total === 0">
+                No results found for {{ modelName }}.
+            </template>
+            <template v-else>
+                Showing <span class="font-semibold">{{ from ?? 0 }}</span> to <span class="font-semibold">{{ to ?? 0 }}</span> of <span class="font-semibold">{{ total ?? 0 }}</span> {{ modelName }}
+            </template>
         </span>
-        <div class="flex items-center space-x-1.5">
+        <div v-if="total > 0" class="flex items-center space-x-1.5">
             <!-- Left Button -->
             <PaginateLink
                 v-if="previousLink"

@@ -16,7 +16,7 @@ const props = defineProps({
     <AppLayout title="Computer Science Resources">
         <div class="max-w-[90vw] mx-auto sm:px-6 lg:px-10 py-4">
             <!-- Filter bar -->
-            <FilterBar></FilterBar>
+            <FilterBar/>
 
             <div class="flex flex-col lg:flex-row gap-4">
                 <!-- Resources Section -->

@@ -351,7 +351,7 @@ function resetFilters() {
         </div>
 
         <!-- Advanced Filters Section -->
-        <div v-if="advancedOpen" class="p-6 bg-secondary/5 space-y-6">
+        <div v-show="advancedOpen" class="p-6 bg-secondary/5 space-y-6">
             <!-- Ratings Section -->
             <div class="space-y-3">
                 <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600">

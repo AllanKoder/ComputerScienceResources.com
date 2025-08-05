@@ -83,7 +83,7 @@ const filterSuggestions = () => {
 </script>
 
 <template>
-    <div>
+    <div class="mb-2">
         <!-- List of tags -->
         <div class="mb-2 flex flex-wrap">
             <Tag v-for="tag in selectedTags"
