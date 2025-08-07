@@ -88,7 +88,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                         <div
                             class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center"
                         >
-                            <ResourceDetailedRatings :review-summary="props.resource.review_summary" />
+                            <ResourceDetailedRatings :review-summary="props.resource.review_summary || {}" />
                             <div
                                 class="text-xs m-6 text-gray-500 text-right min-w-[160px] shrink-0"
                             >

@@ -5,7 +5,9 @@ import { object, string, array, number } from "yup";
 // --------------------------
 export const resourceMandatoryFields = object({
     name: string().required("Name is required").max(100, "Max 100 chars"),
-    page_url: string().url("Must be a valid URL (Need to have https://)").required("URL is required"),
+    page_url: string()
+        .url("Must be a valid URL (Need to have https://)")
+        .required("URL is required"),
     platforms: array().of(string()).min(1, "At least one platform is required"),
     description: string().required("Description is required").max(10000),
     difficulty: string().required("Difficulty level is required"),
@@ -15,18 +17,18 @@ export const resourceMandatoryFields = object({
 export const resourceMandatoryTags = object({
     topic_tags: array()
         .of(string().max(50))
-        .min(3, "At least three topics are required")
+        .min(2, "At least two topics are required")
         .required("Topics are required"),
 });
 
 export const optionalFields = object({
-    programming_languages: array()
-        .of(string().max(50)),
-    general_tags: array()
-            .of(string().max(50))
+    programming_languages: array().of(string().max(50)),
+    general_tags: array().of(string().max(50)),
 });
 
-export const resourceFields = resourceMandatoryFields.concat(resourceMandatoryTags).concat(optionalFields);
+export const resourceFields = resourceMandatoryFields
+    .concat(resourceMandatoryTags)
+    .concat(optionalFields);
 
 // -------------------------
 // Resource Reviews
@@ -62,7 +64,7 @@ export const resourceReviewFields = object({
     pros: array()
         .transform((_value, originalValue) => {
             // Handle case where PrimeVue might pass a string instead of array
-            if (typeof originalValue === 'string') {
+            if (typeof originalValue === "string") {
                 return originalValue.trim() ? [originalValue.trim()] : [];
             }
             return Array.isArray(originalValue) ? originalValue : [];
@@ -76,7 +78,7 @@ export const resourceReviewFields = object({
     cons: array()
         .transform((_value, originalValue) => {
             // Handle case where PrimeVue might pass a string instead of array
-            if (typeof originalValue === 'string') {
+            if (typeof originalValue === "string") {
                 return originalValue.trim() ? [originalValue.trim()] : [];
             }
             return Array.isArray(originalValue) ? originalValue : [];
@@ -102,13 +104,17 @@ export const nullableResourceFields = object({
     description: string().max(10000),
     difficulty: string(),
     pricing: string(),
-    topic_tags: array().of(string().max(50)),
+    topic_tags: array()
+        .of(string().max(50))
+        .min(2, "At least two topics are required"),
     programming_language_tags: array().of(string().max(50)),
     general_tags: array().of(string().max(50)),
 });
 
 export const resourceEditsFields = object({
-    edit_title: string().required("Title is required").max(100, "Max 100 chars"),
+    edit_title: string()
+        .required("Title is required")
+        .max(100, "Max 100 chars"),
     edit_description: string().required("Description is required").max(10000),
     proposed_changes: nullableResourceFields,
 });

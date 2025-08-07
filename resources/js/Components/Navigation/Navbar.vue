@@ -18,7 +18,7 @@ const logout = () => {
 <template>
     <nav class="bg-white dark:bg-secondaryDark border-accent dark:border-primaryDark">
         <!-- Primary Navigation Menu -->
-        <div class="max-w-full mx-8 px-4 sm:px-6 lg:px-8">
+        <div class="w-full mx-8 px-4 md:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <!-- Logo -->
@@ -29,7 +29,7 @@ const logout = () => {
                     </div>
 
                     <!-- Navigation Links -->
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <div class="hidden space-x-8 md:-my-px md:ms-10 md:flex">
                         <NavLink
                             :href="route('about')"
                             :active="route().current('about')"
@@ -50,7 +50,7 @@ const logout = () => {
 
                 <!-- Authenticated -->
                 <template v-if="$page.props.auth.user">
-                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <div class="hidden md:flex md:items-center md:ms-6">
                         <!-- Create Resource Button -->
                         <Link :href="route('resources.create')">
                             <SecondaryButton>
@@ -68,7 +68,7 @@ const logout = () => {
 
                 <!-- Guest -->
                 <template v-else>
-                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <div class="hidden md:flex md:items-center md:ms-6">
                         <Link :href="route('login')">
                             <SecondaryButton>
                                 <Icon icon="mdi:login" class="mr-2" />
@@ -79,7 +79,7 @@ const logout = () => {
                 </template>
 
                 <!-- Hamburger -->
-                <div class="-me-2 flex items-center sm:hidden">
+                <div class="-me-2 flex items-center md:hidden">
                     <button
                         class="inline-flex items-center justify-center p-2 rounded-md text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryDark hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none focus:bg-accent/30 dark:focus:bg-primaryDark/30 focus:text-primary dark:focus:text-primaryDark transition duration-150 ease-in-out"
                         @click="showingNavigationDropdown = !showingNavigationDropdown"
@@ -122,7 +122,7 @@ const logout = () => {
                 block: showingNavigationDropdown,
                 hidden: !showingNavigationDropdown,
             }"
-            class="sm:hidden"
+            class="md:hidden"
         >
             <div class="pt-2 pb-3 space-y-1">
                 <ResponsiveNavLink

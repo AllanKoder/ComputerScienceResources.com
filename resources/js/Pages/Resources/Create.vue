@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from "vue";
+import { useToast } from "primevue/usetoast";
 import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Stepper, StepList, Step, StepPanel, StepPanels } from "primevue";
@@ -48,6 +49,8 @@ const { clearLocalStorage } = useLocalStorageSaver(
 const showReset = ref(false);
 const stepperValue = ref("1");
 
+const toast = useToast();
+
 const resetForm = () => {
     clearLocalStorage();
     formData.reset();
@@ -64,7 +67,12 @@ const submitForm = () => {
         },
         onError: (errors) => {
             console.error("Errors:", errors);
-            // Handle errors display them to the user
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: errors ? Object.values(errors).flat().join(' ') : "An error occurred while creating the resource.",
+                life: 10000,
+            });
         },
     });
 };
@@ -240,14 +248,12 @@ const handleFormChange = (newFormData) => {
                                 ></TopicsFields>
                             </StepPanel>
                             <StepPanel value="3">
-                                <div class="flex flex-col">
-                                    <TagsFields
-                                        :form="formData"
-                                        @change="handleFormChange"
-                                        @back="() => (stepperValue = '2')"
-                                        @next="submitForm"
-                                    />
-                                </div>
+                                <TagsFields
+                                    :form="formData"
+                                    @change="handleFormChange"
+                                    @back="() => (stepperValue = '2')"
+                                    @next="submitForm"
+                                />
                             </StepPanel>
                         </StepPanels>
                     </Stepper>

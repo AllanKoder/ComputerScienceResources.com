@@ -40,7 +40,7 @@ class ResourceEditsTest extends TestCase
             'invalid page_url' => ['page_url', 'not-a-url'],
             'invalid difficulty' => ['difficulty', 'invalid_difficulty'],
             'invalid pricing' => ['pricing', 'invalid_pricing'],
-            'topic_tags too few' => ['topic_tags', ['tag1', 'tag2']],
+            'topic_tags too few' => ['topic_tags', ['tag1']],
             'invalid image_file' => ['image_file', 'not-a-file'],
             'general_tags not an array' => ['general_tags', 'not-an-array'],
             'programming_language_tags not an array' => ['programming_language_tags', 'not-an-array'],
