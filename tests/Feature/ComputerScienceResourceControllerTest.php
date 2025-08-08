@@ -81,7 +81,7 @@ class ComputerScienceResourceControllerTest extends TestCase
             'invalid page_url' => ['page_url', 'not-a-url'],
             'invalid difficulty' => ['difficulty', 'invalid_difficulty'],
             'invalid pricing' => ['pricing', 'invalid_pricing'],
-            'too few topic_tags' => ['topic_tags', ['tag1', 'tag2']],
+            'too few topic_tags' => ['topic_tags', ['tag1']],
             'invalid image_file' => ['image_file', 'not-an-image'],
             'null programming_language_tags' => ['programming_language_tags', null],
             'non-distinct general_tags' => ['general_tags', ['a', 'a', 'a']],

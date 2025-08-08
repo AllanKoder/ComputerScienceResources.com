@@ -5,7 +5,6 @@ use JoelButcher\Socialstream\Providers;
 
 return [
     'guard' => 'web', // used if Fortify is not installed
-    'middleware' => ['web', 'auth', 'verified'],
     'prompt' => 'Or Login Via',
     'providers' => [
         Providers::github(),
