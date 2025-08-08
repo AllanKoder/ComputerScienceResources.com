@@ -135,7 +135,6 @@ function addCommentData(commentData) {
     updateUsers(commentData.users);
     // Update comment hierarchy for both new and existing comments
     updateCommentHierarchy(commentData.comments);
-    console.log(idToChildren.value)
     canLoadMoreComments.value = commentData.has_more_comments;
     currentIndex.value++;
 }
