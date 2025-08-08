@@ -22,7 +22,7 @@ const isAnswerOpen = ref(false);
 
         <div
             v-show="isAnswerOpen"
-            class="px-4 pb-4 text-gray-700 dark:text-gray-300"
+            class="px-4 py-4 text-gray-700 dark:text-gray-300"
         >
             <slot name="answer"></slot>
         </div>

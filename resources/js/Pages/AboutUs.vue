@@ -15,7 +15,7 @@ import AppLayout from "@/Layouts/AppLayout.vue";
                         <!-- Header -->
                         <div class="text-center mb-12">
                             <h1 class="text-4xl font-bold text-primary">
-                                About ComputerScienceResources.com
+                                About Computer Science Resources.com
                             </h1>
                         </div>
 
