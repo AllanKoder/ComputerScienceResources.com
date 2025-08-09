@@ -50,31 +50,34 @@ Route::middleware([
 // -----------------------
 // Public
 // -----------------------
-Route::get('/', function () {
-    return redirect('/resources');
-});
+Route::middleware('guest.or.verified')->group(function () {
 
-Route::get('/about', function () {
-    return Inertia::render('AboutUs');
-})->name('about');
+    Route::get('/', function () {
+        return redirect('/resources');
+    });
 
-Route::controller(ComputerScienceResourceController::class)->group(function () {
-    Route::get('/resources', 'index')->name('resources.index');
-    Route::get('/resources/{slug}/{tab?}', 'show')->name('resources.show');
-});
+    Route::get('/about', function () {
+        return Inertia::render('AboutUs');
+    })->name('about');
 
-// Comments
-Route::controller(CommentController::class)->group(function () {
-    Route::get('/comments/show/{commentableKey}/{commentableId}/{index}/{paginationLimit?}', 'show')->name('comments.show');
-});
+    Route::controller(ComputerScienceResourceController::class)->group(function () {
+        Route::get('/resources', 'index')->name('resources.index');
+        Route::get('/resources/{slug}/{tab?}', 'show')->name('resources.show');
+    });
 
-Route::controller(TagFrequencyController::class)->group(function () {
-    Route::get('/tags/search/{query?}', 'search')->name('tags.search');
-});
+    // Comments
+    Route::controller(CommentController::class)->group(function () {
+        Route::get('/comments/show/{commentableKey}/{commentableId}/{index}/{paginationLimit?}', 'show')->name('comments.show');
+    });
 
-// Resource Edits
-Route::controller(ResourceEditsController::class)->group(function () {
-    Route::get('/resource/edit/{slug}', 'show')->name('resource_edits.show');
+    Route::controller(TagFrequencyController::class)->group(function () {
+        Route::get('/tags/search/{query?}', 'search')->name('tags.search');
+    });
+
+    // Resource Edits
+    Route::controller(ResourceEditsController::class)->group(function () {
+        Route::get('/resource/edit/{slug}', 'show')->name('resource_edits.show');
+    });
 });
 
 require __DIR__.'/socialstream.php';

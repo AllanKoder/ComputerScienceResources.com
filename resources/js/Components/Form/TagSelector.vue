@@ -83,7 +83,21 @@ const filterSuggestions = () => {
 </script>
 
 <template>
-    <div>
+    <div class="mb-2">
+        <!-- List of tags -->
+        <div class="mb-2 flex flex-wrap">
+            <Tag v-for="tag in selectedTags"
+                 :key="tag"
+                 class="mr-2 mb-2 bg-secondary border border-primary/10 text-primary px-2 py-1 rounded-full"
+            >
+                <button @click="() => removeTag(tag)"
+                        class="mr-1 hover:text-primaryDark transition-colors focus:outline-none">
+                    <Icon icon="mdi:remove-bold" class="w-4 h-4" />
+                </button>
+                <span class="text-sm">{{ tag }}</span>
+            </Tag>
+        </div>
+
         <!-- Search bar to add tags -->
         <AutoComplete
             v-model="searchValue"
@@ -114,18 +128,5 @@ const filterSuggestions = () => {
                 </div>
             </template>
         </AutoComplete>
-        <!-- List of tags -->
-        <div class="mt-2 flex flex-wrap">
-            <Tag v-for="tag in selectedTags"
-                 :key="tag"
-                 class="mr-2 mb-2 bg-secondary border border-primary/10 text-primary px-2 py-1 rounded-full"
-            >
-                <button @click="() => removeTag(tag)"
-                        class="mr-1 hover:text-primaryDark transition-colors focus:outline-none">
-                    <Icon icon="mdi:remove-bold" class="w-4 h-4" />
-                </button>
-                <span class="text-sm">{{ tag }}</span>
-            </Tag>
-        </div>
     </div>
 </template>

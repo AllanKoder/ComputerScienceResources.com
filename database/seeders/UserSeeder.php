@@ -26,5 +26,15 @@ class UserSeeder extends Seeder
                 ]
             );
         }
+
+        if (! User::where('name', 'admin')->exists()) {
+            User::factory()->create(
+                [
+                    'name' => 'admin',
+                    'email' => 'admin@ComputerScienceResources.com',
+                    'password' => Hash::make('test123'),
+                ]
+            );
+        }
     }
 }

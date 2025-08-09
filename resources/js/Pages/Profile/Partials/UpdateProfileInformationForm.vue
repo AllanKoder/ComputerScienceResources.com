@@ -82,7 +82,7 @@ const clearPhotoFileInput = () => {
         </template>
 
         <template #description>
-            Update your account's profile information and email address.
+            Update your account's profile information
         </template>
 
         <template #form>
@@ -144,7 +144,8 @@ const clearPhotoFileInput = () => {
 
             <!-- Email -->
             <div class="col-span-6 sm:col-span-4">
-                <InputLabel for="email" value="Email" />
+                <!-- TODO: ALLOW EMAIL CHANGES
+                 <InputLabel for="email" value="Email" />
                 <TextInput
                     id="email"
                     v-model="form.email"
@@ -153,7 +154,7 @@ const clearPhotoFileInput = () => {
                     required
                     autocomplete="username"
                 />
-                <InputError :message="form.errors.email" class="mt-2" />
+                <InputError :message="form.errors.email" class="mt-2" /> -->
 
                 <div v-if="$page.props.jetstream.hasEmailVerification && user.email_verified_at === null">
                     <p class="text-sm mt-2 dark:text-white">

@@ -30,23 +30,22 @@ const emit = defineEmits(["upvote", "downvote"]);
         </td>
 
         <!-- Image column -->
-        <td class="align-middle p-2">
+        <td class="align-middle px-2">
             <ResourceThumbnail
                 :src="resource.image_url"
                 :alt="resource.name"
-                class="w-24 h-24"
             />
         </td>
 
         <!-- Main content column -->
-        <td class="align-top pr-4 py-3">
+        <td class="align-top py-3">
             <div class="flex flex-col lg:flex-row justify-between items-start mb-2 w-full gap-2">
                 <div class="flex items-center gap-3">
                     <Link
                         :href="route('resources.show', { slug: resource.slug })"
                         class="group"
                     >
-                        <h2 class="text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors duration-200 font-sans">
+                        <h2 class="text-lg underline font-semibold tracking-tight text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors duration-200 font-sans">
                             {{ resource.name }}
                         </h2>
                     </Link>

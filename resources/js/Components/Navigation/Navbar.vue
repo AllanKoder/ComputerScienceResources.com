@@ -1,12 +1,12 @@
 <script setup>
 import { ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
-import ApplicationMark from "@/Components/ApplicationMark.vue";
 import { Icon } from "@iconify/vue";
 import UserDropdown from "@/Components/Navbar/UserDropdown.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
+import ApplicationHeaderLogo from "@/Components/ApplicationHeaderLogo.vue";
 
 const showingNavigationDropdown = ref(false);
 
@@ -18,18 +18,18 @@ const logout = () => {
 <template>
     <nav class="bg-white dark:bg-secondaryDark border-accent dark:border-primaryDark">
         <!-- Primary Navigation Menu -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="w-full max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center">
                         <Link :href="route('resources.index')">
-                            <ApplicationMark class="block h-9 w-auto" />
+                            <ApplicationHeaderLogo class="block h-9 w-auto max-w-[250px] sm:max-w-64 md:max-w-72 lg:max-w-80 xl:max-w-96 mr-2" />
                         </Link>
                     </div>
 
                     <!-- Navigation Links -->
-                    <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    <div class="hidden space-x-8 md:-my-px md:ms-10 md:flex">
                         <NavLink
                             :href="route('about')"
                             :active="route().current('about')"
@@ -50,7 +50,7 @@ const logout = () => {
 
                 <!-- Authenticated -->
                 <template v-if="$page.props.auth.user">
-                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <div class="hidden md:flex md:items-center md:ms-6">
                         <!-- Create Resource Button -->
                         <Link :href="route('resources.create')">
                             <SecondaryButton>
@@ -65,10 +65,9 @@ const logout = () => {
                         </div>
                     </div>
                 </template>
-
                 <!-- Guest -->
                 <template v-else>
-                    <div class="hidden sm:flex sm:items-center sm:ms-6">
+                    <div class="hidden md:flex md:items-center md:ms-6">
                         <Link :href="route('login')">
                             <SecondaryButton>
                                 <Icon icon="mdi:login" class="mr-2" />
@@ -79,7 +78,7 @@ const logout = () => {
                 </template>
 
                 <!-- Hamburger -->
-                <div class="-me-2 flex items-center sm:hidden">
+                <div class="-me-2 flex items-center md:hidden">
                     <button
                         class="inline-flex items-center justify-center p-2 rounded-md text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryDark hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none focus:bg-accent/30 dark:focus:bg-primaryDark/30 focus:text-primary dark:focus:text-primaryDark transition duration-150 ease-in-out"
                         @click="showingNavigationDropdown = !showingNavigationDropdown"
@@ -122,9 +121,9 @@ const logout = () => {
                 block: showingNavigationDropdown,
                 hidden: !showingNavigationDropdown,
             }"
-            class="sm:hidden"
+            class="md:hidden"
         >
-            <div class="pt-2 pb-3 space-y-1">
+            <div class="pt-2 pb-3 space-y-2">
                 <ResponsiveNavLink
                     :href="route('about')"
                     :active="route().current('about')"
@@ -141,14 +140,28 @@ const logout = () => {
                     Resources
                 </ResponsiveNavLink>
 
-                <!-- Create Resource Button -->
-                <ResponsiveNavLink
-                    :href="route('resources.create')"
-                    class="mx-2 inline-flex items-center border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150"
-                >
-                    <Icon icon="mdi:plus" class="" />
-                    Create
-                </ResponsiveNavLink>
+                <!-- Authenticated -->
+                <template v-if="$page.props.auth.user">
+                    <ResponsiveNavLink
+                        :href="route('resources.create')"
+                        class="inline-flex items-center border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150"
+                    >
+                        <Icon icon="mdi:plus" class="mr-2" />
+                        Create
+                    </ResponsiveNavLink>
+                </template>
+                <!-- Guest -->
+                <template v-else>
+                    <ResponsiveNavLink
+                        :href="route('login')"
+                        class="ml-2 inline-flex items-center border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150"
+                    >
+                        <span class="text-primary">
+                            <Icon icon="mdi:login" class="mr-2" />
+                            Sign In
+                        </span>
+                    </ResponsiveNavLink>
+                </template>
             </div>
 
             <!-- Responsive Settings Options -->

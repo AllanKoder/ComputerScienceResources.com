@@ -17,15 +17,9 @@ use Throwable;
 
 class CommentController extends Controller
 {
-    protected $modelResolver;
-
-    protected $commentService;
-
-    public function __construct(ModelResolverService $modelResolver, CommentService $commentService)
-    {
-        $this->modelResolver = $modelResolver;
-        $this->commentService = $commentService;
-    }
+    public function __construct(protected ModelResolverService $modelResolver,
+        protected CommentService $commentService,
+    ) {}
 
     /**
      * Store a newly created resource in storage.

@@ -41,6 +41,7 @@ export const pricingsObject = [
     { label: "Free", value: "free" },
     { label: "Paid", value: "paid" },
     { label: "Freemium", value: "freemium" },
+    { label: "Premium", value: "premium" },
 ];
 
 export const pricingLabels = {
@@ -51,7 +52,7 @@ export const pricingLabels = {
 };
 
 export const difficultiesObject = [
-    { label: "Children - Elementary", value: "children" },
+    { label: "Anyone", value: "any" },
     { label: "Beginners - Non-technical", value: "beginner" },
     { label: "Industry Simple - Jr Engineer", value: "industry_simple" },
     { label: "Industry Standard - Engineer", value: "industry_standard" },
@@ -63,7 +64,7 @@ export const difficultiesObject = [
 ];
 
 export const difficultyLabels = {
-    children: "Children",
+    any: "Anyone",
     beginner: "Beginner",
     industry_simple: "Industry Simple",
     industry_standard: "Industry Standard",

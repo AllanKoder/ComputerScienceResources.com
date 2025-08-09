@@ -12,7 +12,7 @@ class ComputerScienceResourcePolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -20,7 +20,7 @@ class ComputerScienceResourcePolicy
      */
     public function view(User $user, ComputerScienceResource $computerScienceResource): bool
     {
-        return false;
+        return true;
     }
 
     /**

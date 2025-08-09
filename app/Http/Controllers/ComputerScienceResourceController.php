@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\TagFrequencyChanged;
 use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
+use App\Models\NewsPost;
 use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
 use App\Services\CommentService;
@@ -21,25 +22,12 @@ use Throwable;
 
 class ComputerScienceResourceController extends Controller
 {
-    protected $commentService;
-
-    protected $generalVotesSortingManager;
-
-    protected $reviewService;
-
-    protected $resourceSortingManager;
-
     public function __construct(
-        CommentService $commentService,
-        GeneralVotesSortingManager $generalVotesSortingManager,
-        ResourceReviewService $reviewService,
-        ResourceSortingManager $resourceSortingManager,
-    ) {
-        $this->commentService = $commentService;
-        $this->generalVotesSortingManager = $generalVotesSortingManager;
-        $this->reviewService = $reviewService;
-        $this->resourceSortingManager = $resourceSortingManager;
-    }
+        protected CommentService $commentService,
+        protected GeneralVotesSortingManager $generalVotesSortingManager,
+        protected ResourceReviewService $reviewService,
+        protected ResourceSortingManager $resourceSortingManager,
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -55,8 +43,11 @@ class ComputerScienceResourceController extends Controller
         // Paginate with appended query params
         $resources = $query->paginate(10)->appends($request->query());
 
+        $news = NewsPost::limit(10)->get();
+
         return Inertia::render('Resources/Index', [
             'resources' => $resources,
+            'news_posts' => $news,
         ]);
     }
 

@@ -31,7 +31,7 @@ class StoreResourceRequest extends FormRequest
             'page_url' => ['required', 'string', 'url:http,https', 'max:255'],
             'difficulty' => ['required', 'string', Rule::in(config('computerScienceResource.difficulties'))],
             'pricing' => ['required', 'string', Rule::in(config('computerScienceResource.pricings'))],
-            'topic_tags' => ['required', 'array', 'min:3'],
+            'topic_tags' => ['required', 'array', 'min:2'],
             'topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
 
             // Optional, can just be omitted

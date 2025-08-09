@@ -11,12 +11,7 @@ use Throwable;
 
 class UpvoteController extends Controller
 {
-    protected $modelResolver;
-
-    public function __construct(ModelResolverService $modelResolver)
-    {
-        $this->modelResolver = $modelResolver;
-    }
+    public function __construct(protected ModelResolverService $modelResolver) {}
 
     /**
      * Upvote a Model

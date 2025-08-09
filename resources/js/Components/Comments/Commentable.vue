@@ -1,5 +1,5 @@
 <script setup>
-import { ref, provide, readonly, nextTick, onMounted } from "vue";
+import { ref, provide, readonly, nextTick, onMounted, computed } from "vue";
 import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import SortByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
@@ -7,6 +7,7 @@ import CommentList from "./CommentList.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import LoadingAnimation from "@/Components/LoadingAnimation.vue";
 import { Icon } from "@iconify/vue";
+import EmptyState from "../EmptyState.vue";
 
 const props = defineProps({
     commentableId: {
@@ -76,6 +77,14 @@ provide("commentableKey", props.commentableKey);
 provide("users", readonly(usersMap));
 provide("createdNewCommentCallback", createdNewCommentCallback);
 
+const showEmptyState = computed(() => {
+    return (
+        hasLoadedCommentData &&
+        idToChildren.value instanceof Map &&
+        (!idToChildren.value.get(null) || idToChildren.value.get(null).length === 0)
+    );
+});
+
 function updateUsers(newUsers) {
     //normalize: if it’s a `{ data: { … } }` wrapper, grab `.data`
     const users = newUsers.map((u) => u.data ?? u);
@@ -126,7 +135,6 @@ function addCommentData(commentData) {
     updateUsers(commentData.users);
     // Update comment hierarchy for both new and existing comments
     updateCommentHierarchy(commentData.comments);
-
     canLoadMoreComments.value = commentData.has_more_comments;
     currentIndex.value++;
 }
@@ -194,6 +202,13 @@ onMounted(() => {
 
         <!-- Comments List -->
         <CommentList :id-to-children="idToChildren" />
+
+        <EmptyState
+            v-if="showEmptyState"
+            icon="mdi-comment-multiple-outline"
+            title="No comments yet"
+            message="Don't be afraid to be the first person to post a comment!"
+        />
 
         <!-- Loading State -->
         <div v-if="isLoading" class="my-8">
