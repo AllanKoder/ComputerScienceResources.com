@@ -18,7 +18,7 @@ const logout = () => {
 <template>
     <nav class="bg-white dark:bg-secondaryDark border-accent dark:border-primaryDark">
         <!-- Primary Navigation Menu -->
-        <div class="w-full max-w-screen-xl mx-auto px-4 md:px-6 lg:px-8">
+        <div class="w-full max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <!-- Logo -->

@@ -64,7 +64,7 @@ export const difficultiesObject = [
 ];
 
 export const difficultyLabels = {
-    children: "Children",
+    any: "Anyone",
     beginner: "Beginner",
     industry_simple: "Industry Simple",
     industry_standard: "Industry Standard",

@@ -31,6 +31,7 @@ export const pricingIcons = {
 
 // Difficulty icons mapping
 export const difficultyIcons = {
+    any: 'mdi:human-child',
     beginner: 'mdi:stairs-up',
     industry_simple: 'mdi:stairs',
     industry_standard: 'mdi:stairs-box',
