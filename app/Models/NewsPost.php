@@ -18,7 +18,7 @@ class NewsPost extends Model
     protected function thumbnailUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => Storage::url($this->thumbnail_path)
+            get: fn () => Storage::disk('public')->url($this->thumbnail_path)
         );
     }
 
