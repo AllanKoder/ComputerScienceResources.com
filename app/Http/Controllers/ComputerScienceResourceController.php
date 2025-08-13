@@ -13,13 +13,13 @@ use App\Services\ComputerScienceResourceFilter;
 use App\Services\ResourceReviewService;
 use App\Services\SortingManagers\GeneralVotesSortingManager;
 use App\Services\SortingManagers\ResourceSortingManager;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Throwable;
-use Exception;
 
 class ComputerScienceResourceController extends Controller
 {
@@ -73,7 +73,7 @@ class ComputerScienceResourceController extends Controller
             $path = null;
             if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file']) {
                 $path = $imageFile->store('resource', 'public');
-                if (!$path) {
+                if (! $path) {
                     Log::error('Failed to store image file', [
                         'user_id' => Auth::id(),
                         'file_info' => $imageFile,
@@ -82,7 +82,6 @@ class ComputerScienceResourceController extends Controller
                     throw new Exception('Could not save the image.');
                 }
             }
-
 
             $resource = ComputerScienceResource::create([
                 'user_id' => Auth::id(),
