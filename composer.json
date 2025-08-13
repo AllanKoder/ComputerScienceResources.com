@@ -21,8 +21,10 @@
         "league/flysystem-aws-s3-v3": "^3.0",
         "shiftonelabs/laravel-cascade-deletes": "^2.0",
         "spatie/laravel-activitylog": "^4.10",
+        "spatie/laravel-backup": "^9.3",
         "spatie/laravel-tags": "^4.9",
-        "tightenco/ziggy": "^2.0"
+        "tightenco/ziggy": "^2.0",
+        "yaza/laravel-google-drive-storage": "^4.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",
