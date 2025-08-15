@@ -83,7 +83,7 @@ class ResourceEdits extends Model
                 if (array_key_exists('image_path', $changes)) {
                     $changes['image_url'] = null;
                     if ($changes['image_path']) {
-                        $changes['image_url'] = Storage::url($changes['image_path']);
+                        $changes['image_url'] = Storage::disk('public')->url($changes['image_path']);
                     }
                 }
 

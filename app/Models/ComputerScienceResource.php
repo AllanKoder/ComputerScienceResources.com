@@ -62,7 +62,7 @@ class ComputerScienceResource extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->image_path ? Storage::url($this->image_path) : null,
+            get: fn () => $this->image_path ? Storage::disk('public')->url($this->image_path) : null,
         );
     }
 

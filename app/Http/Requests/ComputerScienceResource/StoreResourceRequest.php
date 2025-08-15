@@ -35,7 +35,7 @@ class StoreResourceRequest extends FormRequest
             'topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
 
             // Optional, can just be omitted
-            'image_file' => ['nullable', 'image', 'max:400'], // 400 kiloBytes
+            'image_file' => ['nullable', 'image', 'max:500'], // 500 kiloBytes
             'general_tags' => ['array'],
             'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],
             'programming_language_tags' => ['array'],

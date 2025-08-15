@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "aws/aws-sdk-php": "3.336",
         "cviebrock/eloquent-sluggable": "^11.0",
         "filament/filament": "^3.3",
         "filament/tables": "^3.3",
@@ -17,10 +18,13 @@
         "laravel/jetstream": "^5.3",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "league/flysystem-aws-s3-v3": "^3.0",
         "shiftonelabs/laravel-cascade-deletes": "^2.0",
         "spatie/laravel-activitylog": "^4.10",
+        "spatie/laravel-backup": "^9.3",
         "spatie/laravel-tags": "^4.9",
-        "tightenco/ziggy": "^2.0"
+        "tightenco/ziggy": "^2.0",
+        "yaza/laravel-google-drive-storage": "^4.1"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",

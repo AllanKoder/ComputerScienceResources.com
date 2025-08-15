@@ -65,7 +65,6 @@ class ComputerScienceResourceController extends Controller
     public function store(StoreResourceRequest $request)
     {
         $validatedData = $request->validated();
-        Log::debug('Called store resource with data '.json_encode($request));
 
         DB::beginTransaction();
         try {
@@ -73,6 +72,17 @@ class ComputerScienceResourceController extends Controller
             $path = null;
             if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file']) {
                 $path = $imageFile->store('resource', 'public');
+                if (! $path) {
+                    Log::error('Failed to store image file', [
+                        'user_id' => Auth::id(),
+                        'file_info' => $imageFile,
+                    ]);
+
+                    $fileName = method_exists($imageFile, 'getClientOriginalName') ? $imageFile->getClientOriginalName() : 'unknown';
+                    throw new \RuntimeException(
+                        "Could not save the image file '{$fileName}' for user ID ".Auth::id().'.'
+                    );
+                }
             }
 
             $resource = ComputerScienceResource::create([
