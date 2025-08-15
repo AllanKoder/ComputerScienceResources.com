@@ -13,7 +13,6 @@ use App\Services\ComputerScienceResourceFilter;
 use App\Services\ResourceReviewService;
 use App\Services\SortingManagers\GeneralVotesSortingManager;
 use App\Services\SortingManagers\ResourceSortingManager;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -81,7 +80,7 @@ class ComputerScienceResourceController extends Controller
 
                     $fileName = method_exists($imageFile, 'getClientOriginalName') ? $imageFile->getClientOriginalName() : 'unknown';
                     throw new \RuntimeException(
-                        "Could not save the image file '{$fileName}' for user ID " . Auth::id() . "."
+                        "Could not save the image file '{$fileName}' for user ID ".Auth::id().'.'
                     );
                 }
             }
