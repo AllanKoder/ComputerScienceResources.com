@@ -79,7 +79,10 @@ class ComputerScienceResourceController extends Controller
                         'file_info' => $imageFile,
                     ]);
 
-                    throw new Exception('Could not save the image.');
+                    $fileName = method_exists($imageFile, 'getClientOriginalName') ? $imageFile->getClientOriginalName() : 'unknown';
+                    throw new \RuntimeException(
+                        "Could not save the image file '{$fileName}' for user ID " . Auth::id() . "."
+                    );
                 }
             }
 
