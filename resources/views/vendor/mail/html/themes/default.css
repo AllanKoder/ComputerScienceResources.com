@@ -1,0 +1,248 @@
+/* Base */
+
+body,
+body *:not(html):not(style):not(br):not(tr):not(code) {
+    box-sizing: border-box;
+    font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+    position: relative;
+    color: #333333;
+}
+
+body {
+    -webkit-text-size-adjust: none;
+    background-color: #ffffff; /* White background */
+    color: #333333;
+    height: 100%;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+    width: 100% !important;
+}
+
+p,
+ul,
+ol,
+blockquote {
+    line-height: 1.6;
+    text-align: left;
+    margin: 8px 0;
+}
+
+a {
+    color: #fa6600; /* Primary orange for links */
+    text-decoration: none;
+}
+
+a:hover {
+    color: #c2410c; /* Darker orange on hover */
+    text-decoration: underline;
+}
+
+h1, h2, h3 {
+    margin-top: 8px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #c2410c; /* Darker orange for headings */
+}
+
+/* First heading (Hello!) should have no top margin */
+h1:first-child {
+    margin-top: 0;
+}
+
+h1 { font-size: 22px; }
+h2 { font-size: 18px; }
+h3 { font-size: 16px; }
+
+p.sub {
+    font-size: 12px;
+    color: #666666;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Layout */
+
+.wrapper {
+    width: 100%;
+    background-color: #ffffff; /* White background */
+    padding: 20px 0;
+}
+
+.content {
+    margin: 0 auto;
+    width: 100%;
+    max-width: 600px;
+    padding: 0 16px;
+}
+
+/* Header */
+
+.header {
+    padding: 16px 0 8px 0;
+    text-align: center;
+}
+
+.header img {
+    max-height: 60px;
+    width: auto;
+    margin: 0 auto;
+}
+
+.header a {
+    color: #fa6600; /* Primary orange */
+    font-size: 20px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Body */
+
+.body {
+    background-color: #fff3e3; /* Light peach */
+    border: 1px solid #fcdcbb; /* Soft apricot border */
+    border-radius: 8px;
+    padding: 24px;
+    margin: 12px 0;
+    color: #333333;
+}
+
+.inner-body {
+    width: 100%;
+}
+
+.inner-body a {
+    word-break: break-word;
+}
+
+/* Subcopy */
+
+.subcopy {
+    border-top: 1px solid #fcdcbb; /* Soft apricot border */
+    margin-top: 24px;
+    padding-top: 16px;
+    font-size: 14px;
+    color: #555555;
+}
+
+/* Footer */
+
+.footer {
+    margin: 20px auto;
+    padding: 16px;
+    text-align: center;
+    font-size: 12px;
+    color: #999999;
+}
+
+.footer a {
+    color: #fa6600; /* Primary orange */
+    text-decoration: underline;
+}
+
+/* Tables */
+
+.table table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+}
+
+.table th {
+    border-bottom: 1px solid #fcdcbb; /* Soft apricot border */
+    padding: 8px 0;
+    text-align: left;
+    color: #c2410c; /* Darker orange for table headers */
+    font-weight: 600;
+}
+
+.table td {
+    padding: 8px 0;
+    color: #555555;
+    font-size: 14px;
+}
+
+/* Buttons */
+
+.button {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 14px;
+    text-align: center;
+}
+
+.button-primary {
+    background-color: #fa6600; /* Primary orange */
+    color: #ffffff;
+}
+
+.button-primary:hover {
+    background-color: #c2410c; /* Darker orange on hover */
+}
+
+.button-success {
+    background-color: #34a853;
+    color: #ffffff;
+}
+
+.button-error {
+    background-color: #ea4335;
+    color: #ffffff;
+}
+
+/* Accent button using bright yellow */
+.button-accent {
+    background-color: #facc15; /* Bright yellow accent */
+    color: #333333;
+}
+
+.button-accent:hover {
+    background-color: #eab308; /* Slightly darker yellow */
+}
+
+/* Panels */
+
+.panel {
+    border-left: 4px solid #fa6600; /* Primary orange border */
+    background-color: #fff3e3; /* Light peach background */
+    padding: 16px;
+    margin: 16px 0;
+}
+
+.panel-content p {
+    margin: 0;
+    color: #333333;
+}
+
+/* Success panel */
+.panel-success {
+    border-left: 4px solid #34a853;
+    background-color: #f0f9f0;
+}
+
+/* Warning/Accent panel */
+.panel-warning {
+    border-left: 4px solid #facc15; /* Bright yellow accent */
+    background-color: #fffbeb;
+}
+
+/* Error panel */
+.panel-error {
+    border-left: 4px solid #ea4335;
+    background-color: #fef2f2;
+}
+
+/* Utilities */
+
+.break-all {
+    word-break: break-word;
+}
