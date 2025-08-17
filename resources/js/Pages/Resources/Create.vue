@@ -51,6 +51,22 @@ const stepperValue = ref("1");
 
 const toast = useToast();
 
+const scrollToForm = () => {
+    const htmlForm = document.getElementById("create-resource-form");
+    if (htmlForm) {
+        htmlForm.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+            inline: "nearest",
+        });
+    }
+};
+
+const navigateToStep = (step) => {
+    stepperValue.value = step;
+    scrollToForm();
+};
+
 const resetForm = () => {
     clearLocalStorage();
     formData.reset();
@@ -83,16 +99,6 @@ const handleFormChange = (newFormData) => {
     Object.keys(newFormData).forEach((key) => {
         formData[key] = newFormData[key];
     });
-    const htmlForm = document.getElementById("create-resource-form");
-    if (htmlForm) {
-        htmlForm.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-            inline: "nearest",
-        });
-        // Also scroll the window to the top for full reliability
-        window.scrollTo({ top: 0, behavior: "smooth" });
-    }
 };
 </script>
 
@@ -249,22 +255,22 @@ const handleFormChange = (newFormData) => {
                                 <MandatoryFields
                                     :formData="formData"
                                     @change="handleFormChange"
-                                    @next="() => (stepperValue = '2')"
+                                    @next="() => navigateToStep('2')"
                                 ></MandatoryFields>
                             </StepPanel>
                             <StepPanel value="2">
                                 <TopicsFields
                                     :form="formData"
                                     @change="handleFormChange"
-                                    @back="() => (stepperValue = '1')"
-                                    @next="() => (stepperValue = '3')"
+                                    @back="() => navigateToStep('1')"
+                                    @next="() => navigateToStep('3')"
                                 ></TopicsFields>
                             </StepPanel>
                             <StepPanel value="3">
                                 <TagsFields
                                     :form="formData"
                                     @change="handleFormChange"
-                                    @back="() => (stepperValue = '2')"
+                                    @back="() => navigateToStep('2')"
                                     @next="submitForm"
                                 />
                             </StepPanel>
