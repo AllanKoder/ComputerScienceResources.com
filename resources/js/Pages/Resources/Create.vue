@@ -70,7 +70,9 @@ const submitForm = () => {
             toast.add({
                 severity: "error",
                 summary: "Error",
-                detail: errors ? Object.values(errors).flat().join(' ') : "An error occurred while creating the resource.",
+                detail: errors
+                    ? Object.values(errors).flat().join("\n")
+                    : "An error occurred while creating the resource.",
                 life: 10000,
             });
         },
@@ -81,6 +83,16 @@ const handleFormChange = (newFormData) => {
     Object.keys(newFormData).forEach((key) => {
         formData[key] = newFormData[key];
     });
+    const htmlForm = document.getElementById("create-resource-form");
+    if (htmlForm) {
+        htmlForm.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+            inline: "nearest",
+        });
+        // Also scroll the window to the top for full reliability
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    }
 };
 </script>
 
@@ -212,6 +224,7 @@ const handleFormChange = (newFormData) => {
                 <!-- Main Form Section -->
                 <div
                     class="bg-white h-min shadow-lg rounded-lg p-6 flex-1 max-w-full md:max-w-3xl min-w-0 md:min-w-[28rem] relative"
+                    id="create-resource-form"
                 >
                     <!-- Move Reset button to top right -->
                     <div class="flex justify-end mb-2">
