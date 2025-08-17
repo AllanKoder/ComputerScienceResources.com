@@ -48,13 +48,13 @@ const { clearLocalStorage } = useLocalStorageSaver(
 
 const showReset = ref(false);
 const stepperValue = ref("1");
+const formRef = ref(null);
 
 const toast = useToast();
 
 const scrollToForm = () => {
-    const htmlForm = document.getElementById("create-resource-form");
-    if (htmlForm) {
-        htmlForm.scrollIntoView({
+    if (formRef.value) {
+        formRef.value.scrollIntoView({
             behavior: "smooth",
             block: "start",
             inline: "nearest",
@@ -229,6 +229,7 @@ const handleFormChange = (newFormData) => {
                 </div>
                 <!-- Main Form Section -->
                 <div
+                    ref="formRef"
                     class="bg-white h-min shadow-lg rounded-lg p-6 flex-1 max-w-full md:max-w-3xl min-w-0 md:min-w-[28rem] relative"
                     id="create-resource-form"
                 >
