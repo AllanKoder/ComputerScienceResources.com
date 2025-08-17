@@ -51,6 +51,7 @@ const commentsLeft = ref(props.commentsCount);
 const idToChildren = ref(new Map());
 const sortBy = ref(props.sortByInitialValue);
 const hasOpenedComments = ref(false);
+const commentRefs = ref(new Map());
 
 const createdNewCommentCallback = (newComment, userData) => {
     console.log("Created a new comment!", newComment, userData);
@@ -59,9 +60,7 @@ const createdNewCommentCallback = (newComment, userData) => {
 
     // Ensure DOM updates are complete, then scroll to the new comment
     nextTick(() => {
-        const newCommentElement = document.getElementById(
-            "comment_" + newComment.id
-        );
+        const newCommentElement = commentRefs.value.get(`comment_${newComment.id}`);
         if (newCommentElement) {
             newCommentElement.scrollIntoView({
                 behavior: "smooth",
@@ -76,6 +75,7 @@ provide("commentableId", props.commentableId);
 provide("commentableKey", props.commentableKey);
 provide("users", readonly(usersMap));
 provide("createdNewCommentCallback", createdNewCommentCallback);
+provide("commentRefs", commentRefs);
 
 const showEmptyState = computed(() => {
     return (
