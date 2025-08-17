@@ -24,6 +24,7 @@ import { resourceEditsFields } from "@/Helpers/validation";
 import ConfirmationModal from "@/Components/ConfirmationModal.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import { ValidationError } from "yup";
+import HoneyPotForm from "@/Components/HoneyPotForm.vue";
 
 const showReset = ref(false);
 const errors = ref({});
@@ -33,6 +34,7 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    honeypot: Object,
 });
 
 const formData = useForm({
@@ -206,6 +208,7 @@ const submit = async () => {
                         </h2>
                         <div class="p-4 border rounded">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <HoneyPotForm :honeypot="honeypot" :form="formData"/>
                                 <div>
                                     <InputLabel
                                         for="name"

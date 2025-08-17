@@ -15,6 +15,7 @@ import { resourceReviewFields } from "@/Helpers/validation";
 import { router } from "@inertiajs/vue3";
 import axios from "axios";
 import { useLocalStorageSaver } from "@/Composables/useLocalStorageSaver.js";
+import HoneyPotForm from "@/Components/HoneyPotForm.vue";
 
 const props = defineProps({
     resourceId: {
@@ -33,9 +34,10 @@ const props = defineProps({
         type: Object,
         default: () => null,
     },
+    honeypot: Object,
 });
 
-const form = reactive(
+const baseReview =
     props.isEditingMode && props.resourceReview
         ? { ...props.resourceReview }
         : {
@@ -49,7 +51,13 @@ const form = reactive(
               updates: null,
               pros: [],
               cons: [],
-          }
+          };
+const formData = reactive(
+    {
+        ...baseReview,
+        [props.honeypot.nameFieldName]: '',
+        [props.honeypot.validFromFieldName]: props.honeypot.encryptedValidFrom,
+    }
 );
 
 const formFields = [
@@ -70,7 +78,12 @@ const {
     isDataLoaded,
     hasFormContent,
     clearLocalStorage,
-} = useLocalStorageSaver(form, props.resourceId, formFields, "review-draft");
+} = useLocalStorageSaver(
+    formData,
+    props.resourceId,
+    formFields,
+    "review-draft"
+);
 
 const resolver = ref(yupResolver(resourceReviewFields));
 const isSubmitting = ref(false);
@@ -90,7 +103,7 @@ const submitReview = async (event) => {
 
     const method = props.isEditingMode ? "put" : "post";
 
-    axios[method](url, form)
+    axios[method](url, formData)
         .then(() => {
             // Clear localStorage on successful submission
             clearLocalStorage();
@@ -102,7 +115,7 @@ const submitReview = async (event) => {
             } else {
                 routeParams.sort_by = "latest";
             }
-            router.visit(route('resources.show', routeParams));
+            router.visit(route("resources.show", routeParams));
         })
         .catch((err) => {
             isSubmitting.value = false;
@@ -130,17 +143,18 @@ const submitReview = async (event) => {
 
         <Form
             :resolver="resolver"
-            :initialValues="form"
+            :initialValues="formData"
             @submit="submitReview"
             class="flex flex-col gap-6"
         >
+            <HoneyPotForm :honeypot="honeypot" :form="formData"/>
             <!-- Title -->
             <FormField v-slot="$field" name="title">
                 <label class="font-semibold">Title</label>
                 <span class="text-red-500"> * </span>
 
                 <InputText
-                    v-model="form.title"
+                    v-model="formData.title"
                     placeholder="Review title"
                     class="w-full rounded-md border-gray-300 mt-1"
                 />
@@ -155,7 +169,7 @@ const submitReview = async (event) => {
                 <label class="font-semibold">Description</label>
                 <span class="text-red-500"> * </span>
                 <InputTextarea
-                    v-model="form.description"
+                    v-model="formData.description"
                     placeholder="Write your thoughts..."
                     rows="4"
                     class="w-full rounded-md border-gray-300 mt-1"
@@ -178,7 +192,7 @@ const submitReview = async (event) => {
                         <span class="text-red-500"> * </span>
                     </span>
 
-                    <Rating v-model="form.community" :cancel="false" />
+                    <Rating v-model="formData.community" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"
                         :errors="$field.errors"
@@ -190,12 +204,15 @@ const submitReview = async (event) => {
                     name="teaching_clarity"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         Teaching Clarity
                         <span class="text-red-500"> * </span></span
                     >
 
-                    <Rating v-model="form.teaching_clarity" :cancel="false" />
+                    <Rating
+                        v-model="formData.teaching_clarity"
+                        :cancel="false"
+                    />
                     <PrimeVueFormError
                         v-if="$field.invalid"
                         :errors="$field.errors"
@@ -207,11 +224,11 @@ const submitReview = async (event) => {
                     name="engagement"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         Engagement <span class="text-red-500"> * </span></span
                     >
 
-                    <Rating v-model="form.engagement" :cancel="false" />
+                    <Rating v-model="formData.engagement" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"
                         :errors="$field.errors"
@@ -223,12 +240,12 @@ const submitReview = async (event) => {
                     name="practicality"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         Practicality
                         <span class="text-red-500"> * </span></span
                     >
 
-                    <Rating v-model="form.practicality" :cancel="false" />
+                    <Rating v-model="formData.practicality" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"
                         :errors="$field.errors"
@@ -240,12 +257,15 @@ const submitReview = async (event) => {
                     name="user_friendliness"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         User Friendliness
                         <span class="text-red-500"> * </span></span
                     >
 
-                    <Rating v-model="form.user_friendliness" :cancel="false" />
+                    <Rating
+                        v-model="formData.user_friendliness"
+                        :cancel="false"
+                    />
                     <PrimeVueFormError
                         v-if="$field.invalid"
                         :errors="$field.errors"
@@ -257,11 +277,11 @@ const submitReview = async (event) => {
                     name="updates"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         Updates <span class="text-red-500"> * </span></span
                     >
 
-                    <Rating v-model="form.updates" :cancel="false" />
+                    <Rating v-model="formData.updates" :cancel="false" />
                     <PrimeVueFormError
                         v-if="$field.invalid"
                         :errors="$field.errors"
@@ -275,8 +295,8 @@ const submitReview = async (event) => {
                     <label class="font-semibold">Pros</label>
                     <ListInput
                         :maxSize="10"
-                        :initialValues="form.pros"
-                        @change="(val) => (form.pros = val)"
+                        :initialValues="formData.pros"
+                        @change="(val) => (formData.pros = val)"
                     />
                     <PrimeVueFormError
                         v-if="$field.invalid"
@@ -288,8 +308,8 @@ const submitReview = async (event) => {
                     <label class="font-semibold">Cons</label>
                     <ListInput
                         :maxSize="10"
-                        :initialValues="form.cons"
-                        @change="(val) => (form.cons = val)"
+                        :initialValues="formData.cons"
+                        @change="(val) => (formData.cons = val)"
                     />
                     <PrimeVueFormError
                         v-if="$field.invalid"

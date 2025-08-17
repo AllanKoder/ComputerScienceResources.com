@@ -23,6 +23,7 @@ const isOpen = ref(false);
 const commentableKey = inject("commentableKey");
 const commentableId = inject("commentableId");
 const createdNewCommentCallback = inject("createdNewCommentCallback");
+const honeypot = inject("honeypot");
 
 const toggleOpen = () => {
     isOpen.value = !isOpen.value;

@@ -4,9 +4,7 @@ import axios from "axios";
 import CommentActionsForm from "@/Components/Comments/CommentActionsForm.vue";
 import SortByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
 import CommentList from "./CommentList.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import LoadingAnimation from "@/Components/LoadingAnimation.vue";
-import { Icon } from "@iconify/vue";
 import EmptyState from "../EmptyState.vue";
 
 const props = defineProps({

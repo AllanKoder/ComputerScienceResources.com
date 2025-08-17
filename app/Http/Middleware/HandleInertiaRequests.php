@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'COMMENT_MAX_DEPTH' => config('comment.max_depth'),
                 'COMMENT_PAGINATION_LIMIT' => config('comment.pagination_limit'),
             ],
+            'honeypot' => new \Spatie\Honeypot\Honeypot(config('honeypot'))
         ];
     }
 }

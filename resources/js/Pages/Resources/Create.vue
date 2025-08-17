@@ -12,6 +12,11 @@ import { useLocalStorageSaver } from "@/Composables/useLocalStorageSaver";
 import ConfirmationModal from "@/Components/ConfirmationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
+import HoneyPotForm from "@/Components/HoneyPotForm.vue";
+
+const props = defineProps({
+    honeypot: Object,
+});
 
 const formFields = [
     "name",
@@ -37,6 +42,8 @@ const formData = useForm("CreateResource", {
     topic_tags: [],
     programming_language_tags: [],
     general_tags: [],
+    [props.honeypot.nameFieldName]: "",
+    [props.honeypot.validFromFieldName]: props.honeypot.encryptedValidFrom,
 });
 
 const { clearLocalStorage } = useLocalStorageSaver(
@@ -70,7 +77,9 @@ const submitForm = () => {
             toast.add({
                 severity: "error",
                 summary: "Error",
-                detail: errors ? Object.values(errors).flat().join(' ') : "An error occurred while creating the resource.",
+                detail: errors
+                    ? Object.values(errors).flat().join(" ")
+                    : "An error occurred while creating the resource.",
                 life: 10000,
             });
         },
@@ -81,6 +90,32 @@ const handleFormChange = (newFormData) => {
     Object.keys(newFormData).forEach((key) => {
         formData[key] = newFormData[key];
     });
+};
+
+function scrollToForm() {
+    const htmlForm = document.getElementById("create-resource-form");
+    if (htmlForm) {
+        htmlForm.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+            inline: "nearest",
+        });
+    }
+}
+
+const goToStep2 = () => {
+    stepperValue.value = "2";
+    scrollToForm();
+};
+
+const goToStep3 = () => {
+    stepperValue.value = "3";
+    scrollToForm();
+};
+
+const goToStep1 = () => {
+    stepperValue.value = "1";
+    scrollToForm();
 };
 </script>
 
@@ -212,6 +247,7 @@ const handleFormChange = (newFormData) => {
                 <!-- Main Form Section -->
                 <div
                     class="bg-white h-min shadow-lg rounded-lg p-6 flex-1 max-w-full md:max-w-3xl min-w-0 md:min-w-[28rem] relative"
+                    id="create-resource-form"
                 >
                     <!-- Move Reset button to top right -->
                     <div class="flex justify-end mb-2">
@@ -232,26 +268,30 @@ const handleFormChange = (newFormData) => {
                             <Step value="3">Tags</Step>
                         </StepList>
                         <StepPanels>
+                            <HoneyPotForm
+                                :honeypot="honeypot"
+                                :form="formData"
+                            />
                             <StepPanel value="1">
                                 <MandatoryFields
                                     :formData="formData"
                                     @change="handleFormChange"
-                                    @next="() => (stepperValue = '2')"
+                                    @next="goToStep2"
                                 ></MandatoryFields>
                             </StepPanel>
                             <StepPanel value="2">
                                 <TopicsFields
                                     :form="formData"
                                     @change="handleFormChange"
-                                    @back="() => (stepperValue = '1')"
-                                    @next="() => (stepperValue = '3')"
+                                    @back="goToStep1"
+                                    @next="goToStep3"
                                 ></TopicsFields>
                             </StepPanel>
                             <StepPanel value="3">
                                 <TagsFields
                                     :form="formData"
                                     @change="handleFormChange"
-                                    @back="() => (stepperValue = '2')"
+                                    @back="goToStep2"
                                     @next="submitForm"
                                 />
                             </StepPanel>

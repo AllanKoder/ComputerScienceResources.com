@@ -22,6 +22,7 @@
         "shiftonelabs/laravel-cascade-deletes": "^2.0",
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-backup": "^9.3",
+        "spatie/laravel-honeypot": "^4.6",
         "spatie/laravel-tags": "^4.9",
         "tightenco/ziggy": "^2.0",
         "yaza/laravel-google-drive-storage": "^4.1"
