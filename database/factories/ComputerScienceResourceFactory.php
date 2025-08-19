@@ -78,6 +78,7 @@ class ComputerScienceResourceFactory extends Factory
     {
         // Lowercase, replace spaces with -, remove invalid chars
         $tag = strtolower(str_replace(' ', '-', $tag));
+
         // Remove any character not a-z, 0-9, or hyphen
         return preg_replace('/[^a-z0-9-]/', '', $tag);
     }
