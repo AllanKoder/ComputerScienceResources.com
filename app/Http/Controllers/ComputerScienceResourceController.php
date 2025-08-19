@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\TagFrequencyChanged;
-use App\Http\Requests\ComputerScienceResource\StoreResourceRequest;
+use App\Http\Requests\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\NewsPost;
 use App\Models\ResourceEdits;

@@ -56,11 +56,27 @@ class ComputerScienceResourceFactory extends Factory
         return $this->afterCreating(function (ComputerScienceResource $resource) {
             $fakerTags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', fake()->word(), fake()->word()];
 
-            $resource->topic_tags = $this->topicTags ?? fake()->randomElements($fakerTags, fake()->numberBetween(3, count($fakerTags)));
-            $resource->programming_language_tags = $this->programmingLanguageTags ?? fake()->randomElements($fakerTags);
-            $resource->general_tags = $this->generalTags ?? fake()->randomElements($fakerTags);
+            // Sanitize all tags before assigning
+            $topicTags = $this->topicTags ?? fake()->randomElements($fakerTags, fake()->numberBetween(3, count($fakerTags)));
+            $topicTags = array_map([$this, 'sanitizeTag'], $topicTags);
+
+            $programmingLanguageTags = $this->programmingLanguageTags ?? fake()->randomElements($fakerTags);
+            $programmingLanguageTags = array_map([$this, 'sanitizeTag'], $programmingLanguageTags);
+
+            $generalTags = $this->generalTags ?? fake()->randomElements($fakerTags);
+            $generalTags = array_map([$this, 'sanitizeTag'], $generalTags);
+
+            $resource->topic_tags = $topicTags;
+            $resource->programming_language_tags = $programmingLanguageTags;
+            $resource->general_tags = $generalTags;
 
             TagFrequencyChanged::dispatch(null, $resource->tagCounter());
         });
+    }
+
+    private function sanitizeTag(string $tag): string
+    {
+        // Lowercase, replace spaces with -, remove invalid chars
+        return strtolower(str_replace(' ', '-', $tag));
     }
 }
