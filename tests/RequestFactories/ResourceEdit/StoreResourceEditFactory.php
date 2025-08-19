@@ -61,6 +61,8 @@ class StoreResourceEditFactory extends RequestFactory
 
     private function sanitizeTag(string $tag): string
     {
-        return strtolower(str_replace(' ', '-', $tag));
+        // Replace spaces with hyphens, lowercase, and remove invalid characters
+        $tag = strtolower(str_replace(' ', '-', $tag));
+        return preg_replace('/[^a-z0-9-]/', '', $tag);
     }
 }
