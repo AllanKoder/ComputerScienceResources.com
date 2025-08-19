@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\ComputerScienceResource;
+namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -32,14 +32,14 @@ class StoreResourceRequest extends FormRequest
             'difficulty' => ['required', 'string', Rule::in(config('computerScienceResource.difficulties'))],
             'pricing' => ['required', 'string', Rule::in(config('computerScienceResource.pricings'))],
             'topic_tags' => ['required', 'array', 'min:2'],
-            'topic_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+            'topic_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:'.config('computerScienceResource.tags_regex')],
 
             // Optional, can just be omitted
             'image_file' => ['nullable', 'image', 'max:500'], // 500 kiloBytes
             'general_tags' => ['array'],
-            'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+            'general_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:'.config('computerScienceResource.tags_regex')],
             'programming_language_tags' => ['array'],
-            'programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50'],
+            'programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:'.config('computerScienceResource.tags_regex')],
         ];
     }
 }

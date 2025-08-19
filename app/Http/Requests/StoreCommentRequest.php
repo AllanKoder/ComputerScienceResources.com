@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Comment;
+namespace App\Http\Requests;
 
 use App\Services\ModelResolverService;
 use Illuminate\Foundation\Http\FormRequest;

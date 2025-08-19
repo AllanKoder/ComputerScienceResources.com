@@ -161,9 +161,9 @@ class ResourceEditsTest extends TestCase
                 'difficulty' => fake()->randomElement(config('computerScienceResource.difficulties')),
                 'platforms' => fake()->randomElements(config('computerScienceResource.platforms'), fake()->numberBetween(1, 3)),
                 'pricing' => fake()->randomElement(config('computerScienceResource.pricings')),
-                'topic_tags' => ["{$i}_a", "{$i}_b", "{$i}_c"],
-                'programming_language_tags' => ["{$i}_a", "{$i}_b", "{$i}_c"],
-                'general_tags' => ["{$i}_a", "{$i}_b", "{$i}_c"],
+                'topic_tags' => ["$i-a", "$i-b", "$i-c"],
+                'programming_language_tags' => ["$i-a", "$i-b", "$i-c"],
+                'general_tags' => ["$i-a", "$i-b", "$i-c"],
             ];
 
             $this->makeAndApplyResourceEdits($resource->id, $changes);

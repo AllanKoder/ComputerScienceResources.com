@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\TagFrequencyChanged;
-use App\Http\Requests\ResourceEdit\StoreResourceEdit;
+use App\Http\Requests\StoreResourceEdit;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\DataNormalizationService;

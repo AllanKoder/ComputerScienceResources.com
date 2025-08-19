@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ResourceReview\StoreResourceReview;
+use App\Http\Requests\StoreResourceReview;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceReview;
 use Illuminate\Support\Facades\Auth;

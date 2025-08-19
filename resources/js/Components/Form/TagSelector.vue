@@ -25,10 +25,27 @@ watch(
     { immediate: true }
 );
 
+function sanitizeTag(tag) {
+    // Remove trailing spaces and lowercase
+    let transformedTag = tag.trim().toLowerCase();
+
+    // Apply rules from config('computerScienceResources.tags_rules')
+    // Transform the tag to lowercase and replace spaces with hyphens
+    transformedTag = transformedTag.replace(/\s+/g, "-");
+    // Remove any characters that are not lowercase letters or hyphens
+    // Remove any characters that are not lowercase letters, numbers, or hyphens
+    transformedTag = transformedTag.replace(/[^a-z0-9-]/g, "");
+    return transformedTag;
+}
+
 const addTag = (tag) => {
-    if (tag && !selectedTags.value.includes(tag)) {
-        selectedTags.value.push(tag);
-        model.value = [...selectedTags.value];
+    if (tag) {
+        let transformedTag = sanitizeTag(tag);
+
+        if (!selectedTags.value.includes(transformedTag)) {
+            selectedTags.value.push(transformedTag);
+            model.value = [...selectedTags.value];
+        }
     }
 };
 
@@ -49,8 +66,8 @@ const handleSelect = (event) => {
 
 const handleKeydown = (event) => {
     if (event.key === "Enter") {
-        if (searchValue.value.trim()) {
-            addTag(searchValue.value.trim().toLowerCase());
+        if (searchValue.value) {
+            addTag(searchValue.value);
             // Clear the input after adding via Enter
             nextTick(() => {
                 searchValue.value = "";
