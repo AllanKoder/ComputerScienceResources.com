@@ -33,7 +33,8 @@ function sanitizeTag(tag) {
     // Transform the tag to lowercase and replace spaces with hyphens
     transformedTag = transformedTag.replace(/\s+/g, "-");
     // Remove any characters that are not lowercase letters or hyphens
-    transformedTag = transformedTag.replace(/[^a-z-]/g, "");
+    // Remove any characters that are not lowercase letters, numbers, or hyphens
+    transformedTag = transformedTag.replace(/[^a-z0-9-]/g, "");
     return transformedTag;
 }
 
