@@ -37,11 +37,11 @@ class StoreResourceEdit extends FormRequest
             'proposed_changes.pricing' => ['nullable', 'string', Rule::in(config('computerScienceResource.pricings'))],
             'proposed_changes.image_file' => ['nullable', 'image', 'max:500'], // 500 kilobytes
             'proposed_changes.topic_tags' => ['nullable', 'array', 'min:2'],
-            'proposed_changes.topic_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:' . config("computerScienceResource.tags_regex")],
+            'proposed_changes.topic_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:'.config('computerScienceResource.tags_regex')],
             'proposed_changes.general_tags' => ['nullable', 'array'],
-            'proposed_changes.general_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:' . config("computerScienceResource.tags_regex")],
+            'proposed_changes.general_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:'.config('computerScienceResource.tags_regex')],
             'proposed_changes.programming_language_tags' => ['nullable', 'array'],
-            'proposed_changes.programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:' . config("computerScienceResource.tags_regex")],
+            'proposed_changes.programming_language_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:'.config('computerScienceResource.tags_regex')],
         ];
     }
 }
