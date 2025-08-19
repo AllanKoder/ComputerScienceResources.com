@@ -77,6 +77,8 @@ class ComputerScienceResourceFactory extends Factory
     private function sanitizeTag(string $tag): string
     {
         // Lowercase, replace spaces with -, remove invalid chars
-        return strtolower(str_replace(' ', '-', $tag));
+        $tag = strtolower(str_replace(' ', '-', $tag));
+        // Remove any character not a-z, 0-9, or hyphen
+        return preg_replace('/[^a-z0-9-]/', '', $tag);
     }
 }
