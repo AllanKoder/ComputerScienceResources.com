@@ -1,5 +1,6 @@
 @servers(['local' => ['127.0.0.1'], 'server' => ['root@143.198.129.111']])
 
+{{-- Add Caching, for production app --}}
 @story('deploy', ['skipBackup' => false])
     prepare-frontend-locally
     @if(!$skipBackup)
