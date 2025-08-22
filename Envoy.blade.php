@@ -46,7 +46,37 @@
 
 @task('perform-migration', ['on' => 'server'])
     set -e
-    cd /var/www/ComputerScienceResources.com
+    cd {{ $DEPLOY_PATH }}
+    php artisan down
+@endtask
+
+@task('up', ['on' => 'server'])
+    set -e
+    cd {{ $DEPLOY_PATH }}
+    php artisan up
+@endtask
+
+@task('backup-database', ['on' => 'server'])
+    set -e
+    cd {{ $DEPLOY_PATH }}
+    php artisan backup:run --only-db
+@endtask
+
+@task('update-code', ['on' => 'server'])
+    set -e
+    cd {{ $DEPLOY_PATH }}
+    git pull origin master
+@endtask
+
+@task('install-dependencies', ['on' => 'server'])
+    set -e
+    cd {{ $DEPLOY_PATH }}
+    composer install --no-dev --optimize-autoloader
+@endtask
+
+@task('perform-migration', ['on' => 'server'])
+    set -e
+    cd {{ $DEPLOY_PATH }}
     php artisan migrate --force
 @endtask
 
