@@ -1,4 +1,4 @@
-@servers(['local' => ['127.0.0.1'], 'server' => ['root@143.198.129.111']])
+@servers(['local' => ['127.0.0.1'], 'server' => [getenv('DEPLOY_USER') . '@' . getenv('DEPLOY_HOST')]])
 
 {{-- Add Caching, for production app --}}
 @story('deploy', ['skipBackup' => false])
