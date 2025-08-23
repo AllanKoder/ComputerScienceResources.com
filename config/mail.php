@@ -50,7 +50,7 @@ return [
         ],
 
         'mailgun' => [
-            'transport' => 'mailgun'
+            'transport' => 'mailgun',
         ],
 
         'ses' => [
