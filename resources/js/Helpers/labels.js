@@ -60,11 +60,11 @@ export const difficultiesObject = [
 ];
 
 export const difficultyLabels = {
-    general: "Anyone (non-technical, general audience)",
-    introduction: "Introductory (beginners, first exposure)",
-    practical: "Practical (technical, industry-focused)",
-    advanced: "Advanced (complex systems, deeper dives)",
-    academic: "Academic (research-heavy, theoretical)",
+    general: "Anyone",
+    introduction: "Introductory",
+    practical: "Practical",
+    advanced: "Advanced",
+    academic: "Academic",
 };
 
 export const getPricingLabel = (pricing) => pricingLabels[pricing] || "Unknown";
