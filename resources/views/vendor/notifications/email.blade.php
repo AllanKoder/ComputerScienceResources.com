@@ -11,7 +11,7 @@
             <!-- Header with Logo -->
             <div class="header">
                 <a href="https://computerscienceresources.com">
-                    <img src="{{ asset('images/LogoTitle.svg') }}" alt="">
+                    <img src="https://computerscienceresources.com/images/LogoTitle.svg" alt="">
                 </a>
             </div>
 
