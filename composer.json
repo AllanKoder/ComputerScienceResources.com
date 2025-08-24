@@ -24,6 +24,8 @@
         "spatie/laravel-activitylog": "^4.10",
         "spatie/laravel-backup": "^9.3",
         "spatie/laravel-tags": "^4.9",
+        "symfony/http-client": "^7.3",
+        "symfony/mailgun-mailer": "^7.3",
         "tightenco/ziggy": "^2.0",
         "yaza/laravel-google-drive-storage": "^4.1"
     },
@@ -32,6 +34,7 @@
         "barryvdh/laravel-ide-helper": "^3.5",
         "beyondcode/laravel-query-detector": "^2.0",
         "fakerphp/faker": "^1.23",
+        "laravel/envoy": "^2.10",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.40",
