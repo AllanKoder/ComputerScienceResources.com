@@ -1,14 +1,16 @@
 @servers(['local' => ['127.0.0.1'], 'server' => ['root@143.198.129.111']])
 
+{{-- Full deploy flow --}}
 @story('deploy', ['skipBackup' => false])
     @if(!$skipBackup)
         backup-database
     @endif
     update-code
     install-dependencies
+    build-frontend
     down
     perform-migration
-    deploy-frontend
+    push-frontend
     up
 @endstory
 
@@ -48,12 +50,17 @@
     php artisan migrate --force
 @endtask
 
-@task('deploy-frontend', ['on' => 'local'])
+
+{{-- ===== Frontend Tasks ===== --}}
+@task('build-frontend', ['on' => 'local'])
     set -e
     echo "Building frontend locally..."
     npm ci
     npm run build
+@endtask
 
+@task('push-frontend', ['on' => 'local'])
+    set -e
     echo "Copying compiled assets to server..."
     scp -r {{ __DIR__ }}/public/build root@143.198.129.111:/var/www/ComputerScienceResources.com/public
 @endtask
