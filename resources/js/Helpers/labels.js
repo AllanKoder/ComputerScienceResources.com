@@ -52,23 +52,18 @@ export const pricingLabels = {
 };
 
 export const difficultiesObject = [
-    { label: "Anyone", value: "any" },
-    { label: "Beginners - Non-technical", value: "beginner" },
-    { label: "Industry Simple - Jr Engineer", value: "industry_simple" },
-    { label: "Industry Standard - Engineer", value: "industry_standard" },
-    {
-        label: "Industry Professional - Senior Engineer",
-        value: "industry_professional",
-    },
-    { label: "Academic - Research", value: "academic" },
+    { label: "Anyone (non-technical, general audience)", value: "general" },
+    { label: "Introductory (beginners, first exposure)", value: "introduction" },
+    { label: "Practical (technical, industry-focused, application)", value: "practical" },
+    { label: "Advanced (complex systems, deeper dives)", value: "advanced" },
+    { label: "Academic (research-heavy, theoretical)", value: "academic" },
 ];
 
 export const difficultyLabels = {
-    any: "Anyone",
-    beginner: "Beginner",
-    industry_simple: "Industry Simple",
-    industry_standard: "Industry Standard",
-    industry_professional: "Industry Professional",
+    general: "Anyone",
+    introduction: "Introductory",
+    practical: "Practical",
+    advanced: "Advanced",
     academic: "Academic",
 };
 

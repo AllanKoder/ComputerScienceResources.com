@@ -31,10 +31,9 @@ export const pricingIcons = {
 
 // Difficulty icons mapping
 export const difficultyIcons = {
-    any: 'mdi:human-child',
-    beginner: 'mdi:stairs-up',
-    industry_simple: 'mdi:stairs',
-    industry_standard: 'mdi:stairs-box',
-    industry_professional: 'mdi:human-male-board',
+    general: 'mdi:human-child',
+    introduction: 'mdi:stairs-up',
+    practical: 'mdi:tools',
+    advanced: 'mdi:human-male-board',
     academic: 'mdi:school'
 };

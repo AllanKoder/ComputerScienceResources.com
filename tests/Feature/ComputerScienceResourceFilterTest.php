@@ -104,7 +104,7 @@ class ComputerScienceResourceFilterTest extends TestCase
             'by platforms' => [['platforms' => ['website', 'bootcamp']]],
 
             'by difficulty & pricing' => [[
-                'difficulty' => ['beginner'],
+                'difficulty' => ['advanced'],
                 'pricing' => ['free'],
             ]],
 
@@ -140,7 +140,7 @@ class ComputerScienceResourceFilterTest extends TestCase
                 'name' => 'Graph',
                 'description' => 'algorithm analysis',
                 'platforms' => ['podcast', 'website'],
-                'difficulty' => ['industry_simple'],
+                'difficulty' => ['introduction'],
                 'pricing' => ['free'],
                 'topics' => ['algorithms', 'recursion', 'data-structures'],
                 'programming_languages' => ['python'],
