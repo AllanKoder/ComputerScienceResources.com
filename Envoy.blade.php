@@ -8,12 +8,14 @@
     @endif
     update-code
     install-dependencies
+    build-frontend
     down
     perform-migration
     push-frontend
     up
 @endstory
 
+{{-- ===== Backend Tasks ===== --}}
 @task('down', ['on' => 'server'])
     set -e
     cd /var/www/ComputerScienceResources.com
