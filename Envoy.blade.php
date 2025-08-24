@@ -8,7 +8,6 @@
     @endif
     update-code
     install-dependencies
-    build-frontend
     down
     perform-migration
     push-frontend
