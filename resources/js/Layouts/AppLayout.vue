@@ -11,6 +11,11 @@ defineProps({
 
 <template>
     <div>
+        <noscript>
+            <div style="background: #f87171; color: #fff; padding: 1rem; text-align: center;">
+                JavaScript is required for this site to function properly. Please enable JavaScript in your browser settings.
+            </div>
+        </noscript>
         <Head :title="title" />
 
         <Banner />

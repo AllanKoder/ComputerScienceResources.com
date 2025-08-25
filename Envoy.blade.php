@@ -1,8 +1,10 @@
 @servers(['local' => ['127.0.0.1'], 'server' => ['root@143.198.129.111']])
 
 {{-- Full deploy flow --}}
-@story('deploy', ['skipBackup' => false])
-    build-frontend
+@story('deploy', ['skipBackup' => false, 'skipBuildFrontend' => false])
+    @if(!$skipBuildFrontend)
+        build-frontend
+    @endif
     @if(!$skipBackup)
         backup-database
     @endif
