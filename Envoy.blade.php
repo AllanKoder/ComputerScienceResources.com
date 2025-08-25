@@ -1,8 +1,8 @@
 @servers(['local' => ['127.0.0.1'], 'server' => ['root@143.198.129.111']])
 
 {{-- Full deploy flow --}}
-@story('deploy', ['skipBackup' => false, 'skipBuildFrontend' => false])
-    @if(!$skipBuildFrontend)
+@story('deploy', ['skipBackup' => false, 'skipFrontend' => false])
+    @if(!$skipFrontend)
         build-frontend
     @endif
     @if(!$skipBackup)
@@ -12,7 +12,9 @@
     install-dependencies
     down
     perform-migration
-    push-frontend
+    @if(!$skipFrontend)
+        push-frontend
+    @endif
     up
 @endstory
 

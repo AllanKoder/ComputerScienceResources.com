@@ -18,6 +18,12 @@
         @routes
         @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
         @inertiaHead
+
+        <noscript>
+            <div style="background: #f87171; color: #fff; padding: 1rem; text-align: center;">
+                JavaScript is required for this site to function properly. Please enable JavaScript in your browser settings.
+            </div>
+        </noscript>
     </head>
     <body class="font-sans antialiased">
         @inertia
