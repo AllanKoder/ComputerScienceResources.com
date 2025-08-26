@@ -71,12 +71,13 @@ const resetForm = () => {
 
 const submitForm = async () => {
     try {
-        const response = await axios.post(route("resources.store"), formData, {
-            "Content-Type": "multipart/form-data",
-        });
+        const response = await axios.postForm(
+            route("resources.store"),
+            formData
+        );
         clearLocalStorage();
 
-        router.visit(route("resources.show", {slug: response.data.slug}));
+        router.visit(route("resources.show", { slug: response.data.slug }));
     } catch (err) {
         toast.add({
             severity: "error",

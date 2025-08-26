@@ -18,27 +18,24 @@ const emit = defineEmits(["upvote", "downvote"]);
 </script>
 
 <template>
-    <tr class="rounded-lg hover:bg-secondary/50 dark:hover:bg-gray-700/50 transition-colors duration-200">
-        <!-- Upvote column -->
-        <td class="align-middle">
+    <div class="rounded-lg hover:bg-secondary/50 dark:hover:bg-gray-700/50 transition-colors duration-200 flex flex-col sm:flex-row w-full">
+        <!-- Upvote and Image section (mobile friendly, centered) -->
+        <div class="flex flex-row items-center justify-center sm:justify-start sm:items-center gap-2 sm:gap-4 p-3 sm:w-auto">
             <Upvotable
                 :upvotable-id="resource.id"
                 :upvotable-key="'resource'"
                 :initial-votes="resource.vote_score"
                 :user-vote="resource.user_vote"
-            ></Upvotable>
-        </td>
-
-        <!-- Image column -->
-        <td class="align-middle px-2">
+            />
             <ResourceThumbnail
                 :src="resource.image_url"
                 :alt="resource.name"
+                class="w-auto h-16 object-cover rounded-md sm:w-20 sm:h-20"
             />
-        </td>
+        </div>
 
-        <!-- Main content column -->
-        <td class="align-top py-3">
+        <!-- Main content section -->
+        <div class="flex-1 flex flex-col justify-between py-3 px-2">
             <div class="flex flex-col lg:flex-row justify-between items-start mb-2 w-full gap-2">
                 <div class="flex items-center gap-3">
                     <Link
@@ -153,6 +150,6 @@ const emit = defineEmits(["upvote", "downvote"]);
                     </div>
                 </div>
             </div>
-        </td>
-    </tr>
+        </div>
+    </div>
 </template>
