@@ -78,7 +78,7 @@ trait TestingUtils
 
         // Merge the edit
         $mergeResponse = $this->post(route('resource_edits.merge', ['resourceEdits' => $edit->id]));
-        $mergeResponse ->assertRedirect();
+        $mergeResponse->assertRedirect();
     }
 
     public function createComment(string $commentableKey, int $commentableId, array $overrides = [])
