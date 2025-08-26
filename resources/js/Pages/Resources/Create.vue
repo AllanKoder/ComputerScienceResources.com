@@ -1,18 +1,18 @@
 <script setup>
-import { ref } from "vue";
+import { ref, reactive } from "vue";
 import { useToast } from "primevue/usetoast";
-import { useForm } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import { Stepper, StepList, Step, StepPanel, StepPanels } from "primevue";
+import { router } from "@inertiajs/vue3";
 
 import MandatoryFields from "@/Pages/Resources/Form/MandatoryFields.vue";
 import TagsFields from "@/Pages/Resources/Form/TagsFields.vue";
-import TopicsFields from "@/Pages/Resources/Form/TopicsFields.vue";
 import { useLocalStorageSaver } from "@/Composables/useLocalStorageSaver";
 import ConfirmationModal from "@/Components/ConfirmationModal.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
-import SubmissionGuidelines from '../../Components/SubmissionGuidelines.vue'
+import SubmissionGuidelines from "../../Components/Resources/SubmissionGuidelines.vue";
+import FormSaverChip from "@/Components/Form/FormSaverChip.vue";
 
 const formFields = [
     "name",
@@ -27,7 +27,7 @@ const formFields = [
     "general_tags",
 ];
 
-const formData = useForm("CreateResource", {
+const formData = reactive({
     name: "",
     platforms: [],
     page_url: "",
@@ -40,17 +40,12 @@ const formData = useForm("CreateResource", {
     general_tags: [],
 });
 
-const { clearLocalStorage } = useLocalStorageSaver(
-    formData,
-    "new-resource",
-    formFields,
-    "create-draft"
-);
+const { isSavedToLocalStorage, hasFormContent, clearLocalStorage } =
+    useLocalStorageSaver(formData, "new-resource", formFields, "create-draft");
 
 const showReset = ref(false);
 const stepperValue = ref("1");
 const formRef = ref(null);
-
 const toast = useToast();
 
 const scrollToForm = () => {
@@ -70,35 +65,44 @@ const navigateToStep = (step) => {
 
 const resetForm = () => {
     clearLocalStorage();
-    formData.reset();
-
     showReset.value = false;
     stepperValue.value = "1";
 };
 
-const submitForm = () => {
-    formData.post(route("resources.store"), {
-        onSuccess: () => {
-            clearLocalStorage();
-            formData.reset();
-        },
-        onError: (errors) => {
-            console.error("Errors:", errors);
-            toast.add({
-                severity: "error",
-                summary: "Error",
-                detail: errors
-                    ? Object.values(errors).flat().join("\n")
-                    : "An error occurred while creating the resource.",
-                life: 10000,
-            });
-        },
-    });
+const submitForm = async () => {
+    try {
+        const response = await axios.post(route("resources.store"), formData, {
+            "Content-Type": "multipart/form-data",
+        });
+        clearLocalStorage();
+
+        router.visit(route("resources.show", {slug: response.data.slug}));
+    } catch (err) {
+        toast.add({
+            severity: "error",
+            summary: "Error",
+            detail:
+                err.response?.data?.message ||
+                (err.response?.data?.errors
+                    ? Object.values(err.response.data.errors).flat().join("\n")
+                    : "An error occurred while creating the resource. Please try again."),
+            life: 10000,
+        });
+        console.error(err);
+    }
 };
 
 const handleFormChange = (newFormData) => {
     Object.keys(newFormData).forEach((key) => {
-        formData[key] = newFormData[key];
+        if (key === "page_url" && newFormData[key]) {
+            if (!/^https?:\/\//i.test(newFormData[key])) {
+                formData[key] = "https://" + newFormData[key];
+            } else {
+                formData[key] = newFormData[key];
+            }
+        } else {
+            formData[key] = newFormData[key];
+        }
     });
 };
 </script>
@@ -106,17 +110,23 @@ const handleFormChange = (newFormData) => {
 <template>
     <AppLayout title="Computer Science Resources">
         <main class="py-12 flex justify-center">
-            <div class="w-full flex flex-col md:flex-row gap-10 justify-center items-start">
+            <div
+                class="w-full flex flex-col md:flex-row gap-10 justify-center px-6 items-start"
+            >
                 <!-- Instructions Sidebar (Rules) -->
                 <SubmissionGuidelines />
                 <!-- Main Form Section -->
                 <div
                     ref="formRef"
-                    class="bg-white h-min shadow-lg rounded-lg p-5 relative overflow-auto w-full md:w-[46vw] max-w-4xl min-w-[28rem]"
+                    class="bg-white h-min shadow-lg rounded-lg p-5 relative overflow-auto w-full md:w-[46vw] max-w-4xl"
                     id="create-resource-form"
                 >
-                    <!-- Move Reset button to top right -->
-                    <div class="flex justify-end mb-2">
+                    <div class="flex justify-between mb-2">
+                        <FormSaverChip
+                            :is-saved="isSavedToLocalStorage"
+                            :has-content="hasFormContent"
+                        />
+
                         <SecondaryButton
                             @click="showReset = true"
                             type="button"
@@ -129,9 +139,8 @@ const handleFormChange = (newFormData) => {
                             Add a New Resource
                         </h2>
                         <StepList>
-                            <Step value="1">Details</Step>
-                            <Step value="2">Topics</Step>
-                            <Step value="3">Tags</Step>
+                            <Step value="1">Resource Details</Step>
+                            <Step value="2">Tags and Classification</Step>
                         </StepList>
                         <StepPanels>
                             <StepPanel value="1">
@@ -142,18 +151,10 @@ const handleFormChange = (newFormData) => {
                                 ></MandatoryFields>
                             </StepPanel>
                             <StepPanel value="2">
-                                <TopicsFields
-                                    :form="formData"
-                                    @change="handleFormChange"
-                                    @back="() => navigateToStep('1')"
-                                    @next="() => navigateToStep('3')"
-                                ></TopicsFields>
-                            </StepPanel>
-                            <StepPanel value="3">
                                 <TagsFields
                                     :form="formData"
                                     @change="handleFormChange"
-                                    @back="() => navigateToStep('2')"
+                                    @back="() => navigateToStep('1')"
                                     @next="submitForm"
                                 />
                             </StepPanel>

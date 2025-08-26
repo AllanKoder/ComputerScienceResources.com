@@ -33,7 +33,7 @@ class ComputerScienceResourceControllerTest extends TestCase
 
         $response = $this->postJson(route('resources.store'), $formData);
 
-        $response->assertRedirect(); // a redirect after successful creation
+        $response->assertStatus(200);
 
         // Check it is created
         $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
@@ -50,7 +50,7 @@ class ComputerScienceResourceControllerTest extends TestCase
 
         $response = $this->post(route('resources.store'), $formData);
 
-        $response->assertRedirect(); // a redirect after successful creation
+        $response->assertStatus(200);
 
         // Check it is created
         $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();

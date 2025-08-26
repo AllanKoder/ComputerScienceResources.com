@@ -6,7 +6,7 @@ import { object, string, array, number } from "yup";
 export const resourceMandatoryFields = object({
     name: string().required("Name is required").max(100, "Max 100 chars"),
     page_url: string()
-        .url("Must be a valid URL (Need to have https://)")
+        .url("Must be a valid URL")
         .required("URL is required"),
     platforms: array().of(string()).min(1, "At least one platform is required"),
     description: string().required("Description is required").max(10000),

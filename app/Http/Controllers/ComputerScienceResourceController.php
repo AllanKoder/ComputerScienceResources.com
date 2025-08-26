@@ -122,8 +122,8 @@ class ComputerScienceResourceController extends Controller
                 'platforms' => $resource->platforms,
             ]);
 
-            return redirect(route('resources.show', ['slug' => $resource->slug]))
-                ->with('success', 'Created Resource!');
+            $request->session()->flash('success', 'Created Resource!');
+            return response()->json($resource);
         } catch (Throwable $e) {
             DB::rollBack();
             Log::critical('Failed to create resource', [
@@ -133,7 +133,7 @@ class ComputerScienceResourceController extends Controller
                 'data' => $validatedData,
             ]);
 
-            return back()->withErrors(['error' => 'Failed to create resource. Please try again.']);
+            return response()->json([], 500);
         }
     }
 

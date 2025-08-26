@@ -51,7 +51,6 @@ Route::middleware([
 // Public
 // -----------------------
 Route::middleware('guest.or.verified')->group(function () {
-
     Route::get('/', function () {
         return redirect('/resources');
     });

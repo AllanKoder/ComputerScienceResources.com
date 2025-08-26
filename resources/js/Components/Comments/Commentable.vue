@@ -28,7 +28,7 @@ const props = defineProps({
     },
     sortByInitialValue: {
         type: String,
-        default: "top"
+        default: "top",
     },
     loadedCommentData: {
         type: Object,
@@ -60,7 +60,9 @@ const createdNewCommentCallback = (newComment, userData) => {
 
     // Ensure DOM updates are complete, then scroll to the new comment
     nextTick(() => {
-        const newCommentElement = commentRefs.value.get(`comment_${newComment.id}`);
+        const newCommentElement = commentRefs.value.get(
+            `comment_${newComment.id}`
+        );
         if (newCommentElement) {
             newCommentElement.scrollIntoView({
                 behavior: "smooth",
@@ -80,8 +82,10 @@ provide("commentRefs", commentRefs);
 const showEmptyState = computed(() => {
     return (
         hasLoadedCommentData &&
-        idToChildren.value instanceof Map &&
-        (!idToChildren.value.get(null) || idToChildren.value.get(null).length === 0)
+        (!idToChildren.value ||
+            !(idToChildren.value instanceof Map) ||
+            !idToChildren.value.get(null) ||
+            idToChildren.value.get(null).length === 0)
     );
 });
 

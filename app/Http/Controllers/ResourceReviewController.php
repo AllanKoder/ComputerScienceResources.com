@@ -58,7 +58,7 @@ class ResourceReviewController extends Controller
             'review_id' => $review->id,
         ]);
 
-        return response()->json();
+        return response()->json($review);
     }
 
     public function update(StoreResourceReview $request, ComputerScienceResource $computerScienceResource)
@@ -106,6 +106,6 @@ class ResourceReviewController extends Controller
             'review_id' => $existingReview->id,
         ]);
 
-        return response()->json();
+        return response()->json($existingReview);
     }
 }

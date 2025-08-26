@@ -3,7 +3,6 @@ import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 export function useLocalStorageSaver(form, localStorageKeyId, formFields, keyPrefix = 'edit-draft') {
     const localStorageKey = computed(() => `${keyPrefix}-${localStorageKeyId}`);
     const isSavedToLocalStorage = ref(false);
-    const isDataLoaded = ref(false);
 
     const hasFormContent = computed(() => {
         return formFields.some(field => {
@@ -43,6 +42,10 @@ export function useLocalStorageSaver(form, localStorageKeyId, formFields, keyPre
                         form[field] = parsedData[field];
                     }
                 });
+                // Always keep image_file as null after loading
+                if (formFields.includes('image_file')) {
+                    form['image_file'] = null;
+                }
                 isSavedToLocalStorage.value = true;
             } catch (error) {
                 console.error('Error loading saved data:', error);
@@ -50,7 +53,6 @@ export function useLocalStorageSaver(form, localStorageKeyId, formFields, keyPre
                 isSavedToLocalStorage.value = false;
             }
         }
-        isDataLoaded.value = true;
     };
 
     let saveTimeout;
@@ -76,7 +78,6 @@ export function useLocalStorageSaver(form, localStorageKeyId, formFields, keyPre
 
     return {
         isSavedToLocalStorage,
-        isDataLoaded,
         hasFormContent,
         clearLocalStorage
     };

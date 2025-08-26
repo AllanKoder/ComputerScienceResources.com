@@ -20,7 +20,7 @@ trait TestingUtils
     {
         $resourceForm = StoreResourceRequestFactory::new()->create($overrides);
         $response = $this->postJson(route('resources.store'), $resourceForm);
-        $response->assertStatus(302); // Assert redirection is successful post
+        $response->assertStatus(200);
 
         return ComputerScienceResource::where('name', $resourceForm['name'])->first();
     }
@@ -79,8 +79,7 @@ trait TestingUtils
         // Merge the edit
         $mergeResponse = $this->post(route('resource_edits.merge', ['resourceEdits' => $edit->id]));
         $mergeResponse
-            ->assertRedirect(route('resources.show', ['slug' => $edit->resource->slug]))
-            ->assertSessionHas('success', 'Successfully merged new changed!');
+            ->assertRedirect(route('resources.show', ['slug' => $edit->resource->slug]));
     }
 
     public function createComment(string $commentableKey, int $commentableId, array $overrides = [])

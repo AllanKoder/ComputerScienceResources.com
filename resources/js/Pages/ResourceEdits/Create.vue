@@ -34,7 +34,7 @@ const props = defineProps({
         required: true,
     },
 });
-
+// TODO: MOVE TO AXIOS BECAUSE REDIRECT FROM SUCCESSES WILL NOT CLEAR STORAGE, CONFIRM WITH TEST
 const formData = useForm({
     edit_title: "",
     edit_description: "",
@@ -55,7 +55,7 @@ const formData = useForm({
 
 const formFields = ["edit_title", "edit_description", "proposed_changes"];
 
-const { isSavedToLocalStorage, isDataLoaded, hasFormContent, clearLocalStorage } =
+const { isSavedToLocalStorage, hasFormContent, clearLocalStorage } =
     useLocalStorageSaver(formData, `edit-${props.resource.id}`, formFields);
 
 const pictureKey = ref(0);
@@ -110,17 +110,19 @@ const submit = async () => {
             delete submissionData.proposed_changes.image_file;
         }
 
-        formData.transform(() => submissionData).post(
-            route("resource_edits.store", {
-                computerScienceResource: props.resource.id,
-            }),
-            {
-                onSuccess: () => clearLocalStorage(),
-                onError: (serverErrors) => {
-                    formData.setError(serverErrors);
-                },
-            },
-        );
+        formData
+            .transform(() => submissionData)
+            .post(
+                route("resource_edits.store", {
+                    computerScienceResource: props.resource.id,
+                }),
+                {
+                    onSuccess: () => clearLocalStorage(),
+                    onError: (serverErrors) => {
+                        formData.setError(serverErrors);
+                    },
+                }
+            );
     } catch (e) {
         if (e instanceof ValidationError) {
             e.inner.forEach((error) => {
@@ -137,7 +139,6 @@ const submit = async () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
-                    v-if="isDataLoaded"
                     class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 relative"
                 >
                     <div class="flex-row flex my-2">
@@ -196,7 +197,10 @@ const submit = async () => {
                                 />
                                 <InputError
                                     class="mt-2"
-                                    :message="errors.edit_description || formData.errors.edit_description"
+                                    :message="
+                                        errors.edit_description ||
+                                        formData.errors.edit_description
+                                    "
                                 />
                             </div>
                         </div>
@@ -214,20 +218,31 @@ const submit = async () => {
                                     <TextInput
                                         id="name"
                                         v-model="formData.proposed_changes.name"
-                                        @blur="validateField('proposed_changes.name')"
+                                        @blur="
+                                            validateField(
+                                                'proposed_changes.name'
+                                            )
+                                        "
                                         type="text"
                                         class="mt-1 block w-full"
                                         required
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="errors['proposed_changes.name'] || formData.errors['proposed_changes.name']"
+                                        :message="
+                                            errors['proposed_changes.name'] ||
+                                            formData.errors[
+                                                'proposed_changes.name'
+                                            ]
+                                        "
                                     />
                                 </div>
 
                                 <div>
                                     <InputLabel value="Image Thumbnail" />
-                                    <div class="flex flex-col items-center gap-2">
+                                    <div
+                                        class="flex flex-col items-center gap-2"
+                                    >
                                         <PictureInput
                                             :prefill="props.resource.image_url"
                                             :key="pictureKey"
@@ -240,7 +255,9 @@ const submit = async () => {
                                             remove-button-class="inline-flex items-center px-4 py-2 bg-primary border-0 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 transition ease-in-out duration-150"
                                             button-class="inline-flex items-center px-4 py-2 border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
                                             removable
-                                            @remove="() => changedPicture = true"
+                                            @remove="
+                                                () => (changedPicture = true)
+                                            "
                                             @change="onImageChange"
                                         />
                                         <SecondaryButton
@@ -267,15 +284,28 @@ const submit = async () => {
                                     <InputLabel for="page_url" value="URL" />
                                     <TextInput
                                         id="page_url"
-                                        v-model="formData.proposed_changes.page_url"
-                                        @blur="validateField('proposed_changes.page_url')"
+                                        v-model="
+                                            formData.proposed_changes.page_url
+                                        "
+                                        @blur="
+                                            validateField(
+                                                'proposed_changes.page_url'
+                                            )
+                                        "
                                         type="text"
                                         class="mt-1 block w-full"
                                         required
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="errors['proposed_changes.page_url'] || formData.errors['proposed_changes.page_url']"
+                                        :message="
+                                            errors[
+                                                'proposed_changes.page_url'
+                                            ] ||
+                                            formData.errors[
+                                                'proposed_changes.page_url'
+                                            ]
+                                        "
                                     />
                                 </div>
                             </div>
@@ -287,14 +317,27 @@ const submit = async () => {
                                 />
                                 <TextArea
                                     id="description"
-                                    v-model="formData.proposed_changes.description"
-                                    @blur="validateField('proposed_changes.description')"
+                                    v-model="
+                                        formData.proposed_changes.description
+                                    "
+                                    @blur="
+                                        validateField(
+                                            'proposed_changes.description'
+                                        )
+                                    "
                                     class="mt-1 block w-full"
                                     :rows="6"
                                 />
                                 <InputError
                                     class="mt-2"
-                                    :message="errors['proposed_changes.description'] || formData.errors['proposed_changes.description']"
+                                    :message="
+                                        errors[
+                                            'proposed_changes.description'
+                                        ] ||
+                                        formData.errors[
+                                            'proposed_changes.description'
+                                        ]
+                                    "
                                 />
                             </div>
 
@@ -308,8 +351,14 @@ const submit = async () => {
                                     />
                                     <Select
                                         id="difficulty"
-                                        v-model="formData.proposed_changes.difficulty"
-                                        @blur="validateField('proposed_changes.difficulty')"
+                                        v-model="
+                                            formData.proposed_changes.difficulty
+                                        "
+                                        @blur="
+                                            validateField(
+                                                'proposed_changes.difficulty'
+                                            )
+                                        "
                                         :options="difficultiesObject"
                                         option-label="label"
                                         option-value="value"
@@ -318,7 +367,14 @@ const submit = async () => {
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="errors['proposed_changes.difficulty'] || formData.errors['proposed_changes.difficulty']"
+                                        :message="
+                                            errors[
+                                                'proposed_changes.difficulty'
+                                            ] ||
+                                            formData.errors[
+                                                'proposed_changes.difficulty'
+                                            ]
+                                        "
                                     />
                                 </div>
 
@@ -326,8 +382,14 @@ const submit = async () => {
                                     <InputLabel for="pricing" value="Pricing" />
                                     <Select
                                         id="pricing"
-                                        v-model="formData.proposed_changes.pricing"
-                                        @blur="validateField('proposed_changes.pricing')"
+                                        v-model="
+                                            formData.proposed_changes.pricing
+                                        "
+                                        @blur="
+                                            validateField(
+                                                'proposed_changes.pricing'
+                                            )
+                                        "
                                         :options="pricingsObject"
                                         option-label="label"
                                         option-value="value"
@@ -336,7 +398,14 @@ const submit = async () => {
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="errors['proposed_changes.pricing'] || formData.errors['proposed_changes.pricing']"
+                                        :message="
+                                            errors[
+                                                'proposed_changes.pricing'
+                                            ] ||
+                                            formData.errors[
+                                                'proposed_changes.pricing'
+                                            ]
+                                        "
                                     />
                                 </div>
 
@@ -347,8 +416,14 @@ const submit = async () => {
                                     />
                                     <MultiSelect
                                         id="platforms"
-                                        v-model="formData.proposed_changes.platforms"
-                                        @blur="validateField('proposed_changes.platforms')"
+                                        v-model="
+                                            formData.proposed_changes.platforms
+                                        "
+                                        @blur="
+                                            validateField(
+                                                'proposed_changes.platforms'
+                                            )
+                                        "
                                         :options="platformsObject"
                                         option-label="label"
                                         option-value="value"
@@ -357,7 +432,14 @@ const submit = async () => {
                                     />
                                     <InputError
                                         class="mt-2"
-                                        :message="errors['proposed_changes.platforms'] || formData.errors['proposed_changes.platforms']"
+                                        :message="
+                                            errors[
+                                                'proposed_changes.platforms'
+                                            ] ||
+                                            formData.errors[
+                                                'proposed_changes.platforms'
+                                            ]
+                                        "
                                     />
                                 </div>
                             </div>
@@ -365,26 +447,48 @@ const submit = async () => {
                             <div class="mt-4">
                                 <InputLabel value="Topic Tags" />
                                 <TagSelector
-                                    v-model="formData.proposed_changes.topic_tags"
-                                    @blur="validateField('proposed_changes.topic_tags')"
+                                    v-model="
+                                        formData.proposed_changes.topic_tags
+                                    "
+                                    @blur="
+                                        validateField(
+                                            'proposed_changes.topic_tags'
+                                        )
+                                    "
                                 />
                                 <InputError
                                     class="mt-2"
-                                    :message="errors['proposed_changes.topic_tags'] || formData.errors['proposed_changes.topic_tags']"
+                                    :message="
+                                        errors['proposed_changes.topic_tags'] ||
+                                        formData.errors[
+                                            'proposed_changes.topic_tags'
+                                        ]
+                                    "
                                 />
                             </div>
 
                             <div class="mt-4">
                                 <InputLabel value="Programming Language Tags" />
                                 <TagSelector
-                                    v-model="formData.proposed_changes.programming_language_tags"
-                                    @blur="validateField('proposed_changes.programming_language_tags')"
+                                    v-model="
+                                        formData.proposed_changes
+                                            .programming_language_tags
+                                    "
+                                    @blur="
+                                        validateField(
+                                            'proposed_changes.programming_language_tags'
+                                        )
+                                    "
                                 />
                                 <InputError
                                     class="mt-2"
                                     :message="
-                                        errors['proposed_changes.programming_language_tags'] ||
-                                        formData.errors['proposed_changes.programming_language_tags']
+                                        errors[
+                                            'proposed_changes.programming_language_tags'
+                                        ] ||
+                                        formData.errors[
+                                            'proposed_changes.programming_language_tags'
+                                        ]
                                     "
                                 />
                             </div>
@@ -392,26 +496,42 @@ const submit = async () => {
                             <div class="mt-4">
                                 <InputLabel value="General Tags" />
                                 <TagSelector
-                                    v-model="formData.proposed_changes.general_tags"
-                                    @blur="validateField('proposed_changes.general_tags')"
+                                    v-model="
+                                        formData.proposed_changes.general_tags
+                                    "
+                                    @blur="
+                                        validateField(
+                                            'proposed_changes.general_tags'
+                                        )
+                                    "
                                 />
                                 <InputError
                                     class="mt-2"
-                                    :message="errors['proposed_changes.general_tags'] || formData.errors['proposed_changes.general_tags']"
+                                    :message="
+                                        errors[
+                                            'proposed_changes.general_tags'
+                                        ] ||
+                                        formData.errors[
+                                            'proposed_changes.general_tags'
+                                        ]
+                                    "
                                 />
                             </div>
 
-                            <div class="flex items-center justify-between mt-6 p-4">
-                                <SecondaryButton @click="showReset = true" type="button">
+                            <div
+                                class="flex items-center justify-between mt-6 p-4"
+                            >
+                                <SecondaryButton
+                                    @click="showReset = true"
+                                    type="button"
+                                >
                                     Reset
                                 </SecondaryButton>
                                 <ConfirmationModal
                                     :show="showReset"
                                     @close="showReset = false"
                                 >
-                                    <template #title>
-                                        Reset the form
-                                    </template>
+                                    <template #title> Reset the form </template>
 
                                     <template #content>
                                         Are you sure you want reset back to the
