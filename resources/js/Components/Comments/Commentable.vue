@@ -80,6 +80,8 @@ provide("createdNewCommentCallback", createdNewCommentCallback);
 provide("commentRefs", commentRefs);
 
 const showEmptyState = computed(() => {
+    if (!hasLoadedCommentData) return false;
+
     const data = idToChildren.value;
     let topLevel = [];
 
