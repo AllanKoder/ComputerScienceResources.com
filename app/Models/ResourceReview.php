@@ -37,6 +37,11 @@ class ResourceReview extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function computerScienceResource(): BelongsTo
+    {
+        return $this->belongsTo(ComputerScienceResource::class);
+    }
+
     /**
      * Get the average review score.
      */

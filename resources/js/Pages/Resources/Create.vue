@@ -105,10 +105,10 @@ const handleFormChange = (newFormData) => {
 <template>
     <AppLayout title="Computer Science Resources">
         <main class="py-12 flex justify-center">
-            <div class="w-full max-w-[1100px] flex flex-col md:flex-row gap-10">
+            <div class="w-full flex flex-col md:flex-row gap-10 justify-center items-start">
                 <!-- Instructions Sidebar (Rules) -->
                 <div
-                    class="bg-gray-50 border border-gray-200 rounded-lg p-6 w-full md:w-[28vw] min-w-[20rem] h-fit sticky md:top-8 mb-8 md:mb-0"
+                    class="bg-gray-50 border border-gray-200 rounded-lg p-6 w-full md:w-[28vw] min-w-[20rem] h-fit sticky md:top-8 mt-0 md:mb-0"
                 >
                     <h3 class="text-lg font-semibold mb-4 text-gray-800">
                         Submission Guidelines
