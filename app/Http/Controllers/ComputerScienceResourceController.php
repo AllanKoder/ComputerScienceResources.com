@@ -123,6 +123,7 @@ class ComputerScienceResourceController extends Controller
             ]);
 
             $request->session()->flash('success', 'Created Resource!');
+
             return response()->json($resource);
         } catch (Throwable $e) {
             DB::rollBack();
