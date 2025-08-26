@@ -32,9 +32,9 @@ function sanitizeTag(tag) {
     // Apply rules from config('computerScienceResources.tags_rules')
     // Transform the tag to lowercase and replace spaces with hyphens
     transformedTag = transformedTag.replace(/\s+/g, "-");
-    // Remove any characters that are not lowercase letters or hyphens
-    // Remove any characters that are not lowercase letters, numbers, or hyphens
-    transformedTag = transformedTag.replace(/[^a-z0-9-]/g, "");
+    // Allow only characters matching regex: /^[a-z0-9+#.-]+$/
+    // i.e., keep lowercase letters, digits, plus, hash, dot, and hyphen
+    transformedTag = transformedTag.replace(/[^a-z0-9+#.-]/g, "");
     return transformedTag;
 }
 
