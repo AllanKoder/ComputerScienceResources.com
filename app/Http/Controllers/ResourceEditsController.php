@@ -69,7 +69,7 @@ class ResourceEditsController extends Controller
         ]);
 
         return redirect()->route('resource_edits.show', ['slug' => $resourceEdit->slug])
-            ->with('success', 'The proposed edits were created. Others can now view it.');
+            ->with('success', 'Edits Created!');
     }
 
     /**
@@ -170,7 +170,7 @@ class ResourceEditsController extends Controller
             ]);
 
             return redirect(route('resources.show', ['slug' => $resource->slug]))
-                ->with('success', 'Successfully merged new changed!');
+                ->with('success', 'Successfully Merged Changes!');
         } catch (Throwable $e) {
             DB::rollBack();
             Log::critical('Failed to merge resource edits', [

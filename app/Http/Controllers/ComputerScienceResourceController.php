@@ -123,7 +123,7 @@ class ComputerScienceResourceController extends Controller
             ]);
 
             return redirect(route('resources.show', ['slug' => $resource->slug]))
-                ->with('success', 'Created Resource Succesfully!');
+                ->with('success', 'Created Resource!');
         } catch (Throwable $e) {
             DB::rollBack();
             Log::critical('Failed to create resource', [
@@ -168,14 +168,15 @@ class ComputerScienceResourceController extends Controller
         if ($tab === 'reviews') {
             $userReview = null;
             if ($userId = Auth::id()) {
-                $userReview = ResourceReview::where('user_id', $userId)->first();
+                $userReview = ResourceReview::whereBelongsTo($computerScienceResource)
+                    ->firstWhere('user_id', $userId);
             }
 
             $data['userReview'] = $userReview;
 
             $data['reviews'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy, $request) {
-                    $query = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id);
+                    $query = ResourceReview::whereBelongsTo($computerScienceResource);
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceReview::class);
 
                     return $query->with('user')->paginate(10)->appends($request->query());
@@ -184,7 +185,7 @@ class ComputerScienceResourceController extends Controller
         } elseif ($tab === 'edits') {
             $data['resourceEdits'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy, $request) {
-                    $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
+                    $query = ResourceEdits::whereBelongsTo($computerScienceResource);
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
 
                     return $query->with('user')->paginate(10)->appends($request->query());
