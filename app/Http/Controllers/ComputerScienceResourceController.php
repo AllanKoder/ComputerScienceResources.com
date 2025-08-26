@@ -122,7 +122,7 @@ class ComputerScienceResourceController extends Controller
                 'platforms' => $resource->platforms,
             ]);
 
-            $request->session()->flash('success', 'Created Resource!');
+            session()->flash('success', 'Created Resource!');
 
             return response()->json($resource);
         } catch (Throwable $e) {

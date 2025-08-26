@@ -80,13 +80,17 @@ provide("createdNewCommentCallback", createdNewCommentCallback);
 provide("commentRefs", commentRefs);
 
 const showEmptyState = computed(() => {
-    return (
-        hasLoadedCommentData &&
-        (!idToChildren.value ||
-            !(idToChildren.value instanceof Map) ||
-            !idToChildren.value.get(null) ||
-            idToChildren.value.get(null).length === 0)
-    );
+    const data = idToChildren.value;
+    let topLevel = [];
+
+    // Handle both Map and plain object shapes
+    if (data && typeof data.get === "function") {
+        topLevel = data.get(null) || [];
+    } else if (data && typeof data === "object") {
+        topLevel = data[null] || data["null"] || [];
+    }
+
+    return topLevel.length === 0;
 });
 
 function updateUsers(newUsers) {

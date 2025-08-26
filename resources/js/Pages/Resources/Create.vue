@@ -115,7 +115,11 @@ const handleFormChange = (newFormData) => {
                 class="w-full flex flex-col md:flex-row gap-10 justify-center px-6 items-start"
             >
                 <!-- Instructions Sidebar (Rules) -->
-                <SubmissionGuidelines />
+                <div
+                    class="bg-gray-50 border border-gray-200 rounded-lg p-6 w-full md:w-[28vw] min-w-[20rem] h-fit sticky md:top-8 mt-0 md:mb-0"
+                >
+                    <SubmissionGuidelines />
+                </div>
                 <!-- Main Form Section -->
                 <div
                     ref="formRef"

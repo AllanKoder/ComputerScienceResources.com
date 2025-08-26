@@ -69,8 +69,7 @@ class TagSearchTest extends TestCase
 
         $response = $this->postJson(route('resources.store'), $formData);
 
-        $response->assertStatus(302); // a redirect after successful creation
-        $response->assertRedirect();
+        $response->assertStatus(200);
 
         // Check that TagFrequency reflects counts
         $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'count' => 2]);
