@@ -30,6 +30,7 @@ const props = defineProps({
         type: String,
         default: "top",
     },
+    // TODO: IN FUTURE, CHANGE IT TO INITIAL INDEX, AND LOAD THE INTIIAL INDEX INSTEAD OF ALL COMMENTS
     loadedCommentData: {
         type: Object,
         required: false,

@@ -145,7 +145,7 @@ const filterSuggestions = () => {
                     <span class="text-sm">{{ slotProps.option }}</span>
                     <span
                         v-if="tagCount[slotProps.option] !== undefined"
-                        class="rounded-lg bg-secondary px-1 text-sm text-primaryDark"
+                        class="rounded-lg bg-secondary px-2 text-sm text-primaryDark"
                     >
                         {{ tagCount[slotProps.option] }}
                     </span>

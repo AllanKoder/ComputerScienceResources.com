@@ -94,7 +94,7 @@ class ResourceEditsController extends Controller
     {
         $resourceEdits = ResourceEdits::where('slug', $slug)->firstOrFail();
 
-        $resourceEdits->load('resource');
+        $resourceEdits->load('computerScienceResource');
         $resourceEdits->load('user');
 
         return Inertia::render('ResourceEdits/Show', [
