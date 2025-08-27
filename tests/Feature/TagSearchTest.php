@@ -78,10 +78,10 @@ class TagSearchTest extends TestCase
         $response->assertStatus(200);
 
         // Check that TagFrequency reflects counts
-        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'type'=>'topics_tags', 'count' => 1]);
-        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'type'=>'programming_languages_tags', 'count' => 1]);
-        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'algorithms', 'type'=>'topics_tags', 'count' => 1]);
-        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'beginner', 'type'=>'general_tags', 'count' => 1]);
+        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'type' => 'topics_tags', 'count' => 1]);
+        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'type' => 'programming_languages_tags', 'count' => 1]);
+        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'algorithms', 'type' => 'topics_tags', 'count' => 1]);
+        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'beginner', 'type' => 'general_tags', 'count' => 1]);
     }
 
     public function test_dispatching_tag_frequency_change_removes_unused_tags()
@@ -101,7 +101,7 @@ class TagSearchTest extends TestCase
         TagFrequencyChanged::dispatch('general_tags', [
             'python',
             'java',
-            'ruby'
+            'ruby',
         ], []); // no tags used now
 
         // Step 3: Ensure all tag frequencies are removed
@@ -109,7 +109,7 @@ class TagSearchTest extends TestCase
         $this->assertDatabaseMissing('tag_frequencies', ['tag' => 'java']);
         $this->assertDatabaseMissing('tag_frequencies', ['tag' => 'ruby']);
 
-        $response = $this->getJson(route('tags.search', ['type'=> 'general_tags', 'query' => 'py']));
+        $response = $this->getJson(route('tags.search', ['type' => 'general_tags', 'query' => 'py']));
         $response->assertStatus(200);
         $this->assertEmpty($response->json('tags'));
     }

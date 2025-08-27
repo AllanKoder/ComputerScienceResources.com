@@ -18,8 +18,8 @@ class ModifyTagFrequency
     /**
      * Update tag frequencies based on two arrays of tags.
      *
-     * @param array $oldTags Array of old tags (e.g. ['php', 'laravel', ...])
-     * @param array $newTags Array of new tags (e.g. ['php', 'vue', ...])
+     * @param  array  $oldTags  Array of old tags (e.g. ['php', 'laravel', ...])
+     * @param  array  $newTags  Array of new tags (e.g. ['php', 'vue', ...])
      */
     public function handle(TagFrequencyChanged $event): void
     {

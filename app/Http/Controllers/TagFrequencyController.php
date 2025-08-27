@@ -12,8 +12,7 @@ class TagFrequencyController extends Controller
             return response()->json(['message' => 'Query too long'], 422);
         }
 
-        if (!in_array($type, ['topics_tags', 'programming_languages_tags', 'general_tags']))
-        {
+        if (! in_array($type, ['topics_tags', 'programming_languages_tags', 'general_tags'])) {
             return response()->json(['message' => 'Not a valid type'], 422);
         }
 
