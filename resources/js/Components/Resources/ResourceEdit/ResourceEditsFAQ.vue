@@ -37,6 +37,8 @@ import FrequentlyAskedQuestion from "@/Components/FrequentlyAskedQuestion.vue";
                             class="bg-gray-100 dark:bg-gray-800 p-3 rounded text-sm overflow-x-auto"
                         ><code>public function requiredVotes(int $totalVotes): int
 {
+    if ($totalVotes == 0) return 1;
+
     // Take the minimum of total votes OR the logarithmic calculation
     $votes = min($totalVotes, floor(log($totalVotes, 1.25)) + 1);
 
@@ -64,6 +66,11 @@ import FrequentlyAskedQuestion from "@/Components/FrequentlyAskedQuestion.vue";
                                 <strong>Minimum threshold:</strong> All proposed
                                 edits require at least 3 approvals, regardless
                                 of resource popularity
+                            </li>
+                            <li>
+                                <strong>No Votes:</strong> A single approval
+                                is all you need to get your change in. If you post a resource,
+                                don't forget to upvote it! Otherwise, someone could make an edit!!!
                             </li>
                         </ol>
                     </div>
@@ -100,12 +107,13 @@ import FrequentlyAskedQuestion from "@/Components/FrequentlyAskedQuestion.vue";
                                     <td
                                         class="border border-gray-300 dark:border-gray-600 px-4 py-2"
                                     >
-                                        3
+                                        1
                                     </td>
                                     <td
                                         class="border border-gray-300 dark:border-gray-600 px-4 py-2"
                                     >
-                                        Minimum requirement applies
+                                        Since there are no existing votes (positive or negative), the entire community can merge any edits.<th></th>
+                                        The reasoning is that someone could've make a typo and needed a quick fix.
                                     </td>
                                 </tr>
                                 <tr>

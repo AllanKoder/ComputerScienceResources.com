@@ -16,6 +16,7 @@ class ResourceEditsService
      */
     public function requiredVotes(int $totalVotes): int
     {
+        if ($totalVotes == 0) return 1;
         // Take the minimum of total votes OR the logarithmic calculation
         $votes = min($totalVotes, floor(log($totalVotes, 1.25)) + 1);
 
