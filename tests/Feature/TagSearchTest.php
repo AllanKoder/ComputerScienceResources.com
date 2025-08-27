@@ -150,8 +150,8 @@ class TagSearchTest extends TestCase
         $mergeResponse->assertStatus(302);
 
         // TagFrequency should now reflect the changes
-        $this->assertEquals(1, TagFrequency::where('tag', 'python')->where('type', 'topic_tags')->value('count'));
-        $this->assertEquals(1, TagFrequency::where('tag', 'python')->where('type', 'programming_language_tags')->value('count'));
+        $this->assertEquals(1, TagFrequency::where('tag', 'python')->where('type', 'topics_tags')->value('count'));
+        $this->assertEquals(1, TagFrequency::where('tag', 'python')->where('type', 'programming_languages_tags')->value('count'));
         $this->assertEquals(1, TagFrequency::where('tag', 'algorithms')->value('count')); // Still used once
         $this->assertDatabaseMissing('tag_frequencies', ['tag' => 'c++']); // Removed
         $this->assertEquals(1, TagFrequency::where('tag', 'tutorial')->value('count'));
