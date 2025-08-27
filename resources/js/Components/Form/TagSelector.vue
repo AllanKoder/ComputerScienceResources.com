@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch, nextTick } from "vue";
+import { defineProps, ref, watch, nextTick, onMounted } from "vue";
 import { Tag } from "primevue";
 import { Icon } from "@iconify/vue";
 import AutoComplete from "primevue/autocomplete";
@@ -20,6 +20,10 @@ const searchValue = ref("");
 const tagResult = ref([]);
 const tagCount = ref({});
 const emptySearchMessage = ref("");
+
+// Cache for the first query (empty search)
+const firstQueryTags = ref([]);
+const firstQueryTagCount = ref({});
 
 // Sync initial model value to internal state
 watch(
@@ -87,13 +91,19 @@ const handleKeydown = (event) => {
 const filterSuggestions = () => {
     let query = searchValue.value.trim().toLowerCase();
 
+    // If query is empty, use cached first query
+    if (query === "") {
+        tagResult.value = [...firstQueryTags.value];
+        tagCount.value = { ...firstQueryTagCount.value };
+        return;
+    }
+
     axios
         .get(route("tags.search", { type: props.tagType, query }))
         .then((response) => {
             const tags = response.data.tags;
 
             tagResult.value = tags.map((tagJson) => tagJson.tag);
-
             tagCount.value = Object.fromEntries(
                 tags.map((tagJson) => [tagJson.tag, tagJson.count])
             );
@@ -104,6 +114,27 @@ const filterSuggestions = () => {
             tagCount.value = {};
         });
 };
+
+// Prefetch first query (empty search) on mount
+onMounted(() => {
+    axios
+        .get(route("tags.search", { type: props.tagType, query: "" }))
+        .then((response) => {
+            const tags = response.data.tags;
+            firstQueryTags.value = tags.map((tagJson) => tagJson.tag);
+            firstQueryTagCount.value = Object.fromEntries(
+                tags.map((tagJson) => [tagJson.tag, tagJson.count])
+            );
+            // Also set as initial suggestions
+            tagResult.value = [...firstQueryTags.value];
+            tagCount.value = { ...firstQueryTagCount.value };
+        })
+        .catch(() => {
+            console.warn("Cannot prefetch tags");
+            firstQueryTags.value = [];
+            firstQueryTagCount.value = {};
+        });
+});
 </script>
 
 <template>
