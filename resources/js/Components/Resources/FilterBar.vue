@@ -319,6 +319,7 @@ function resetFilters() {
                         Topics
                     </label>
                     <TagSelector
+                        :tag-type="'topics_tags'"
                         v-model="selectedTopics"
                         class="w-full"
                     />
@@ -331,6 +332,7 @@ function resetFilters() {
                         Languages
                     </label>
                     <TagSelector
+                        :tag-type="'programming_languages_tags'"
                         v-model="selectedProgrammingLanguages"
                         class="w-full"
                     />
@@ -343,6 +345,7 @@ function resetFilters() {
                         Tags
                     </label>
                     <TagSelector
+                        :tag-type="'general_tags'"
                         v-model="selectedGeneralTags"
                         class="w-full"
                     />

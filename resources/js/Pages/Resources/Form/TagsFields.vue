@@ -61,8 +61,11 @@ const validateAndNext = async () => {
                 What's this resource about?
                 <span class="text-red-500"> * </span>
             </h2>
-            <p class="text-center italic mb">software-engineering, career-consulting, data-science</p>
+            <p class="text-center italic mb">
+                software-engineering, career-consulting, data-science
+            </p>
             <TagSelector
+                :tag-type="'topics_tags'"
                 v-model="props.form.topic_tags"
             ></TagSelector>
             <PrimeVueFormError :errors="errors" />
@@ -72,29 +75,31 @@ const validateAndNext = async () => {
                 Programming languages taught (if any)?
             </h2>
             <p class="text-center italic mb">python, c++, c#</p>
-            <TagSelector v-model="props.form.programming_language_tags" />
+            <TagSelector
+                :tag-type="'programming_languages_tags'"
+                v-model="props.form.programming_language_tags"
+            />
 
             <!-- Tag Selector for Other tags -->
             <h2 class="text-2xl font-bold mt-5 mb-1 text-center">
-                Additional tags
+                Additional general tags
             </h2>
             <p class="text-center italic mb">non-profit, open-source, funny</p>
-            <TagSelector v-model="props.form.general_tags" />
+            <TagSelector
+                :tag-type="'general_tags'"
+                v-model="props.form.general_tags"
+            />
         </div>
 
         <!-- Prev/Next Button -->
         <div class="flex pt-6 justify-between">
-            <SecondaryButton
-                @click="() => emit('back')"
-            >
-                <Icon class="mr-2" icon="mdi:arrow-back"/>
+            <SecondaryButton @click="() => emit('back')">
+                <Icon class="mr-2" icon="mdi:arrow-back" />
                 Back
             </SecondaryButton>
-            <PrimaryButton
-                @click="validateAndNext"
-            >
+            <PrimaryButton @click="validateAndNext">
                 Submit
-                <Icon class="ml-2" icon="mdi:send"/>
+                <Icon class="ml-2" icon="mdi:send" />
             </PrimaryButton>
         </div>
     </Form>

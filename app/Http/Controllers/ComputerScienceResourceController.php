@@ -109,9 +109,6 @@ class ComputerScienceResourceController extends Controller
                 $resource->general_tags = $validatedData['general_tags'];
             }
 
-            // Dispatch tag frequency change event
-            TagFrequencyChanged::dispatch(null, $resource->tagCounter());
-
             DB::commit();
 
             Log::info('Resource created', [

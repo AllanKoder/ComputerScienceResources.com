@@ -1,10 +1,17 @@
 <script setup>
-import { ref, watch, nextTick } from "vue";
+import { defineProps, ref, watch, nextTick } from "vue";
 import { Tag } from "primevue";
 import { Icon } from "@iconify/vue";
 import AutoComplete from "primevue/autocomplete";
 import { defineModel } from "vue";
 import axios from "axios";
+
+const props = defineProps({
+    tagType: {
+        type: String,
+        required: true,
+    }
+})
 
 const model = defineModel(); // v-model from parent
 
@@ -81,7 +88,7 @@ const filterSuggestions = () => {
     let query = searchValue.value.trim().toLowerCase();
 
     axios
-        .get(route("tags.search", { query }))
+        .get(route("tags.search", { type: props.tagType, query }))
         .then((response) => {
             const tags = response.data.tags;
 

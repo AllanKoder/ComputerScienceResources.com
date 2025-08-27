@@ -54,11 +54,13 @@ class ComputerScienceResourceFactory extends Factory
     public function configure(): Factory
     {
         return $this->afterCreating(function (ComputerScienceResource $resource) {
-            $fakerTags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', fake()->word(), fake()->word()];
+            $fakerTags = ['tag1', 'tag2', 'tag3', 'tag4', 'tag5', fake()->word(), fake()->word(), fake()->word()];
 
             // Sanitize all tags before assigning
-            $topicTags = $this->topicTags ?? fake()->randomElements($fakerTags, fake()->numberBetween(3, count($fakerTags)));
-            $topicTags = array_map([$this, 'sanitizeTag'], $topicTags);
+            do {
+                $topicTags = $this->topicTags ?? fake()->randomElements($fakerTags, fake()->numberBetween(3, count($fakerTags)));
+                $topicTags = array_map([$this, 'sanitizeTag'], $topicTags);
+            } while (sizeof($topicTags) < 2);
 
             $programmingLanguageTags = $this->programmingLanguageTags ?? fake()->randomElements($fakerTags);
             $programmingLanguageTags = array_map([$this, 'sanitizeTag'], $programmingLanguageTags);
@@ -69,8 +71,6 @@ class ComputerScienceResourceFactory extends Factory
             $resource->topic_tags = $topicTags;
             $resource->programming_language_tags = $programmingLanguageTags;
             $resource->general_tags = $generalTags;
-
-            TagFrequencyChanged::dispatch(null, $resource->tagCounter());
         });
     }
 

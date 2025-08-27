@@ -112,7 +112,6 @@ class ResourceEditsController extends Controller
         DB::beginTransaction();
         try {
             $resource = ComputerScienceResource::findOrFail($resourceEdits->computer_science_resource_id);
-            $oldTagCounter = $resource->tagCounter();
 
             // Go through each property in proposed_changes, and if it exists. then set the value
             $changes = $resourceEdits->proposed_changes;
@@ -150,11 +149,6 @@ class ResourceEditsController extends Controller
                     $allTags[] = $changes[$field];
                 }
             }
-
-            // Get the new tag counter
-            $newTags = collect($allTags)->flatten()->countBy()->toArray();
-            // Change tag frequency
-            TagFrequencyChanged::dispatch($oldTagCounter, $newTags);
 
             // Delete the edit since we successfully merged the changes
             $resourceEdits->delete();

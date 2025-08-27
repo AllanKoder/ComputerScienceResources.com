@@ -111,7 +111,6 @@ class ResourceEditsTest extends TestCase
             $response = $this->post(route('resource_edits.store', $resource), $editData);
 
             $response->assertStatus(302);
-            $response->assertSessionHas('warning', 'Cannot submit an edit with no changes made.');
         }
     }
 

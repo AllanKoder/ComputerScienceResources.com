@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tag_frequencies', function (Blueprint $table) {
-            $table->char('tag', 100)->primary();
+            $table->char('tag', 100);
+            $table->char('type', 50);
+
+            $table->primary(['tag', 'type']);
             $table->bigInteger('count')->default(0);
         });
     }

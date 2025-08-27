@@ -447,6 +447,7 @@ const submit = async () => {
                             <div class="mt-4">
                                 <InputLabel value="Topic Tags" />
                                 <TagSelector
+                                    :tag-type="'topics_tags'"
                                     v-model="
                                         formData.proposed_changes.topic_tags
                                     "
@@ -470,6 +471,7 @@ const submit = async () => {
                             <div class="mt-4">
                                 <InputLabel value="Programming Language Tags" />
                                 <TagSelector
+                                    :tag-type="'programming_languages_tags'"
                                     v-model="
                                         formData.proposed_changes
                                             .programming_language_tags
@@ -496,6 +498,7 @@ const submit = async () => {
                             <div class="mt-4">
                                 <InputLabel value="General Tags" />
                                 <TagSelector
+                                    :tag-type="'general_tags'"
                                     v-model="
                                         formData.proposed_changes.general_tags
                                     "
