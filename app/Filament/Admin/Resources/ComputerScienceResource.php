@@ -35,7 +35,7 @@ class ComputerScienceResource extends Resource
                 TextColumn::make('name')->searchable()
                     ->description(fn (ModelsComputerScienceResource $resource): string => $resource->description)->wrap(),
                 TextColumn::make('topic_tags')
-                    ->label('Topics')
+                    ->label('topics_tags')
                     ->badge()
                     ->color('primary')
                     ->getStateUsing(fn ($record) => $record->topic_tags),

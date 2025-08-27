@@ -29,12 +29,12 @@ class ComputerScienceResourceFilter
             'difficulty.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.difficulties'))],
             'pricing' => ['nullable', 'array'],
             'pricing.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.pricings'))],
-            'topics' => ['nullable', 'array'],
+            'topics_tags' => ['nullable', 'array'],
             'topics.*' => ['required', 'distinct', 'string', 'max:50'],
             'general_tags' => ['nullable', 'array'],
             'general_tags.*' => ['required', 'distinct', 'string', 'max:50'],
-            'programming_languages' => ['nullable', 'array'],
-            'programming_languages.*' => ['required', 'distinct', 'string', 'max:50'],
+            'programming_languages_tags' => ['nullable', 'array'],
+            'programming_languages_tags.*' => ['required', 'distinct', 'string', 'max:50'],
 
             // Fixed field names to match frontend
             'overall' => ['nullable', 'integer', 'between:1,4'],
@@ -95,13 +95,13 @@ class ComputerScienceResourceFilter
         }
 
         // Filter by topic tags
-        if (! empty($filters['topics'])) {
-            $query->withAnyTags((array) $filters['topics'], 'topics');
+        if (! empty($filters['topics_tags'])) {
+            $query->withAnyTags((array) $filters['topics_tags'], 'topics_tags');
         }
 
         // Filter by programming languages
-        if (! empty($filters['programming_languages'])) {
-            $query->withAnyTags((array) $filters['programming_languages'], 'programming_languages');
+        if (! empty($filters['programming_languages_tags'])) {
+            $query->withAnyTags((array) $filters['programming_languages_tags'], 'programming_languages_tags');
         }
 
         // Filter by general tags
