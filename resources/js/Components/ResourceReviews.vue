@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 import { Icon } from "@iconify/vue";
 import CreateResourceReview from "@/Components/Resources/Reviews/CreateResourceReview.vue";
 import ResourceReview from "./ResourceReview.vue";

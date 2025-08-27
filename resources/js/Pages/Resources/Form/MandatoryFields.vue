@@ -5,7 +5,7 @@ import MultiSelect from "primevue/multiselect";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import PictureInput from "vue-picture-input";
 import Select from "primevue/select";
-import { defineProps, defineEmits, ref, watch } from "vue";
+import { defineEmits, ref, watch } from "vue";
 import {
     platformsObject,
     pricingsObject,

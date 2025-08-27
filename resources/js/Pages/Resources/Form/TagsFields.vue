@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineProps, defineEmits, watch } from "vue";
+import { ref, defineEmits, watch } from "vue";
 import TagSelector from "@/Components/Form/TagSelector.vue";
 import { yupResolver } from "@primevue/forms/resolvers/yup";
 import { resourceMandatoryTags } from "@/Helpers/validation";
@@ -61,7 +61,7 @@ const validateAndNext = async () => {
                 What's this resource about?
                 <span class="text-red-500"> * </span>
             </h2>
-            <p class="text-center italic mb">
+            <p class="text-center italic mb-2">
                 software-engineering, career-consulting, data-science
             </p>
             <TagSelector
@@ -74,7 +74,7 @@ const validateAndNext = async () => {
             <h2 class="text-2xl font-bold mt-5 mb-1 text-center">
                 Programming languages taught (if any)?
             </h2>
-            <p class="text-center italic mb">python, c++, c#</p>
+            <p class="text-center italic mb-2">python, c++, c#</p>
             <TagSelector
                 :tag-type="'programming_languages_tags'"
                 v-model="props.form.programming_language_tags"
@@ -84,7 +84,7 @@ const validateAndNext = async () => {
             <h2 class="text-2xl font-bold mt-5 mb-1 text-center">
                 Additional general tags
             </h2>
-            <p class="text-center italic mb">non-profit, open-source, funny</p>
+            <p class="text-center italic mb-2">non-profit, open-source, funny</p>
             <TagSelector
                 :tag-type="'general_tags'"
                 v-model="props.form.general_tags"

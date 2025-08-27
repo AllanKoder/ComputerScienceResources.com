@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref, watch } from "vue";
+import { ref, watch } from "vue";
 import axios from "axios";
 import { Icon } from "@iconify/vue";
 import { router } from '@inertiajs/vue3'
