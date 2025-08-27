@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -60,7 +59,7 @@ class ComputerScienceResourceFactory extends Factory
             do {
                 $topicTags = $this->topicTags ?? fake()->randomElements($fakerTags, fake()->numberBetween(3, count($fakerTags)));
                 $topicTags = array_map([$this, 'sanitizeTag'], $topicTags);
-            } while (sizeof($topicTags) < 2);
+            } while (count($topicTags) < 2);
 
             $programmingLanguageTags = $this->programmingLanguageTags ?? fake()->randomElements($fakerTags);
             $programmingLanguageTags = array_map([$this, 'sanitizeTag'], $programmingLanguageTags);
