@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\TagFrequencyChanged;
 use App\Http\Requests\StoreResourceEdit;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
@@ -69,7 +68,7 @@ class ResourceEditsController extends Controller
         ]);
 
         return redirect()->route('resource_edits.show', ['slug' => $resourceEdit->slug])
-            ->with('success', 'The proposed edits were created. Others can now view it.');
+            ->with('success', 'Edits Created!');
     }
 
     /**
@@ -95,7 +94,7 @@ class ResourceEditsController extends Controller
     {
         $resourceEdits = ResourceEdits::where('slug', $slug)->firstOrFail();
 
-        $resourceEdits->load('resource');
+        $resourceEdits->load('computerScienceResource');
         $resourceEdits->load('user');
 
         return Inertia::render('ResourceEdits/Show', [
@@ -112,7 +111,6 @@ class ResourceEditsController extends Controller
         DB::beginTransaction();
         try {
             $resource = ComputerScienceResource::findOrFail($resourceEdits->computer_science_resource_id);
-            $oldTagCounter = $resource->tagCounter();
 
             // Go through each property in proposed_changes, and if it exists. then set the value
             $changes = $resourceEdits->proposed_changes;
@@ -151,11 +149,6 @@ class ResourceEditsController extends Controller
                 }
             }
 
-            // Get the new tag counter
-            $newTags = collect($allTags)->flatten()->countBy()->toArray();
-            // Change tag frequency
-            TagFrequencyChanged::dispatch($oldTagCounter, $newTags);
-
             // Delete the edit since we successfully merged the changes
             $resourceEdits->delete();
 
@@ -170,7 +163,7 @@ class ResourceEditsController extends Controller
             ]);
 
             return redirect(route('resources.show', ['slug' => $resource->slug]))
-                ->with('success', 'Successfully merged new changed!');
+                ->with('success', 'Successfully Merged Changes!');
         } catch (Throwable $e) {
             DB::rollBack();
             Log::critical('Failed to merge resource edits', [

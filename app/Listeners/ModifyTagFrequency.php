@@ -16,12 +16,17 @@ class ModifyTagFrequency
     }
 
     /**
-     * Handle the event.
+     * Update tag frequencies based on two arrays of tags.
+     *
+     * @param  array  $oldTags  Array of old tags (e.g. ['php', 'laravel', ...])
+     * @param  array  $newTags  Array of new tags (e.g. ['php', 'vue', ...])
      */
     public function handle(TagFrequencyChanged $event): void
     {
-        $old = $event->oldTags ?? [];
-        $new = $event->newTags ?? [];
+        $tagType = $event->tagType;
+        // Count tags in each array
+        $old = array_count_values($event->oldTags);
+        $new = array_count_values($event->newTags);
 
         // Build diffs for every tag
         $diffs = [];
@@ -36,25 +41,28 @@ class ModifyTagFrequency
             return;
         }
 
-        // One upsert: increment (or decrement) existing, insert new
+        // Only upsert for the given tagType
         $upserts = [];
         foreach ($diffs as $tag => $count) {
             $upserts[] = [
                 'tag' => $tag,
+                'type' => $tagType,
                 'count' => $count,
             ];
         }
 
+        // https://laravel.com/docs/12.x/queries#upserts
         DB::table('tag_frequencies')->upsert(
             $upserts,
-            ['tag'],
+            ['tag', 'type'],
             [
                 'count' => DB::raw('tag_frequencies.count + VALUES(count)'),
             ]
         );
 
-        // Clean out any zero-or-negative counts
+        // Clean out any zero-or-negative counts for this tagType only
         DB::table('tag_frequencies')
+            ->where('type', $tagType)
             ->where('count', '<=', 0)
             ->delete();
     }

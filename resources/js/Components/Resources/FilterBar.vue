@@ -58,10 +58,10 @@ onMounted(() => {
     selectedPlatforms.value = extractIndexedArray(urlParams, "platforms");
     selectedDifficulty.value = extractIndexedArray(urlParams, "difficulty");
     selectedPricing.value = extractIndexedArray(urlParams, "pricing");
-    selectedTopics.value = extractIndexedArray(urlParams, "topics");
+    selectedTopics.value = extractIndexedArray(urlParams, "topics_tags");
     selectedProgrammingLanguages.value = extractIndexedArray(
         urlParams,
-        "programming_languages"
+        "programming_languages_tags"
     );
     selectedGeneralTags.value = extractIndexedArray(urlParams, "general_tags");
 
@@ -144,10 +144,10 @@ function search() {
             pricing: selectedPricing.value.length
                 ? selectedPricing.value
                 : undefined,
-            topics: selectedTopics.value.length
+            topics_tags: selectedTopics.value.length
                 ? selectedTopics.value
                 : undefined,
-            programming_languages: selectedProgrammingLanguages.value.length
+            programming_languages_tags: selectedProgrammingLanguages.value.length
                 ? selectedProgrammingLanguages.value
                 : undefined,
             general_tags: selectedGeneralTags.value.length
@@ -319,6 +319,7 @@ function resetFilters() {
                         Topics
                     </label>
                     <TagSelector
+                        :tag-type="'topics_tags'"
                         v-model="selectedTopics"
                         class="w-full"
                     />
@@ -331,6 +332,7 @@ function resetFilters() {
                         Languages
                     </label>
                     <TagSelector
+                        :tag-type="'programming_languages_tags'"
                         v-model="selectedProgrammingLanguages"
                         class="w-full"
                     />
@@ -343,6 +345,7 @@ function resetFilters() {
                         Tags
                     </label>
                     <TagSelector
+                        :tag-type="'general_tags'"
                         v-model="selectedGeneralTags"
                         class="w-full"
                     />

@@ -67,7 +67,6 @@ const formFields = [
 
 const {
     isSavedToLocalStorage,
-    isDataLoaded,
     hasFormContent,
     clearLocalStorage,
 } = useLocalStorageSaver(form, props.resourceId, formFields, "review-draft");
@@ -114,9 +113,7 @@ const submitReview = async (event) => {
 </script>
 
 <template>
-    <!-- Main container, conditionally rendered -->
     <div
-        v-if="isDataLoaded"
         class="mx-auto bg-white shadow-lg rounded-2xl p-6 relative"
     >
         <FormSaverChip

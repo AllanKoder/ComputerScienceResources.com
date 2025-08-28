@@ -1,5 +1,5 @@
 <script setup>
-import { defineProps, ref } from "vue";
+import { ref } from "vue";
 import { Icon } from "@iconify/vue";
 import SingleComment from "./SingleComment.vue";
 import { getConfigData } from "@/Helpers/config";

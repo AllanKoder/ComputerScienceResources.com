@@ -36,7 +36,7 @@ class TagSearchTest extends TestCase
         $this->createResource(['general_tags' => ['python', 'pygame']]);
         $this->createResource(['general_tags' => ['python']]);
 
-        $response = $this->getJson(route('tags.search', ['query' => 'py']));
+        $response = $this->getJson(route('tags.search', ['type' => 'general_tags', 'query' => 'py']));
 
         $response->assertStatus(200);
         $response->assertJsonCount(2, 'tags'); // only 'python' and 'pygame'
@@ -53,7 +53,13 @@ class TagSearchTest extends TestCase
     {
         $query = str_repeat('a', 51); // too long
 
-        $response = $this->getJson(route('tags.search', ['query' => $query]));
+        $response = $this->getJson(route('tags.search', ['type' => 'general_tags', 'query' => $query]));
+        $response->assertStatus(422);
+    }
+
+    public function test_query_bad_type_returns_422()
+    {
+        $response = $this->getJson(route('tags.search', ['type' => 'bad_type']));
         $response->assertStatus(422);
     }
 
@@ -69,33 +75,33 @@ class TagSearchTest extends TestCase
 
         $response = $this->postJson(route('resources.store'), $formData);
 
-        $response->assertStatus(302); // a redirect after successful creation
-        $response->assertRedirect();
+        $response->assertStatus(200);
 
         // Check that TagFrequency reflects counts
-        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'count' => 2]);
-        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'algorithms', 'count' => 1]);
-        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'beginner', 'count' => 1]);
+        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'type' => 'topics_tags', 'count' => 1]);
+        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'type' => 'programming_languages_tags', 'count' => 1]);
+        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'algorithms', 'type' => 'topics_tags', 'count' => 1]);
+        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'beginner', 'type' => 'general_tags', 'count' => 1]);
     }
 
     public function test_dispatching_tag_frequency_change_removes_unused_tags()
     {
         // Step 1: Add initial tags via dispatch
-        TagFrequencyChanged::dispatch(null, [
-            'python' => 2,
-            'java' => 1,
-            'ruby' => 1,
+        TagFrequencyChanged::dispatch('general_tags', [], [
+            'python',
+            'java',
+            'ruby',
         ]);
 
-        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'count' => 2]);
+        $this->assertDatabaseHas('tag_frequencies', ['tag' => 'python', 'count' => 1]);
         $this->assertDatabaseHas('tag_frequencies', ['tag' => 'java', 'count' => 1]);
         $this->assertDatabaseHas('tag_frequencies', ['tag' => 'ruby', 'count' => 1]);
 
         // Step 2: Dispatch with zero counts to simulate removal
-        TagFrequencyChanged::dispatch([
-            'python' => 2,
-            'java' => 1,
-            'ruby' => 1,
+        TagFrequencyChanged::dispatch('general_tags', [
+            'python',
+            'java',
+            'ruby',
         ], []); // no tags used now
 
         // Step 3: Ensure all tag frequencies are removed
@@ -103,8 +109,7 @@ class TagSearchTest extends TestCase
         $this->assertDatabaseMissing('tag_frequencies', ['tag' => 'java']);
         $this->assertDatabaseMissing('tag_frequencies', ['tag' => 'ruby']);
 
-        // Optional: search should return empty
-        $response = $this->getJson(route('tags.search', ['query' => 'py']));
+        $response = $this->getJson(route('tags.search', ['type' => 'general_tags', 'query' => 'py']));
         $response->assertStatus(200);
         $this->assertEmpty($response->json('tags'));
     }
@@ -145,7 +150,8 @@ class TagSearchTest extends TestCase
         $mergeResponse->assertStatus(302);
 
         // TagFrequency should now reflect the changes
-        $this->assertEquals(2, TagFrequency::where('tag', 'python')->value('count'));
+        $this->assertEquals(1, TagFrequency::where('tag', 'python')->where('type', 'topics_tags')->value('count'));
+        $this->assertEquals(1, TagFrequency::where('tag', 'python')->where('type', 'programming_languages_tags')->value('count'));
         $this->assertEquals(1, TagFrequency::where('tag', 'algorithms')->value('count')); // Still used once
         $this->assertDatabaseMissing('tag_frequencies', ['tag' => 'c++']); // Removed
         $this->assertEquals(1, TagFrequency::where('tag', 'tutorial')->value('count'));

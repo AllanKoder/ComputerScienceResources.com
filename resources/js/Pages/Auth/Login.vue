@@ -78,7 +78,7 @@ const submit = () => {
 
             <div class="flex items-center justify-between mt-4">
                 <Link v-if="canResetPassword" :href="route('password.request')"
-                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                     Forgot your password?
                 </Link>
 
@@ -94,7 +94,7 @@ const submit = () => {
 
         <div class="flex justify-center mt-8">
             <Link :href="route('register')"
-                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                 Not registered yet? Make an account
             </Link>
         </div>

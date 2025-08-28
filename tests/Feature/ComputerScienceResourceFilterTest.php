@@ -55,14 +55,14 @@ class ComputerScienceResourceFilterTest extends TestCase
             'platforms not distinct' => ['platforms', ['web', 'web']],
             'difficulty invalid' => ['difficulty', 'super-hard'],
             'pricing invalid' => ['pricing', 'expensive'],
-            'topics item too long' => ['topics', ['a', str_repeat('b', 51), 'c']],
-            'topics not distinct' => ['topics', ['a', 'a', 'a']],
+            'topics item too long' => ['topics_tags', ['a', str_repeat('b', 51), 'c']],
+            'topics not distinct' => ['topics_tags', ['a', 'a', 'a']],
             'general_tags not array' => ['general_tags', 'not-an-array'],
             'general_tags item too long' => ['general_tags', [str_repeat('a', 51)]],
             'general_tags not distinct' => ['general_tags', ['x', 'x']],
-            'programming_languages not array' => ['programming_languages', 'not-an-array'],
-            'programming_languages item too long' => ['programming_languages', [str_repeat('a', 51)]],
-            'programming_languages not distinct' => ['programming_languages', ['js', 'js']],
+            'programming_languages not array' => ['programming_languages_tags', 'not-an-array'],
+            'programming_languages item too long' => ['programming_languages_tags', [str_repeat('a', 51)]],
+            'programming_languages not distinct' => ['programming_languages_tags', ['js', 'js']],
             'community too low' => ['community', 0],
             'community too high' => ['community', 5],
             'teaching_clarity not integer' => ['teaching_clarity', 'high'],
@@ -109,8 +109,8 @@ class ComputerScienceResourceFilterTest extends TestCase
             ]],
 
             'by topics, languages & general tags' => [[
-                'topics' => ['algorithms'],
-                'programming_languages' => ['php', 'javascript'],
+                'topics_tags' => ['algorithms'],
+                'programming_languages_tags' => ['php', 'javascript'],
                 'general_tags' => ['tutorial', 'lecture'],
             ]],
 
@@ -142,8 +142,8 @@ class ComputerScienceResourceFilterTest extends TestCase
                 'platforms' => ['podcast', 'website'],
                 'difficulty' => ['introduction'],
                 'pricing' => ['free'],
-                'topics' => ['algorithms', 'recursion', 'data-structures'],
-                'programming_languages' => ['python'],
+                'topics_tags' => ['algorithms', 'recursion', 'data-structures'],
+                'programming_languages_tags' => ['python'],
                 'general_tags' => ['interactive', 'educational', 'advanced'],
                 'community' => 4,
                 'teaching_clarity' => 4,
@@ -212,10 +212,10 @@ class ComputerScienceResourceFilterTest extends TestCase
         }
 
         // Tags (just check joins exist)
-        if (! empty($filters['topics'])) {
+        if (! empty($filters['topics_tags'])) {
             $this->assertStringContainsString('taggables', $sql); // indirect check
         }
-        if (! empty($filters['programming_languages'])) {
+        if (! empty($filters['programming_languages_tags'])) {
             $this->assertStringContainsString('taggables', $sql); // indirect check
         }
         if (! empty($filters['general_tags'])) {

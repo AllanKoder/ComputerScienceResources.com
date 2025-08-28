@@ -51,7 +51,6 @@ Route::middleware([
 // Public
 // -----------------------
 Route::middleware('guest.or.verified')->group(function () {
-
     Route::get('/', function () {
         return redirect('/resources');
     });
@@ -71,7 +70,7 @@ Route::middleware('guest.or.verified')->group(function () {
     });
 
     Route::controller(TagFrequencyController::class)->group(function () {
-        Route::get('/tags/search/{query?}', 'search')->name('tags.search');
+        Route::get('/tags/search/{type}/{query?}', 'search')->name('tags.search');
     });
 
     // Resource Edits

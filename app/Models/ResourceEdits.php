@@ -37,7 +37,7 @@ class ResourceEdits extends Model
 
     protected $guarded = [];
 
-    protected $with = ['votes', 'upvoteSummary', 'commentsCountRelationship', 'resource'];
+    protected $with = ['votes', 'upvoteSummary', 'commentsCountRelationship', 'computerScienceResource'];
 
     protected $appends = ['user_vote', 'vote_score', 'comments_count', 'can_merge_edits'];
 
@@ -64,9 +64,9 @@ class ResourceEdits extends Model
         ];
     }
 
-    public function resource(): BelongsTo
+    public function computerScienceResource(): BelongsTo
     {
-        return $this->belongsTo(ComputerScienceResource::class, 'computer_science_resource_id', 'id');
+        return $this->belongsTo(ComputerScienceResource::class);
     }
 
     public function user(): BelongsTo

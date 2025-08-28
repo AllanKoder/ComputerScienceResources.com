@@ -29,7 +29,7 @@ const props = defineProps({
     },
 });
 
-const originalResource = props.editedResource.resource;
+const originalResource = props.editedResource.computer_science_resource;
 
 // A map to get display labels, formatters, and diff components for each field.
 const fieldConfig = {

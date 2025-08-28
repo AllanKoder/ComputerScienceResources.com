@@ -2,17 +2,18 @@
 import InputText from "primevue/inputtext";
 import Textarea from "primevue/textarea";
 import MultiSelect from "primevue/multiselect";
-import { Button } from "primevue";
 import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import PictureInput from "vue-picture-input";
 import Select from "primevue/select";
-import { defineProps, defineEmits, ref, watch } from "vue";
+import { defineEmits, ref, watch } from "vue";
 import {
     platformsObject,
     pricingsObject,
     difficultiesObject,
 } from "@/Helpers/labels";
 import { resourceMandatoryFields } from "@/Helpers/validation";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import { Icon } from "@iconify/vue";
 
 const props = defineProps({
     formData: {
@@ -79,7 +80,7 @@ watch(
             <!-- URL Field -->
             <div class="flex flex-col gap-1">
                 <label class="block text-sm font-medium text-gray-700"
-                    >Resource Website URL (Include https://)
+                    >Resource Website URL
                     <span class="text-red-500"> * </span>
                 </label>
                 <InputText
@@ -197,11 +198,12 @@ watch(
         </div>
         <!-- continue Button -->
         <div class="flex pt-6 justify-end">
-            <Button
-                label="Next"
-                icon="pi pi-arrow-right"
+            <PrimaryButton
                 @click="validateAndNext"
-            />
+            >
+                Next
+                <Icon class="ml-2" icon="mdi:arrow-right"/>
+            </PrimaryButton>
         </div>
     </div>
 </template>

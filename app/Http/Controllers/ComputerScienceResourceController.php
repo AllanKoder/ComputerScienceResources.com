@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\TagFrequencyChanged;
 use App\Http\Requests\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\NewsPost;
@@ -13,6 +12,7 @@ use App\Services\ComputerScienceResourceFilter;
 use App\Services\ResourceReviewService;
 use App\Services\SortingManagers\GeneralVotesSortingManager;
 use App\Services\SortingManagers\ResourceSortingManager;
+use App\Services\UpvoteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -27,6 +27,7 @@ class ComputerScienceResourceController extends Controller
         protected GeneralVotesSortingManager $generalVotesSortingManager,
         protected ResourceReviewService $reviewService,
         protected ResourceSortingManager $resourceSortingManager,
+        protected UpvoteService $upvoteService,
     ) {}
 
     /**
@@ -109,10 +110,9 @@ class ComputerScienceResourceController extends Controller
                 $resource->general_tags = $validatedData['general_tags'];
             }
 
-            // Dispatch tag frequency change event
-            TagFrequencyChanged::dispatch(null, $resource->tagCounter());
-
             DB::commit();
+
+            $this->upvoteService->upvote('resource', $resource->id);
 
             Log::info('Resource created', [
                 'resource_id' => $resource->id,
@@ -122,8 +122,9 @@ class ComputerScienceResourceController extends Controller
                 'platforms' => $resource->platforms,
             ]);
 
-            return redirect(route('resources.show', ['slug' => $resource->slug]))
-                ->with('success', 'Created Resource Succesfully!');
+            session()->flash('success', 'Created Resource!');
+
+            return response()->json($resource);
         } catch (Throwable $e) {
             DB::rollBack();
             Log::critical('Failed to create resource', [
@@ -133,7 +134,7 @@ class ComputerScienceResourceController extends Controller
                 'data' => $validatedData,
             ]);
 
-            return back()->withErrors(['error' => 'Failed to create resource. Please try again.']);
+            return response()->json([], 500);
         }
     }
 
@@ -168,14 +169,15 @@ class ComputerScienceResourceController extends Controller
         if ($tab === 'reviews') {
             $userReview = null;
             if ($userId = Auth::id()) {
-                $userReview = ResourceReview::where('user_id', $userId)->first();
+                $userReview = ResourceReview::whereBelongsTo($computerScienceResource)
+                    ->firstWhere('user_id', $userId);
             }
 
             $data['userReview'] = $userReview;
 
             $data['reviews'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy, $request) {
-                    $query = ResourceReview::where('computer_science_resource_id', $computerScienceResource->id);
+                    $query = ResourceReview::whereBelongsTo($computerScienceResource);
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceReview::class);
 
                     return $query->with('user')->paginate(10)->appends($request->query());
@@ -184,7 +186,7 @@ class ComputerScienceResourceController extends Controller
         } elseif ($tab === 'edits') {
             $data['resourceEdits'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy, $request) {
-                    $query = ResourceEdits::where('computer_science_resource_id', $computerScienceResource->id);
+                    $query = ResourceEdits::whereBelongsTo($computerScienceResource);
                     $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
 
                     return $query->with('user')->paginate(10)->appends($request->query());

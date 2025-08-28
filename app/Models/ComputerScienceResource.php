@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\TagFrequencyChanged;
 use App\Observers\ComputerScienceResourceObserver;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
@@ -14,13 +15,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Tags\HasTags;
 
+/**
+ * @property array $topic_tags
+ * @property array $programming_language_tags
+ * @property array $general_tags
+ */
 #[ObservedBy([ComputerScienceResourceObserver::class])]
 class ComputerScienceResource extends Model
 {
+    use CascadesDeletes;
     use HasComments;
     use HasFactory;
     use HasTags;
@@ -28,9 +36,12 @@ class ComputerScienceResource extends Model
     use LogsActivity;
     use Sluggable;
 
+    // TODO: ADD A TEST FOR RESOURCE DELETION. DO NOT USE YET IN PRODUCTION
+    protected $cascadeDeletes = ['votes', 'upvoteSummary', 'comments', 'commentsCountRelationship', 'edits', 'reviewSummary', 'reviews', ''];
+
     protected $table = 'computer_science_resources';
 
-    protected $guarded = [];
+    protected $guarded = ['topic_tags', 'programming_language_tags', 'general_tags'];
 
     protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'vote_score', 'user_vote', 'comments_count', 'image_url'];
 
@@ -104,8 +115,14 @@ class ComputerScienceResource extends Model
     protected function topicTags(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->tagsWithType('topics')->pluck('name')->toArray(),
-            set: fn (array $value) => $this->syncTagsWithType($value, 'topics')
+            get: fn () => $this->tagsWithType('topics_tags')->pluck('name')->toArray(),
+            set: function (array $value) {
+                $old_value = $this->topic_tags;
+                $this->syncTagsWithType($value, 'topics_tags');
+                TagFrequencyChanged::dispatch('topics_tags', $old_value, $value);
+
+                return null;
+            }
         );
     }
 
@@ -115,8 +132,14 @@ class ComputerScienceResource extends Model
     protected function programmingLanguageTags(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->tagsWithType('programming_languages')->pluck('name')->toArray(),
-            set: fn (array $value) => $this->syncTagsWithType($value, 'programming_languages')
+            get: fn () => $this->tagsWithType('programming_languages_tags')->pluck('name')->toArray(),
+            set: function (array $value) {
+                $old_value = $this->programming_language_tags;
+                $this->syncTagsWithType($value, 'programming_languages_tags');
+                TagFrequencyChanged::dispatch('programming_languages_tags', $old_value, $value);
+
+                return null;
+            }
         );
     }
 
@@ -127,14 +150,13 @@ class ComputerScienceResource extends Model
     {
         return Attribute::make(
             get: fn () => $this->tagsWithType('general_tags')->pluck('name')->toArray(),
-            set: fn (array $value) => $this->syncTagsWithType($value, 'general_tags')
+            set: function (array $value) {
+                $old_value = $this->general_tags;
+                $this->syncTagsWithType($value, 'general_tags');
+                TagFrequencyChanged::dispatch('general_tags', $old_value, $value);
+
+                return null;
+            }
         );
-    }
-
-    public function tagCounter(): array
-    {
-        $tag_collection = collect([$this->topic_tags, $this->programming_language_tags, $this->general_tags]);
-
-        return $tag_collection->flatten()->countBy()->toArray();
     }
 }

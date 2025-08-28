@@ -17,7 +17,9 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 </script>
 
 <template>
-    <div class="flex flex-col sm:flex-row justify-between items-center gap-1 sm:gap-0">
+    <div
+        class="flex flex-col sm:flex-row justify-between items-center gap-1 sm:gap-0"
+    >
         <div class="flex flex-row gap-4 items-center w-full sm:w-auto">
             <Upvotable
                 :upvotable-key="'review'"
@@ -31,48 +33,35 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
             </h3>
         </div>
 
-        <div class="flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto justify-end">
+        <div
+            class="flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto justify-end"
+        >
             <span class="font-medium">Rating:</span>
             <div class="flex flex-row">
-                <StarRating
-                    :model-value="review.average_score"
-                    :size="24"
-                />
+                <StarRating :model-value="review.average_score" :size="24" />
             </div>
         </div>
     </div>
 
-    <UserProfile
-        class="my-2"
-        :user="review.user"
-        :date="review.created_at"
-    />
+    <UserProfile class="my-2" :user="review.user" :date="review.created_at" />
 
     <p class="text-gray-700 mb-4 whitespace-pre-line mt-1">
         {{ review.description }}
     </p>
 
     <div class="flex flex-col sm:flex-row justify-between">
-        <div class="sm:w-1/2 mb-4 sm:mb-0">
+        <div class="sm:w-1/2" v-if="review.pros.length > 0">
             <h4 class="font-semibold mb-2">Pros</h4>
             <ul class="list-disc pl-5">
-                <li
-                    v-for="pro in review.pros"
-                    :key="pro"
-                    class="text-gray-600"
-                >
+                <li v-for="pro in review.pros" :key="pro" class="text-gray-600">
                     {{ pro }}
                 </li>
             </ul>
         </div>
-        <div class="sm:w-1/2">
+        <div class="sm:w-1/2" v-if="review.cons.length > 0">
             <h4 class="font-semibold mb-2">Cons</h4>
             <ul class="list-disc pl-5">
-                <li
-                    v-for="con in review.cons"
-                    :key="con"
-                    class="text-gray-600"
-                >
+                <li v-for="con in review.cons" :key="con" class="text-gray-600">
                     {{ con }}
                 </li>
             </ul>

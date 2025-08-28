@@ -1,20 +1,101 @@
+
+
 <script setup>
-import { ref, watch, nextTick } from "vue";
-import { Tag } from "primevue";
-import { Icon } from "@iconify/vue";
-import AutoComplete from "primevue/autocomplete";
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
 import { defineModel } from "vue";
 import axios from "axios";
+import { Icon } from "@iconify/vue";
 
-const model = defineModel(); // v-model from parent
+const DEBOUNCE_TIME = 450; // milliseconds
 
+const props = defineProps({
+    tagType: {
+        type: String,
+        required: true,
+    },
+});
+
+const model = defineModel();
+
+// simple state
 const selectedTags = ref([]);
-const searchValue = ref("");
-const tagResult = ref([]);
-const tagCount = ref({});
-const emptySearchMessage = ref("");
+const searchQuery = ref("");
+const allTags = ref([]); // all tags from server (popular + search results)
+const tagCounts = ref({});
+const showDropdown = ref(false);
+const highlightedIndex = ref(-1);
+const searchInput = ref(null);
+const isLoading = ref(false);
 
-// Sync initial model value to internal state
+let searchTimeout = null;
+
+// For dropdown teleport positioning
+const dropdownStyles = ref({});
+let inputEl = null;
+
+function updateDropdownPosition() {
+    if (!showDropdown.value) return;
+    inputEl = searchInput.value;
+    if (!inputEl) return;
+    const rect = inputEl.getBoundingClientRect();
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    dropdownStyles.value = {
+        left: rect.left + scrollLeft + "px",
+        top: rect.bottom + scrollTop + "px",
+        width: rect.width + "px",
+        position: "absolute",
+    };
+}
+
+watch(showDropdown, (val) => {
+    if (val) {
+        nextTick(updateDropdownPosition);
+    }
+});
+
+window.addEventListener("resize", updateDropdownPosition);
+window.addEventListener("scroll", updateDropdownPosition, true);
+onBeforeUnmount(() => {
+    window.removeEventListener("resize", updateDropdownPosition);
+    window.removeEventListener("scroll", updateDropdownPosition, true);
+});
+
+// computed properties
+const availableTags = computed(() => {
+    const query = searchQuery.value.trim().toLowerCase();
+
+    return allTags.value
+        .filter((tagName) => {
+            // don't show already selected tags
+            if (selectedTags.value.includes(tagName)) return false;
+
+            // if no query, show all
+            if (!query) return true;
+
+            // filter by query
+            return tagName.toLowerCase().includes(query);
+        })
+        .map((tagName) => ({
+            name: tagName,
+            count: tagCounts.value[tagName] || 0,
+        }));
+});
+
+const canCreateNew = computed(() => {
+    const query = searchQuery.value.trim();
+    if (!query || isLoading.value) return false;
+
+    const sanitized = sanitizeTag(query);
+    return (
+        !selectedTags.value.includes(sanitized) &&
+        !allTags.value.some(
+            (tag) => tag.toLowerCase() === sanitized.toLowerCase()
+        )
+    );
+});
+
+// sync model
 watch(
     () => model.value,
     (newVal) => {
@@ -26,124 +107,259 @@ watch(
 );
 
 function sanitizeTag(tag) {
-    // Remove trailing spaces and lowercase
     let transformedTag = tag.trim().toLowerCase();
-
-    // Apply rules from config('computerScienceResources.tags_rules')
-    // Transform the tag to lowercase and replace spaces with hyphens
     transformedTag = transformedTag.replace(/\s+/g, "-");
-    // Remove any characters that are not lowercase letters or hyphens
-    // Remove any characters that are not lowercase letters, numbers, or hyphens
-    transformedTag = transformedTag.replace(/[^a-z0-9-]/g, "");
+    transformedTag = transformedTag.replace(/[^a-z0-9+#.-]/g, "");
     return transformedTag;
 }
 
-const addTag = (tag) => {
-    if (tag) {
-        let transformedTag = sanitizeTag(tag);
+function addTag(tag) {
+    if (!tag) return;
 
-        if (!selectedTags.value.includes(transformedTag)) {
-            selectedTags.value.push(transformedTag);
-            model.value = [...selectedTags.value];
-        }
-    }
-};
-
-const removeTag = (tag) => {
-    if (tag) {
-        selectedTags.value = selectedTags.value.filter((t) => t !== tag);
+    const transformedTag = sanitizeTag(tag);
+    if (!selectedTags.value.includes(transformedTag)) {
+        selectedTags.value.push(transformedTag);
         model.value = [...selectedTags.value];
     }
-};
+}
 
-const handleSelect = (event) => {
-    addTag(event.value);
-    // Clear search value in next tick after Vue updates
-    nextTick(() => {
-        searchValue.value = "";
-    });
-};
+function removeTag(tag) {
+    selectedTags.value = selectedTags.value.filter((t) => t !== tag);
+    model.value = [...selectedTags.value];
+}
 
-const handleKeydown = (event) => {
-    if (event.key === "Enter") {
-        if (searchValue.value) {
-            addTag(searchValue.value);
-            // Clear the input after adding via Enter
-            nextTick(() => {
-                searchValue.value = "";
-            });
-        }
-        event.preventDefault();
+function selectTag(tag) {
+    addTag(tag);
+    searchQuery.value = "";
+    // Keep dropdown open after selecting a tag
+    // showDropdown.value = false;
+}
+
+function onInput() {
+    showDropdown.value = true;
+    highlightedIndex.value = -1;
+
+    // clear previous timeout
+    clearTimeout(searchTimeout);
+
+    const query = searchQuery.value.trim();
+    if (query) {
+        isLoading.value = true;
+        searchTimeout = setTimeout(() => searchTags(query), DEBOUNCE_TIME);
     }
-};
+}
 
-const filterSuggestions = () => {
-    let query = searchValue.value.trim().toLowerCase();
+function onKeydown(event) {
+    if (event.key === "Enter") {
+        event.preventDefault();
 
-    axios
-        .get(route("tags.search", { query }))
-        .then((response) => {
-            const tags = response.data.tags;
+        if (
+            highlightedIndex.value >= 0 &&
+            highlightedIndex.value < availableTags.value.length
+        ) {
+            selectTag(availableTags.value[highlightedIndex.value].name);
+        } else if (
+            highlightedIndex.value === availableTags.value.length &&
+            canCreateNew.value
+        ) {
+            selectTag(searchQuery.value.trim());
+        } else if (searchQuery.value.trim()) {
+            selectTag(searchQuery.value.trim());
+        }
+        return;
+    }
 
-            tagResult.value = tags.map((tagJson) => tagJson.tag);
+    if (event.key === "ArrowDown") {
+        event.preventDefault();
+        const totalOptions =
+            availableTags.value.length + (canCreateNew.value ? 1 : 0);
+        highlightedIndex.value = Math.min(
+            highlightedIndex.value + 1,
+            totalOptions - 1
+        );
+        return;
+    }
 
-            tagCount.value = Object.fromEntries(
-                tags.map((tagJson) => [tagJson.tag, tagJson.count])
-            );
-        })
-        .catch(() => {
-            console.warn("Cannot query server for tags");
-            tagResult.value = [];
-            tagCount.value = {};
-        });
-};
+    if (event.key === "ArrowUp") {
+        event.preventDefault();
+        highlightedIndex.value = Math.max(highlightedIndex.value - 1, -1);
+        return;
+    }
+
+    if (event.key === "Escape") {
+        showDropdown.value = false;
+        searchInput.value?.blur();
+        return;
+    }
+
+    if (
+        event.key === "Backspace" &&
+        !searchQuery.value &&
+        selectedTags.value.length > 0
+    ) {
+        removeTag(selectedTags.value[selectedTags.value.length - 1]);
+    }
+}
+
+function onBlur() {
+    setTimeout(() => (showDropdown.value = false), 150);
+}
+
+async function searchTags(query) {
+    try {
+        const response = await axios.get(
+            route("tags.search", { type: props.tagType, query })
+        );
+        const tags = response.data.tags;
+
+        // merge with existing tags (avoid duplicates)
+        const newTags = tags.map((tagJson) => tagJson.tag);
+        const newCounts = Object.fromEntries(
+            tags.map((tagJson) => [tagJson.tag, tagJson.count])
+        );
+
+        allTags.value = [...new Set([...allTags.value, ...newTags])];
+        tagCounts.value = { ...tagCounts.value, ...newCounts };
+    } catch (error) {
+        console.warn("Cannot query server for tags", error);
+    } finally {
+        isLoading.value = false;
+    }
+}
+
+// load popular tags on mount
+onMounted(async () => {
+    try {
+        const response = await axios.get(
+            route("tags.search", { type: props.tagType, query: "" })
+        );
+        const tags = response.data.tags;
+
+        allTags.value = tags.map((tagJson) => tagJson.tag);
+        tagCounts.value = Object.fromEntries(
+            tags.map((tagJson) => [tagJson.tag, tagJson.count])
+        );
+    } catch (error) {
+        console.warn("Cannot prefetch tags", error);
+    }
+});
 </script>
-
 <template>
     <div class="mb-2">
-        <!-- List of tags -->
-        <div class="mb-2 flex flex-wrap">
-            <Tag v-for="tag in selectedTags"
-                 :key="tag"
-                 class="mr-2 mb-2 bg-secondary border border-primary/10 text-primary px-2 py-1 rounded-full"
+        <!-- list of selected tags -->
+        <div class="mb-2 flex flex-wrap" v-if="selectedTags.length > 0">
+            <span
+                v-for="tag in selectedTags"
+                :key="tag"
+                class="inline-flex items-center mr-2 my-1 bg-secondary text-primaryDark px-3 py-1 rounded-full text-sm font-medium transition-colors"
             >
-                <button @click="() => removeTag(tag)"
-                        class="mr-1 hover:text-primaryDark transition-colors focus:outline-none">
-                    <Icon icon="mdi:remove-bold" class="w-4 h-4" />
+                <button
+                    @click="removeTag(tag)"
+                    class="mr-2 text-primaryDark"
+                    type="button"
+                >
+                    <Icon :icon="'mdi:close'" />
                 </button>
-                <span class="text-sm">{{ tag }}</span>
-            </Tag>
+                <span>{{ tag }}</span>
+            </span>
         </div>
 
-        <!-- Search bar to add tags -->
-        <AutoComplete
-            v-model="searchValue"
-            :suggestions="tagResult"
-            :empty-search-message="emptySearchMessage"
-            @complete="filterSuggestions"
-            @item-select="handleSelect"
-            @keydown="handleKeydown"
-            placeholder="Type to add tags"
-            completeOnFocus
-            class="w-full"
-            :class="{
-                'min-h-[40px]': true,
-                'shadow-sm': true,
-            }"
-            :inputClass="'w-full h-10 text-sm'"
-            :panelClass="'bg-white border border-primary/10 shadow-lg rounded-lg'"
-        >
-            <template #option="slotProps">
-                <div class="flex items-center justify-between w-full">
-                    <span class="text-sm">{{ slotProps.option }}</span>
-                    <span
-                        v-if="tagCount[slotProps.option] !== undefined"
-                        class="rounded-lg bg-secondary px-1 text-sm text-primaryDark"
+        <!-- search input container -->
+        <div class="relative">
+            <input
+                ref="searchInput"
+                v-model="searchQuery"
+                @input="onInput"
+                @keydown="onKeydown"
+                @focus="showDropdown = true"
+                @blur="onBlur"
+                placeholder="Add tags..."
+                class="w-full px-3 py-2 text-md border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                :class="{
+                    'rounded-b-none border-b-0':
+                        showDropdown &&
+                        (availableTags.length > 0 || canCreateNew || isLoading),
+                }"
+            />
+
+            <!-- dropdown rendered in body using teleport -->
+            <teleport to="body">
+                <div
+                    v-show="
+                        showDropdown &&
+                        (availableTags.length > 0 || canCreateNew || isLoading)
+                    "
+                    class="z-[9999] bg-white border border-gray-300 border-t-0 rounded-b-lg shadow-lg max-h-60 overflow-y-auto"
+                    :style="dropdownStyles"
+                >
+                    <!-- loading state -->
+                    <div
+                        v-if="isLoading"
+                        class="flex items-center justify-center px-2 py-3"
                     >
-                        {{ tagCount[slotProps.option] }}
-                    </span>
+                        <div class="flex items-center text-primary">
+                            <Icon
+                                icon="mdi:loading"
+                                class="animate-spin -ml-1 mr-3 h-4 w-4 text-primaryDark"
+                            />
+                            <span class="text-sm">searching...</span>
+                        </div>
+                    </div>
+
+                    <!-- available tags -->
+                    <template v-else>
+                        <div
+                            v-for="(tag, index) in availableTags"
+                            :key="tag.name"
+                            @mousedown.prevent="selectTag(tag.name)"
+                            @mouseenter="highlightedIndex = index"
+                            class="flex items-center justify-between px-3 py-1.5 cursor-pointer transition-colors"
+                            :class="{
+                                'bg-secondary text-primaryDark':
+                                    highlightedIndex === index,
+                                'hover:bg-gray-50': highlightedIndex !== index,
+                            }"
+                        >
+                            <span class="text-sm">{{ tag.name }}</span>
+                            <span
+                                v-if="tag.count"
+                                class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                                :class="{
+                                    'bg-secondary text-primaryDark':
+                                        highlightedIndex === index,
+                                }"
+                            >
+                                {{ tag.count }}
+                            </span>
+                        </div>
+
+                        <!-- create new tag option -->
+                        <div
+                            v-if="canCreateNew"
+                            @mousedown.prevent="selectTag(searchQuery.trim())"
+                            @mouseenter="highlightedIndex = availableTags.length"
+                            class="flex items-center px-4 py-3 cursor-pointer transition-colors"
+                            :class="{
+                                'bg-secondary text-primaryDark':
+                                    highlightedIndex === availableTags.length,
+                                'hover:bg-gray-50':
+                                    highlightedIndex !== availableTags.length,
+                            }"
+                        >
+                            <Icon
+                                class="w-4 h-4 text-green-500"
+                                :icon="'mdi:add'"
+                            ></Icon>
+                            <span class="text-sm text-gray-700">
+                                create "<strong>{{
+                                    sanitizeTag(searchQuery.trim())
+                                }}</strong
+                                >"
+                            </span>
+                        </div>
+                    </template>
                 </div>
-            </template>
-        </AutoComplete>
+            </teleport>
+        </div>
     </div>
 </template>

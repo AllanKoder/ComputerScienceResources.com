@@ -28,8 +28,9 @@ const props = defineProps({
     },
     sortByInitialValue: {
         type: String,
-        default: "top"
+        default: "top",
     },
+    // TODO: IN FUTURE, CHANGE IT TO INITIAL INDEX, AND LOAD THE INTIIAL INDEX INSTEAD OF ALL COMMENTS
     loadedCommentData: {
         type: Object,
         required: false,
@@ -60,7 +61,9 @@ const createdNewCommentCallback = (newComment, userData) => {
 
     // Ensure DOM updates are complete, then scroll to the new comment
     nextTick(() => {
-        const newCommentElement = commentRefs.value.get(`comment_${newComment.id}`);
+        const newCommentElement = commentRefs.value.get(
+            `comment_${newComment.id}`
+        );
         if (newCommentElement) {
             newCommentElement.scrollIntoView({
                 behavior: "smooth",
@@ -78,11 +81,19 @@ provide("createdNewCommentCallback", createdNewCommentCallback);
 provide("commentRefs", commentRefs);
 
 const showEmptyState = computed(() => {
-    return (
-        hasLoadedCommentData &&
-        idToChildren.value instanceof Map &&
-        (!idToChildren.value.get(null) || idToChildren.value.get(null).length === 0)
-    );
+    if (!hasLoadedCommentData) return false;
+
+    const data = idToChildren.value;
+    let topLevel = [];
+
+    // Handle both Map and plain object shapes
+    if (data && typeof data.get === "function") {
+        topLevel = data.get(null) || [];
+    } else if (data && typeof data === "object") {
+        topLevel = data[null] || data["null"] || [];
+    }
+
+    return topLevel.length === 0;
 });
 
 function updateUsers(newUsers) {
