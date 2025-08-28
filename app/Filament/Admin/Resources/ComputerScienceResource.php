@@ -5,6 +5,8 @@ namespace App\Filament\Admin\Resources;
 use App\Filament\Admin\Resources\ComputerScienceResource\Pages;
 use App\Filament\Admin\Resources\UserResource\RelationManagers\UserRelationManager;
 use App\Models\ComputerScienceResource as ModelsComputerScienceResource;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
@@ -26,6 +28,51 @@ class ComputerScienceResource extends Resource
     protected static ?string $model = ModelsComputerScienceResource::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\Textarea::make('description')
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
+
+                Forms\Components\TextInput::make('slug')
+                    ->maxLength(255),
+
+                Forms\Components\Select::make('user_id')
+                    ->relationship('user', 'name')
+                    ->required(),
+
+                Forms\Components\TagsInput::make('topic_tags')
+                    ->label('Topic Tags')
+                    ->disabled()
+                    ->helperText('These are computed from relationships'),
+
+                Forms\Components\TagsInput::make('programming_language_tags')
+                    ->label('Programming Language Tags')
+                    ->disabled()
+                    ->helperText('These are computed from relationships'),
+
+                Forms\Components\TagsInput::make('general_tags')
+                    ->label('General Tags')
+                    ->disabled()
+                    ->helperText('These are computed from relationships'),
+
+                // Editable date fields
+                Forms\Components\DateTimePicker::make('created_at')
+                    ->label('Created Date')
+                    ->seconds(false),
+
+                Forms\Components\DateTimePicker::make('updated_at')
+                    ->label('Updated Date')
+                    ->seconds(false),
+            ]);
+    }
 
     public static function table(Table $table): Table
     {
