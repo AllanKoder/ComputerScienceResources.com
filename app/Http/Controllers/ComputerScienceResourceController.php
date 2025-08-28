@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use App\Services\UpvoteService;
+
 use Throwable;
 
 class ComputerScienceResourceController extends Controller
@@ -26,6 +28,7 @@ class ComputerScienceResourceController extends Controller
         protected GeneralVotesSortingManager $generalVotesSortingManager,
         protected ResourceReviewService $reviewService,
         protected ResourceSortingManager $resourceSortingManager,
+        protected UpvoteService $upvoteService,
     ) {}
 
     /**
@@ -109,6 +112,8 @@ class ComputerScienceResourceController extends Controller
             }
 
             DB::commit();
+
+            $this->upvoteService->upvote('resource', $resource->id);
 
             Log::info('Resource created', [
                 'resource_id' => $resource->id,

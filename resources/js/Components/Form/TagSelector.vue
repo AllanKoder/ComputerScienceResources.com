@@ -241,8 +241,8 @@ onMounted(async () => {
                 @keydown="onKeydown"
                 @focus="showDropdown = true"
                 @blur="onBlur"
-                placeholder="add tags..."
-                class="w-full px-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                placeholder="Add tags..."
+                class="w-full px-3 py-2 text-md border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
                 :class="{
                     'rounded-b-none border-b-0':
                         showDropdown &&
@@ -279,7 +279,7 @@ onMounted(async () => {
                         :key="tag.name"
                         @mousedown.prevent="selectTag(tag.name)"
                         @mouseenter="highlightedIndex = index"
-                        class="flex items-center justify-between px-4 py-3 cursor-pointer transition-colors"
+                        class="flex items-center justify-between px-3 py-1.5 cursor-pointer transition-colors"
                         :class="{
                             'bg-secondary text-primaryDark':
                                 highlightedIndex === index,
