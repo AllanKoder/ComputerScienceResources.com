@@ -1,7 +1,7 @@
 
 
 <script setup>
-import { ref, computed, watch, nextTick, onMounted } from "vue";
+import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from "vue";
 import { defineModel } from "vue";
 import axios from "axios";
 import { Icon } from "@iconify/vue";
@@ -28,6 +28,38 @@ const searchInput = ref(null);
 const isLoading = ref(false);
 
 let searchTimeout = null;
+
+// For dropdown teleport positioning
+const dropdownStyles = ref({});
+let inputEl = null;
+
+function updateDropdownPosition() {
+    if (!showDropdown.value) return;
+    inputEl = searchInput.value;
+    if (!inputEl) return;
+    const rect = inputEl.getBoundingClientRect();
+    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    dropdownStyles.value = {
+        left: rect.left + scrollLeft + "px",
+        top: rect.bottom + scrollTop + "px",
+        width: rect.width + "px",
+        position: "absolute",
+    };
+}
+
+watch(showDropdown, (val) => {
+    if (val) {
+        nextTick(updateDropdownPosition);
+    }
+});
+
+window.addEventListener("resize", updateDropdownPosition);
+window.addEventListener("scroll", updateDropdownPosition, true);
+onBeforeUnmount(() => {
+    window.removeEventListener("resize", updateDropdownPosition);
+    window.removeEventListener("scroll", updateDropdownPosition, true);
+});
 
 // computed properties
 const availableTags = computed(() => {
@@ -250,81 +282,84 @@ onMounted(async () => {
                 }"
             />
 
-            <!-- dropdown -->
-            <div
-                v-show="
-                    showDropdown &&
-                    (availableTags.length > 0 || canCreateNew || isLoading)
-                "
-                class="absolute z-50 w-full bg-white border border-gray-300 border-t-0 rounded-b-lg shadow-lg max-h-60 overflow-y-auto"
-            >
-                <!-- loading state -->
+            <!-- dropdown rendered in body using teleport -->
+            <teleport to="body">
                 <div
-                    v-if="isLoading"
-                    class="flex items-center justify-center px-2 py-3"
+                    v-show="
+                        showDropdown &&
+                        (availableTags.length > 0 || canCreateNew || isLoading)
+                    "
+                    class="z-[9999] bg-white border border-gray-300 border-t-0 rounded-b-lg shadow-lg max-h-60 overflow-y-auto"
+                    :style="dropdownStyles"
                 >
-                    <div class="flex items-center text-primary">
-                        <Icon
-                            icon="mdi:loading"
-                            class="animate-spin -ml-1 mr-3 h-4 w-4 text-primaryDark"
-                        />
-                        <span class="text-sm">searching...</span>
-                    </div>
-                </div>
-
-                <!-- available tags -->
-                <template v-else>
+                    <!-- loading state -->
                     <div
-                        v-for="(tag, index) in availableTags"
-                        :key="tag.name"
-                        @mousedown.prevent="selectTag(tag.name)"
-                        @mouseenter="highlightedIndex = index"
-                        class="flex items-center justify-between px-3 py-1.5 cursor-pointer transition-colors"
-                        :class="{
-                            'bg-secondary text-primaryDark':
-                                highlightedIndex === index,
-                            'hover:bg-gray-50': highlightedIndex !== index,
-                        }"
+                        v-if="isLoading"
+                        class="flex items-center justify-center px-2 py-3"
                     >
-                        <span class="text-sm">{{ tag.name }}</span>
-                        <span
-                            v-if="tag.count"
-                            class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                        <div class="flex items-center text-primary">
+                            <Icon
+                                icon="mdi:loading"
+                                class="animate-spin -ml-1 mr-3 h-4 w-4 text-primaryDark"
+                            />
+                            <span class="text-sm">searching...</span>
+                        </div>
+                    </div>
+
+                    <!-- available tags -->
+                    <template v-else>
+                        <div
+                            v-for="(tag, index) in availableTags"
+                            :key="tag.name"
+                            @mousedown.prevent="selectTag(tag.name)"
+                            @mouseenter="highlightedIndex = index"
+                            class="flex items-center justify-between px-3 py-1.5 cursor-pointer transition-colors"
                             :class="{
                                 'bg-secondary text-primaryDark':
                                     highlightedIndex === index,
+                                'hover:bg-gray-50': highlightedIndex !== index,
                             }"
                         >
-                            {{ tag.count }}
-                        </span>
-                    </div>
+                            <span class="text-sm">{{ tag.name }}</span>
+                            <span
+                                v-if="tag.count"
+                                class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                                :class="{
+                                    'bg-secondary text-primaryDark':
+                                        highlightedIndex === index,
+                                }"
+                            >
+                                {{ tag.count }}
+                            </span>
+                        </div>
 
-                    <!-- create new tag option -->
-                    <div
-                        v-if="canCreateNew"
-                        @mousedown.prevent="selectTag(searchQuery.trim())"
-                        @mouseenter="highlightedIndex = availableTags.length"
-                        class="flex items-center px-4 py-3 cursor-pointer transition-colors"
-                        :class="{
-                            'bg-secondary text-primaryDark':
-                                highlightedIndex === availableTags.length,
-                            'hover:bg-gray-50':
-                                highlightedIndex !== availableTags.length,
-                        }"
-                    >
-                        <Icon
-                            class="w-4 h-4 text-green-500"
-                            :icon="'mdi:add'"
-                        ></Icon>
-                        <span class="text-sm text-gray-700">
-                            create "<strong>{{
-                                sanitizeTag(searchQuery.trim())
-                            }}</strong
-                            >"
-                        </span>
-                    </div>
-                </template>
-            </div>
+                        <!-- create new tag option -->
+                        <div
+                            v-if="canCreateNew"
+                            @mousedown.prevent="selectTag(searchQuery.trim())"
+                            @mouseenter="highlightedIndex = availableTags.length"
+                            class="flex items-center px-4 py-3 cursor-pointer transition-colors"
+                            :class="{
+                                'bg-secondary text-primaryDark':
+                                    highlightedIndex === availableTags.length,
+                                'hover:bg-gray-50':
+                                    highlightedIndex !== availableTags.length,
+                            }"
+                        >
+                            <Icon
+                                class="w-4 h-4 text-green-500"
+                                :icon="'mdi:add'"
+                            ></Icon>
+                            <span class="text-sm text-gray-700">
+                                create "<strong>{{
+                                    sanitizeTag(searchQuery.trim())
+                                }}</strong
+                                >"
+                            </span>
+                        </div>
+                    </template>
+                </div>
+            </teleport>
         </div>
     </div>
 </template>

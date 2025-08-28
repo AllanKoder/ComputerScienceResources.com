@@ -16,7 +16,9 @@ class TagFrequencyController extends Controller
             return response()->json(['message' => 'Not a valid type'], 422);
         }
 
-        $prefixed_tags = TagFrequency::where('tag', 'like', $query.'%')
+        $escaped = addcslashes($query, '%_\\');
+
+        $prefixed_tags = TagFrequency::where('tag', 'like', $escaped.'%')
             ->where('type', $type)
             ->orderByDesc('count')
             ->limit(30)
