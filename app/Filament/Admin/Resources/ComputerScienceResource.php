@@ -7,8 +7,8 @@ use App\Filament\Admin\Resources\UserResource\RelationManagers\UserRelationManag
 use App\Models\ComputerScienceResource as ModelsComputerScienceResource;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\BulkAction;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;

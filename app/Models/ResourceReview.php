@@ -15,8 +15,8 @@ use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 #[ObservedBy([ResourceReviewObserver::class])]
 class ResourceReview extends Model
 {
-    use HasComments;
     use CascadesDeletes;
+    use HasComments;
 
     /** @use HasFactory<\Database\Factories\ResourceReviewFactory> */
     use HasFactory;
@@ -67,7 +67,7 @@ class ResourceReview extends Model
 
                 $sum = array_sum($numericFields);
 
-                return round($sum / sizeof($fields), 2); // round to 2 decimal places
+                return round($sum / count($fields), 2); // round to 2 decimal places
             },
         );
     }
