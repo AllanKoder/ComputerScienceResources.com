@@ -12,13 +12,12 @@ use App\Services\ComputerScienceResourceFilter;
 use App\Services\ResourceReviewService;
 use App\Services\SortingManagers\GeneralVotesSortingManager;
 use App\Services\SortingManagers\ResourceSortingManager;
+use App\Services\UpvoteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use App\Services\UpvoteService;
-
 use Throwable;
 
 class ComputerScienceResourceController extends Controller
