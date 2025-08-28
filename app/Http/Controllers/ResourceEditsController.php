@@ -122,7 +122,7 @@ class ResourceEditsController extends Controller
             }
 
             if (array_key_exists('image_path', $changes)) {
-                // Removed code to delete photo, will be handled in a cron job
+                // TODO: Removed code to delete photo, will be handled in a cron job
                 $destPath = null;
                 if (isset($changes['image_path'])) {
                     // Copy the new file from 'resource-edits' to 'resource' (do not delete the old one)
