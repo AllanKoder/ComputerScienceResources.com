@@ -28,7 +28,9 @@ class ComputerScienceResourcePolicy
      */
     public function update(User $user, ComputerScienceResource $computerScienceResource): bool
     {
-        if ($user->isAdmin()) return true;
+        if ($user->isAdmin()) {
+            return true;
+        }
 
         return $user->id == $computerScienceResource->user_id;
     }
