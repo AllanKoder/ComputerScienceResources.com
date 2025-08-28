@@ -46,7 +46,7 @@ const props = defineProps({
             </div>
         </div>
 
-        <p class="text-gray-700 mb-6 text-base leading-relaxed">
+        <p class="text-gray-700 mb-6 text-base leading-relaxed whitespace-pre-line">
             {{ props.resource.description }}
         </p>
 

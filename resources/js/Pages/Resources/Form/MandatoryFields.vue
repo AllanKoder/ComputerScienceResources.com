@@ -148,7 +148,7 @@ watch(
                     v-model="props.formData.description"
                     placeholder="Describe the resource..."
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
-                    rows="3"
+                    rows="8"
                 />
                 <PrimeVueFormError
                     v-if="errors.description"

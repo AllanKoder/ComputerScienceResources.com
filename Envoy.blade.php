@@ -12,6 +12,7 @@
     install-dependencies
     down
     perform-migration
+    optimize-cache
     @if(!$skipFrontend)
         push-frontend
     @endif
@@ -53,6 +54,15 @@
     set -e
     cd /var/www/ComputerScienceResources.com
     php artisan migrate --force
+@endtask
+
+@task('optimize-cache', ['on' => 'server'])
+    set -e
+    cd /var/www/ComputerScienceResources.com
+    php artisan cache:clear
+    php artisan config:cache
+    php artisan route:cache
+    php artisan view:cache
 @endtask
 
 

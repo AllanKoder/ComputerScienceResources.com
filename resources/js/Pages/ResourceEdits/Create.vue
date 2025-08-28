@@ -326,7 +326,7 @@ const submit = async () => {
                                         )
                                     "
                                     class="mt-1 block w-full"
-                                    :rows="6"
+                                    :rows="8"
                                 />
                                 <InputError
                                     class="mt-2"
