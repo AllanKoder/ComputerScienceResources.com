@@ -37,6 +37,7 @@ return [
             'throw' => false,
         ],
 
+        // TODO: SWITCH TO JUST PRODUCTION INSTEAD
         'public' => env('FILESYSTEM_PUBLIC_DRIVER', 'local') === 's3'
             ? [ // https://www.renick.io/en/blog/post/s3-storage-for-laravel-how-to-integrate-backblaze-b2-with-flysystem
                 'driver' => 's3',
