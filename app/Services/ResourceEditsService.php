@@ -35,7 +35,7 @@ class ResourceEditsService
             return true;
         }
 
-        $totalVotes = $edits->resource->votes_count;
+        $totalVotes = $edits->computerScienceResource->votes_count;
         $neededApprovals = $this->requiredVotes($totalVotes);
 
         $approvals = $edits->vote_score;
