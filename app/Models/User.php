@@ -82,10 +82,13 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             : $this->getPhotoUrl();
     }
 
+    public function isAdmin(): bool
+    {
+        return strcmp($this->email, 'admin@computerscienceresources.com') == 0 && $this->hasVerifiedEmail();
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
-        return true;
-
-        return str_ends_with($this->email, '@computerscienceresources.com') && $this->hasVerifiedEmail();
+        return $this->isAdmin();
     }
 }

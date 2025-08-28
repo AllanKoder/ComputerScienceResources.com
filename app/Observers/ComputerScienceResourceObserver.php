@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
+use Illuminate\Support\Facades\Storage;
 
 class ComputerScienceResourceObserver
 {
@@ -28,7 +29,10 @@ class ComputerScienceResourceObserver
      */
     public function deleted(ComputerScienceResource $computerScienceResource): void
     {
-        //
+        // Delete the image
+        if ($computerScienceResource->image_path) {
+            Storage::disk('public')->delete($computerScienceResource->image_path);
+        }
     }
 
     /**

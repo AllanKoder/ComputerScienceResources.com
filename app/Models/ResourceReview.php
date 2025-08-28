@@ -10,16 +10,20 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 
 #[ObservedBy([ResourceReviewObserver::class])]
 class ResourceReview extends Model
 {
     use HasComments;
+    use CascadesDeletes;
 
     /** @use HasFactory<\Database\Factories\ResourceReviewFactory> */
     use HasFactory;
 
     use HasVotes;
+
+    protected $cascadeDeletes = ['votes', 'upvoteSummary', 'comments', 'commentsCountRelationship'];
 
     protected $guarded = [];
 
@@ -63,7 +67,7 @@ class ResourceReview extends Model
 
                 $sum = array_sum($numericFields);
 
-                return round($sum / 6, 2); // round to 2 decimal places
+                return round($sum / sizeof($fields), 2); // round to 2 decimal places
             },
         );
     }
