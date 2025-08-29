@@ -180,6 +180,8 @@ class ComputerScienceResourceTest extends TestCase
 
         $resourceReview = $this->createReview($resource->id);
 
+        $this->upvote('resource', $resource->id);
+
         // Add a fake image to the resource
         $imageFile = UploadedFile::fake()->image('test_image.jpg');
         $imagePath = 'resource/'.$imageFile->hashName();
@@ -198,6 +200,10 @@ class ComputerScienceResourceTest extends TestCase
         $this->assertDatabaseMissing('computer_science_resources', ['id' => $resource->id]);
         $this->assertDatabaseMissing('comments', ['id' => $commentId]);
         $this->assertDatabaseMissing('comments_counts', ['commentable_id' => $resource->id, 'commentable_type' => ComputerScienceResource::class]);
+
+        // Assert votes and voteSummaries are gone
+        $this->assertDatabaseMissing('upvotes', ['upvotable_id' => $resource->id, 'upvotable_type' => ComputerScienceResource::class]);
+        $this->assertDatabaseMissing('upvote_summaries', ['upvotable_id' => $resource->id, 'upvotable_type' => ComputerScienceResource::class]);
 
         // Assert Reviews are removed
         $this->assertDatabaseMissing('resource_reviews', ['id' => $resourceReview->id]);
