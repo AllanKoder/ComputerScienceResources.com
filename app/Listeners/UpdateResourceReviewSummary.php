@@ -41,11 +41,10 @@ class UpdateResourceReviewSummary
             $event->resource_id
         )->first();
 
-        if (!$reviewSummary) {
+        if (! $reviewSummary) {
             // The resource review summary is created by the resource observer
             return;
         }
-
 
         $fields = [
             'community',
