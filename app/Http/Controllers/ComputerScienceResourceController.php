@@ -2,33 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\Resources\ResourceAlreadyCreatedException;
+use App\Exceptions\Resources\ResourceInvalidTabException;
 use App\Http\Requests\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\NewsPost;
-use App\Models\ResourceEdits;
-use App\Models\ResourceReview;
-use App\Services\CommentService;
 use App\Services\ComputerScienceResourceFilter;
-use App\Services\ResourceReviewService;
-use App\Services\SortingManagers\GeneralVotesSortingManager;
-use App\Services\SortingManagers\ResourceSortingManager;
-use App\Services\UpvoteService;
+use App\Services\ComputerScienceResourceService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Throwable;
 
 class ComputerScienceResourceController extends Controller
 {
     public function __construct(
-        protected CommentService $commentService,
-        protected GeneralVotesSortingManager $generalVotesSortingManager,
-        protected ResourceReviewService $reviewService,
-        protected ResourceSortingManager $resourceSortingManager,
-        protected UpvoteService $upvoteService,
+        protected ComputerScienceResourceService $resourceService,
     ) {}
 
     /**
@@ -67,86 +57,27 @@ class ComputerScienceResourceController extends Controller
     public function store(StoreResourceRequest $request)
     {
         $validatedData = $request->validated();
-
-        DB::beginTransaction();
         try {
-            // Store the image onto storage
-            $path = null;
-            if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file']) {
-                $path = $imageFile->store('resource', 'public');
-                if (! $path) {
-                    Log::error('Failed to store image file', [
-                        'user_id' => Auth::id(),
-                        'file_info' => $imageFile,
-                    ]);
-
-                    $fileName = $imageFile->getClientOriginalName();
-                    throw new \RuntimeException(
-                        "Could not save the image file '{$fileName}' for user ID ".Auth::id().'.'
-                    );
-                }
-            }
-
-            $resource = ComputerScienceResource::create([
-                'user_id' => Auth::id(),
-                'name' => $validatedData['name'],
-                'image_path' => $path,
-                'description' => $validatedData['description'],
-                'page_url' => $validatedData['page_url'],
-                'platforms' => $validatedData['platforms'],
-                'difficulty' => $validatedData['difficulty'],
-                'pricing' => $validatedData['pricing'],
-            ]);
-
-            // Add topics as tags
-            $resource->topic_tags = $validatedData['topic_tags'];
-
-            // Add programming languages as tags (if provided)
-            if (isset($validatedData['programming_language_tags'])) {
-                $resource->programming_language_tags = $validatedData['programming_language_tags'];
-            }
-
-            // Add general tags (if provided)
-            if (isset($validatedData['general_tags'])) {
-                $resource->general_tags = $validatedData['general_tags'];
-            }
-
-            DB::commit();
-
-            $this->upvoteService->upvote('resource', $resource->id);
-
-            Log::info('Resource created', [
-                'resource_id' => $resource->id,
-                'user_id' => Auth::id(),
-                'name' => $resource->name,
-                'slug' => $resource->slug,
-                'platforms' => $resource->platforms,
-            ]);
-
+            $resource = $this->resourceService->createResource($validatedData);
             session()->flash('success', 'Created Resource!');
-
             return response()->json($resource);
-        } catch (Throwable $e) {
-            DB::rollBack();
-            // Attempt to remove the uploaded image if it was stored
-            if (isset($path) && $path) {
-                try {
-                    Storage::disk('public')->delete($path);
-                } catch (Throwable $removeEx) {
-                    Log::warning('Failed to remove image after exception', [
-                        'user_id' => Auth::id(),
-                        'image_path' => $path,
-                        'error' => $removeEx->getMessage(),
-                    ]);
-                }
-            }
-            Log::critical('Failed to create resource', [
+        }
+        catch (ResourceAlreadyCreatedException $e)
+        {
+            Log::warning('Resource already exists', [
+                'user_id' => Auth::id(),
+                'resource_id' => $e->resource->id ?? null,
+                'name' => $e->resource->name ?? null,
+            ]);
+            session()->flash('warning', 'Resource Already Exists!');
+            return response()->json($e->resource);
+        }
+        catch (Throwable $e) {
+            Log::error('Error creating resource', [
+                'user_id' => Auth::id(),
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
-                'user_id' => Auth::id(),
-                'data' => $validatedData,
             ]);
-
             return response()->json([], 500);
         }
     }
@@ -156,62 +87,22 @@ class ComputerScienceResourceController extends Controller
      */
     public function show(Request $request, string $slug, string $tab = 'reviews')
     {
-        $computerScienceResource = ComputerScienceResource::where('slug', $slug)->firstOrFail();
-        // Get the review summaries
-        $computerScienceResource->load('reviewSummary');
-        $computerScienceResource->load('user');
-
-        $validTabs = ['reviews', 'discussion', 'edits'];
-
-        if (! in_array($tab, $validTabs)) {
-            // Redirect to default if invalid
-            return redirect()->route('resources.show', [
-                'slug' => $computerScienceResource->slug,
-                'tab' => 'reviews',
+        try {
+            $result = $this->resourceService->getShowResourceData($request, $slug, $tab);
+            return Inertia::render('Resources/Show', $result);
+        } catch (ResourceInvalidTabException $e) {
+            Log::warning('Invalid resource tab requested', [
+                'user_id' => Auth::id(),
+                'slug' => $slug,
+                'requested_tab' => $tab,
+                'error' => $e->getMessage(),
             ]);
+
+            return redirect()->route('resources.show', [
+                'slug' => $slug,
+                'tab' => 'reviews',
+            ])->with('warning', 'Invalid tab requested, redirected to reviews.');
         }
-
-        // return the resource and tab
-        $data = [
-            'tab' => $tab,
-            'resource' => $computerScienceResource,
-        ];
-
-        $sortBy = $request->query('sort_by', 'top');
-        // Load only the necessary tab data
-        if ($tab === 'reviews') {
-            $userReview = null;
-            if ($userId = Auth::id()) {
-                $userReview = ResourceReview::whereBelongsTo($computerScienceResource)
-                    ->firstWhere('user_id', $userId);
-            }
-
-            $data['userReview'] = $userReview;
-
-            $data['reviews'] = Inertia::defer(
-                function () use ($computerScienceResource, $sortBy, $request) {
-                    $query = ResourceReview::whereBelongsTo($computerScienceResource);
-                    $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceReview::class);
-
-                    return $query->with('user')->paginate(10)->appends($request->query());
-                }
-            );
-        } elseif ($tab === 'edits') {
-            $data['resourceEdits'] = Inertia::defer(
-                function () use ($computerScienceResource, $sortBy, $request) {
-                    $query = ResourceEdits::whereBelongsTo($computerScienceResource);
-                    $query = $this->generalVotesSortingManager->applySort($query, $sortBy, ResourceEdits::class);
-
-                    return $query->with('user')->paginate(10)->appends($request->query());
-                }
-            );
-        } elseif ($tab === 'discussion') {
-            $data['discussion'] = Inertia::defer(
-                fn () => $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
-            );
-        }
-
-        return Inertia::render('Resources/Show', $data);
     }
 
     /**

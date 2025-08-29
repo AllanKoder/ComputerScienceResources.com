@@ -142,4 +142,22 @@ class ComputerScienceResourceTest extends TestCase
 
         Storage::disk('public')->assertMissing($imagePath);
     }
+
+    public function test_posting_duplicate_resource_returns_existing_resource()
+    {
+        $this->actingAs($this->user);
+
+        // Create a resource first
+        $formData = StoreResourceRequestFactory::new()->create();
+        $this->postJson(route('resources.store'), $formData);
+
+        // Try to create the same resource again
+        $response = $this->postJson(route('resources.store'), $formData);
+
+        $response->assertStatus(200);
+
+        // Should return the existing resource, not create a new one
+        $resources = ComputerScienceResource::where('name', $formData['name'])->get();
+        $this->assertCount(1, $resources);
+    }
 }
