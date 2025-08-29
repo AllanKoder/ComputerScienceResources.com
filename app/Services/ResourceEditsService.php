@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use App\Models\ResourceEdits;
+use App\Models\ComputerScienceResource;
+use App\Utilities\UrlUtilities;
 
 class ResourceEditsService
 {
@@ -41,5 +43,45 @@ class ResourceEditsService
         $approvals = $edits->vote_score;
 
         return $approvals >= $neededApprovals;
+    }
+
+    /**
+     * Calculate the actual differences between the proposed changes and the original resource.
+     */
+    public function calculateChanges(ComputerScienceResource $resource, array $proposedChanges): array
+    {
+        $actualChanges = [];
+        $normalizedProposed = $this->normalize($proposedChanges);
+        $normalizedOriginal = $this->normalize($resource->toArray());
+
+        foreach ($normalizedProposed as $key => $value) {
+            if (! array_key_exists($key, $normalizedOriginal) || $normalizedOriginal[$key] !== $value) {
+                // Use the original value from the request, not the normalized one, for file uploads.
+                $actualChanges[$key] = $proposedChanges[$key];
+            }
+        }
+
+        return $actualChanges;
+    }
+
+    /**
+     * Normalize an array by sorting keys and values for consistent comparison, including page_url normalization.
+     */
+    public function normalize(array $array): array
+    {
+        ksort($array);
+
+        // Normalize page_url if present
+        if (array_key_exists('page_url', $array) && is_string($array['page_url'])) {
+            $array['page_url'] = UrlUtilities::normalize($array['page_url']);
+        }
+
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                sort($value);
+            }
+        }
+
+        return $array;
     }
 }

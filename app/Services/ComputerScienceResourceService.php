@@ -8,6 +8,7 @@ use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
 use App\Services\SortingManagers\ResourceSortingManager;
+use App\Utilities\UrlUtilities;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -109,7 +110,7 @@ class ComputerScienceResourceService
 
         $validTabs = ['reviews', 'discussion', 'edits'];
         if (! in_array($tab, $validTabs)) {
-            throw new ResourceInvalidTabException('Invalid tab: '.$tab);
+            throw new ResourceInvalidTabException('Invalid tab: ' . $tab);
         }
 
         $data = [
@@ -144,7 +145,7 @@ class ComputerScienceResourceService
             );
         } elseif ($tab === 'discussion') {
             $data['discussion'] = Inertia::defer(
-                fn () => $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
+                fn() => $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
             );
         }
 
@@ -157,6 +158,9 @@ class ComputerScienceResourceService
      */
     private function existingConflictingResource(array $data): ?ComputerScienceResource
     {
-        return ComputerScienceResource::where('page_url', $data['page_url'])->first();
+        return ComputerScienceResource::where(
+            'page_url',
+            UrlUtilities::normalize($data['page_url']),
+        )->first();
     }
 }

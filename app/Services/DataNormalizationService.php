@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Utilities\UrlUtilities;
 
 class DataNormalizationService
 {
@@ -10,6 +11,11 @@ class DataNormalizationService
     public function normalize(array $array): array
     {
         ksort($array);
+
+        // Normalize page_url if present
+        if (array_key_exists('page_url', $array) && is_string($array['page_url'])) {
+            $array['page_url'] = UrlUtilities::normalize($array['page_url']);
+        }
 
         foreach ($array as &$value) {
             if (is_array($value)) {
