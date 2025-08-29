@@ -136,7 +136,6 @@ class ResourceEditsController extends Controller
                     $newFileName = Str::random(40).'.'.$fileExtension;
                     $destPath = 'resource/'.$newFileName;
 
-
                     // TODO: FIGURE OUT WHAT TO DO IN CASE OF EXCEPTION IN CODE FROM LATER STEPS
                     Storage::disk('public')->move($sourcePath, $destPath);
                 }
