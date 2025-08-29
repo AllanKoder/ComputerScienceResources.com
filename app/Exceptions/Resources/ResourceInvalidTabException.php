@@ -4,6 +4,4 @@ namespace App\Exceptions\Resources;
 
 use Exception;
 
-class ResourceInvalidTabException extends Exception
-{
-}
+class ResourceInvalidTabException extends Exception {}
