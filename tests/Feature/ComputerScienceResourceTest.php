@@ -206,7 +206,7 @@ class ComputerScienceResourceTest extends TestCase
         // Assert tags are removed
         $this->assertNull(TagFrequency::where('type', 'topics_tags')->where('tag', 'test1')->first());
         $this->assertNull(TagFrequency::where('type', 'programming_languages_tags')->where('tag', 'test2')->first());
-        $this->assertNull(TagFrequency::where('type', 'general_tags')->where('tag', 'test2')->first());
+        $this->assertNull(TagFrequency::where('type', 'general_tags')->where('tag', 'test3')->first());
 
         // Assert image is deleted
         Storage::disk('public')->assertMissing($imagePath);
