@@ -29,6 +29,7 @@ class UpvoteController extends Controller
     {
         $result = $this->upvoteService->downvote($typeKey, $id);
 
+        // TODO: REFACTOR TO EXCEPTIONS
         if (isset($result['error'])) {
             return response()->json(['message' => $result['error']], $result['status']);
         }

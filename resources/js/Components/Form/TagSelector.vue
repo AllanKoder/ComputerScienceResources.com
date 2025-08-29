@@ -47,6 +47,12 @@ function updateDropdownPosition() {
         position: "absolute",
     };
 }
+// Watch selectedTags and update dropdown position when tags change and dropdown is open
+watch(selectedTags, () => {
+    if (showDropdown.value) {
+        nextTick(updateDropdownPosition);
+    }
+});
 
 watch(showDropdown, (val) => {
     if (val) {
@@ -190,14 +196,6 @@ function onKeydown(event) {
         showDropdown.value = false;
         searchInput.value?.blur();
         return;
-    }
-
-    if (
-        event.key === "Backspace" &&
-        !searchQuery.value &&
-        selectedTags.value.length > 0
-    ) {
-        removeTag(selectedTags.value[selectedTags.value.length - 1]);
     }
 }
 

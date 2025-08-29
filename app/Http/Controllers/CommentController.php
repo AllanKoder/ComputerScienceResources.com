@@ -62,10 +62,10 @@ class CommentController extends Controller
         } catch (Throwable $e) {
             DB::rollBack();
             Log::critical('Failed to save comment', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
                 'validated_data' => $validatedData,
                 'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return response()->json(['message' => 'Failed to save comment'], 500);

@@ -14,6 +14,10 @@ const props = defineProps({
         type: Object,
         required: true,
     },
+    isLoading: {
+        type: Boolean,
+        required: true,
+    }
 });
 
 const emit = defineEmits(["change", "next", "back"]);
@@ -97,7 +101,7 @@ const validateAndNext = async () => {
                 <Icon class="mr-2" icon="mdi:arrow-back" />
                 Back
             </SecondaryButton>
-            <PrimaryButton @click="validateAndNext">
+            <PrimaryButton @click="validateAndNext" :disabled="props.isLoading">
                 Submit
                 <Icon class="ml-2" icon="mdi:send" />
             </PrimaryButton>
