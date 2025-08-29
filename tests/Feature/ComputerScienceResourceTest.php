@@ -127,7 +127,7 @@ class ComputerScienceResourceTest extends TestCase
         $response->assertStatus(422); // Validation error
 
         // The image should not exist in storage
-        Storage::disk('public')->assertMissing('resource/' . $formData['image_file']->hashName());
+        Storage::disk('public')->assertMissing('resource/'.$formData['image_file']->hashName());
     }
 
     public function test_model_removes_image_upon_deletion()
