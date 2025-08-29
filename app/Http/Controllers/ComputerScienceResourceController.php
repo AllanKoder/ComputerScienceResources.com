@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Throwable;
 
@@ -127,6 +128,18 @@ class ComputerScienceResourceController extends Controller
             return response()->json($resource);
         } catch (Throwable $e) {
             DB::rollBack();
+            // Attempt to remove the uploaded image if it was stored
+            if (isset($path) && $path) {
+                try {
+                    Storage::disk('public')->delete($path);
+                } catch (Throwable $removeEx) {
+                    Log::warning('Failed to remove image after exception', [
+                        'user_id' => Auth::id(),
+                        'image_path' => $path,
+                        'error' => $removeEx->getMessage(),
+                    ]);
+                }
+            }
             Log::critical('Failed to create resource', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),

@@ -122,7 +122,11 @@ class ResourceEditsController extends Controller
             }
 
             if (array_key_exists('image_path', $changes)) {
-                // TODO: Removed code to delete photo, will be handled in a cron job
+                // TODO: Remove the old photo resource photo, will be handled in a cron job,
+                //
+                // photo image_url history can be viewed via activity log.
+                //
+
                 $destPath = null;
                 if (isset($changes['image_path'])) {
                     // Copy the new file from 'resource-edits' to 'resource' (do not delete the old one)
@@ -131,7 +135,7 @@ class ResourceEditsController extends Controller
                     $newFileName = Str::random(40).'.'.$fileExtension;
                     $destPath = 'resource/'.$newFileName;
 
-                    Storage::disk('public')->copy($sourcePath, $destPath);
+                    Storage::disk('public')->move($sourcePath, $destPath);
                 }
 
                 // Update image_path in DB

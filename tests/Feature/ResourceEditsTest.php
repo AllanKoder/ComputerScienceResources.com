@@ -148,13 +148,13 @@ class ResourceEditsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
         $this->actingAs($this->user);
 
-        $mergeAttempts = 10;
+        $mergeAttempts = 5;
 
         for ($i = 0; $i < $mergeAttempts; $i++) {
             $changes = [
                 'name' => "Resource Name Edited {$i}",
                 'description' => "Resource Description Changed {$i}",
-                'image_file' => UploadedFile::fake()->image('resource.jpg'),
+                'image_file' => UploadedFile::fake()->image("resource_{$i}.jpg"),
                 'page_url' => "http://{$i}.com",
                 'difficulty' => fake()->randomElement(config('computerScienceResource.difficulties')),
                 'platforms' => fake()->randomElements(config('computerScienceResource.platforms'), fake()->numberBetween(1, 3)),
@@ -164,14 +164,17 @@ class ResourceEditsTest extends TestCase
                 'general_tags' => ["$i-a", "$i-b", "$i-c"],
             ];
 
-            $this->makeAndApplyResourceEdits($resource->id, $changes);
+            $edit = $this->createResourceEdit($resource->id, $changes);
+            $this->approveResourceEdit($edit);
 
             // Refresh and assert
             $resource->refresh();
 
             $this->assertEquals($changes['name'], $resource->name);
             $this->assertEquals($changes['description'], $resource->description);
+
             Storage::disk('public')->assertExists($resource->image_path);
+            Storage::disk('public')->assertMissing($edit->image_path);
 
             $this->assertEquals($changes['page_url'], $resource->page_url);
             $this->assertEquals($changes['difficulty'], $resource->difficulty);

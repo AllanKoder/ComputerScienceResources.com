@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\Test;
 use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
 use Tests\TestCase;
 
-class ComputerScienceResourceControllerTest extends TestCase
+class ComputerScienceResourceTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -111,5 +111,35 @@ class ComputerScienceResourceControllerTest extends TestCase
             $not_created_resource,
             "Failed asserting that a resource with name '{$validData['name']}' was not created in the database. Invalid field: $field"
         );
+    }
+
+    public function test_image_is_removed_if_resource_creation_fails()
+    {
+        Storage::fake('public');
+        $this->actingAs($this->user);
+
+        // Create valid form data but set an invalid field to force failure
+        $formData = StoreResourceRequestFactory::new()->create();
+        $formData['image_file'] = UploadedFile::fake()->image('fail_image.jpg');
+        $formData['name'] = str_repeat('a', 101); // Invalid name, will fail validation
+
+        $response = $this->postJson(route('resources.store'), $formData);
+        $response->assertStatus(422); // Validation error
+
+        // The image should not exist in storage
+        Storage::disk('public')->assertMissing('resource/' . $formData['image_file']->hashName());
+    }
+
+    public function test_model_removes_image_upon_deletion()
+    {
+        $resource = ComputerScienceResource::factory()->create();
+
+        $imagePath = $resource->image_path;
+
+        Storage::disk('public')->assertExists($imagePath);
+
+        $resource->delete();
+
+        Storage::disk('public')->assertMissing($imagePath);
     }
 }
