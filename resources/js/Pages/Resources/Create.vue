@@ -46,6 +46,7 @@ const { isSavedToLocalStorage, hasFormContent, clearLocalStorage } =
 const showReset = ref(false);
 const stepperValue = ref("1");
 const formRef = ref(null);
+const isLoading = ref(false);
 const toast = useToast();
 
 const scrollToForm = () => {
@@ -70,13 +71,15 @@ const resetForm = () => {
 };
 
 const submitForm = async () => {
+    isLoading.value = true;
     try {
         const response = await axios.postForm(
             route("resources.store"),
             formData
         );
-        clearLocalStorage();
 
+        clearLocalStorage();
+        isLoading.value = false;
         router.visit(route("resources.show", { slug: response.data.slug }));
     } catch (err) {
         toast.add({
@@ -89,6 +92,7 @@ const submitForm = async () => {
                     : "An error occurred while creating the resource. Please try again."),
             life: 10000,
         });
+        isLoading.value = false;
         console.error(err);
     }
 };
@@ -161,6 +165,7 @@ const handleFormChange = (newFormData) => {
                                     @change="handleFormChange"
                                     @back="() => navigateToStep('1')"
                                     @next="submitForm"
+                                    :is-loading="isLoading"
                                 />
                             </StepPanel>
                         </StepPanels>
