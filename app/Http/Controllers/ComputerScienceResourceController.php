@@ -60,24 +60,24 @@ class ComputerScienceResourceController extends Controller
         try {
             $resource = $this->resourceService->createResource($validatedData);
             session()->flash('success', 'Created Resource!');
+
             return response()->json($resource);
-        }
-        catch (ResourceAlreadyCreatedException $e)
-        {
+        } catch (ResourceAlreadyCreatedException $e) {
             Log::warning('Resource already exists', [
                 'user_id' => Auth::id(),
                 'resource_id' => $e->resource->id ?? null,
                 'name' => $e->resource->name ?? null,
             ]);
             session()->flash('warning', 'Resource Already Exists!');
+
             return response()->json($e->resource);
-        }
-        catch (Throwable $e) {
+        } catch (Throwable $e) {
             Log::error('Error creating resource', [
                 'user_id' => Auth::id(),
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
+
             return response()->json([], 500);
         }
     }
@@ -89,6 +89,7 @@ class ComputerScienceResourceController extends Controller
     {
         try {
             $result = $this->resourceService->getShowResourceData($request, $slug, $tab);
+
             return Inertia::render('Resources/Show', $result);
         } catch (ResourceInvalidTabException $e) {
             Log::warning('Invalid resource tab requested', [

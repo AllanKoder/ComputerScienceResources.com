@@ -5,18 +5,16 @@ namespace App\Services;
 use App\Exceptions\Resources\ResourceAlreadyCreatedException;
 use App\Exceptions\Resources\ResourceInvalidTabException;
 use App\Models\ComputerScienceResource;
-use App\Services\UpvoteService;
-use App\Services\SortingManagers\ResourceSortingManager;
-use Throwable;
-use App\Models\ResourceReview;
 use App\Models\ResourceEdits;
-use App\Services\CommentService;
-use Inertia\Inertia;
+use App\Models\ResourceReview;
+use App\Services\SortingManagers\ResourceSortingManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Inertia;
+use Throwable;
 
 class ComputerScienceResourceService
 {
@@ -30,17 +28,13 @@ class ComputerScienceResourceService
     /**
      * Create a new ComputerScienceResource
      *
-     * @param array $validatedData
-     * @return ComputerScienceResource
      * @throws Throwable
      */
     public function createResource(array $validatedData): ComputerScienceResource
     {
-        if ($conflictingResource = $this->existingConflictingResource($validatedData))
-        {
+        if ($conflictingResource = $this->existingConflictingResource($validatedData)) {
             throw new ResourceAlreadyCreatedException($conflictingResource);
         }
-
 
         DB::beginTransaction();
         try {
@@ -56,7 +50,7 @@ class ComputerScienceResourceService
 
                     $fileName = $imageFile->getClientOriginalName();
                     throw new \RuntimeException(
-                        "Could not save the image file '{$fileName}' for user ID " . Auth::id() . '.'
+                        "Could not save the image file '{$fileName}' for user ID ".Auth::id().'.'
                     );
                 }
             }
@@ -125,6 +119,7 @@ class ComputerScienceResourceService
 
     /**
      * Get all data for the resource show page, including tab logic.
+     *
      * @throws Throwable
      */
     public function getShowResourceData(Request $request, string $slug, string $tab = 'reviews')
@@ -135,7 +130,7 @@ class ComputerScienceResourceService
 
         $validTabs = ['reviews', 'discussion', 'edits'];
         if (! in_array($tab, $validTabs)) {
-            throw new ResourceInvalidTabException('Invalid tab: ' . $tab);
+            throw new ResourceInvalidTabException('Invalid tab: '.$tab);
         }
 
         $data = [
@@ -155,6 +150,7 @@ class ComputerScienceResourceService
                 function () use ($computerScienceResource, $sortBy, $request) {
                     $query = ResourceReview::whereBelongsTo($computerScienceResource);
                     $query = $this->resourceSortingManager->applySort($query, $sortBy, ResourceReview::class);
+
                     return $query->with('user')->paginate(10)->appends($request->query());
                 }
             );
@@ -163,17 +159,18 @@ class ComputerScienceResourceService
                 function () use ($computerScienceResource, $sortBy, $request) {
                     $query = ResourceEdits::whereBelongsTo($computerScienceResource);
                     $query = $this->resourceSortingManager->applySort($query, $sortBy, ResourceEdits::class);
+
                     return $query->with('user')->paginate(10)->appends($request->query());
                 }
             );
         } elseif ($tab === 'discussion') {
             $data['discussion'] = Inertia::defer(
-                fn() => $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
+                fn () => $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
             );
         }
+
         return $data;
     }
-
 
     /**
      * In case a user does a double submit, we have a check for that
