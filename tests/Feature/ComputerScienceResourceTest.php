@@ -154,7 +154,7 @@ class ComputerScienceResourceTest extends TestCase
         $formData = StoreResourceRequestFactory::new()->create();
         $this->postJson(route('resources.store'), $formData);
 
-        // Try to create the same resource again, with a slighly different URL
+        // Try to create the same resource again, with a slightly different URL
         $formData['page_url'] = $formData['page_url'].'   ';
         $response = $this->postJson(route('resources.store'), $formData);
 
