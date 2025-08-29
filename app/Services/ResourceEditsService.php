@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\ResourceEdits;
 use App\Models\ComputerScienceResource;
+use App\Models\ResourceEdits;
 use App\Utilities\UrlUtilities;
 
 class ResourceEditsService

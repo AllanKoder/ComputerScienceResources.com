@@ -155,7 +155,7 @@ class ComputerScienceResourceTest extends TestCase
         $this->postJson(route('resources.store'), $formData);
 
         // Try to create the same resource again, with a slighly different URL
-        $formData['page_url'] = $formData['page_url'] . "   ";
+        $formData['page_url'] = $formData['page_url'].'   ';
         $response = $this->postJson(route('resources.store'), $formData);
 
         $response->assertStatus(200);

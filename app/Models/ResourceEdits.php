@@ -6,6 +6,7 @@ use App\Observers\ResourceEditsObserver;
 use App\Services\ResourceEditsService;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
+use App\Utilities\UrlUtilities;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -14,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use App\Utilities\UrlUtilities;
 use Illuminate\Support\Facades\Storage;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 use Spatie\Activitylog\LogOptions;
@@ -95,6 +95,7 @@ class ResourceEdits extends Model
                 if (array_key_exists('page_url', $value) && is_string($value['page_url'])) {
                     $value['page_url'] = UrlUtilities::normalize($value['page_url']);
                 }
+
                 return json_encode($value);
             }
         );

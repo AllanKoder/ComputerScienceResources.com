@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreResourceEdit;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
-use App\Services\DataNormalizationService;
 use App\Services\ResourceEditsService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

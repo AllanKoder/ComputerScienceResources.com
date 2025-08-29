@@ -110,7 +110,7 @@ class ComputerScienceResourceService
 
         $validTabs = ['reviews', 'discussion', 'edits'];
         if (! in_array($tab, $validTabs)) {
-            throw new ResourceInvalidTabException('Invalid tab: ' . $tab);
+            throw new ResourceInvalidTabException('Invalid tab: '.$tab);
         }
 
         $data = [
@@ -145,7 +145,7 @@ class ComputerScienceResourceService
             );
         } elseif ($tab === 'discussion') {
             $data['discussion'] = Inertia::defer(
-                fn() => $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
+                fn () => $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
             );
         }
 
