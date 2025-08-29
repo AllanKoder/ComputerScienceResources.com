@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+
 use App\Utilities\UrlUtilities;
 
 class DataNormalizationService
