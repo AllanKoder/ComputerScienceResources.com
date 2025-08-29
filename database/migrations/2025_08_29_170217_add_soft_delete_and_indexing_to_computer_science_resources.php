@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('computer_science_resources', function (Blueprint $table) {
             $table->softDeletes();
+            $table->index('page_url');
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('computer_science_resources', function (Blueprint $table) {
             $table->dropSoftDeletes();
+            $table->dropIndex(['page_url']);
         });
     }
 };
