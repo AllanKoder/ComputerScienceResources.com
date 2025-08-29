@@ -6,6 +6,7 @@ use App\Observers\ResourceEditsObserver;
 use App\Services\ResourceEditsService;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
+use App\Utilities\UrlUtilities;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -89,6 +90,13 @@ class ResourceEdits extends Model
 
                 return $changes;
             },
+            set: function ($value) {
+                if (array_key_exists('page_url', $value) && is_string($value['page_url'])) {
+                    $value['page_url'] = UrlUtilities::normalize($value['page_url']);
+                }
+
+                return json_encode($value);
+            }
         );
     }
 

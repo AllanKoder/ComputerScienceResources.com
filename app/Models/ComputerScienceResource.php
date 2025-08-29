@@ -6,6 +6,7 @@ use App\Events\TagFrequencyChanged;
 use App\Observers\ComputerScienceResourceObserver;
 use App\Traits\HasComments;
 use App\Traits\HasVotes;
+use App\Utilities\UrlUtilities;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -86,6 +87,13 @@ class ComputerScienceResource extends Model
     {
         return Attribute::make(
             get: fn () => $this->image_path ? Storage::disk('public')->url($this->image_path) : null,
+        );
+    }
+
+    protected function pageUrl(): Attribute
+    {
+        return Attribute::make(
+            set: fn ($value) => UrlUtilities::normalize($value)
         );
     }
 

@@ -44,6 +44,9 @@ class ComputerScienceResource extends Resource
                 Forms\Components\TextInput::make('slug')
                     ->maxLength(255),
 
+                Forms\Components\TextInput::make('page_url')
+                    ->maxLength(255),
+
                 Forms\Components\Select::make('user_id')
                     ->relationship('user', 'name')
                     ->required(),
@@ -84,6 +87,7 @@ class ComputerScienceResource extends Resource
                     ->description(fn (ModelsComputerScienceResource $resource): string => $resource->user->id)->wrap(),
                 TextColumn::make('name')->searchable()
                     ->description(fn (ModelsComputerScienceResource $resource): string => $resource->description)->wrap(),
+                TextColumn::make('page_url')->searchable()->wrap()->copyable(),
                 TextColumn::make('topic_tags')
                     ->label('topics_tags')
                     ->badge()

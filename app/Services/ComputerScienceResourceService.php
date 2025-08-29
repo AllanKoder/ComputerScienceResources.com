@@ -8,6 +8,7 @@ use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
 use App\Services\SortingManagers\ResourceSortingManager;
+use App\Utilities\UrlUtilities;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -157,6 +158,9 @@ class ComputerScienceResourceService
      */
     private function existingConflictingResource(array $data): ?ComputerScienceResource
     {
-        return ComputerScienceResource::where('page_url', $data['page_url'])->first();
+        return ComputerScienceResource::where(
+            'page_url',
+            UrlUtilities::normalize($data['page_url']),
+        )->first();
     }
 }

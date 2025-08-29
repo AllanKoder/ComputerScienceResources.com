@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreResourceEdit;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
-use App\Services\DataNormalizationService;
 use App\Services\ResourceEditsService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +17,7 @@ use Throwable;
 class ResourceEditsController extends Controller
 {
     public function __construct(
-        private DataNormalizationService $dataNormalizationService
+        protected ResourceEditsService $resourceEditsService
     ) {}
 
     /**
@@ -42,7 +41,7 @@ class ResourceEditsController extends Controller
         $validatedData = $request->validated();
         $proposedChanges = $validatedData['proposed_changes'] ?? [];
 
-        $actualChanges = $this->calculateChanges($computerScienceResource, $proposedChanges);
+        $actualChanges = $this->resourceEditsService->calculateChanges($computerScienceResource, $proposedChanges);
 
         // Add image path to the actual changes
         if (array_key_exists('image_file', $proposedChanges)) {
@@ -70,25 +69,6 @@ class ResourceEditsController extends Controller
 
         return redirect()->route('resource_edits.show', ['slug' => $resourceEdit->slug])
             ->with('success', 'Edits Created!');
-    }
-
-    /**
-     * Calculate the actual differences between the proposed changes and the original resource.
-     */
-    private function calculateChanges(ComputerScienceResource $resource, array $proposedChanges): array
-    {
-        $actualChanges = [];
-        $normalizedProposed = $this->dataNormalizationService->normalize($proposedChanges);
-        $normalizedOriginal = $this->dataNormalizationService->normalize($resource->toArray());
-
-        foreach ($normalizedProposed as $key => $value) {
-            if (! array_key_exists($key, $normalizedOriginal) || $normalizedOriginal[$key] !== $value) {
-                // Use the original value from the request, not the normalized one, for file uploads.
-                $actualChanges[$key] = $proposedChanges[$key];
-            }
-        }
-
-        return $actualChanges;
     }
 
     public function show(string $slug)
