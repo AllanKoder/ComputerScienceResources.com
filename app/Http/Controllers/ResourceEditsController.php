@@ -44,6 +44,7 @@ class ResourceEditsController extends Controller
 
         $actualChanges = $this->calculateChanges($computerScienceResource, $proposedChanges);
 
+        // Add image path to the actual changes
         if (array_key_exists('image_file', $proposedChanges)) {
             $actualChanges['image_path'] = null;
             if (isset($proposedChanges['image_file'])) {
@@ -135,6 +136,8 @@ class ResourceEditsController extends Controller
                     $newFileName = Str::random(40).'.'.$fileExtension;
                     $destPath = 'resource/'.$newFileName;
 
+
+                    // TODO: FIGURE OUT WHAT TO DO IN CASE OF EXCEPTION IN CODE FROM LATER STEPS
                     Storage::disk('public')->move($sourcePath, $destPath);
                 }
 
@@ -145,11 +148,9 @@ class ResourceEditsController extends Controller
             $resource->save();
 
             $proposedTagFields = ['topic_tags', 'programming_language_tags', 'general_tags'];
-            $allTags = [];
             foreach ($proposedTagFields as $field) {
                 if (array_key_exists($field, $changes)) {
                     $resource->$field = $changes[$field];
-                    $allTags[] = $changes[$field];
                 }
             }
 

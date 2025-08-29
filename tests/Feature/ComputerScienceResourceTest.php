@@ -127,7 +127,7 @@ class ComputerScienceResourceTest extends TestCase
         $response->assertStatus(422); // Validation error
 
         // The image should not exist in storage
-        Storage::disk('public')->assertMissing('resource/'.$formData['image_file']->hashName());
+        $this->assertEmpty(Storage::disk('public')->allFiles('resource'), "Failed asserting that no image files exist in the 'resource' directory after failed resource creation.");
     }
 
     public function test_model_removes_image_upon_deletion()

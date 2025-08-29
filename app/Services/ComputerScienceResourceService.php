@@ -41,18 +41,8 @@ class ComputerScienceResourceService
             // Store the image onto storage
             $path = null;
             if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file']) {
+                // TODO: FIGURE OUT WHAT TO DO IN CASE OF EXCEPTION IN CODE FROM LATER STEPS
                 $path = $imageFile->store('resource', 'public');
-                if (! $path) {
-                    Log::error('Failed to store image file', [
-                        'user_id' => Auth::id(),
-                        'file_info' => $imageFile,
-                    ]);
-
-                    $fileName = $imageFile->getClientOriginalName();
-                    throw new \RuntimeException(
-                        "Could not save the image file '{$fileName}' for user ID ".Auth::id().'.'
-                    );
-                }
             }
 
             $resource = ComputerScienceResource::create([
@@ -94,18 +84,7 @@ class ComputerScienceResourceService
             return $resource;
         } catch (Throwable $e) {
             DB::rollBack();
-            // Attempt to remove the uploaded image if it was stored
-            if (isset($path) && $path) {
-                try {
-                    Storage::disk('public')->delete($path);
-                } catch (Throwable $removeEx) {
-                    Log::warning('Failed to remove image after exception', [
-                        'user_id' => Auth::id(),
-                        'image_path' => $path,
-                        'error' => $removeEx->getMessage(),
-                    ]);
-                }
-            }
+
             Log::critical('Failed to create resource', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
