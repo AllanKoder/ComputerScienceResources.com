@@ -16,7 +16,7 @@ class ResourceReviewProcessed implements ShouldDispatchAfterCommit
      * Create a new event instance.
      */
     public function __construct(
-        public int $resource,
+        public int $resource_id,
         public ?array $oldReview,
         public ?array $newReview,
     ) {}

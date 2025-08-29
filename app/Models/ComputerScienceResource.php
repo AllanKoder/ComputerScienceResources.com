@@ -38,8 +38,18 @@ class ComputerScienceResource extends Model
     use LogsActivity;
     use Sluggable;
 
-    // TODO: ADD A TEST FOR RESOURCE DELETION. DO NOT USE YET IN PRODUCTION
-    protected $cascadeDeletes = ['votes', 'upvoteSummary', 'comments', 'commentsCountRelationship', 'edits', 'reviewSummary', 'reviews'];
+    protected $cascadeDeletes = [
+        // Votes
+        'votes',
+        'upvoteSummary',
+        // Comments
+        'comments',
+        'commentsCountRelationship',
+        'edits',
+        // Reviews
+        'reviews',
+        'reviewSummary'
+    ];
 
     protected $table = 'computer_science_resources';
 
@@ -75,7 +85,7 @@ class ComputerScienceResource extends Model
     protected function imageUrl(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->image_path ? Storage::disk('public')->url($this->image_path) : null,
+            get: fn() => $this->image_path ? Storage::disk('public')->url($this->image_path) : null,
         );
     }
 
@@ -106,8 +116,8 @@ class ComputerScienceResource extends Model
     protected function platforms(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => explode(',', $value),
-            set: fn ($value) => implode(',', $value)
+            get: fn($value) => explode(',', $value),
+            set: fn($value) => implode(',', $value)
         );
     }
 
@@ -117,7 +127,7 @@ class ComputerScienceResource extends Model
     protected function topicTags(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->tagsWithType('topics_tags')->pluck('name')->toArray(),
+            get: fn() => $this->tagsWithType('topics_tags')->pluck('name')->toArray(),
             set: function (array $value) {
                 $old_value = $this->topic_tags;
                 $this->syncTagsWithType($value, 'topics_tags');
@@ -134,7 +144,7 @@ class ComputerScienceResource extends Model
     protected function programmingLanguageTags(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->tagsWithType('programming_languages_tags')->pluck('name')->toArray(),
+            get: fn() => $this->tagsWithType('programming_languages_tags')->pluck('name')->toArray(),
             set: function (array $value) {
                 $old_value = $this->programming_language_tags;
                 $this->syncTagsWithType($value, 'programming_languages_tags');
@@ -151,7 +161,7 @@ class ComputerScienceResource extends Model
     protected function generalTags(): Attribute
     {
         return Attribute::make(
-            get: fn () => $this->tagsWithType('general_tags')->pluck('name')->toArray(),
+            get: fn() => $this->tagsWithType('general_tags')->pluck('name')->toArray(),
             set: function (array $value) {
                 $old_value = $this->general_tags;
                 $this->syncTagsWithType($value, 'general_tags');

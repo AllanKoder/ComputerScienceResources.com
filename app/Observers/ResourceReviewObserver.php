@@ -32,9 +32,9 @@ class ResourceReviewObserver
     }
 
     /**
-     * Handle the ResourceReview "deleted" event.
+     * Handle the ResourceReview "deleting" event.
      */
-    public function deleted(ResourceReview $resourceReview): void
+    public function deleting(ResourceReview $resourceReview): void
     {
         ResourceReviewProcessed::dispatch(
             $resourceReview->computer_science_resource_id,

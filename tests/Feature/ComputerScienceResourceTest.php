@@ -197,6 +197,7 @@ class ComputerScienceResourceTest extends TestCase
         // Assert resource and comment are deleted
         $this->assertDatabaseMissing('computer_science_resources', ['id' => $resource->id]);
         $this->assertDatabaseMissing('comments', ['id' => $commentId]);
+        $this->assertDatabaseMissing('comments_counts', ['commentable_id' => $resource->id, 'commentable_type' => ComputerScienceResource::class]);
 
         // Assert Reviews are removed
         $this->assertDatabaseMissing('resource_reviews', ['id' => $resourceReview->id]);
