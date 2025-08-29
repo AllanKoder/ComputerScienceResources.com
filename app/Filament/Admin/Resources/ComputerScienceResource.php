@@ -110,8 +110,7 @@ class ComputerScienceResource extends Resource
                 // Custom delete action that uses model delete() method
                 DeleteAction::make()
                     ->action(function (ModelsComputerScienceResource $record) {
-                        // This calls the model's delete() method, triggering all events
-                        $record->delete();
+                        $record->forceDelete();
                     }),
             ])
             ->bulkActions([

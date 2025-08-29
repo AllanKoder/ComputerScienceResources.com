@@ -157,8 +157,7 @@ class ComputerScienceResourceService
      */
     private function existingConflictingResource(array $data): ?ComputerScienceResource
     {
-        // If there is a resource with these matching properties, it is safe to say
-        // it is the same resource
+        // If there is a resource with these matching properties, it is safe to say it is the same resource
         return ComputerScienceResource::where('name', $data['name'])
             ->where('page_url', $data['page_url'])
             ->first();

@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
+use App\Models\TagFrequency;
 use Illuminate\Support\Facades\Storage;
 
 class ComputerScienceResourceObserver
@@ -29,10 +30,7 @@ class ComputerScienceResourceObserver
      */
     public function deleted(ComputerScienceResource $computerScienceResource): void
     {
-        // Delete the image
-        if ($computerScienceResource->image_path) {
-            Storage::disk('public')->delete($computerScienceResource->image_path);
-        }
+
     }
 
     /**
@@ -43,11 +41,21 @@ class ComputerScienceResourceObserver
         //
     }
 
+    public function deleting(ComputerScienceResource $computerScienceResource): void
+    {
+        $computerScienceResource->topic_tags = [];
+        $computerScienceResource->programming_language_tags = [];
+        $computerScienceResource->general_tags = [];
+    }
+
     /**
      * Handle the ComputerScienceResource "force deleted" event.
      */
     public function forceDeleted(ComputerScienceResource $computerScienceResource): void
     {
-        //
+        // Delete the image
+        if ($computerScienceResource->image_path) {
+            Storage::disk('public')->delete($computerScienceResource->image_path);
+        }
     }
 }

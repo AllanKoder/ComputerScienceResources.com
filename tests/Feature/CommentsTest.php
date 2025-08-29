@@ -307,7 +307,7 @@ class CommentsTest extends TestCase
     /**
      * Test that upvote summaries and upvotes are cleaned up when comments are deleted.
      */
-    public function test_upvote_summaries_and_upvotes_cleaned_up_when_comments_deleted()
+    public function test_cleaned_up_when_deleted()
     {
         $this->actingAs(User::factory()->create());
 
