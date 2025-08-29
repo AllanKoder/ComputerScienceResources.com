@@ -59,7 +59,7 @@ class ComputerScienceResourceTest extends TestCase
         $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
         $this->assertNotNull($createdResource);
         $this->assertNotNull($createdResource->image_path);
-        Storage::disk('public')->assertExists('resource/' . $formData['image_file']->hashName());
+        Storage::disk('public')->assertExists('resource/'.$formData['image_file']->hashName());
     }
 
     public function test_cannot_post_resource_unauthed()
@@ -106,7 +106,7 @@ class ComputerScienceResourceTest extends TestCase
         $this->assertEquals(
             422,
             $response->status(),
-            "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: " . $response->status()
+            "Failed asserting that the server responded with a 422 status code for invalid '$field'. Response status: ".$response->status()
         );
 
         $not_created_resource = ComputerScienceResource::first();
@@ -182,7 +182,7 @@ class ComputerScienceResourceTest extends TestCase
 
         // Add a fake image to the resource
         $imageFile = UploadedFile::fake()->image('test_image.jpg');
-        $imagePath = 'resource/' . $imageFile->hashName();
+        $imagePath = 'resource/'.$imageFile->hashName();
         Storage::disk('public')->put($imagePath, $imageFile->getContent());
         $resource->image_path = $imagePath;
         $resource->save();
