@@ -10,7 +10,6 @@ import ListInput from "@/Components/ListInput.vue";
 import Button from "primevue/button";
 import FormSaverChip from "@/Components/Form/FormSaverChip.vue";
 
-import { yupResolver } from "@primevue/forms/resolvers/yup";
 import { resourceReviewFields } from "@/Helpers/validation";
 import { router } from "@inertiajs/vue3";
 import axios from "axios";
@@ -71,44 +70,47 @@ const {
     clearLocalStorage,
 } = useLocalStorageSaver(form, props.resourceId, formFields, "review-draft");
 
-const resolver = ref(yupResolver(resourceReviewFields));
 const isSubmitting = ref(false);
 const error = ref(null);
 
-const submitReview = async (event) => {
-    if (!event.valid) {
-        console.error("Validation errors");
-        return;
-    }
+const errors = ref({});
 
+const submitReview = async () => {
     isSubmitting.value = true;
+    try {
+        await resourceReviewFields.validate(form, { abortEarly: false });
+        errors.value = {};
 
-    const url = props.isEditingMode
-        ? route("reviews.update", { computerScienceResource: props.resourceId })
-        : route("reviews.store", { computerScienceResource: props.resourceId });
+        const url = props.isEditingMode
+            ? route("reviews.update", { computerScienceResource: props.resourceId })
+            : route("reviews.store", { computerScienceResource: props.resourceId });
 
-    const method = props.isEditingMode ? "put" : "post";
+        const method = props.isEditingMode ? "put" : "post";
 
-    axios[method](url, form)
-        .then(() => {
-            // Clear localStorage on successful submission
-            clearLocalStorage();
+        await axios[method](url, form);
+        clearLocalStorage();
 
-            const routeParams = { slug: props.resourceSlug };
-            if (props.isEditingMode) {
-                routeParams.tab = "reviews";
-                routeParams.sort_by = "recently_updated";
-            } else {
-                routeParams.sort_by = "latest";
-            }
-            router.visit(route('resources.show', routeParams));
-        })
-        .catch((err) => {
-            isSubmitting.value = false;
-            error.value =
-                "Something went wrong with submitting your review, please refresh or try again.";
-            console.error(err);
-        });
+        const routeParams = { slug: props.resourceSlug };
+        if (props.isEditingMode) {
+            routeParams.tab = "reviews";
+            routeParams.sort_by = "recently_updated";
+        } else {
+            routeParams.sort_by = "latest";
+        }
+        router.visit(route('resources.show', routeParams));
+    } catch (e) {
+        isSubmitting.value = false;
+        if (e.inner) {
+            const yupErrors = {};
+            e.inner.forEach((error) => {
+                yupErrors[error.path] = error.errors;
+            });
+            errors.value = yupErrors;
+        } else {
+            error.value = "Something went wrong with submitting your review, please refresh or try again.";
+            console.error(e);
+        }
+    }
 };
 </script>
 
@@ -126,7 +128,6 @@ const submitReview = async (event) => {
         </h2>
 
         <Form
-            :resolver="resolver"
             :initialValues="form"
             @submit="submitReview"
             class="flex flex-col gap-6"

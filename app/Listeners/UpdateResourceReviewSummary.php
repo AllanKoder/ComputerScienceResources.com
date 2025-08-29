@@ -22,23 +22,29 @@ class UpdateResourceReviewSummary
     public function handle(ResourceReviewProcessed $event): void
     {
         Log::debug('Handling ResourceReviewProcessed', [
-            'resource_id' => $event->resource,
+            'resource_id' => $event->resource_id,
             'old_review' => $event->oldReview,
             'new_review' => $event->newReview,
         ]);
 
         if ($event->oldReview == null && $event->newReview == null) {
             Log::critical('Update Resource Review Summary Listener reached impossible condition', [
-                'resource_id' => $event->resource,
+                'resource_id' => $event->resource_id,
                 'error' => 'Both oldReview and newReview are null',
             ]);
 
             return;
         }
 
-        $review_summary = ResourceReviewSummary::firstOrNew(
-            ['computer_science_resource_id' => $event->resource],
-        );
+        $reviewSummary = ResourceReviewSummary::where(
+            'computer_science_resource_id',
+            $event->resource_id
+        )->first();
+
+        if (! $reviewSummary) {
+            // The resource review summary is created by the resource observer
+            return;
+        }
 
         $fields = [
             'community',
@@ -52,14 +58,16 @@ class UpdateResourceReviewSummary
         foreach ($fields as $field) {
             $old = $event->oldReview[$field] ?? 0;
             $new = $event->newReview[$field] ?? 0;
-            $review_summary->$field += ($new - $old);
+            $reviewSummary->$field += ($new - $old);
         }
 
+        $reviewSummary->review_count = $reviewSummary->review_count ?? 0;
         if ($event->oldReview === null) {
-            // It's a new review, so increase the count
-            $review_summary->review_count += 1;
+            $reviewSummary->review_count++;
+        } elseif ($event->newReview === null) {
+            $reviewSummary->review_count--;
         }
 
-        $review_summary->save();
+        $reviewSummary->save();
     }
 }

@@ -2,8 +2,8 @@
 
 namespace App\Observers;
 
-use App\Events\TagFrequencyChanged;
 use App\Models\ComputerScienceResource;
+use App\Models\ResourceReviewSummary;
 use Illuminate\Support\Facades\Storage;
 
 class ComputerScienceResourceObserver
@@ -13,7 +13,9 @@ class ComputerScienceResourceObserver
      */
     public function created(ComputerScienceResource $computerScienceResource): void
     {
-        // TagFrequencyChanged is in store ComputerScienceResource controller
+        ResourceReviewSummary::create(
+            ['computer_science_resource_id' => $computerScienceResource->id],
+        );
     }
 
     /**
@@ -27,13 +29,7 @@ class ComputerScienceResourceObserver
     /**
      * Handle the ComputerScienceResource "deleted" event.
      */
-    public function deleted(ComputerScienceResource $computerScienceResource): void
-    {
-        // Delete the image
-        if ($computerScienceResource->image_path) {
-            Storage::disk('public')->delete($computerScienceResource->image_path);
-        }
-    }
+    public function deleted(ComputerScienceResource $computerScienceResource): void {}
 
     /**
      * Handle the ComputerScienceResource "restored" event.
@@ -43,11 +39,20 @@ class ComputerScienceResourceObserver
         //
     }
 
+    public function deleting(ComputerScienceResource $computerScienceResource): void
+    {
+        $computerScienceResource->topic_tags = [];
+        $computerScienceResource->programming_language_tags = [];
+        $computerScienceResource->general_tags = [];
+
+        // Delete the image
+        if ($computerScienceResource->image_path) {
+            Storage::disk('public')->delete($computerScienceResource->image_path);
+        }
+    }
+
     /**
      * Handle the ComputerScienceResource "force deleted" event.
      */
-    public function forceDeleted(ComputerScienceResource $computerScienceResource): void
-    {
-        //
-    }
+    public function forceDeleted(ComputerScienceResource $computerScienceResource): void {}
 }

@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
 use ShiftOneLabs\LaravelCascadeDeletes\CascadesDeletes;
 use Spatie\Activitylog\LogOptions;
@@ -35,9 +36,20 @@ class ComputerScienceResource extends Model
     use HasVotes;
     use LogsActivity;
     use Sluggable;
+    use SoftDeletes;
 
-    // TODO: ADD A TEST FOR RESOURCE DELETION. DO NOT USE YET IN PRODUCTION
-    protected $cascadeDeletes = ['votes', 'upvoteSummary', 'comments', 'commentsCountRelationship', 'edits', 'reviewSummary', 'reviews', ''];
+    protected $cascadeDeletes = [
+        // Votes
+        'votes',
+        'upvoteSummary',
+        // Comments
+        'comments',
+        'commentsCountRelationship',
+        'edits',
+        // Reviews
+        'reviews',
+        'reviewSummary',
+    ];
 
     protected $table = 'computer_science_resources';
 

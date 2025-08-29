@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\ComputerScienceResource;
+use App\Models\TagFrequency;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -10,12 +11,14 @@ use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
+use Tests\Feature\Utils\TestingUtils;
 use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
 use Tests\TestCase;
 
 class ComputerScienceResourceTest extends TestCase
 {
     use RefreshDatabase;
+    use TestingUtils;
 
     protected $user;
 
@@ -138,7 +141,7 @@ class ComputerScienceResourceTest extends TestCase
 
         Storage::disk('public')->assertExists($imagePath);
 
-        $resource->delete();
+        $resource->forceDelete();
 
         Storage::disk('public')->assertMissing($imagePath);
     }
@@ -159,5 +162,53 @@ class ComputerScienceResourceTest extends TestCase
         // Should return the existing resource, not create a new one
         $resources = ComputerScienceResource::where('name', $formData['name'])->get();
         $this->assertCount(1, $resources);
+    }
+
+    public function test_cleans_up_when_deleted()
+    {
+        $this->actingAs($this->user);
+
+        Storage::fake('public');
+        $resource = $this->createResource([
+            'topics_tags' => ['test1'],
+            'programming_languages_tags' => ['test2'],
+            'general_tags' => ['test3'],
+        ]);
+
+        $commentData = $this->createComment('resource', $resource->id);
+        $commentId = $commentData['id'];
+
+        $resourceReview = $this->createReview($resource->id);
+
+        // Add a fake image to the resource
+        $imageFile = UploadedFile::fake()->image('test_image.jpg');
+        $imagePath = 'resource/'.$imageFile->hashName();
+        Storage::disk('public')->put($imagePath, $imageFile->getContent());
+        $resource->image_path = $imagePath;
+        $resource->save();
+
+        // Assert resource, comment, and image exist before deletion
+        $this->assertDatabaseHas('computer_science_resources', ['id' => $resource->id]);
+        $this->assertDatabaseHas('comments', ['id' => $commentId]);
+        Storage::disk('public')->assertExists($imagePath);
+
+        $resource->forceDelete();
+
+        // Assert resource and comment are deleted
+        $this->assertDatabaseMissing('computer_science_resources', ['id' => $resource->id]);
+        $this->assertDatabaseMissing('comments', ['id' => $commentId]);
+        $this->assertDatabaseMissing('comments_counts', ['commentable_id' => $resource->id, 'commentable_type' => ComputerScienceResource::class]);
+
+        // Assert Reviews are removed
+        $this->assertDatabaseMissing('resource_reviews', ['id' => $resourceReview->id]);
+        $this->assertDatabaseMissing('resource_review_summaries', ['computer_science_resource_id' => $resource->id]);
+
+        // Assert tags are removed
+        $this->assertNull(TagFrequency::where('type', 'topics_tags')->where('tag', 'test1')->first());
+        $this->assertNull(TagFrequency::where('type', 'programming_languages_tags')->where('tag', 'test2')->first());
+        $this->assertNull(TagFrequency::where('type', 'general_tags')->where('tag', 'test3')->first());
+
+        // Assert image is deleted
+        Storage::disk('public')->assertMissing($imagePath);
     }
 }
