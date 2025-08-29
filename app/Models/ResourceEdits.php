@@ -91,7 +91,6 @@ class ResourceEdits extends Model
                 return $changes;
             },
             set: function ($value) {
-                // TODO: HANDLE THIS IN THE REQUEST FORM.
                 if (array_key_exists('page_url', $value) && is_string($value['page_url'])) {
                     $value['page_url'] = UrlUtilities::normalize($value['page_url']);
                 }
