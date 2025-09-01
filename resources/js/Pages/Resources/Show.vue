@@ -15,7 +15,6 @@ import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
 import ResourceEditsFAQ from "@/Components/Resources/ResourceEdit/ResourceEditsFAQ.vue";
 import ResourceDescription from "@/Components/Resources/ResourceDescription.vue";
 import ResourceDetailedRatings from "@/Components/Resources/ResourceDetailedRatings.vue";
-import { computed } from "vue";
 import { resourceCanonical, summarize, ogImageForResource, SITE_NAME } from "@/Helpers/seo";
 
 const props = defineProps({
