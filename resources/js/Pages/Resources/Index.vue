@@ -5,8 +5,6 @@ import { Head } from '@inertiajs/vue3';
 import FilterBar from "@/Components/Resources/FilterBar.vue";
 import ResourcesTable from "@/Components/Resources/ResourcesTable.vue";
 import NewsSection from "@/Components/News/NewsSection.vue";
-
-
 const props = defineProps({
     resources: Object,
     news_posts: Array,
