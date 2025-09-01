@@ -2,10 +2,23 @@
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
 import FrequentlyAskedQuestion from "@/Components/FrequentlyAskedQuestion.vue";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import { Head } from "@inertiajs/vue3";
+import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
 </script>
 
 <template>
     <AppLayout title="About Us">
+        <!-- Page metadata -->
+        <Head>
+            <meta head-key="about:og:title" property="og:title" :content="`About Us - ${SITE_NAME}`" />
+            <meta head-key="about:description" name="description" content="Learn about ComputerScienceResources.com — our mission to organize the best computer science and software engineering resources, built by and for the developer community." />
+            <meta head-key="about:og:description" property="og:description" content="Learn about ComputerScienceResources.com — our mission to organize the best computer science and software engineering resources, built by and for the developer community." />
+            <meta head-key="about:og:type" property="og:type" content="website" />
+            <meta head-key="about:og:image" property="og:image" :content="defaultOgImage()" />
+            <link head-key="about:canonical" rel="canonical" :href="canonicalFor('/about')" />
+            <meta head-key="about:og:url" property="og:url" :content="canonicalFor('/about')" />
+            <meta head-key="about:og:site_name" property="og:site_name" :content="SITE_NAME" />
+        </Head>
         <div class="py-7">
             <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
                 <div

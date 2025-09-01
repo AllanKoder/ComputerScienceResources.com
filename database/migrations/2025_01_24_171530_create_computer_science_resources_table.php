@@ -34,7 +34,6 @@ return new class extends Migration
                     ->index();
                 $table->enum('pricing', ['free', 'premium', 'paid', 'freemium'])
                     ->index();
-
             });
         }
     }

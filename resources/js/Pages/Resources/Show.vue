@@ -1,5 +1,5 @@
 <script setup>
-import { Deferred, Link } from "@inertiajs/vue3";
+import { Deferred, Link, Head } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import UpvoteResource from "@/Components/Upvote/Upvotable.vue";
 import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue";
@@ -15,6 +15,7 @@ import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
 import ResourceEditsFAQ from "@/Components/Resources/ResourceEdit/ResourceEditsFAQ.vue";
 import ResourceDescription from "@/Components/Resources/ResourceDescription.vue";
 import ResourceDetailedRatings from "@/Components/Resources/ResourceDetailedRatings.vue";
+import { resourceCanonical, summarize, ogImageForResource, SITE_NAME } from "@/Helpers/seo";
 
 const props = defineProps({
     tab: {
@@ -54,10 +55,22 @@ const tabs = [
 
 const urlParams = new URLSearchParams(window.location.search);
 const sortingType = urlParams.get("sort_by") || "top";
+
 </script>
 
 <template>
     <AppLayout :title="props.resource.name">
+        <!-- Page metadata -->
+        <Head>
+            <meta head-key="resource:og:title" property="og:title" :content="props.resource.name" />
+            <meta head-key="resource:description" name="description" :content="summarize(props.resource.description)" />
+            <meta head-key="resource:og:description" property="og:description" :content="summarize(props.resource.description)" />
+            <meta head-key="resource:og:type" property="og:type" content="article" />
+            <meta head-key="resource:og:image" property="og:image" :content="ogImageForResource(props.resource.image_url)" />
+            <link head-key="resource:canonical" rel="canonical" :href="resourceCanonical(props.resource.slug)" />
+            <meta head-key="resource:og:url" property="og:url" :content="resourceCanonical(props.resource.slug)" />
+            <meta head-key="resource:og:site_name" property="og:site_name" content="Computer Science Resources" />
+        </Head>
         <div class="max-w-[90vw] mx-auto sm:px-6 py-4 lg:px-8">
             <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
                 <div class="p-7 sm:p-8">
