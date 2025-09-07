@@ -53,7 +53,7 @@ class ComputerScienceResource extends Resource
 
                 Forms\Components\CheckboxList::make('difficulties')
                     ->label('Difficulties')
-                    ->options(fn () => config('computerScienceResource.difficulties'))
+                    ->options(fn () => array_combine(config('computerScienceResource.difficulties'), config('computerScienceResource.difficulties')))
                     ->columns(2)
                     ->required(),
 
