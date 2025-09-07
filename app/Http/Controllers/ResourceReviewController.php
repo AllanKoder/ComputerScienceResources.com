@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreResourceReview;
+use App\Http\Requests\StoreResourceReviewRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceReview;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 class ResourceReviewController extends Controller
 {
     // Store the review on the resource
-    public function store(StoreResourceReview $request, ComputerScienceResource $computerScienceResource)
+    public function store(StoreResourceReviewRequest $request, ComputerScienceResource $computerScienceResource)
     {
         // Validate the request data
         $validatedData = $request->validated();
@@ -61,7 +61,7 @@ class ResourceReviewController extends Controller
         return response()->json($review);
     }
 
-    public function update(StoreResourceReview $request, ComputerScienceResource $computerScienceResource)
+    public function update(StoreResourceReviewRequest $request, ComputerScienceResource $computerScienceResource)
     {
         // Validate the request data
         $validatedData = $request->validated();

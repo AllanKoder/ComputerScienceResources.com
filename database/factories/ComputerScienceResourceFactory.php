@@ -36,7 +36,7 @@ class ComputerScienceResourceFactory extends Factory
             'image_path' => $imagePath,
             'page_url' => fake()->url(),
             'platforms' => fake()->randomElements($platforms, rand(1, 3)),
-            'difficulty' => fake()->randomElement($difficulties),
+            'difficulties' => fake()->randomElements($difficulties, rand(1, 3)),
             'pricing' => fake()->randomElement($pricings),
         ];
     }

@@ -162,7 +162,7 @@ watch(
                     >Difficulty
                     <span class="text-red-500"> * </span>
                 </label>
-                <Select
+                <MultiSelect
                     v-model="props.formData.difficulty"
                     :options="difficultiesObject"
                     option-label="label"

@@ -25,8 +25,8 @@ class ComputerScienceResourceFilter
             'description' => ['nullable', 'string', 'max:1000'],
             'platforms' => ['nullable', 'array'],
             'platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
-            'difficulty' => ['nullable', 'array'],
-            'difficulty.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.difficulties'))],
+            'difficulties' => ['nullable', 'array'],
+            'difficulties.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.difficulties'))],
             'pricing' => ['nullable', 'array'],
             'pricing.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.pricings'))],
             'topics_tags' => ['nullable', 'array'],
@@ -84,9 +84,14 @@ class ComputerScienceResourceFilter
             });
         }
 
-        // Filter by difficulty
-        if (! empty($filters['difficulty'])) {
-            $query->whereIn('difficulty', (array) $filters['difficulty']);
+        // Filter by difficulties
+        if (! empty($filters['difficulties'])) {
+            $query->where(function ($q) use ($filters) {
+                foreach ($filters['difficulties'] as $difficulty) {
+                    $q->orWhereRaw('FIND_IN_SET(?, difficulties)', [$difficulty]);
+
+                }
+            });
         }
 
         // Filter by pricing

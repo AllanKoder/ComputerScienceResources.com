@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
-use Tests\RequestFactories\ResourceReview\StoreResourceReviewFactory;
+use Tests\RequestFactories\StoreResourceReviewRequestFactory;
 use Tests\TestCase;
 
 class ResourceReviewsTest extends TestCase
@@ -49,7 +49,7 @@ class ResourceReviewsTest extends TestCase
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
 
-        $invalidData = StoreResourceReviewFactory::new()->create([$field => $invalidValue]);
+        $invalidData = StoreResourceReviewRequestFactory::new()->create([$field => $invalidValue]);
 
         $response = $this->actingAs($user)
             ->postJson(route('reviews.store', $resource), $invalidData);
@@ -61,7 +61,7 @@ class ResourceReviewsTest extends TestCase
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
 
-        $data = StoreResourceReviewFactory::new()->create();
+        $data = StoreResourceReviewRequestFactory::new()->create();
 
         $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data);
@@ -77,7 +77,7 @@ class ResourceReviewsTest extends TestCase
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
 
-        $data1 = StoreResourceReviewFactory::new()->create();
+        $data1 = StoreResourceReviewRequestFactory::new()->create();
         $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data1);
 
@@ -86,7 +86,7 @@ class ResourceReviewsTest extends TestCase
             'title' => $data1['title'],
         ]);
 
-        $data2 = StoreResourceReviewFactory::new()->create();
+        $data2 = StoreResourceReviewRequestFactory::new()->create();
         $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data2);
 
@@ -101,7 +101,7 @@ class ResourceReviewsTest extends TestCase
         $user = User::factory()->create();
         $resource = ComputerScienceResource::factory()->create();
 
-        $data = StoreResourceReviewFactory::new()->create();
+        $data = StoreResourceReviewRequestFactory::new()->create();
 
         $this->actingAs($user)
             ->post(route('reviews.store', $resource), $data);
@@ -134,7 +134,7 @@ class ResourceReviewsTest extends TestCase
 
         for ($i = 0; $i < $reviewCount; $i++) {
             $user = User::factory()->create();
-            $data = StoreResourceReviewFactory::new()->create();
+            $data = StoreResourceReviewRequestFactory::new()->create();
 
             // Add to total for averaging later
             foreach (array_keys($total) as $key) {
@@ -166,7 +166,7 @@ class ResourceReviewsTest extends TestCase
         ];
 
         foreach ($users as $user) {
-            $data = StoreResourceReviewFactory::new()->create();
+            $data = StoreResourceReviewRequestFactory::new()->create();
             foreach (array_keys($total) as $key) {
                 $total[$key] += $data[$key];
             }
@@ -189,7 +189,7 @@ class ResourceReviewsTest extends TestCase
 
         foreach ($users as $user) {
             // Update to new review
-            $newData = StoreResourceReviewFactory::new()->create();
+            $newData = StoreResourceReviewRequestFactory::new()->create();
             foreach (array_keys($total) as $key) {
                 $total[$key] += $newData[$key];
             }

@@ -7,7 +7,7 @@ import { difficultyLabels, pricingLabels, platformLabels } from "@/Helpers/label
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import ResourceThumbnail from "./ResourceThumbnail.vue";
 
-defineProps({
+const props = defineProps({
     resource: {
         type: Object,
         required: true,
@@ -15,6 +15,7 @@ defineProps({
 });
 
 const emit = defineEmits(["upvote", "downvote"]);
+
 </script>
 
 <template>
@@ -76,12 +77,14 @@ const emit = defineEmits(["upvote", "downvote"]);
                 <!-- Row 1: Resource Properties -->
                 <div class="flex flex-wrap items-center gap-3 text-xs">
                     <!-- Difficulty -->
-                    <div v-if="resource.difficulty" class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-2 py-1 rounded-md">
-                        <span class="font-semibold text-gray-900 dark:text-gray-100">Level:</span>
-                        <span class="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300">
-                            <Icon :icon="difficultyIcons[resource.difficulty]" width="14" height="14" />
-                            {{ difficultyLabels[resource.difficulty] }}
-                        </span>
+                    <div class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-2 py-1 rounded-md">
+                        <span class="font-semibold text-gray-900 dark:text-gray-100">Difficulties:</span>
+                        <div class="inline-flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-300">
+                            <span v-for="difficulty in resource.difficulties" :key="difficulty" class="inline-flex items-center gap-1">
+                                <Icon :icon="difficultyIcons[difficulty.trim()]" width="14" height="14" />
+                                {{ difficultyLabels[difficulty.trim()] }}
+                            </span>
+                        </div>
                     </div>
 
                     <!-- Pricing -->

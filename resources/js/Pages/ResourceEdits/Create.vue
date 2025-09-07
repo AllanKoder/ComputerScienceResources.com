@@ -43,7 +43,7 @@ const formData = useForm({
         description: props.resource.description,
         page_url: props.resource.page_url,
         image_file: null,
-        difficulty: props.resource.difficulty,
+        difficulties: props.resource.difficulties,
         pricing: props.resource.pricing,
         platforms: props.resource.platforms,
         topic_tags: props.resource.topic_tags || [],
@@ -346,13 +346,13 @@ const submit = async () => {
                             >
                                 <div>
                                     <InputLabel
-                                        for="difficulty"
+                                        for="difficulties"
                                         value="Difficulty"
                                     />
-                                    <Select
-                                        id="difficulty"
+                                    <MultiSelect
+                                        id="difficulties"
                                         v-model="
-                                            formData.proposed_changes.difficulty
+                                            formData.proposed_changes.difficulties
                                         "
                                         @blur="
                                             validateField(
@@ -369,10 +369,10 @@ const submit = async () => {
                                         class="mt-2"
                                         :message="
                                             errors[
-                                                'proposed_changes.difficulty'
+                                                'proposed_changes.difficulties'
                                             ] ||
                                             formData.errors[
-                                                'proposed_changes.difficulty'
+                                                'proposed_changes.difficulties'
                                             ]
                                         "
                                     />

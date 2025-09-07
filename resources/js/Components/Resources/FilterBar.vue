@@ -22,8 +22,8 @@ const description = ref("");
 
 // multi-select filters
 const selectedPlatforms = ref([]);
-const selectedDifficulty = ref([]);
-const selectedPricing = ref([]);
+const selectedDifficulties = ref([]);
+const selectedPricings = ref([]);
 const selectedTopics = ref([]);
 const selectedProgrammingLanguages = ref([]);
 const selectedGeneralTags = ref([]);
@@ -56,8 +56,8 @@ onMounted(() => {
     description.value = urlParams.get("description") || "";
 
     selectedPlatforms.value = extractIndexedArray(urlParams, "platforms");
-    selectedDifficulty.value = extractIndexedArray(urlParams, "difficulty");
-    selectedPricing.value = extractIndexedArray(urlParams, "pricing");
+    selectedDifficulties.value = extractIndexedArray(urlParams, "difficulties");
+    selectedPricings.value = extractIndexedArray(urlParams, "pricing");
     selectedTopics.value = extractIndexedArray(urlParams, "topics_tags");
     selectedProgrammingLanguages.value = extractIndexedArray(
         urlParams,
@@ -138,11 +138,11 @@ function search() {
             platforms: selectedPlatforms.value.length
                 ? selectedPlatforms.value
                 : undefined,
-            difficulty: selectedDifficulty.value.length
-                ? selectedDifficulty.value
+            difficulties: selectedDifficulties.value.length
+                ? selectedDifficulties.value
                 : undefined,
-            pricing: selectedPricing.value.length
-                ? selectedPricing.value
+            pricing: selectedPricings.value.length
+                ? selectedPricings.value
                 : undefined,
             topics_tags: selectedTopics.value.length
                 ? selectedTopics.value
@@ -182,8 +182,8 @@ function resetFilters() {
 
     // Arrays
     selectedPlatforms.value = [];
-    selectedDifficulty.value = [];
-    selectedPricing.value = [];
+    selectedDifficulties.value = [];
+    selectedPricings.value = [];
     selectedTopics.value = [];
     selectedProgrammingLanguages.value = [];
     selectedGeneralTags.value = [];
@@ -271,7 +271,7 @@ function resetFilters() {
                         Difficulty
                     </label>
                     <MultiSelect
-                        v-model="selectedDifficulty"
+                        v-model="selectedDifficulties"
                         :options="difficultiesObject"
                         optionLabel="label"
                         optionValue="value"
@@ -287,7 +287,7 @@ function resetFilters() {
                         Pricing
                     </label>
                     <MultiSelect
-                        v-model="selectedPricing"
+                        v-model="selectedPricings"
                         :options="pricingsObject"
                         optionLabel="label"
                         optionValue="value"

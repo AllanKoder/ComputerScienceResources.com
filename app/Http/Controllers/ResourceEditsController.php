@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreResourceEdit;
+use App\Http\Requests\StoreResourceEditRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
@@ -36,7 +36,7 @@ class ResourceEditsController extends Controller
     /**
      * Store the edits request.
      */
-    public function store(ComputerScienceResource $computerScienceResource, StoreResourceEdit $request)
+    public function store(ComputerScienceResource $computerScienceResource, StoreResourceEditRequest $request)
     {
         $validatedData = $request->validated();
         $proposedChanges = $validatedData['proposed_changes'] ?? [];
@@ -95,7 +95,7 @@ class ResourceEditsController extends Controller
 
             // Go through each property in proposed_changes, and if it exists. then set the value
             $changes = $resourceEdits->proposed_changes;
-            $proposedFields = ['name', 'description', 'page_url', 'platforms', 'difficulty', 'pricing'];
+            $proposedFields = ['name', 'description', 'page_url', 'platforms', 'difficulties', 'pricing'];
             foreach ($proposedFields as $field) {
                 if (array_key_exists($field, $changes)) {
                     $resource->$field = $changes[$field];

@@ -12,7 +12,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\Utils\TestingUtils;
-use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
+use Tests\RequestFactories\StoreResourceRequestFactory;
 use Tests\TestCase;
 
 class ComputerScienceResourceTest extends TestCase
@@ -82,7 +82,7 @@ class ComputerScienceResourceTest extends TestCase
             'description too long' => ['description', str_repeat('a', 10001)],
             'invalid platform' => ['platforms', ['invalid_platform']],
             'invalid page_url' => ['page_url', 'not-a-url'],
-            'invalid difficulty' => ['difficulty', 'invalid_difficulty'],
+            'invalid difficulty' => ['difficulties', 'invalid_difficulty'],
             'invalid pricing' => ['pricing', 'invalid_pricing'],
             'too few topic_tags' => ['topic_tags', ['tag1']],
             'invalid image_file' => ['image_file', 'not-an-image'],

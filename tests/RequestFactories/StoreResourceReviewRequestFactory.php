@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\RequestFactories\ResourceReview;
+namespace Tests\RequestFactories;
 
 use Worksome\RequestFactories\RequestFactory;
 
-class StoreResourceReviewFactory extends RequestFactory
+class StoreResourceReviewRequestFactory extends RequestFactory
 {
     public function definition(): array
     {

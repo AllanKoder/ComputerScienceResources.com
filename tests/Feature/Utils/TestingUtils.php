@@ -9,10 +9,10 @@ use App\Models\User;
 use App\Services\ResourceEditsService;
 use Mockery;
 use Mockery\MockInterface;
-use Tests\RequestFactories\Comment\StoreCommentRequestFactory;
-use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
-use Tests\RequestFactories\ResourceEdit\StoreResourceEditFactory;
-use Tests\RequestFactories\ResourceReview\StoreResourceReviewFactory;
+use Tests\RequestFactories\StoreCommentRequestFactory;
+use Tests\RequestFactories\StoreResourceEditRequestFactory;
+use Tests\RequestFactories\StoreResourceRequestFactory;
+use Tests\RequestFactories\StoreResourceReviewRequestFactory;
 
 trait TestingUtils
 {
@@ -32,7 +32,7 @@ trait TestingUtils
             $this->actingAs($user);
         }
 
-        $reviewForm = StoreResourceReviewFactory::new()->create($overrides);
+        $reviewForm = StoreResourceReviewRequestFactory::new()->create($overrides);
         $response = $this->post(route('reviews.store', $id), $reviewForm);
         $response->assertStatus(200); // Success
 
@@ -47,7 +47,7 @@ trait TestingUtils
 
     public function createResourceEdit($resourceId, $changes = []): ResourceEdits
     {
-        $editData = StoreResourceEditFactory::new()->create();
+        $editData = StoreResourceEditRequestFactory::new()->create();
         if (! empty($changes)) {
             $editData['proposed_changes'] = array_merge($editData['proposed_changes'], $changes);
         }
