@@ -33,7 +33,7 @@ const formData = reactive({
     page_url: "",
     image_file: null,
     pricing: "",
-    difficulty: "",
+    difficulty: [],
     description: "",
     topic_tags: [],
     programming_language_tags: [],

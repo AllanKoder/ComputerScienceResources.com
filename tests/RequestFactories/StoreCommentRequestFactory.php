@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\RequestFactories\Comment;
+namespace Tests\RequestFactories;
 
 use App\Models\ComputerScienceResource;
 use Worksome\RequestFactories\RequestFactory;

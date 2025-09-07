@@ -1,10 +1,10 @@
 <?php
 
-namespace Tests\RequestFactories\ResourceEdit;
+namespace Tests\RequestFactories;
 
 use Worksome\RequestFactories\RequestFactory;
 
-class StoreResourceEditFactory extends RequestFactory
+class StoreResourceEditRequestFactory extends RequestFactory
 {
     public function definition(): array
     {
@@ -35,7 +35,7 @@ class StoreResourceEditFactory extends RequestFactory
             'image_path' => 'https://cdn.iconscout.com/icon/free/png-256/free-leetcode-logo-icon-download-in-svg-png-gif-file-formats--technology-social-media-company-vol-1-pack-logos-icons-3030025.png',
             'page_url' => $this->faker->url(),
             'platforms' => $this->faker->randomElements($platforms, rand(1, 3)),
-            'difficulty' => $this->faker->randomElement($difficulties),
+            'difficulties' => $this->faker->randomElements($difficulties, rand(1, 3)),
             'pricing' => $this->faker->randomElement($pricings),
             'topic_tags' => array_values($topicTags),
             'programming_language_tags' => array_values($programmingLanguageTags),

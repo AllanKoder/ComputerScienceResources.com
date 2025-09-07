@@ -9,7 +9,7 @@ use App\Models\User;
 use App\Services\ModelResolverService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utils\TestingUtils;
-use Tests\RequestFactories\Comment\StoreCommentRequestFactory;
+use Tests\RequestFactories\StoreCommentRequestFactory;
 use Tests\TestCase;
 
 class CommentsTest extends TestCase

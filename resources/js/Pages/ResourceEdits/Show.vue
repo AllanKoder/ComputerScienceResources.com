@@ -10,7 +10,7 @@ import Tag from "primevue/tag";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
 
-// Component mapping for the Unified Diff view
+// Component mapping for the Difference (Diff) view
 import TextDiffViewer from "@/Components/Diff/TextDiffViewer.vue";
 import SelectDiffViewer from "@/Components/Diff/SelectDiffViewer.vue";
 import TagDiffViewer from "@/Components/Diff/TagDiffViewer.vue";
@@ -36,10 +36,10 @@ const fieldConfig = {
     name: { label: "Name", component: TextDiffViewer },
     description: { label: "Description", component: TextDiffViewer },
     page_url: { label: "URL", component: TextDiffViewer },
-    difficulty: {
+    difficulties: {
         label: "Difficulty",
         formatter: getDifficultyLabel,
-        component: SelectDiffViewer,
+        component: TagDiffViewer,
     },
     pricing: {
         label: "Pricing",
@@ -313,9 +313,9 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                             </div>
                         </TabPanel>
 
-                        <!-- Unified Diff Tab -->
+                        <!-- Diff Tab -->
                         <TabPanel
-                            header="Unified Diff"
+                            header="View Differences"
                             class="custom-tab-panel"
                         >
                             <div v-if="hasChanges" class="space-y-6">

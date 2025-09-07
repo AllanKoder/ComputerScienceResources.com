@@ -129,6 +129,15 @@ class ComputerScienceResource extends Model
         );
     }
 
+    protected function difficulties(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => explode(',', $value),
+            set: fn ($value) => implode(',', $value)
+        );
+    }
+
+
     /**
      * Accessor to get topic tags.
      */

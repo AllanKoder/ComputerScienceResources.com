@@ -13,7 +13,7 @@ use Illuminate\Http\UploadedFile;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Storage;
 use Tests\Feature\Utils\TestingUtils;
-use Tests\RequestFactories\ResourceEdit\StoreResourceEditFactory;
+use Tests\RequestFactories\StoreResourceEditRequestFactory;
 use Tests\TestCase;
 
 class ResourceEditsTest extends TestCase
@@ -38,7 +38,7 @@ class ResourceEditsTest extends TestCase
             'description too long' => ['description', str_repeat('a', 10001)],
             'invalid platform' => ['platforms', ['invalid_platform']],
             'invalid page_url' => ['page_url', 'not-a-url'],
-            'invalid difficulty' => ['difficulty', 'invalid_difficulty'],
+            'invalid difficulty' => ['difficulties', 'invalid_difficulty'],
             'invalid pricing' => ['pricing', 'invalid_pricing'],
             'topic_tags too few' => ['topic_tags', ['tag1']],
             'invalid image_file' => ['image_file', 'not-a-file'],
@@ -57,7 +57,7 @@ class ResourceEditsTest extends TestCase
 
         $resource = ComputerScienceResource::factory()->create();
 
-        $editData = StoreResourceEditFactory::new()->create();
+        $editData = StoreResourceEditRequestFactory::new()->create();
         $editData['proposed_changes'][$field] = $invalidValue;
 
         $response = $this->postJson(route('resource_edits.store', [
@@ -102,7 +102,7 @@ class ResourceEditsTest extends TestCase
 
             $editData['proposed_changes']['page_url'] = $resource->page_url;
             $editData['proposed_changes']['platforms'] = $resource->platforms;
-            $editData['proposed_changes']['difficulty'] = $resource->difficulty;
+            $editData['proposed_changes']['difficulties'] = $resource->difficulties;
             $editData['proposed_changes']['pricing'] = $resource->pricing;
             $editData['proposed_changes']['topic_tags'] = $resource->topic_tags;
             $editData['proposed_changes']['programming_language_tags'] = $resource->programming_language_tags;
@@ -125,7 +125,7 @@ class ResourceEditsTest extends TestCase
         $resource = ComputerScienceResource::factory()->create();
 
         // Create valid edit payload and change at least one attribute.
-        $editData = StoreResourceEditFactory::new()->create();
+        $editData = StoreResourceEditRequestFactory::new()->create();
         $editData['proposed_changes']['name'] = $resource->name.' Updated';
 
         $response = $this->post(route('resource_edits.store', $resource), $editData);
@@ -157,7 +157,7 @@ class ResourceEditsTest extends TestCase
                 'description' => "Resource Description Changed {$i}",
                 'image_file' => UploadedFile::fake()->image("resource_{$i}.jpg"),
                 'page_url' => "http://{$i}.com",
-                'difficulty' => fake()->randomElement(config('computerScienceResource.difficulties')),
+                'difficulties' => fake()->randomElements(config('computerScienceResource.difficulties', rand(1, 3))),
                 'platforms' => fake()->randomElements(config('computerScienceResource.platforms'), fake()->numberBetween(1, 3)),
                 'pricing' => fake()->randomElement(config('computerScienceResource.pricings')),
                 'topic_tags' => ["$i-a", "$i-b", "$i-c"],
@@ -180,7 +180,7 @@ class ResourceEditsTest extends TestCase
             $oldImagePath = $resource->image_path;
 
             $this->assertEquals($changes['page_url'], $resource->page_url);
-            $this->assertEquals($changes['difficulty'], $resource->difficulty);
+            $this->assertEquals($changes['difficulties'], $resource->difficulties);
             $this->assertEquals($changes['pricing'], $resource->pricing);
 
             // Arrays

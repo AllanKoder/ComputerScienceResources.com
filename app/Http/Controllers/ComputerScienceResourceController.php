@@ -19,21 +19,22 @@ class ComputerScienceResourceController extends Controller
 {
     public function __construct(
         protected ComputerScienceResourceService $resourceService,
+        protected ComputerScienceResourceFilter $filterService
     ) {}
 
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request, ComputerScienceResourceFilter $filterService)
+    public function index(Request $request)
     {
         $query = ComputerScienceResource::query();
 
         // Apply all filters and sorting
         $filters = $request->query();
-        $query = $filterService->applyFilters($query, $filters);
+        $query = $this->filterService->applyFilters($query, $filters);
 
         // Paginate with appended query params
-        $resources = $query->paginate(10)->appends($request->query());
+        $resources = $query->paginate(20)->appends($request->query());
 
         $news = NewsPost::limit(10)->get();
 

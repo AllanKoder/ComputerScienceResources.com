@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
-class StoreResourceEdit extends FormRequest
+class StoreResourceEditRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,14 +30,16 @@ class StoreResourceEdit extends FormRequest
 
             'proposed_changes.name' => ['nullable', 'string', 'max:100'],
             'proposed_changes.description' => ['nullable', 'string', 'max:10000'],
-            'proposed_changes.platforms' => ['nullable', 'array'],
+            'proposed_changes.platforms' => ['nullable', 'array', 'min:1'],
             'proposed_changes.platforms.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.platforms'))],
             'proposed_changes.page_url' => ['nullable', 'string', 'url:http,https', 'max:255'],
-            'proposed_changes.difficulty' => ['nullable', 'string', Rule::in(config('computerScienceResource.difficulties'))],
+            'proposed_changes.difficulties' => ['nullable', 'array', 'min:1'],
+            'proposed_changes.difficulties.*' => ['required', 'distinct', 'string', Rule::in(config('computerScienceResource.difficulties'))],
             'proposed_changes.pricing' => ['nullable', 'string', Rule::in(config('computerScienceResource.pricings'))],
-            'proposed_changes.image_file' => ['nullable', 'image', 'max:500'], // 500 kilobytes
             'proposed_changes.topic_tags' => ['nullable', 'array', 'min:2'],
             'proposed_changes.topic_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:'.config('computerScienceResource.tags_regex')],
+
+            'proposed_changes.image_file' => ['nullable', 'image', 'max:500'], // 500 kilobytes
             'proposed_changes.general_tags' => ['nullable', 'array'],
             'proposed_changes.general_tags.*' => ['required', 'distinct', 'string', 'max:50', 'regex:'.config('computerScienceResource.tags_regex')],
             'proposed_changes.programming_language_tags' => ['nullable', 'array'],

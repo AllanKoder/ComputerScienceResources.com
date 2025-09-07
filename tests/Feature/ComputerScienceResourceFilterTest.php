@@ -13,7 +13,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Feature\Utils\TestingUtils;
-use Tests\RequestFactories\ComputerScienceResource\StoreResourceRequestFactory;
+use Tests\RequestFactories\StoreResourceRequestFactory;
 use Tests\TestCase;
 use Throwable;
 
@@ -53,7 +53,7 @@ class ComputerScienceResourceFilterTest extends TestCase
             'platforms not array' => ['platforms', 'not-an-array'],
             'platforms item invalid' => ['platforms', ['invalid_platform']],
             'platforms not distinct' => ['platforms', ['web', 'web']],
-            'difficulty invalid' => ['difficulty', 'super-hard'],
+            'difficulty invalid' => ['difficulties', ['super-hard']],
             'pricing invalid' => ['pricing', 'expensive'],
             'topics item too long' => ['topics_tags', ['a', str_repeat('b', 51), 'c']],
             'topics not distinct' => ['topics_tags', ['a', 'a', 'a']],
@@ -104,7 +104,7 @@ class ComputerScienceResourceFilterTest extends TestCase
             'by platforms' => [['platforms' => ['website', 'bootcamp']]],
 
             'by difficulty & pricing' => [[
-                'difficulty' => ['advanced'],
+                'difficulties' => ['advanced'],
                 'pricing' => ['free'],
             ]],
 
@@ -140,7 +140,7 @@ class ComputerScienceResourceFilterTest extends TestCase
                 'name' => 'Graph',
                 'description' => 'algorithm analysis',
                 'platforms' => ['podcast', 'website'],
-                'difficulty' => ['introduction'],
+                'difficulties' => ['introduction'],
                 'pricing' => ['free'],
                 'topics_tags' => ['algorithms', 'recursion', 'data-structures'],
                 'programming_languages_tags' => ['python'],
@@ -198,8 +198,8 @@ class ComputerScienceResourceFilterTest extends TestCase
         }
 
         // Difficulty
-        if (! empty($filters['difficulty'])) {
-            foreach ($filters['difficulty'] as $difficulty) {
+        if (! empty($filters['difficulties'])) {
+            foreach ($filters['difficulties'] as $difficulty) {
                 $this->assertContains($difficulty, $bindings);
             }
         }

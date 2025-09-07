@@ -20,7 +20,7 @@ class ComputerScienceResourceResource extends JsonResource
             'page_url' => $this->page_url,
             'image_path' => $this->image_path,
             'platforms' => $this->platforms,
-            'difficulty' => $this->difficulty,
+            'difficulties' => $this->difficulties,
             'pricing' => $this->pricing,
             'topic_tags' => $this->topic_tags,
             'programming_language_tags' => $this->programming_language_tags,

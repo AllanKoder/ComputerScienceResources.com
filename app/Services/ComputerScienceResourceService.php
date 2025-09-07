@@ -53,7 +53,7 @@ class ComputerScienceResourceService
                 'description' => $validatedData['description'],
                 'page_url' => $validatedData['page_url'],
                 'platforms' => $validatedData['platforms'],
-                'difficulty' => $validatedData['difficulty'],
+                'difficulties' => $validatedData['difficulties'],
                 'pricing' => $validatedData['pricing'],
             ]);
 

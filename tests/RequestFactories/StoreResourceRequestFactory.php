@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\RequestFactories\ComputerScienceResource;
+namespace Tests\RequestFactories;
 
 use Worksome\RequestFactories\RequestFactory;
 
@@ -22,7 +22,7 @@ class StoreResourceRequestFactory extends RequestFactory
             'description' => fake()->realText(),
             'page_url' => fake()->url(),
             'platforms' => fake()->randomElements($platforms, rand(1, 3)),
-            'difficulty' => fake()->randomElement($difficulties),
+            'difficulties' => fake()->randomElements($difficulties, rand(1, 3)),
             'pricing' => fake()->randomElement($pricings),
             'topic_tags' => array_values($topicTags),
             'programming_language_tags' => array_unique($this->faker->words(mt_rand(1, 5))),
