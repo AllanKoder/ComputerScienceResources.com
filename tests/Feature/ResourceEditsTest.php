@@ -180,10 +180,10 @@ class ResourceEditsTest extends TestCase
             $oldImagePath = $resource->image_path;
 
             $this->assertEquals($changes['page_url'], $resource->page_url);
-            $this->assertEquals($changes['difficulties'], $resource->difficulties);
             $this->assertEquals($changes['pricing'], $resource->pricing);
 
             // Arrays
+            $this->assertEqualsCanonicalizing($changes['difficulties'], $resource->difficulties);
             $this->assertEqualsCanonicalizing($changes['platforms'], $resource->platforms);
             $this->assertEqualsCanonicalizing($changes['topic_tags'], $resource->topic_tags);
             $this->assertEqualsCanonicalizing($changes['programming_language_tags'], $resource->programming_language_tags);
