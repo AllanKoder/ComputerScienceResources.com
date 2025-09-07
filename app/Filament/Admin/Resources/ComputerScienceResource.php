@@ -51,6 +51,12 @@ class ComputerScienceResource extends Resource
                     ->relationship('user', 'name')
                     ->required(),
 
+                Forms\Components\CheckboxList::make('difficulties')
+                    ->label('Difficulties')
+                    ->options(fn () => array_combine(config('computerScienceResource.difficulties'), config('computerScienceResource.difficulties')))
+                    ->columns(2)
+                    ->required(),
+
                 Forms\Components\TagsInput::make('topic_tags')
                     ->label('Topic Tags')
                     ->disabled()
