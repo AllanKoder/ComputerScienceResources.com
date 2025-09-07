@@ -157,7 +157,7 @@ class ResourceEditsTest extends TestCase
                 'description' => "Resource Description Changed {$i}",
                 'image_file' => UploadedFile::fake()->image("resource_{$i}.jpg"),
                 'page_url' => "http://{$i}.com",
-                'difficulties' => fake()->randomElements(config('computerScienceResource.difficulties', rand(1, 3))),
+                'difficulties' => fake()->randomElements(config('computerScienceResource.difficulties'), rand(1, 3)),
                 'platforms' => fake()->randomElements(config('computerScienceResource.platforms'), fake()->numberBetween(1, 3)),
                 'pricing' => fake()->randomElement(config('computerScienceResource.pricings')),
                 'topic_tags' => ["$i-a", "$i-b", "$i-c"],
