@@ -163,7 +163,7 @@ watch(
                     <span class="text-red-500"> * </span>
                 </label>
                 <MultiSelect
-                    v-model="props.formData.difficulty"
+                    v-model="props.formData.difficulties"
                     :options="difficultiesObject"
                     option-label="label"
                     option-value="value"
@@ -171,8 +171,8 @@ watch(
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                 />
                 <PrimeVueFormError
-                    v-if="errors.difficulty"
-                    :errors="errors.difficulty"
+                    v-if="errors.difficulties"
+                    :errors="errors.difficulties"
                 />
             </div>
 
