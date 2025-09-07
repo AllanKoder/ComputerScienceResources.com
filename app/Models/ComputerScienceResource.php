@@ -137,7 +137,6 @@ class ComputerScienceResource extends Model
         );
     }
 
-
     /**
      * Accessor to get topic tags.
      */
