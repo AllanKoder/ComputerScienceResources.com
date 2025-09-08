@@ -13,6 +13,7 @@ const showingNavigationDropdown = ref(false);
 const logout = () => {
     router.post(route("logout"));
 };
+
 </script>
 
 <template>
