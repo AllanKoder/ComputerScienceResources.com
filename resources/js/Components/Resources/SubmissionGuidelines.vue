@@ -92,6 +92,9 @@
                         Lifestyle or personal finance content (beyond reasonable
                         project management)
                     </li>
+                    <li>
+                        <span class="font-semibold text-red-700">Pirated or illegal resources are strictly prohibited.</span> Only submit resources that are legal to share and access.
+                    </li>
                 </ul>
                 <p class="mt-2 text-xs italic">
                     In the end, we trust you to be reasonable.

@@ -257,6 +257,7 @@ function resetFilters() {
                     <MultiSelect
                         v-model="selectedPlatforms"
                         :options="platformsObject"
+                        filter
                         optionLabel="label"
                         optionValue="value"
                         placeholder="All Platforms"

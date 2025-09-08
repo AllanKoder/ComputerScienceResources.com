@@ -69,7 +69,8 @@ onBeforeUnmount(() => {
 
 // computed properties
 const availableTags = computed(() => {
-    const query = searchQuery.value.trim().toLowerCase();
+    // Use a filtered/sanitized query for searching tags
+    const filteredQuery = sanitizeTag(searchQuery.value);
 
     return allTags.value
         .filter((tagName) => {
@@ -77,10 +78,10 @@ const availableTags = computed(() => {
             if (selectedTags.value.includes(tagName)) return false;
 
             // if no query, show all
-            if (!query) return true;
+            if (!filteredQuery) return true;
 
-            // filter by query
-            return tagName.toLowerCase().includes(query);
+            // filter by filtered query (sanitized)
+            return tagName.toLowerCase().includes(filteredQuery);
         })
         .map((tagName) => ({
             name: tagName,

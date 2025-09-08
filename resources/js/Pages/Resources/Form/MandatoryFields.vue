@@ -6,6 +6,7 @@ import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import PictureInput from "vue-picture-input";
 import Select from "primevue/select";
 import { defineEmits, ref, watch } from "vue";
+import ConfirmationModal from '@/Components/ConfirmationModal.vue';
 import {
     platformsObject,
     pricingsObject,
@@ -25,6 +26,7 @@ const props = defineProps({
 const emit = defineEmits(["change", "next"]);
 
 const errors = ref({});
+const showDescriptionHelp = ref(false);
 
 function onImageChange(event) {
     const file = event.target.files[0];
@@ -127,6 +129,7 @@ watch(
                 <MultiSelect
                     v-model="props.formData.platforms"
                     :options="platformsObject"
+                    filter
                     option-label="label"
                     option-value="value"
                     placeholder="Select Resource Platform"
@@ -140,13 +143,18 @@ watch(
 
             <!-- Description Field -->
             <div class="flex flex-col gap-1">
-                <label class="block text-sm font-medium text-gray-700"
-                    >Description
-                    <span class="text-red-500"> * </span>
-                </label>
+                <div class="flex items-center gap-2">
+                    <label class="block text-sm font-medium text-gray-700">
+                        Description
+                        <span class="text-red-500"> * </span>
+                    </label>
+                    <button type="button" @click="showDescriptionHelp = true" class="focus:outline-none" title="Help: What makes a good description?">
+                        <Icon icon="mdi:help-circle-outline" class="w-5 h-5 text-primary hover:text-primaryDark" />
+                    </button>
+                </div>
                 <Textarea
                     v-model="props.formData.description"
-                    placeholder="Describe the resource..."
+                    :placeholder="`${props.formData.name || 'Resource Name'} is a...`"
                     class="mt-1 w-full border border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                     rows="8"
                 />
@@ -154,6 +162,36 @@ watch(
                     v-if="errors.description"
                     :errors="errors.description"
                 />
+                <ConfirmationModal :show="showDescriptionHelp" @close="showDescriptionHelp = false">
+                    <template #title>
+                        What makes a good resource description?
+                    </template>
+                    <template #content>
+                        <div class="space-y-3">
+                            <p>
+                                <span class="font-semibold">We want details!</span> A good description should clearly explain what the resource is, who it's for, and what makes it valuable. Mention the format (podcast, platform, channel, etc.), the main topics covered, and any unique features or strengths. Imagine you're helping someone decide if this resource is right for them.
+                            </p>
+                            <div class="border-l-4 border-primary pl-4 py-2 bg-secondary">
+                                <div class="font-semibold mb-1">Example 1:</div>
+                                <div class="text-xs text-gray-700">
+                                    Soft Skills Engineering is a weekly advice podcast specifically designed for software developers who want to navigate the non-technical challenges of their careers. Hosted by experienced developers Dave Smith and Jamison Dance, the show addresses the interpersonal and professional situations that coding bootcamps and computer science programs typically don't cover.<br><br>
+                                    The podcast tackles practical workplace scenarios that software engineers encounter regularly, including salary negotiations, managing difficult colleagues, advancing into technical leadership roles, handling code review feedback diplomatically, and making strategic career decisions like when to change jobs or seek promotions. Episodes feature listener-submitted questions covering situations ranging from dealing with underperforming team members to managing the transition into management roles.
+                                </div>
+                            </div>
+                            <div class="border-l-4 border-primary pl-4 py-2 bg-secondary">
+                                <div class="font-semibold mb-1">Example 2:</div>
+                                <div class="text-xs text-gray-700">
+                                    NeetCode is an online platform designed for coding interview preparation, particularly for FAANG and big tech companies. The platform provides a structured approach to preparing for coding interviews with curated problem sets and comprehensive learning resources.<br><br>
+                                    The platform's flagship offering is the NeetCode 150, which expands on the popular Blind 75 problem set by adding 75 additional problems, creating a comprehensive list for developers familiar with basic algorithms and data structures. The site includes video explanations, coding solutions, and systematic approaches to tackling technical interview questions across various difficulty levels and problem categories.<br><br>
+                                    NeetCode also maintains a popular YouTube channel known for its concise and straightforward explanations of common interview questions, with clear problem-solving strategies that are accessible to both beginners and experienced coders.
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    <template #footer>
+                        <button @click="showDescriptionHelp = false" class="px-4 py-2 bg-primary text-white rounded hover:bg-primaryDark transition">Close</button>
+                    </template>
+                </ConfirmationModal>
             </div>
 
             <!-- Difficulty Field -->
