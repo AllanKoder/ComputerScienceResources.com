@@ -33,6 +33,11 @@ function onImageChange(event) {
     props.formData.image_file = file;
 }
 
+function onImageRemove(event) {
+    props.formData.image_file = null;
+}
+
+
 const validateAndNext = async () => {
     try {
         await resourceMandatoryFields.validate(props.formData, {
@@ -111,8 +116,9 @@ watch(
                     remove-button-class="inline-flex items-center px-4 py-2 bg-primary border-0 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 transition ease-in-out duration-150"
                     button-class="inline-flex items-center px-4 py-2 border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
                     removable
-                    :prefill="props.formData.image_url"
+                    :prefill="props.formData.image_file"
                     @change="onImageChange"
+                    @remove="onImageRemove"
                 />
                 <PrimeVueFormError
                     v-if="errors.image_file"

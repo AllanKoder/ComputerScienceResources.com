@@ -56,7 +56,12 @@ const formData = useForm({
 const formFields = ["edit_title", "edit_description", "proposed_changes"];
 
 const { isSavedToLocalStorage, hasFormContent, clearLocalStorage } =
-    useLocalStorageSaver(formData, `edit-${props.resource.id}`, formFields);
+    useLocalStorageSaver(
+        formData,
+        `edit-${props.resource.id}`,
+        formFields,
+        'edit-draft',
+    );
 
 const pictureKey = ref(0);
 const changedPicture = ref(false);
@@ -261,10 +266,11 @@ const submit = async () => {
                                             @change="onImageChange"
                                         />
                                         <SecondaryButton
+                                            v-if="props.resource.image_url"
                                             @click="resetImage"
                                             type="button"
                                         >
-                                            Reset Image
+                                            Reset To Original Image
                                         </SecondaryButton>
                                     </div>
                                     <InputError
