@@ -2,8 +2,6 @@
 import { router } from "@inertiajs/vue3";
 import Dropdown from '@/Components/Dropdown.vue';
 import DropdownLink from '@/Components/DropdownLink.vue';
-import { Icon } from '@iconify/vue';
-import { useDarkMode } from '@/Composables/useDarkMode.js';
 
 const props = defineProps({
     align: {
@@ -21,7 +19,6 @@ const logout = () => {
     router.post(route('logout'));
 };
 
-const { isDark, toggleDark } = useDarkMode();
 </script>
 
 <template>
@@ -74,18 +71,6 @@ const { isDark, toggleDark } = useDarkMode();
                     <DropdownLink :href="route('profile.show')">
                         Profile
                     </DropdownLink>
-
-                    <!-- Dark mode toggle -->
-                    <button
-                        @click="toggleDark"
-                        class="w-full flex items-center gap-2 px-4 py-2 text-sm rounded-md text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 focus:outline-none transition"
-                        :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
-                        type="button"
-                    >
-                        <Icon v-if="!isDark" icon="mdi:weather-night" class="size-5" />
-                        <Icon v-else icon="mdi:white-balance-sunny" class="size-5" />
-                        <span>{{ isDark ? 'Light Mode' : 'Dark Mode' }}</span>
-                    </button>
 
                     <DropdownLink
                         v-if="$page.props.jetstream.hasApiFeatures"

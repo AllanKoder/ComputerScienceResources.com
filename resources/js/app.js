@@ -26,7 +26,10 @@ createInertiaApp({
             .use(ZiggyVue)
             .use(PrimeVue, {
                 theme: {
-                    preset: customTheme
+                    preset: customTheme,
+                    options: {
+                        darkModeSelector: '.my-app-dark',
+                    }
                 },
             })
             .use(ToastService)

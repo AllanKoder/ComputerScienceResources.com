@@ -212,14 +212,14 @@ function resetFilters() {
 <template>
     <form
         @submit.prevent="search"
-        class="bg-white rounded-xl shadow-sm border border-primary/10 mb-4 max-w-8xl mx-auto"
+        class="bg-white dark:bg-gray-900 rounded-xl shadow-sm border border-primary/10 dark:border-primary/20 mb-4 max-w-8xl mx-auto"
     >
         <!-- Primary Search Section -->
-        <div class="px-6 pt-6">
+    <div class="px-6 pt-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <!-- Name Search -->
                 <div class="w-full">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                         <Icon icon="mdi:magnify" class="w-4 h-4" />
                         Resource Name
                     </label>
@@ -232,7 +232,7 @@ function resetFilters() {
 
                 <!-- Description Search -->
                 <div class="w-full">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                         <Icon icon="mdi:text" class="w-4 h-4" />
                         Description
                     </label>
@@ -246,11 +246,11 @@ function resetFilters() {
         </div>
 
         <!-- Quick Filters Section -->
-        <div class="px-6 py-6 border-b border-primary/10 bg-secondary/5">
+    <div class="px-6 py-6 border-b border-primary/10 dark:border-primary/20 bg-secondary/5 dark:bg-gray-800/60">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-4">
                 <!-- Platform Filter -->
                 <div class="w-full lg:col-span-2">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                         <Icon icon="mdi:devices" class="w-4 h-4" />
                         Platform
                     </label>
@@ -267,7 +267,7 @@ function resetFilters() {
 
                 <!-- Difficulty Level -->
                 <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                         <Icon icon="mdi:stairs" class="w-4 h-4" />
                         Difficulty
                     </label>
@@ -283,7 +283,7 @@ function resetFilters() {
 
                 <!-- Pricing -->
                 <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                         <Icon icon="mdi:currency-usd" class="w-4 h-4" />
                         Pricing
                     </label>
@@ -299,7 +299,7 @@ function resetFilters() {
 
                 <!-- Overall Rating -->
                 <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                         <Icon icon="mdi:star" class="w-4 h-4" />
                         Min Rating
                     </label>
@@ -315,7 +315,7 @@ function resetFilters() {
 
                 <!-- Topics Filter -->
                 <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                         <Icon icon="mdi:tag-multiple" class="w-4 h-4" />
                         Topics
                     </label>
@@ -328,7 +328,7 @@ function resetFilters() {
 
                 <!-- Programming Languages Filter -->
                 <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                         <Icon icon="mdi:language-javascript" class="w-4 h-4" />
                         Languages
                     </label>
@@ -341,7 +341,7 @@ function resetFilters() {
 
                 <!-- General Tags Filter -->
                 <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                         <Icon icon="mdi:tag" class="w-4 h-4" />
                         Tags
                     </label>
@@ -355,17 +355,17 @@ function resetFilters() {
         </div>
 
         <!-- Advanced Filters Section -->
-        <div v-show="advancedOpen" class="p-6 bg-secondary/5 space-y-6">
+    <div v-show="advancedOpen" class="p-6 bg-secondary/5 dark:bg-gray-800/60 space-y-6">
             <!-- Ratings Section -->
             <div class="space-y-3">
-                <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600">
+                <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
                     <Icon icon="mdi:star-settings" class="w-4 h-4" />
                     Rating Filters
                 </h3>
                 <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
                     <!-- Community Rating -->
                     <div class="flex flex-col items-center">
-                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                             <Icon icon="mdi:account-group" class="w-4 h-4" />
                             Community
                         </label>
@@ -379,7 +379,7 @@ function resetFilters() {
 
                     <!-- Teaching Rating -->
                     <div class="flex flex-col items-center">
-                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                             <Icon icon="mdi:school" class="w-4 h-4" />
                             Teaching
                         </label>
@@ -393,7 +393,7 @@ function resetFilters() {
 
                     <!-- Engagement Rating -->
                     <div class="flex flex-col items-center">
-                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                             <Icon icon="mdi:thumb-up" class="w-4 h-4" />
                             Engagement
                         </label>
@@ -407,7 +407,7 @@ function resetFilters() {
 
                     <!-- Practicality Rating -->
                     <div class="flex flex-col items-center">
-                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                             <Icon icon="mdi:tools" class="w-4 h-4" />
                             Practicality
                         </label>
@@ -421,7 +421,7 @@ function resetFilters() {
 
                     <!-- User Friendly Rating -->
                     <div class="flex flex-col items-center">
-                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                             <Icon icon="mdi:account-heart" class="w-4 h-4" />
                             User Friendly
                         </label>
@@ -435,7 +435,7 @@ function resetFilters() {
 
                     <!-- Updates Rating -->
                     <div class="flex flex-col items-center">
-                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 mb-2">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
                             <Icon icon="mdi:update" class="w-4 h-4" />
                             Updates
                         </label>
@@ -451,13 +451,13 @@ function resetFilters() {
 
             <!-- Date Filters -->
             <div class="space-y-3">
-                <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600">
+                <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
                     <Icon icon="mdi:calendar" class="w-4 h-4" />
                     Date Filters
                 </h3>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
                     <div class="space-y-4">
-                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300">
                             <Icon icon="mdi:calendar-plus" class="w-4 h-4" />
                             Created Date Range
                         </label>
@@ -481,7 +481,7 @@ function resetFilters() {
                         </div>
                     </div>
                     <div class="space-y-4">
-                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600">
+                        <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300">
                             <Icon icon="mdi:calendar-refresh" class="w-4 h-4" />
                             Updated Date Range
                         </label>
@@ -509,7 +509,7 @@ function resetFilters() {
 
             <!-- Sorting Section -->
             <div class="space-y-4">
-                <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600">
+                <h3 class="flex items-center gap-2 text-sm font-medium text-gray-600 dark:text-gray-300">
                     <Icon icon="mdi:sort" class="w-4 h-4" />
                     Sorting Options
                 </h3>
@@ -523,8 +523,8 @@ function resetFilters() {
                             :class="[
                                 'px-4 py-2 rounded-full text-sm font-medium focus:outline-none transition-colors duration-200',
                                 selectedSorting === opt.value
-                                    ? 'bg-primary text-white shadow-sm'
-                                    : 'bg-secondary text-primary hover:bg-secondaryDark',
+                                    ? 'bg-primary text-white shadow-sm dark:bg-primaryLight dark:text-gray-900'
+                                    : 'bg-secondary text-primary hover:bg-secondaryDark dark:bg-gray-700 dark:text-primaryLight dark:hover:bg-gray-600',
                             ]"
                         >
                             {{ opt.label }}
@@ -537,8 +537,8 @@ function resetFilters() {
                             :class="[
                                 'px-4 py-2 rounded-full text-sm font-medium focus:outline-none transition-colors duration-200',
                                 selectedReverse
-                                    ? 'bg-primary text-white shadow-sm'
-                                    : 'bg-secondary text-primary hover:bg-secondaryDark',
+                                    ? 'bg-primary text-white shadow-sm dark:bg-primaryLight dark:text-gray-900'
+                                    : 'bg-secondary text-primary hover:bg-secondaryDark dark:bg-gray-700 dark:text-primaryLight dark:hover:bg-gray-600',
                             ]"
                         >
                             Reverse Order
@@ -549,10 +549,10 @@ function resetFilters() {
         </div>
 
         <!-- Action Buttons -->
-        <div class="px-4 py-3 gap-2 bg-white rounded-b-xl flex items-center justify-between border-t border-primary/10">
+    <div class="px-4 py-3 gap-2 bg-white dark:bg-gray-900 rounded-b-xl flex items-center justify-between border-t border-primary/10 dark:border-primary/20">
             <button
                 type="button"
-                class="flex items-center text-sm text-primary hover:text-primaryDark focus:outline-none"
+                class="flex items-center text-sm text-primary hover:text-primaryDark dark:text-primaryLight dark:hover:text-primary focus:outline-none"
                 @click="advancedOpen = !advancedOpen"
             >
                 <Icon
