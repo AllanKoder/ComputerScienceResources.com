@@ -19,6 +19,12 @@ const customTheme = definePreset(Aura, {
             900: '{orange.900}',
             950: '{orange.950}'
         }
+    },
+    colorScheme: {
+        dark: {
+            surface: '#374151', // Tailwind gray-700
+            background: '#374151', // Tailwind gray-700
+        }
     }
 });
 

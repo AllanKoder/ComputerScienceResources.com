@@ -38,10 +38,10 @@ export const platformLabels = {
 };
 
 export const pricingsObject = [
-    { label: "Free", value: "free" },
-    { label: "Paid", value: "paid" },
-    { label: "Freemium", value: "freemium" },
-    { label: "Premium", value: "premium" },
+    { label: "Free - No cost ever!", value: "free" },
+    { label: "Paid - One time fee", value: "paid" },
+    { label: "Freemium - Some parts free, other parts require a subscription", value: "freemium" },
+    { label: "Premium - Requires a subscription", value: "premium" },
 ];
 
 export const pricingLabels = {

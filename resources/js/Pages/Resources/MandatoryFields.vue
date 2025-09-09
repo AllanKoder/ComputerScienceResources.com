@@ -64,7 +64,7 @@ watch(
 </script>
 
 <template>
-    <div class="flex flex-col gap-4 w-full dark:bg-gray-900">
+    <div class="flex flex-col gap-4 w-full">
         <div class="space-y-4">
             <!-- Name Field -->
             <div class="flex flex-col gap-1">
@@ -106,20 +106,22 @@ watch(
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >Image Thumbnail</label
                 >
-                <PictureInput
-                    ref="pictureInput"
-                    width="220"
-                    height="220"
-                    margin="16"
-                    accept="image/jpeg,image/png"
-                    size="0.4"
-                    remove-button-class="inline-flex items-center px-4 py-2 bg-primary border-0 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 transition ease-in-out duration-150"
-                    button-class="inline-flex items-center px-4 py-2 border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
-                    removable
-                    :prefill="props.formData.image_file"
-                    @change="onImageChange"
-                    @remove="onImageRemove"
-                />
+                <div class="mt-1 w-fit border border-gray-300 dark:border-gray-800 rounded-md bg-white dark:bg-gray-900 p-3 flex items-center justify-center">
+                    <PictureInput
+                        ref="pictureInput"
+                        width="220"
+                        height="220"
+                        margin="16"
+                        accept="image/jpeg,image/png"
+                        size="0.4"
+                        remove-button-class="inline-flex items-center px-4 py-2 bg-primary border-0 rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-primary/90 focus:bg-primary/90 active:bg-primary/80 focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 disabled:opacity-50 transition ease-in-out duration-150"
+                        button-class="inline-flex items-center px-4 py-2 border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
+                        removable
+                        :prefill="props.formData.image_file"
+                        @change="onImageChange"
+                        @remove="onImageRemove"
+                    />
+                </div>
                 <PrimeVueFormError
                     v-if="errors.image_file"
                     :errors="errors.image_file"
@@ -201,7 +203,7 @@ watch(
             </div>
 
             <!-- Difficulty Field -->
-            <div class="flex flex-col gap-1">
+            <div class="flex flex-col gap-1 ">
                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >Difficulty
                     <span class="text-red-500"> * </span>

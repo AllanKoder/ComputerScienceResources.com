@@ -1,11 +1,11 @@
 <template>
-    <h3 class="text-lg font-semibold mb-4 text-gray-800">
+    <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
         Submission Guidelines
     </h3>
-    <div class="space-y-4 text-sm text-gray-700">
-        <div class="space-y-4 text-sm text-gray-700">
+    <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+        <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
             <div>
-                <h4 class="font-bold text-gray-800 mb-2">Resource Scope</h4>
+                <h4 class="font-bold text-gray-800 dark:text-gray-100 mb-2">Resource Scope</h4>
                 <p class="mb-2">
                     This site features comprehensive learning resources rather
                     than isolated materials. Resources should provide ongoing
@@ -20,7 +20,7 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-gray-800 mb-2">
+                <h4 class="font-bold text-gray-800 dark:text-gray-100 mb-2">
                     Types of Content Accepted
                 </h4>
                 <ul class="list-disc list-inside space-y-1 text-xs">
@@ -51,7 +51,7 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-gray-800 mb-2">Exceptions</h4>
+                <h4 class="font-bold text-gray-800 dark:text-gray-100 mb-2">Exceptions</h4>
                 <ul class="list-disc list-inside space-y-1 text-xs">
                     <li>
                         An individual book may be included if it is
@@ -72,7 +72,7 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-gray-800 mb-2">
+                <h4 class="font-bold text-gray-800 dark:text-gray-100 mb-2">
                     What's Not Included
                 </h4>
                 <ul class="list-disc list-inside space-y-1 text-xs">

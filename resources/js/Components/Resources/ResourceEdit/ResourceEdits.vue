@@ -23,7 +23,7 @@ const props = defineProps({
             <div
                 v-for="edit in props.resourceEdits.data"
                 :key="edit.id"
-                class="bg-white/70 backdrop-blur-md p-6 rounded-lg shadow-md"
+                class="bg-white/70 dark:bg-gray-900/90 backdrop-blur-md p-6 rounded-lg shadow-md border border-transparent dark:border-gray-800"
             >
                 <div class="flex flex-row gap-4 items-center">
                     <Upvotable
@@ -53,7 +53,7 @@ const props = defineProps({
                             class="mt-2"
                         />
 
-                        <p class="text-gray-700 mt-2">
+                        <p class="text-gray-700 dark:text-gray-300 mt-2">
                             {{ edit.edit_description }}
                         </p>
                     </div>

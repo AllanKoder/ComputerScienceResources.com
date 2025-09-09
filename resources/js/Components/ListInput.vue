@@ -1,7 +1,7 @@
 <script setup>
 import { ref, watch } from "vue";
-import InputText from "primevue/inputtext";
 import { Icon } from "@iconify/vue";
+import TextInput from "./TextInput.vue";
 
 const emit = defineEmits(["change"]);
 
@@ -23,8 +23,8 @@ watch(
     () => props.initialValues,
     (newInitialValues) => {
         // Only update if the content is actually different to avoid unnecessary updates
-        const currentFiltered = items.value.filter(item => item !== "");
-        const newFiltered = newInitialValues.filter(item => item !== "");
+        const currentFiltered = items.value.filter((item) => item !== "");
+        const newFiltered = newInitialValues.filter((item) => item !== "");
 
         if (JSON.stringify(currentFiltered) !== JSON.stringify(newFiltered)) {
             items.value = [...newInitialValues];
@@ -65,7 +65,7 @@ const updateItem = (index, value) => {
             :key="index"
             class="flex items-center gap-2"
         >
-            <InputText
+            <TextInput
                 :value="item"
                 @input="(event) => updateItem(index, event.target.value)"
                 placeholder="Enter an item"
@@ -82,10 +82,10 @@ const updateItem = (index, value) => {
         </div>
 
         <button
+            v-if="items.length < maxSize"
             type="button"
             @click="addItem"
             class="flex items-center gap-1 text-blue-500 focus:outline-none"
-            :disabled="items.length >= maxSize"
         >
             <Icon icon="mdi:plus" />
             <span>Add</span>

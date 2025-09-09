@@ -250,11 +250,11 @@ onMounted(async () => {
             <span
                 v-for="tag in selectedTags"
                 :key="tag"
-                class="inline-flex items-center mr-2 my-1 bg-secondary text-primaryDark  dark:bg-gray-900 dark:text-primaryLight px-3 py-1 rounded-full text-sm font-medium transition-colors"
+                class="inline-flex items-center mr-2 my-1 bg-secondary text-primaryDark  dark:bg-gray-900 dark:text-white px-3 py-1 rounded-full text-sm font-medium transition-colors"
             >
                 <button
                     @click="removeTag(tag)"
-                    class="mr-2 text-primaryDark dark:text-primaryLight"
+                    class="mr-2 text-primaryDark dark:text-white"
                     type="button"
                 >
                     <Icon :icon="'mdi:close'" />

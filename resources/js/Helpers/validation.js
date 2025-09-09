@@ -10,7 +10,7 @@ export const resourceMandatoryFields = object({
         .required("URL is required"),
     platforms: array().of(string()).min(1, "At least one platform is required"),
     description: string().required("Description is required").max(10000),
-    difficulty: array().of(string()).min(1, "Difficulty level is required"),
+    difficulties: array().of(string()).min(1, "Difficulty level is required"),
     pricing: string().required("Pricing information is required"),
 });
 
@@ -61,6 +61,8 @@ export const resourceReviewFields = object({
         .required("Updates rating is required.")
         .min(1, "Minimum is 1.")
         .max(5, "Maximum is 5."),
+
+    // TODO: THIS VALIDATION DOES NTO WORK CORRECTLY
     pros: array()
         .transform((_value, originalValue) => {
             // Handle case where PrimeVue might pass a string instead of array
@@ -102,7 +104,7 @@ export const nullableResourceFields = object({
     // No validation on image_file since it will be validated on backend
     platforms: array().of(string()),
     description: string().max(10000),
-    difficulty: array().of(string()),
+    difficulties: array().of(string()),
     pricing: string(),
     topic_tags: array()
         .of(string().max(50))
