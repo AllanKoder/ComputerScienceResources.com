@@ -8,3 +8,11 @@
 [x-cloak] {
     display: none;
 }
+
+html.dark {
+  --surface-ground: #374151 !important;
+  --surface-card: #374151 !important;
+  --surface-overlay: #374151 !important;
+  --surface-border: #4b5563 !important; /* gray-600 for borders */
+}
+

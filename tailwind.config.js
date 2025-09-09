@@ -21,6 +21,7 @@ export default {
             colors: {
                 primary: "#fa6600", // Orange
                 primaryDark: "#c2410c", // Darker orange
+                primaryLight: "#ffcf9e",
                 secondary: "#fff3e3", // Light peach
                 secondaryDark: "#fcdcbb", // Soft apricot
                 background: "#fef9c3", // Warm cream

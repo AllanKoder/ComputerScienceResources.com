@@ -53,7 +53,7 @@ const ratings = [
                 class="flex flex-col items-center"
             >
                 <label
-                    class="flex items-center gap-2 text-sm font-semibold text-gray-600 mb-2"
+                    class="flex items-center gap-2 text-sm font-semibold text-gray-600 dark:text-gray-100 mb-2"
                 >
                     <Icon :icon="rating.icon" class="w-4 h-4" />
                     {{ rating.label }}

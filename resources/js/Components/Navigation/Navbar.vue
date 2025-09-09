@@ -54,8 +54,18 @@ const { isDark, toggleDark } = useDarkMode();
 
 
                 <!-- Authenticated -->
-                <template v-if="$page.props.auth.user">
-                    <div class="hidden md:flex md:items-center md:ms-6">
+                <div class="hidden md:flex md:items-center md:ms-6">
+                    <!-- Dark mode icon button -->
+                    <button
+                        @click="toggleDark"
+                        type="button"
+                        class="mx-2 p-2 rounded-full hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none text-primaryDark dark:text-primary"
+                    >
+                        <Icon v-if="!isDark" icon="mdi:weather-night" class="size-6" />
+                        <Icon v-else icon="mdi:white-balance-sunny" class="size-6" />
+                    </button>
+
+                    <template v-if="$page.props.auth.user">
                         <!-- Create Resource Button -->
                         <Link :href="route('resources.create')">
                             <SecondaryButton class="dark:bg-primary dark:text-white dark:hover:bg-primary">
@@ -68,28 +78,19 @@ const { isDark, toggleDark } = useDarkMode();
                         <div class="flex items-center justify-center">
                             <UserDropdown align="right" width="48" />
                         </div>
-                    </div>
-                </template>
-                <!-- Guest -->
-                <template v-else>
-                    <div class="hidden md:flex md:items-center md:ms-6">
-                        <!-- Dark mode icon button -->
-                        <button
-                            @click="toggleDark"
-                            type="button"
-                            class="mx-2 p-2 rounded-full hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none text-primaryDark dark:text-primary"
-                        >
-                            <Icon v-if="!isDark" icon="mdi:weather-night" class="size-6" />
-                            <Icon v-else icon="mdi:white-balance-sunny" class="size-6" />
-                        </button>
-                        <Link :href="route('login')">
-                            <SecondaryButton class="dark:bg-primary dark:text-white dark:hover:bg-primary">
-                                <Icon icon="mdi:login" class="mr-2" />
-                                Sign In
-                            </SecondaryButton>
-                        </Link>
-                    </div>
-                </template>
+                    </template>
+                    <!-- Guest -->
+                    <template v-else>
+                        <div class="hidden md:flex md:items-center md:ms-6">
+                            <Link :href="route('login')">
+                                <SecondaryButton class="dark:bg-primary dark:text-white dark:hover:bg-primary">
+                                    <Icon icon="mdi:login" class="mr-2" />
+                                    Sign In
+                                </SecondaryButton>
+                            </Link>
+                        </div>
+                    </template>
+                </div>
 
 
                 <!-- Hamburger -->

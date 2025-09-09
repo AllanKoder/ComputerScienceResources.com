@@ -144,7 +144,7 @@ const submit = async () => {
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div
-                    class="bg-white overflow-hidden shadow-xl sm:rounded-lg p-6 relative"
+                    class="bg-white dark:bg-gray-900 overflow-hidden shadow-xl sm:rounded-lg p-6 relative border border-primary/10 dark:border-primary/20"
                 >
                     <div class="flex-row flex my-2">
                         <BackButton
@@ -162,7 +162,7 @@ const submit = async () => {
                     </div>
                     <form @submit.prevent="submit">
                         <div class="mb-9 rounded-lg">
-                            <h2 class="text-xl font-semibold mb-2">
+                            <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
                                 Describe Your Change
                             </h2>
                             <div>
@@ -210,10 +210,10 @@ const submit = async () => {
                             </div>
                         </div>
 
-                        <h2 class="text-xl font-semibold mb-2">
+                        <h2 class="text-xl font-semibold mb-2 text-gray-900 dark:text-gray-100">
                             New Edited Resource
                         </h2>
-                        <div class="p-4 border rounded">
+                        <div class="p-4 border rounded bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div>
                                     <InputLabel

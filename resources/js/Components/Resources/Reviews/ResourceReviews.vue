@@ -19,7 +19,7 @@ const props = defineProps({
             <div
                 v-for="review in reviews.data"
                 :key="review.id"
-                class="bg-white/70 backdrop-blur-md p-6 rounded-lg shadow-md"
+                class="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md"
             >
                 <ResourceReview :review="review" />
             </div>

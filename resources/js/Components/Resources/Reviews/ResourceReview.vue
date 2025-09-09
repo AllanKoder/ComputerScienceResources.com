@@ -28,7 +28,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
                 :user-vote="props.review.user_vote"
             />
 
-            <h3 class="text-xl font-semibold my-auto">
+            <h3 class="text-xl font-semibold my-auto text-gray-900 dark:text-gray-100">
                 {{ review.title }}
             </h3>
         </div>
@@ -36,7 +36,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
         <div
             class="flex items-center gap-2 mt-2 sm:mt-0 w-full sm:w-auto justify-end"
         >
-            <span class="font-medium">Rating:</span>
+            <span class="font-medium text-gray-800 dark:text-gray-100">Rating:</span>
             <div class="flex flex-row">
                 <StarRating :model-value="review.average_score" :size="24" />
             </div>
@@ -45,23 +45,23 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
 
     <UserProfile class="my-2" :user="review.user" :date="review.created_at" />
 
-    <p class="text-gray-700 mb-4 whitespace-pre-line mt-1">
+    <p class="text-gray-700 dark:text-gray-100 mb-4 whitespace-pre-line mt-1">
         {{ review.description }}
     </p>
 
     <div class="flex flex-col sm:flex-row justify-between">
         <div class="sm:w-1/2" v-if="review.pros.length > 0">
-            <h4 class="font-semibold mb-2">Pros</h4>
+            <h4 class="font-semibold mb-2 text-gray-800 dark:text-gray-100">Pros</h4>
             <ul class="list-disc pl-5">
-                <li v-for="pro in review.pros" :key="pro" class="text-gray-600">
+                <li v-for="pro in review.pros" :key="pro" class="text-gray-600 dark:text-gray-200">
                     {{ pro }}
                 </li>
             </ul>
         </div>
         <div class="sm:w-1/2" v-if="review.cons.length > 0">
-            <h4 class="font-semibold mb-2">Cons</h4>
+            <h4 class="font-semibold mb-2 text-gray-800 dark:text-gray-100">Cons</h4>
             <ul class="list-disc pl-5">
-                <li v-for="con in review.cons" :key="con" class="text-gray-600">
+                <li v-for="con in review.cons" :key="con" class="text-gray-600 dark:text-gray-200">
                     {{ con }}
                 </li>
             </ul>
@@ -75,7 +75,7 @@ const ratingFeatures = Object.entries(ratingLabels).map(([key, label]) => ({
             :key="feature.key"
             class="flex flex-col items-center"
         >
-            <span class="font-semibold mb-1">{{ feature.label }}</span>
+            <span class="font-semibold mb-1 text-gray-800 dark:text-gray-100">{{ feature.label }}</span>
             <StarRating :model-value="review[feature.key]" :size="20" />
         </div>
     </div>

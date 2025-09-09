@@ -27,7 +27,7 @@ const emit = defineEmits(['change'])
 
 <template>
     <div class="flex items-center gap-2 py-4">
-        <label class="font-semibold text-gray-700">Sort by:</label>
+        <label class="font-semibold text-gray-700 dark:text-gray-100">Sort by:</label>
         <Select
             v-model="selectedSort"
             :options="sortOptions"

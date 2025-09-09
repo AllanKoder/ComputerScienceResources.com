@@ -72,7 +72,7 @@ const sortingType = urlParams.get("sort_by") || "top";
             <meta head-key="resource:og:site_name" property="og:site_name" content="Computer Science Resources" />
         </Head>
         <div class="max-w-[90vw] mx-auto sm:px-6 py-4 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-900 overflow-hidden shadow-xl sm:rounded-lg border border-primary/10 dark:border-primary/20">
                 <div class="p-7 sm:p-8">
                     <div class="relative">
                         <div
@@ -103,7 +103,7 @@ const sortingType = urlParams.get("sort_by") || "top";
                         >
                             <ResourceDetailedRatings :review-summary="props.resource.review_summary || {}" />
                             <div
-                                class="text-xs m-6 text-gray-500 text-right min-w-[160px] shrink-0"
+                                class="text-xs m-6 text-gray-500 dark:text-gray-400 text-right min-w-[160px] shrink-0"
                             >
                                 <UserProfile
                                     :user="resource.user"
@@ -115,14 +115,14 @@ const sortingType = urlParams.get("sort_by") || "top";
                 </div>
 
                 <!-- Custom Tab Navigation -->
-                <div class="flex border-b mb-4 space-x-6 px-6">
+                <div class="flex border-b dark:border-primary/20 mb-4 space-x-6 px-6">
                     <div
                         v-for="tab in tabs"
                         :class="[
                             'py-2 border-b-2 font-medium transition-all duration-200',
                             props.tab === tab.value
-                                ? 'border-primary text-primary'
-                                : 'border-transparent text-gray-600',
+                                ? 'border-primary text-primary dark:text-primaryLight'
+                                : 'border-transparent text-gray-600 dark:text-gray-400',
                         ]"
                     >
                         <Link

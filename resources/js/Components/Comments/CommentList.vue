@@ -35,6 +35,7 @@ const toggleCollapse = () => {
             class="absolute left-0 top-0 bottom-0 flex items-center"
         >
 
+
         <div
             v-if="!isCollapsed"
             class="relative h-full cursor-pointer"
@@ -49,17 +50,17 @@ const toggleCollapse = () => {
 
             <!-- Visible line -->
             <div
-                class="w-[1.2px] h-full bg-gray-300 transition-colors duration-200"
-                :class="{'bg-primary': isNearCollapsing}"
+                class="w-[1.2px] h-full bg-gray-300 dark:bg-gray-800 transition-colors duration-200"
+                :class="{'bg-primary': isNearCollapsing, 'dark:bg-primary': isNearCollapsing}"
             ></div>
         </div>
 
             <button
                 v-else
-                class="p-1 rounded-full border border-gray-300 bg-white hover:border-gray-500 hover:bg-gray-100 transition-colors duration-200"
+                class="p-1 rounded-full border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 hover:border-gray-500 dark:hover:border-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
                 @click="toggleCollapse"
             >
-                <Icon icon="mdi:chevron-right" width="20" height="20" class="text-gray-500 hover:text-blue-500" />
+                <Icon icon="mdi:chevron-right" width="20" height="20" class="text-gray-500 dark:text-gray-300 hover:text-blue-500 dark:hover:text-blue-400" />
             </button>
         </div>
 
