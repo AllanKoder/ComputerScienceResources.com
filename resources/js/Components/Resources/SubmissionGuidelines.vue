@@ -93,7 +93,7 @@
                         project management)
                     </li>
                     <li>
-                        <span class="font-semibold text-red-700">Pirated or illegal resources are strictly prohibited.</span> Only submit resources that are legal to share and access.
+                        <span class="font-semibold text-red-700 dark:text-red-400">Pirated or illegal resources are strictly prohibited.</span> Only submit resources that are legal to share and access.
                     </li>
                 </ul>
                 <p class="mt-2 text-xs italic">

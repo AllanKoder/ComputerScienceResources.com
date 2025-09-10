@@ -76,7 +76,7 @@ watch(
                 <InputText
                     v-model="props.formData.name"
                     placeholder="Enter the Name"
-                    class="mt-1 w-full border border-gray-300 dark:border-gray-800 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-900 dark:text-gray-100"
+                    class="mt-1 w-full border border-gray-300 dark:border-gray-800 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:text-gray-100"
                 />
                 <PrimeVueFormError
                     v-if="errors.name"

@@ -128,7 +128,7 @@ const validateAndNext = async () => {
                         <div class="font-semibold mb-1">Programming languages/frameworks</div>
                         <p class="text-gray-700 dark:text-gray-300">
                             Be specific and only include languages or frameworks the resource actively teaches or uses.
-                            Please don’t select everything, or type <b>"everything"</b> as a tag.
+                            Please <b>don’t type "everything"</b> as a tag.
                         </p>
                         <ul class="list-disc pl-5 text-gray-700 dark:text-gray-300">
                             <li>Good: python, c++, c#, vue.js, pytorch</li>
