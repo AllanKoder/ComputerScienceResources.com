@@ -70,7 +70,7 @@ const { isDark, toggleDark } = useDarkMode();
                         <Link :href="route('resources.create')">
                             <SecondaryButton class="dark:bg-primary dark:text-white dark:hover:bg-primary">
                                 <Icon icon="mdi:plus" class="mr-2" />
-                                Create
+                                Post a Resource
                             </SecondaryButton>
                         </Link>
 
@@ -173,7 +173,7 @@ const { isDark, toggleDark } = useDarkMode();
                         class="inline-flex items-center border border-primary dark:border-primaryLight rounded-md font-semibold text-xs text-primary dark:text-primaryLight uppercase tracking-widest hover:bg-primary hover:text-white dark:hover:bg-primaryLight dark:hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-primaryLight focus:ring-offset-2 transition ease-in-out duration-150"
                     >
                         <Icon icon="mdi:plus" class="mr-2" />
-                        Create
+                        Post a Resource
                     </ResponsiveNavLink>
                 </template>
                 <!-- Guest -->
