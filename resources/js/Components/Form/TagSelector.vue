@@ -250,7 +250,7 @@ onMounted(async () => {
             <span
                 v-for="tag in selectedTags"
                 :key="tag"
-                class="inline-flex items-center mr-2 my-1 bg-secondary text-primaryDark  dark:bg-gray-900 dark:text-white px-3 py-1 rounded-full text-sm font-medium transition-colors"
+                class="inline-flex items-center mr-2 my-1 bg-secondary text-primaryDark  dark:bg-gray-700 dark:text-white px-3 py-1 rounded-full text-sm font-medium transition-colors"
             >
                 <button
                     @click="removeTag(tag)"

@@ -58,7 +58,7 @@ const validateAndNext = async () => {
     <Form
         :resolver="resolver"
         :initialValues="props.form"
-        class="flex flex-col gap-4 w-full bg-white dark:bg-gray-800 border border-transparent dark:border-gray-800 rounded-lg p-4"
+        class="flex flex-col gap-4 w-full bg-white dark:bg-gray-900 border border-transparent dark:border-gray-800 rounded-lg p-4"
     >
     <div class="flex flex-col gap-1 justify-center items-center">
             <div class="self-end">

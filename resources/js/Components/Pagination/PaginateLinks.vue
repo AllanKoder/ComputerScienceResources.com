@@ -33,7 +33,7 @@ const nextLink = props.links[props.links.length - 1]?.url;
 
 <template>
     <nav class="flex flex-col items-center justify-center space-y-2">
-        <span class="text-sm text-gray-700 mt-4 dark:text-gray-400">
+        <span class="text-sm text-gray-700 mt-4 dark:text-gray-300">
             <template v-if="total === 0">
                 No results found for {{ modelName }}.
             </template>
