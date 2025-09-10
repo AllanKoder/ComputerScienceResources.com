@@ -64,11 +64,8 @@ const formFields = [
     "cons",
 ];
 
-const {
-    isSavedToLocalStorage,
-    hasFormContent,
-    clearLocalStorage,
-} = useLocalStorageSaver(form, props.resourceId, formFields, "review-draft");
+const { isSavedToLocalStorage, hasFormContent, clearLocalStorage } =
+    useLocalStorageSaver(form, props.resourceId, formFields, "review-draft");
 
 const isSubmitting = ref(false);
 const error = ref(null);
@@ -82,8 +79,12 @@ const submitReview = async () => {
         errors.value = {};
 
         const url = props.isEditingMode
-            ? route("reviews.update", { computerScienceResource: props.resourceId })
-            : route("reviews.store", { computerScienceResource: props.resourceId });
+            ? route("reviews.update", {
+                  computerScienceResource: props.resourceId,
+              })
+            : route("reviews.store", {
+                  computerScienceResource: props.resourceId,
+              });
 
         const method = props.isEditingMode ? "put" : "post";
 
@@ -97,7 +98,7 @@ const submitReview = async () => {
         } else {
             routeParams.sort_by = "latest";
         }
-        router.visit(route('resources.show', routeParams));
+        router.visit(route("resources.show", routeParams));
     } catch (e) {
         isSubmitting.value = false;
         if (e.inner) {
@@ -107,7 +108,8 @@ const submitReview = async () => {
             });
             errors.value = yupErrors;
         } else {
-            error.value = "Something went wrong with submitting your review, please refresh or try again.";
+            error.value =
+                "Something went wrong with submitting your review, please refresh or try again.";
             console.error(e);
         }
     }
@@ -123,7 +125,9 @@ const submitReview = async () => {
             :has-content="hasFormContent"
         />
 
-    <h2 class="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100">
+        <h2
+            class="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100"
+        >
             {{ isEditingMode ? "Update Review" : "Write a Review" }}
         </h2>
 
@@ -133,7 +137,7 @@ const submitReview = async () => {
             class="flex flex-col gap-6"
         >
             <!-- Title -->
-            <FormField v-slot="$field" name="title">
+            <FormField name="title">
                 <label class="font-semibold">Title</label>
                 <span class="text-red-500"> * </span>
 
@@ -142,14 +146,11 @@ const submitReview = async () => {
                     placeholder="Review title"
                     class="w-full rounded-md border-gray-300 dark:border-gray-800 mt-1 dark:bg-gray-900 dark:text-gray-100"
                 />
-                <PrimeVueFormError
-                    v-if="errors.title"
-                    :errors="errors.title"
-                />
+                <PrimeVueFormError v-if="errors.title" :errors="errors.title" />
             </FormField>
 
             <!-- Description -->
-            <FormField v-slot="$field" name="description">
+            <FormField name="description">
                 <label class="font-semibold">Description</label>
                 <span class="text-red-500"> * </span>
                 <InputTextarea
@@ -166,11 +167,7 @@ const submitReview = async () => {
 
             <!-- Ratings (flex layout like your review page) -->
             <div class="flex flex-wrap gap-12 mt-4 mx-auto">
-                <FormField
-                    v-slot="$field"
-                    name="community"
-                    class="flex flex-col items-center"
-                >
+                <FormField name="community" class="flex flex-col items-center">
                     <span class="font-semibold mb-1">
                         Community
                         <span class="text-red-500"> * </span>
@@ -184,11 +181,10 @@ const submitReview = async () => {
                 </FormField>
 
                 <FormField
-                    v-slot="$field"
                     name="teaching_clarity"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         Teaching Clarity
                         <span class="text-red-500"> * </span></span
                     >
@@ -200,12 +196,8 @@ const submitReview = async () => {
                     />
                 </FormField>
 
-                <FormField
-                    v-slot="$field"
-                    name="engagement"
-                    class="flex flex-col items-center"
-                >
-                    <span class="font-semibold mb-1" >
+                <FormField name="engagement" class="flex flex-col items-center">
+                    <span class="font-semibold mb-1">
                         Engagement <span class="text-red-500"> * </span></span
                     >
                     <Rating v-model="form.engagement" :cancel="false" />
@@ -216,11 +208,10 @@ const submitReview = async () => {
                 </FormField>
 
                 <FormField
-                    v-slot="$field"
                     name="practicality"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         Practicality
                         <span class="text-red-500"> * </span></span
                     >
@@ -233,11 +224,10 @@ const submitReview = async () => {
                 </FormField>
 
                 <FormField
-                    v-slot="$field"
                     name="user_friendliness"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         User Friendliness
                         <span class="text-red-500"> * </span></span
                     >
@@ -249,12 +239,8 @@ const submitReview = async () => {
                     />
                 </FormField>
 
-                <FormField
-                    v-slot="$field"
-                    name="updates"
-                    class="flex flex-col items-center"
-                >
-                    <span class="font-semibold mb-1" >
+                <FormField name="updates" class="flex flex-col items-center">
+                    <span class="font-semibold mb-1">
                         Updates <span class="text-red-500"> * </span></span
                     >
 
@@ -268,8 +254,11 @@ const submitReview = async () => {
 
             <!-- Pros and Cons side by side -->
             <div class="flex flex-col md:flex-row gap-6 mt-6">
-                <FormField v-slot="$field" name="pros" class="flex-1">
-                    <label class="font-semibold text-gray-900 dark:text-gray-100">Pros</label>
+                <FormField name="pros" class="flex-1">
+                    <label
+                        class="font-semibold text-gray-900 dark:text-gray-100"
+                        >Pros</label
+                    >
                     <ListInput
                         :maxSize="10"
                         :initialValues="form.pros"
@@ -282,8 +271,11 @@ const submitReview = async () => {
                     />
                 </FormField>
 
-                <FormField v-slot="$field" name="cons" class="flex-1">
-                    <label class="font-semibold text-gray-900 dark:text-gray-100">Cons</label>
+                <FormField name="cons" class="flex-1">
+                    <label
+                        class="font-semibold text-gray-900 dark:text-gray-100"
+                        >Cons</label
+                    >
                     <ListInput
                         :maxSize="10"
                         :initialValues="form.cons"

@@ -16,7 +16,7 @@ const props = defineProps({
 <template>
     <div
         v-if="isSaved && hasContent"
-        class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1"
+        class="absolute top-4 right-4 bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200 px-3 py-1 rounded-full text-sm font-medium flex items-center gap-1"
     >
         <Icon icon="mdi:content-save-outline" />
         <span>Saved locally</span>
