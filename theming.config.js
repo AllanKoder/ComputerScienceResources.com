@@ -19,7 +19,7 @@ const customTheme = definePreset(Aura, {
             900: '{orange.900}',
             950: '{orange.950}'
         }
-    }
+    },
 });
 
 export default customTheme;

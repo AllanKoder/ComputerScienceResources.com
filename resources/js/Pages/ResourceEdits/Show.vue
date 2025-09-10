@@ -103,7 +103,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
     <AppLayout :title="`Compare Versions: ${originalResource.name}`">
         <Head :title="`Edit for ${originalResource.name}`" />
         <div class="max-w-[90vw] mx-auto sm:px-6 py-4 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
+            <div class="bg-white dark:bg-gray-900 overflow-hidden shadow-xl sm:rounded-lg border border-transparent dark:border-gray-800">
                 <div class="p-7 sm:p-8">
                     <!-- Header Section -->
                     <div class="my-2">
@@ -116,18 +116,18 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                             "
                         />
                     </div>
-                    <div class="border-b border-gray-200 pb-6 mb-6">
+                    <div class="border-b border-gray-200 dark:border-gray-800 pb-6 mb-6">
                         <div class="flex items-start justify-between">
                             <div class="flex-1">
                                 <div class="flex items-center gap-3 mb-3">
                                     <h1
-                                        class="text-3xl font-bold text-gray-900"
+                                        class="text-3xl font-bold text-gray-900 dark:text-gray-100"
                                     >
                                         {{ editedResource.edit_title }}
                                     </h1>
                                 </div>
                                 <p
-                                    class="text-gray-700 text-lg leading-relaxed mb-4"
+                                    class="text-gray-700 dark:text-gray-300 text-lg leading-relaxed mb-4"
                                 >
                                     {{ editedResource.edit_description }}
                                 </p>
@@ -160,13 +160,13 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                                 <!-- Proposed Changes Column -->
                                 <div
-                                    class="bg-gray-50 border border-gray-200 rounded-lg"
+                                    class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg"
                                 >
                                     <div
-                                        class="bg-primary/5 border-b border-gray-200 px-4 py-3"
+                                        class="bg-primary/5 dark:bg-primary/10 border-b border-gray-200 dark:border-gray-800 px-4 py-3"
                                     >
                                         <h2
-                                            class="text-lg font-semibold text-gray-900 flex items-center gap-2"
+                                            class="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2"
                                         >
                                             <Icon
                                                 icon="mdi:plus-circle"
@@ -181,7 +181,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                             :key="field.key"
                                         >
                                             <h3
-                                                class="font-semibold text-gray-600 mb-2"
+                                                class="font-semibold text-gray-600 dark:text-gray-300 mb-2"
                                             >
                                                 {{ field.label }}:
                                             </h3>
@@ -210,7 +210,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                             </div>
                                             <div
                                                 v-else
-                                                class="text-gray-800 p-2 rounded"
+                                                class="text-gray-800 dark:text-gray-100 p-2 rounded"
                                             >
                                                 {{
                                                     field.formatter
@@ -223,7 +223,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                         </div>
                                         <p
                                             v-if="!hasChanges"
-                                            class="text-gray-500 italic"
+                                            class="text-gray-500 dark:text-gray-400 italic"
                                         >
                                             No changes were proposed.
                                         </p>
@@ -232,10 +232,10 @@ const hasChanges = computed(() => changedFields.value.length > 0);
 
                                 <!-- Current Version Column -->
                                 <div
-                                    class="bg-gray-50 border border-gray-200 rounded-lg"
+                                    class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg"
                                 >
                                     <div
-                                        class="bg-gray-100 border-b border-gray-200 px-4 py-3"
+                                        class="bg-gray-100 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-800 px-4 py-3"
                                     >
                                         <Link
                                             :href="
@@ -246,11 +246,11 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                             class="group"
                                         >
                                             <h2
-                                                class="text-lg font-semibold text-gray-900 flex items-center gap-2 group-hover:text-primary duration-200"
+                                                class="text-lg font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2 group-hover:text-primary duration-200"
                                             >
                                                 <Icon
                                                     icon="mdi:file-document"
-                                                    class="w-5 h-5 text-gray-600 group-hover:text-primary duration-200"
+                                                    class="w-5 h-5 text-gray-600 dark:text-gray-300 group-hover:text-primary duration-200"
                                                 />
                                                 Current Version
                                             </h2>
@@ -262,7 +262,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                             :key="field.key"
                                         >
                                             <h3
-                                                class="font-semibold text-gray-600 mb-2"
+                                                class="font-semibold text-gray-600 dark:text-gray-300 mb-2"
                                             >
                                                 {{ field.label }}:
                                             </h3>
@@ -291,7 +291,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                             </div>
                                             <div
                                                 v-else
-                                                class="text-gray-800 p-2 rounded"
+                                                class="text-gray-800 dark:text-gray-100 p-2 rounded"
                                             >
                                                 {{
                                                     field.formatter
@@ -304,7 +304,7 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                         </div>
                                         <p
                                             v-if="!hasChanges"
-                                            class="text-gray-500 italic"
+                                            class="text-gray-500 dark:text-gray-400 italic"
                                         >
                                             No changes to compare.
                                         </p>
@@ -322,13 +322,13 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                 <div
                                     v-for="field in changedFields"
                                     :key="field.key"
-                                    class="bg-gray-50 border border-gray-200 rounded-lg overflow-hidden"
+                                    class="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden"
                                 >
                                     <div
-                                        class="bg-gray-100 px-4 py-2 border-b border-gray-200"
+                                        class="bg-gray-100 dark:bg-gray-800 px-4 py-2 border-b border-gray-200 dark:border-gray-800"
                                     >
                                         <h3
-                                            class="font-semibold text-gray-900 flex items-center gap-2"
+                                            class="font-semibold text-gray-900 dark:text-gray-100 flex items-center gap-2"
                                         >
                                             <Icon
                                                 icon="mdi:file-edit"
@@ -345,13 +345,13 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                     </div>
                                 </div>
                             </div>
-                            <p v-else class="text-gray-500 italic p-4">
+                            <p v-else class="text-gray-500 dark:text-gray-400 italic p-4">
                                 No changes to display in diff.
                             </p>
                         </TabPanel>
                     </TabView>
                     <!-- Approval Actions -->
-                    <div class="mt-8 border-t border-gray-200 pt-6">
+                    <div class="mt-8 border-t border-gray-200 dark:border-gray-800 pt-6">
                         <div class="flex justify-center">
                             <Upvotable
                                 :flexRow="true"
@@ -390,10 +390,10 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                                 <template #votes="{ votes }">
                                     <div class="flex flex-col items-center">
                                         <span
-                                            class="text-2xl font-bold text-gray-900"
+                                            class="text-2xl font-bold text-gray-900 dark:text-gray-100"
                                             >{{ votes }}</span
                                         >
-                                        <span class="text-sm text-gray-600">
+                                        <span class="text-sm text-gray-600 dark:text-gray-300">
                                             Approval{{ votes === 1 ? "" : "s" }}
                                         </span>
                                     </div>

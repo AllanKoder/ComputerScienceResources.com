@@ -69,7 +69,8 @@ onBeforeUnmount(() => {
 
 // computed properties
 const availableTags = computed(() => {
-    const query = searchQuery.value.trim().toLowerCase();
+    // Use a filtered/sanitized query for searching tags
+    const filteredQuery = sanitizeTag(searchQuery.value);
 
     return allTags.value
         .filter((tagName) => {
@@ -77,10 +78,10 @@ const availableTags = computed(() => {
             if (selectedTags.value.includes(tagName)) return false;
 
             // if no query, show all
-            if (!query) return true;
+            if (!filteredQuery) return true;
 
-            // filter by query
-            return tagName.toLowerCase().includes(query);
+            // filter by filtered query (sanitized)
+            return tagName.toLowerCase().includes(filteredQuery);
         })
         .map((tagName) => ({
             name: tagName,
@@ -249,11 +250,11 @@ onMounted(async () => {
             <span
                 v-for="tag in selectedTags"
                 :key="tag"
-                class="inline-flex items-center mr-2 my-1 bg-secondary text-primaryDark px-3 py-1 rounded-full text-sm font-medium transition-colors"
+                class="inline-flex items-center mr-2 my-1 bg-secondary text-primaryDark  dark:bg-gray-900 dark:text-white px-3 py-1 rounded-full text-sm font-medium transition-colors"
             >
                 <button
                     @click="removeTag(tag)"
-                    class="mr-2 text-primaryDark"
+                    class="mr-2 text-primaryDark dark:text-white"
                     type="button"
                 >
                     <Icon :icon="'mdi:close'" />
@@ -272,7 +273,7 @@ onMounted(async () => {
                 @focus="showDropdown = true"
                 @blur="onBlur"
                 placeholder="Add tags..."
-                class="w-full px-3 py-2 text-md border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                class="w-full px-3 py-2 text-md border border-gray-400 dark:border-gray-600 rounded-lg focus:outline-none placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary dark:bg-black transition-all"
                 :class="{
                     'rounded-b-none border-b-0':
                         showDropdown &&
@@ -287,7 +288,7 @@ onMounted(async () => {
                         showDropdown &&
                         (availableTags.length > 0 || canCreateNew || isLoading)
                     "
-                    class="z-[9999] bg-white border border-gray-300 border-t-0 rounded-b-lg shadow-lg max-h-60 overflow-y-auto"
+                    class="z-[9999] bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 border-t-0 rounded-b-lg shadow-lg max-h-60 overflow-y-auto"
                     :style="dropdownStyles"
                 >
                     <!-- loading state -->
@@ -313,18 +314,16 @@ onMounted(async () => {
                             @mouseenter="highlightedIndex = index"
                             class="flex items-center justify-between px-3 py-1.5 cursor-pointer transition-colors"
                             :class="{
-                                'bg-secondary text-primaryDark':
-                                    highlightedIndex === index,
-                                'hover:bg-gray-50': highlightedIndex !== index,
+                                'bg-secondary text-primaryDark dark:bg-gray-800 dark:text-primaryLight': highlightedIndex === index,
+                                'hover:bg-gray-50 dark:hover:bg-gray-900': highlightedIndex !== index,
                             }"
                         >
                             <span class="text-sm">{{ tag.name }}</span>
                             <span
                                 v-if="tag.count"
-                                class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full"
+                                class="text-xs bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-300 px-2 py-1 rounded-full"
                                 :class="{
-                                    'bg-secondary text-primaryDark':
-                                        highlightedIndex === index,
+                                    'bg-secondary text-primaryDark dark:bg-gray-800 dark:text-primaryLight': highlightedIndex === index,
                                 }"
                             >
                                 {{ tag.count }}
@@ -338,17 +337,15 @@ onMounted(async () => {
                             @mouseenter="highlightedIndex = availableTags.length"
                             class="flex items-center px-4 py-3 cursor-pointer transition-colors"
                             :class="{
-                                'bg-secondary text-primaryDark':
-                                    highlightedIndex === availableTags.length,
-                                'hover:bg-gray-50':
-                                    highlightedIndex !== availableTags.length,
+                                'bg-secondary text-primaryDark dark:bg-gray-800 dark:text-primaryLight': highlightedIndex === availableTags.length,
+                                'hover:bg-gray-50 dark:hover:bg-gray-900': highlightedIndex !== availableTags.length,
                             }"
                         >
                             <Icon
                                 class="w-4 h-4 text-green-500"
                                 :icon="'mdi:add'"
                             ></Icon>
-                            <span class="text-sm text-gray-700">
+                            <span class="text-sm text-gray-700 dark:text-gray-100">
                                 create "<strong>{{
                                     sanitizeTag(searchQuery.trim())
                                 }}</strong

@@ -7,16 +7,19 @@ import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import ApplicationHeaderLogo from "@/Components/ApplicationHeaderLogo.vue";
+import { useDarkMode } from '@/Composables/useDarkMode.js';
 
 const showingNavigationDropdown = ref(false);
 
 const logout = () => {
     router.post(route("logout"));
 };
+
+const { isDark, toggleDark } = useDarkMode();
 </script>
 
 <template>
-    <nav class="bg-white dark:bg-secondaryDark border-accent dark:border-primaryDark">
+    <nav class="bg-white dark:bg-gray-900 border-accent dark:border-accent-dark">
         <!-- Primary Navigation Menu -->
         <div class="w-full max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -33,7 +36,7 @@ const logout = () => {
                         <NavLink
                             :href="route('about')"
                             :active="route().current('about')"
-                            class="text-primaryDark hover:text-primary"
+                            class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
                         >
                             About Us
                         </NavLink>
@@ -41,21 +44,33 @@ const logout = () => {
                         <NavLink
                             :href="route('resources.index')"
                             :active="route().current('resources.index')"
-                            class="text-primaryDark hover:text-primary"
+                            class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
                         >
                             Resources
                         </NavLink>
                     </div>
                 </div>
 
+
+
                 <!-- Authenticated -->
-                <template v-if="$page.props.auth.user">
-                    <div class="hidden md:flex md:items-center md:ms-6">
+                <div class="hidden md:flex md:items-center md:ms-6">
+                    <!-- Dark mode icon button -->
+                    <button
+                        @click="toggleDark"
+                        type="button"
+                        class="mx-2 p-2 rounded-full hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none text-primaryDark dark:text-primary"
+                    >
+                        <Icon v-if="!isDark" icon="mdi:weather-night" class="size-6" />
+                        <Icon v-else icon="mdi:white-balance-sunny" class="size-6" />
+                    </button>
+
+                    <template v-if="$page.props.auth.user">
                         <!-- Create Resource Button -->
                         <Link :href="route('resources.create')">
-                            <SecondaryButton>
+                            <SecondaryButton class="dark:bg-primary dark:text-white dark:hover:bg-primary">
                                 <Icon icon="mdi:plus" class="mr-2" />
-                                Create
+                                Post a Resource
                             </SecondaryButton>
                         </Link>
 
@@ -63,24 +78,25 @@ const logout = () => {
                         <div class="flex items-center justify-center">
                             <UserDropdown align="right" width="48" />
                         </div>
-                    </div>
-                </template>
-                <!-- Guest -->
-                <template v-else>
-                    <div class="hidden md:flex md:items-center md:ms-6">
-                        <Link :href="route('login')">
-                            <SecondaryButton>
-                                <Icon icon="mdi:login" class="mr-2" />
-                                Sign In
-                            </SecondaryButton>
-                        </Link>
-                    </div>
-                </template>
+                    </template>
+                    <!-- Guest -->
+                    <template v-else>
+                        <div class="hidden md:flex md:items-center md:ms-6">
+                            <Link :href="route('login')">
+                                <SecondaryButton class="dark:bg-primary dark:text-white dark:hover:bg-primary">
+                                    <Icon icon="mdi:login" class="mr-2" />
+                                    Sign In
+                                </SecondaryButton>
+                            </Link>
+                        </div>
+                    </template>
+                </div>
+
 
                 <!-- Hamburger -->
                 <div class="-me-2 flex items-center md:hidden">
                     <button
-                        class="inline-flex items-center justify-center p-2 rounded-md text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryDark hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none focus:bg-accent/30 dark:focus:bg-primaryDark/30 focus:text-primary dark:focus:text-primaryDark transition duration-150 ease-in-out"
+                        class="inline-flex items-center justify-center p-2 rounded-md text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none focus:bg-accent/30 dark:focus:bg-primaryDark/30 focus:text-primary dark:focus:text-primaryLight transition duration-150 ease-in-out"
                         @click="showingNavigationDropdown = !showingNavigationDropdown"
                     >
                         <svg
@@ -121,13 +137,23 @@ const logout = () => {
                 block: showingNavigationDropdown,
                 hidden: !showingNavigationDropdown,
             }"
-            class="md:hidden"
+            class="md:hidden bg-white dark:bg-gray-900 border-t border-accent dark:border-accent-dark"
         >
             <div class="pt-2 pb-3 space-y-2">
+                <!-- Dark mode icon button -->
+                <button
+                    @click="toggleDark"
+                    type="button"
+                    class="mx-2 p-2 rounded-full hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none text-primaryDark dark:text-primary"
+                >
+                    <Icon v-if="!isDark" icon="mdi:weather-night" class="size-6" />
+                    <Icon v-else icon="mdi:white-balance-sunny" class="size-6" />
+                </button>
+
                 <ResponsiveNavLink
                     :href="route('about')"
                     :active="route().current('about')"
-                    class="text-primaryDark hover:text-primary"
+                    class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
                 >
                     About Us
                 </ResponsiveNavLink>
@@ -135,7 +161,7 @@ const logout = () => {
                 <ResponsiveNavLink
                     :href="route('resources.index')"
                     :active="route().current('resources.index')"
-                    class="text-primaryDark hover:text-primary"
+                    class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
                 >
                     Resources
                 </ResponsiveNavLink>
@@ -144,19 +170,19 @@ const logout = () => {
                 <template v-if="$page.props.auth.user">
                     <ResponsiveNavLink
                         :href="route('resources.create')"
-                        class="inline-flex items-center border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150"
+                        class="inline-flex items-center border border-primary dark:border-primaryLight rounded-md font-semibold text-xs text-primary dark:text-primaryLight uppercase tracking-widest hover:bg-primary hover:text-white dark:hover:bg-primaryLight dark:hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-primaryLight focus:ring-offset-2 transition ease-in-out duration-150"
                     >
                         <Icon icon="mdi:plus" class="mr-2" />
-                        Create
+                        Post a Resource
                     </ResponsiveNavLink>
                 </template>
                 <!-- Guest -->
                 <template v-else>
                     <ResponsiveNavLink
                         :href="route('login')"
-                        class="ml-2 inline-flex items-center border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150"
+                        class="ml-2 inline-flex items-center border border-primary dark:border-primaryLight rounded-md font-semibold text-xs text-primary dark:text-primaryLight uppercase tracking-widest hover:bg-primary hover:text-white dark:hover:bg-primaryLight dark:hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-accent dark:focus:ring-primaryLight focus:ring-offset-2 transition ease-in-out duration-150"
                     >
-                        <span class="text-primary">
+                        <span class="text-primary dark:text-primaryLight">
                             <Icon icon="mdi:login" class="mr-2" />
                             Sign In
                         </span>
@@ -166,7 +192,7 @@ const logout = () => {
 
             <!-- Responsive Settings Options -->
             <template v-if="$page.props.auth.user">
-                <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
+                <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700">
                     <div class="flex items-center px-4">
                         <div
                             v-if="$page.props.jetstream.managesProfilePhotos"
@@ -184,7 +210,7 @@ const logout = () => {
                             <div class="font-medium text-base text-gray-800 dark:text-gray-200">
                                 {{ $page.props.auth.user.name }}
                             </div>
-                            <div class="font-medium text-sm text-gray-500">
+                            <div class="font-medium text-sm text-gray-500 dark:text-gray-400">
                                 {{ $page.props.auth.user.email }}
                             </div>
                         </div>

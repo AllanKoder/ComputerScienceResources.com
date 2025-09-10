@@ -37,72 +37,40 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                             class="prose prose-lg max-w-none text-gray-700 dark:text-gray-300 space-y-6"
                         >
                             <p>
-                                Software is a unique industry — most people
-                                enter it as hobbyists, tinker with side
-                                projects, and are constantly learning.
+                                Hi, I'm Allan Kong, the creator of ComputerScienceResources.com.
                             </p>
-
                             <p>
-                                Computer science is a wide field. There is a lot
-                                to learn: from data science, algorithms,
-                                databases and infrastructure.
+                                Over the years, I've noticed that the best resources for learning computer science and software engineering are scattered all over the internet—hidden in newsletters, YouTube playlists, GitHub repositories, and outdated blog posts. I had enough people ask me, "What do you use to learn X in computer science?" that I realized there needed to be an entire web app dedicated to organizing and sharing these resources.
                             </p>
-
+                            <p>
+                                Software is a unique industry—most of us enter it as hobbyists, tinker with side projects, and are constantly learning. Computer science is a vast field, with so much to explore: data science, algorithms, databases, infrastructure, and more.
+                            </p>
                             <ApplicationLogo class="mx-auto" />
-
                             <p>
-                                On the plus side, there are a ton of resources
-                                that are out there. The problem? It is scattered
-                                all over the internet - buried in newsletters,
-                                YouTube playlists, GitHub repositories, and
-                                outdated blog posts.
+                                My goal with ComputerScienceResources.com is to make learning easier by organizing and highlighting the best resources in computer science and software engineering. I want to help the developer community thrive by providing a central place to discover, review, and share valuable content.
                             </p>
-
-                            <p>
-                                It's often difficult to know what a resource
-                                actually teaches, who is the intended audience,
-                                or how well it's received by the community.
-                            </p>
-
                             <div
                                 class="bg-secondary dark:bg-gray-700 rounded-lg p-6"
                             >
                                 <p
                                     class="text-primary dark:text-accent font-semibold"
                                 >
-                                    Our Mission
+                                    My Mission
                                 </p>
                                 <p class="text-gray-800 dark:text-gray-200">
-                                    Our goal with ComputerScienceResources.com
-                                    is to make learning easier by organizing and
-                                    highlighting the best resources in computer
-                                    science and software engineering. We aim to
-                                    help the developer community thrive by
-                                    providing a central place to discover,
-                                    review, and share valuable content.
+                                    I built this site because I believe learning should be accessible and organized. I want to give back to the community by making it easier for everyone to find high-quality resources, no matter where they are in their journey.
                                 </p>
                             </div>
-
                             <p>
-                                In addition, we provide the community the
-                                opportunity to give back to the website.
-                                Everyone can post resources, review resources,
-                                and suggest edits to any existing resource
-                                description.
+                                Anyone can post resources, review them, and suggest edits to any existing resource description. I want this to be a community-driven project where everyone can contribute and benefit.
                             </p>
-
                             <p>
-                                On the more technical side, our github will be
-                                open to discussion and feedback soon! Don't be
-                                afraid to reach out there!
+                                On the technical side, the GitHub repository will be open to discussion and feedback soon! Don't hesitate to reach out there if you have ideas or want to help improve the site.
                             </p>
-
                             <p
                                 class="text-center text-lg font-medium text-primary dark:text-accent mt-8"
                             >
-                                ComputerScienceResources.com values the
-                                community, because in the end, we all love
-                                software!
+                                ComputerScienceResources.com values the community—because in the end, we all love software!
                             </p>
                         </div>
 
@@ -116,40 +84,25 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                                     Who is this site for?
                                 </template>
                                 <template #answer>
-                                    Everyone! Everyone can all learn computer
-                                    science. We include resources for seniors
-                                    and children. This site is for everyone.
+                                    Anyone who wants to learn computer science! I include resources for everyone—seniors, children, beginners, and experts. This site is for anyone who wants to grow their knowledge, no matter their background.
                                 </template>
                             </FrequentlyAskedQuestion>
 
                             <FrequentlyAskedQuestion>
                                 <template #question>
-                                    Why is Computer Science Resources not open
-                                    source if you love the community?
+                                    Why is Computer Science Resources not open source if you love the community?
                                 </template>
                                 <template #answer>
-                                    It will be :). We wanted to keep it closed
-                                    source in the early release to prevent
-                                    people from forking the codebase and
-                                    stealing the project's credit. Furthermore,
-                                    we need to do some refactoring to make it
-                                    more appealing to those who wish to
-                                    contribute to the codebase. We will be happy
-                                    to open source it in the near future with
-                                    ideally 200 users minimum.
+                                    It will be! I wanted to keep it closed source in the early release to prevent people from forking the codebase and taking credit for the project. I also need to do some refactoring to make it more appealing for contributors. I'll be happy to open source it in the near future—ideally once there are at least 200 users.
                                 </template>
                             </FrequentlyAskedQuestion>
 
                             <FrequentlyAskedQuestion>
                                 <template #question>
-                                    How does Computer Science Resources make
-                                    money?
+                                    How does Computer Science Resources make money?
                                 </template>
                                 <template #answer>
-                                    We don't plan to make anything locked behind
-                                    a paywall anytime in the future. The plans
-                                    for monetization will be from donations, or
-                                    non-intrusive ads in the future.
+                                    I don't plan to lock anything behind a paywall. If I ever monetize, it will be through donations or non-intrusive ads—never at the expense of accessibility.
                                 </template>
                             </FrequentlyAskedQuestion>
 
@@ -158,13 +111,7 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                                     What kind of resources are accepted?
                                 </template>
                                 <template #answer>
-                                    We focus on comprehensive, structured, and
-                                    high-quality resources — things that provide
-                                    long-term learning value. That includes
-                                    interactive platforms, educational YouTube
-                                    channels, curated book series, technical
-                                    newsletters, and more. The more focused or
-                                    specialized the resource is, the better.
+                                    I focus on comprehensive, structured, and high-quality resources—things that provide long-term learning value. That includes interactive platforms, educational YouTube channels, curated book series, technical newsletters, and more. The more focused or specialized the resource is, the better.
                                 </template>
                             </FrequentlyAskedQuestion>
 
@@ -173,12 +120,7 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                                     Can I post my own course?
                                 </template>
                                 <template #answer>
-                                    Only if it's well-received and genuinely
-                                    useful. This isn't a place to advertise
-                                    low-quality content, we will take those
-                                    down. We care more about substance than
-                                    self-promotion. If your course is loved by
-                                    the community, it's welcome.
+                                    Only if it's well-received and genuinely useful. This isn't a place to advertise low-quality content—I'll take those down. I care more about substance than self-promotion. If your course is loved by the community, it's welcome here.
                                 </template>
                             </FrequentlyAskedQuestion>
 
@@ -187,19 +129,7 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                                     Is the site finished?
                                 </template>
                                 <template #answer>
-                                    Of course not, we are still developing
-                                    things. There are a lot of features that
-                                    have not been implemented yet for the sake
-                                    of developing a release. If I were to make
-                                    the first release perfect, it wouldn't be
-                                    out here. So, we will be constantly
-                                    listening to community feedback and
-                                    improving the app. Feel free to point out
-                                    issues in the github repository tool and
-                                    github discussions tab! Some things that are
-                                    in the works are the ability to view
-                                    someone's profile, report malicious posts
-                                    and users, and favoriting a resource.
+                                    Of course not! I'm still developing new features and improving the site. If I waited for perfection, it would never launch. I'm always listening to community feedback and working to make things better. Feel free to point out issues in the GitHub repository or discussions tab! Some things in the works: user profiles, reporting malicious posts and users, and favoriting resources.
                                 </template>
                             </FrequentlyAskedQuestion>
 
@@ -208,9 +138,7 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                                     Why is the Logo a Cat?
                                 </template>
                                 <template #answer>
-                                    I love cats. What else can I say? I have two
-                                    cats and I simply love them. I think the
-                                    world is better with cats involved.
+                                    I love cats. What else can I say? I have two cats and I simply love them. I think the world is better with cats involved.
                                 </template>
                             </FrequentlyAskedQuestion>
                         </div>

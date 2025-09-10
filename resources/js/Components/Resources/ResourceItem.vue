@@ -3,6 +3,7 @@ import { Icon } from "@iconify/vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import StarRating from "@/Components/StarRating/StarRating.vue";
 import { Link } from "@inertiajs/vue3";
+import ClickableHeading from "@/Components/ClickableHeading.vue";
 import { difficultyLabels, pricingLabels, platformLabels } from "@/Helpers/labels";
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import ResourceThumbnail from "./ResourceThumbnail.vue";
@@ -39,14 +40,11 @@ const emit = defineEmits(["upvote", "downvote"]);
         <div class="flex-1 flex flex-col justify-between py-3 px-2">
             <div class="flex flex-col lg:flex-row justify-between items-start mb-2 w-full gap-2">
                 <div class="flex items-center gap-3">
-                    <Link
-                        :href="route('resources.show', { slug: resource.slug })"
-                        class="group"
-                    >
+                    <ClickableHeading :href="route('resources.show', { slug: resource.slug })">
                         <h2 class="text-lg underline font-semibold tracking-tight text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors duration-200 font-sans">
                             {{ resource.name }}
                         </h2>
-                    </Link>
+                    </ClickableHeading>
                     <a
                         :href="resource.page_url"
                         target="_blank"

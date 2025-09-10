@@ -21,7 +21,7 @@ class TagFrequencyController extends Controller
         $prefixed_tags = TagFrequency::where('tag', 'like', $escaped.'%')
             ->where('type', $type)
             ->orderByDesc('count')
-            ->limit(30)
+            ->limit(50)
             ->get();
 
         return response()->json([

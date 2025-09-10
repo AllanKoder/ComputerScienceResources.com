@@ -1,5 +1,6 @@
 <script setup>
 import { Link } from "@inertiajs/vue3";
+import ClickableHeading from "@/Components/ClickableHeading.vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import EmptyState from "@/Components/EmptyState.vue";
 import PaginateLinks from "@/Components/Pagination/PaginateLinks.vue";
@@ -23,7 +24,7 @@ const props = defineProps({
             <div
                 v-for="edit in props.resourceEdits.data"
                 :key="edit.id"
-                class="bg-white/70 backdrop-blur-md p-6 rounded-lg shadow-md"
+                class="bg-white/70 dark:bg-gray-900/90 backdrop-blur-md p-6 rounded-lg shadow-md border border-transparent dark:border-gray-800"
             >
                 <div class="flex flex-row gap-4 items-center">
                     <Upvotable
@@ -33,19 +34,13 @@ const props = defineProps({
                         :user-vote="edit.user_vote"
                     ></Upvotable>
                     <div class="flex-grow align-middle items-center">
-                        <Link
-                            :href="
-                                route('resource_edits.show', {
-                                    slug: edit.slug,
-                                })
-                                "
-                        >
+                        <ClickableHeading :href="route('resource_edits.show', { slug: edit.slug })">
                             <h2
-                                class="text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100 hover:text-primary transition-colors duration-200 font-sans"
-                                >
+                                class="text-lg font-semibold tracking-tight text-gray-900 dark:text-gray-100 group-hover:text-primary transition-colors duration-200 font-sans"
+                            >
                                 {{ edit.edit_title }}
                             </h2>
-                        </Link>
+                        </ClickableHeading>
 
                         <UserProfile
                             :user="edit.user"
@@ -53,7 +48,7 @@ const props = defineProps({
                             class="mt-2"
                         />
 
-                        <p class="text-gray-700 mt-2">
+                        <p class="text-gray-700 dark:text-gray-300 mt-2">
                             {{ edit.edit_description }}
                         </p>
                     </div>

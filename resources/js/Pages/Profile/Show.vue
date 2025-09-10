@@ -18,12 +18,12 @@ defineProps({
 <template>
     <AppLayout title="Profile">
         <!-- Background and padding -->
-        <div class="bg-gradient-to-br from-background to-background/50 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
+    <div class="bg-gradient-to-br from-background to-background/50 dark:from-gray-950 dark:to-gray-900 min-h-screen py-12 px-4 sm:px-6 lg:px-8">
             <div class="max-w-5xl mx-auto space-y-8">
                 <!-- Profile Info -->
                 <div
                     v-if="$page.props.jetstream.canUpdateProfileInformation"
-                    class="bg-white shadow-md rounded-2xl p-6"
+                    class="bg-white dark:bg-gray-900 shadow-md rounded-2xl p-6 border border-transparent dark:border-gray-800"
                 >
                     <UpdateProfileInformationForm :user="$page.props.auth.user" />
                 </div>
@@ -31,7 +31,7 @@ defineProps({
                 <!-- Update Password -->
                 <div
                     v-if="$page.props.jetstream.canUpdatePassword && $page.props.socialstream.hasPassword"
-                    class="bg-white shadow-md rounded-2xl p-6"
+                    class="bg-white dark:bg-gray-900 shadow-md rounded-2xl p-6 border border-transparent dark:border-gray-800"
                 >
                     <UpdatePasswordForm />
                 </div>
@@ -39,7 +39,7 @@ defineProps({
                 <!-- Set Password -->
                 <div
                     v-else
-                    class="bg-white shadow-md rounded-2xl p-6"
+                    class="bg-white dark:bg-gray-900 shadow-md rounded-2xl p-6 border border-transparent dark:border-gray-800"
                 >
                     <SetPasswordForm />
                 </div>
@@ -47,7 +47,7 @@ defineProps({
                 <!-- Two-Factor Auth -->
                 <div
                     v-if="$page.props.jetstream.canManageTwoFactorAuthentication && $page.props.socialstream.hasPassword"
-                    class="bg-white shadow-md rounded-2xl p-6"
+                    class="bg-white dark:bg-gray-900 shadow-md rounded-2xl p-6 border border-transparent dark:border-gray-800"
                 >
                     <TwoFactorAuthenticationForm :requires-confirmation="confirmsTwoFactorAuthentication" />
                 </div>
@@ -55,7 +55,7 @@ defineProps({
                 <!-- Connected Accounts -->
                 <div
                     v-if="$page.props.socialstream.show"
-                    class="bg-white shadow-md rounded-2xl p-6"
+                    class="bg-white dark:bg-gray-900 shadow-md rounded-2xl p-6 border border-transparent dark:border-gray-800"
                 >
                     <ConnectedAccountsForm />
                 </div>
@@ -63,7 +63,7 @@ defineProps({
                 <!-- Logout Sessions -->
                 <div
                     v-if="$page.props.socialstream.hasPassword"
-                    class="bg-white shadow-md rounded-2xl p-6"
+                    class="bg-white dark:bg-gray-900 shadow-md rounded-2xl p-6 border border-transparent dark:border-gray-800"
                 >
                     <LogoutOtherBrowserSessionsForm :sessions="sessions" />
                 </div>
@@ -71,7 +71,7 @@ defineProps({
                 <!-- Account Deletion -->
                 <div
                     v-if="$page.props.jetstream.hasAccountDeletionFeatures && $page.props.socialstream.hasPassword"
-                    class="bg-white shadow-md rounded-2xl p-6"
+                    class="bg-white dark:bg-gray-900 shadow-md rounded-2xl p-6 border border-transparent dark:border-gray-800"
                 >
                     <DeleteUserForm />
                 </div>

@@ -1,11 +1,13 @@
 <template>
-    <h3 class="text-lg font-semibold mb-4 text-gray-800">
+    <h3 class="text-lg font-semibold mb-4 text-gray-800 dark:text-gray-100">
         Submission Guidelines
     </h3>
-    <div class="space-y-4 text-sm text-gray-700">
-        <div class="space-y-4 text-sm text-gray-700">
+    <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
+        <div class="space-y-4 text-sm text-gray-700 dark:text-gray-300">
             <div>
-                <h4 class="font-bold text-gray-800 mb-2">Resource Scope</h4>
+                <h4 class="font-bold text-gray-800 dark:text-gray-100 mb-2">
+                    Resource Scope
+                </h4>
                 <p class="mb-2">
                     This site features comprehensive learning resources rather
                     than isolated materials. Resources should provide ongoing
@@ -20,7 +22,7 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-gray-800 mb-2">
+                <h4 class="font-bold text-gray-800 dark:text-gray-100 mb-2">
                     Types of Content Accepted
                 </h4>
                 <ul class="list-disc list-inside space-y-1 text-xs">
@@ -42,6 +44,10 @@
                     <li>
                         Organizations that can provide software career advising
                     </li>
+                    <li>
+                        Discontinued resources, given they have a significant
+                        archive or ongoing educational value
+                    </li>
                 </ul>
                 <p class="mt-2 text-xs">
                     Anything to help people learn more about software: from
@@ -51,7 +57,9 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-gray-800 mb-2">Exceptions</h4>
+                <h4 class="font-bold text-gray-800 dark:text-gray-100 mb-2">
+                    Exceptions
+                </h4>
                 <ul class="list-disc list-inside space-y-1 text-xs">
                     <li>
                         An individual book may be included if it is
@@ -72,7 +80,7 @@
             </div>
 
             <div>
-                <h4 class="font-bold text-gray-800 mb-2">
+                <h4 class="font-bold text-gray-800 dark:text-gray-100 mb-2">
                     What's Not Included
                 </h4>
                 <ul class="list-disc list-inside space-y-1 text-xs">
@@ -92,9 +100,18 @@
                         Lifestyle or personal finance content (beyond reasonable
                         project management)
                     </li>
+                    <li>
+                        <span
+                            class="font-semibold text-red-700 dark:text-red-400"
+                            >Pirated or illegal resources are strictly
+                            prohibited.</span
+                        >
+                        Only submit resources that are legal to share and
+                        access.
+                    </li>
                 </ul>
                 <p class="mt-2 text-xs italic">
-                    In the end, we trust you to be reasonable.
+                    If the resource is useful, post it. In the end, we trust you to be reasonable.
                 </p>
             </div>
         </div>

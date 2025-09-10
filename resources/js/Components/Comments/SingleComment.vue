@@ -22,7 +22,7 @@ const users = inject("users");
 
 <template>
     <div
-        class="py-4 border-b border-gray-300 flex flex-row gap-4 w-full"
+        class="py-4 border-b border-gray-300 dark:border-gray-800 flex flex-row gap-4 w-full"
         :key="comment.id"
         :id="'comment_' + comment.id"
     >
@@ -43,7 +43,7 @@ const users = inject("users");
             </div>
 
             <!-- Comment Content -->
-            <p class="mt-2 text-gray-700 break-words">{{ comment.content }}</p>
+            <p class="mt-2 text-gray-700 dark:text-gray-100 break-words">{{ comment.content }}</p>
 
             <!-- Actions Form -->
             <CommentActionsForm

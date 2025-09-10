@@ -21,13 +21,13 @@ const getStarClass = (type) =>
     ({
         full: "text-orange-500",
         half: "text-orange-500",
-        empty: "text-gray-400",
+        empty: "text-gray-400 dark:text-gray-500",
     }[type]);
 </script>
 
 <template>
     <div class="inline-flex items-center flex-wrap gap-1">
-        <span class="text-sm font-medium text-gray-600">
+        <span class="text-sm font-medium text-gray-600 dark:text-gray-200">
             {{ formattedRating }}
         </span>
         <div class="inline-flex items-center">

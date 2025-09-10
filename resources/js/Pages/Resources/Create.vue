@@ -120,14 +120,14 @@ const handleFormChange = (newFormData) => {
             >
                 <!-- Instructions Sidebar (Rules) -->
                 <div
-                    class="bg-gray-50 border border-gray-200 rounded-lg p-6 w-full md:w-[28vw] min-w-[20rem] h-fit sticky md:top-8 mt-0 md:mb-0"
+                    class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg p-6 w-full md:w-[28vw] min-w-[20rem] h-fit sticky md:top-8 mt-0 md:mb-0"
                 >
                     <SubmissionGuidelines />
                 </div>
                 <!-- Main Form Section -->
                 <div
                     ref="formRef"
-                    class="bg-white h-min shadow-lg rounded-lg p-5 relative overflow-auto w-full md:w-[46vw] max-w-4xl"
+                    class="bg-white dark:bg-gray-900 h-min shadow-lg rounded-lg p-5 relative overflow-auto w-full md:w-[46vw] max-w-4xl border border-transparent dark:border-gray-800"
                     id="create-resource-form"
                 >
                     <div class="flex justify-between mb-2">

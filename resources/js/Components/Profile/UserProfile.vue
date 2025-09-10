@@ -30,12 +30,12 @@ const formatDate = (dateString) => {
             :alt="'User Avator'"
         />
         <div class="min-w-0">
-            <p class="text-sm text-gray-800 truncate">
+            <p class="text-sm text-gray-800 dark:text-gray-100 truncate">
                 {{ user?.name ?? "Deleted User" }}
             </p>
             <time
                 :datetime="date"
-                class="text-sm text-gray-500"
+                class="text-sm text-gray-500 dark:text-gray-300"
                 :title="date"
             >
                 {{ formatDate(date) }}

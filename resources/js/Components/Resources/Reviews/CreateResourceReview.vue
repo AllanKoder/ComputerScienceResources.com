@@ -64,11 +64,7 @@ const formFields = [
     "cons",
 ];
 
-const {
-    isSavedToLocalStorage,
-    hasFormContent,
-    clearLocalStorage,
-} = useLocalStorageSaver(form, props.resourceId, formFields, "review-draft");
+const { isSavedToLocalStorage, hasFormContent, clearLocalStorage } = useLocalStorageSaver(form, props.resourceId, formFields, "review-draft");
 
 const isSubmitting = ref(false);
 const error = ref(null);
@@ -82,8 +78,12 @@ const submitReview = async () => {
         errors.value = {};
 
         const url = props.isEditingMode
-            ? route("reviews.update", { computerScienceResource: props.resourceId })
-            : route("reviews.store", { computerScienceResource: props.resourceId });
+            ? route("reviews.update", {
+                  computerScienceResource: props.resourceId,
+              })
+            : route("reviews.store", {
+                  computerScienceResource: props.resourceId,
+              });
 
         const method = props.isEditingMode ? "put" : "post";
 
@@ -97,7 +97,7 @@ const submitReview = async () => {
         } else {
             routeParams.sort_by = "latest";
         }
-        router.visit(route('resources.show', routeParams));
+        router.visit(route("resources.show", routeParams));
     } catch (e) {
         isSubmitting.value = false;
         if (e.inner) {
@@ -107,7 +107,8 @@ const submitReview = async () => {
             });
             errors.value = yupErrors;
         } else {
-            error.value = "Something went wrong with submitting your review, please refresh or try again.";
+            error.value =
+                "Something went wrong with submitting your review, please refresh or try again.";
             console.error(e);
         }
     }
@@ -116,14 +117,16 @@ const submitReview = async () => {
 
 <template>
     <div
-        class="mx-auto bg-white shadow-lg rounded-2xl p-6 relative"
+        class="mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-2xl p-6 relative border border-transparent dark:border-gray-800"
     >
         <FormSaverChip
             :is-saved="isSavedToLocalStorage"
             :has-content="hasFormContent"
         />
 
-        <h2 class="text-2xl font-semibold mb-6">
+        <h2
+            class="text-2xl font-semibold mb-6 text-gray-900 dark:text-gray-100"
+        >
             {{ isEditingMode ? "Update Review" : "Write a Review" }}
         </h2>
 
@@ -133,44 +136,37 @@ const submitReview = async () => {
             class="flex flex-col gap-6"
         >
             <!-- Title -->
-            <FormField v-slot="$field" name="title">
+            <FormField name="title">
                 <label class="font-semibold">Title</label>
                 <span class="text-red-500"> * </span>
 
                 <InputText
                     v-model="form.title"
                     placeholder="Review title"
-                    class="w-full rounded-md border-gray-300 mt-1"
+                    class="w-full rounded-md border-gray-300 dark:border-gray-800 mt-1 dark:bg-gray-900 dark:text-gray-100"
                 />
-                <PrimeVueFormError
-                    v-if="$field.invalid"
-                    :errors="$field.errors"
-                />
+                <PrimeVueFormError v-if="errors.title" :errors="errors.title" />
             </FormField>
 
             <!-- Description -->
-            <FormField v-slot="$field" name="description">
+            <FormField name="description">
                 <label class="font-semibold">Description</label>
                 <span class="text-red-500"> * </span>
                 <InputTextarea
                     v-model="form.description"
                     placeholder="Write your thoughts..."
                     rows="4"
-                    class="w-full rounded-md border-gray-300 mt-1"
+                    class="w-full rounded-md border-gray-300 dark:border-gray-800 mt-1 dark:bg-gray-900 dark:text-gray-100"
                 />
                 <PrimeVueFormError
-                    v-if="$field.invalid"
-                    :errors="$field.errors"
+                    v-if="errors.description"
+                    :errors="errors.description"
                 />
             </FormField>
 
             <!-- Ratings (flex layout like your review page) -->
             <div class="flex flex-wrap gap-12 mt-4 mx-auto">
-                <FormField
-                    v-slot="$field"
-                    name="community"
-                    class="flex flex-col items-center"
-                >
+                <FormField name="community" class="flex flex-col items-center">
                     <span class="font-semibold mb-1">
                         Community
                         <span class="text-red-500"> * </span>
@@ -178,120 +174,116 @@ const submitReview = async () => {
 
                     <Rating v-model="form.community" :cancel="false" />
                     <PrimeVueFormError
-                        v-if="$field.invalid"
-                        :errors="$field.errors"
+                        v-if="errors.community"
+                        :errors="errors.community"
                     />
                 </FormField>
 
                 <FormField
-                    v-slot="$field"
                     name="teaching_clarity"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         Teaching Clarity
                         <span class="text-red-500"> * </span></span
                     >
 
                     <Rating v-model="form.teaching_clarity" :cancel="false" />
                     <PrimeVueFormError
-                        v-if="$field.invalid"
-                        :errors="$field.errors"
+                        v-if="errors.teaching_clarity"
+                        :errors="errors.teaching_clarity"
                     />
                 </FormField>
 
-                <FormField
-                    v-slot="$field"
-                    name="engagement"
-                    class="flex flex-col items-center"
-                >
-                    <span class="font-semibold mb-1" >
+                <FormField name="engagement" class="flex flex-col items-center">
+                    <span class="font-semibold mb-1">
                         Engagement <span class="text-red-500"> * </span></span
                     >
-
                     <Rating v-model="form.engagement" :cancel="false" />
                     <PrimeVueFormError
-                        v-if="$field.invalid"
-                        :errors="$field.errors"
+                        v-if="errors.engagement"
+                        :errors="errors.engagement"
                     />
                 </FormField>
 
                 <FormField
-                    v-slot="$field"
                     name="practicality"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         Practicality
                         <span class="text-red-500"> * </span></span
                     >
 
                     <Rating v-model="form.practicality" :cancel="false" />
                     <PrimeVueFormError
-                        v-if="$field.invalid"
-                        :errors="$field.errors"
+                        v-if="errors.practicality"
+                        :errors="errors.practicality"
                     />
                 </FormField>
 
                 <FormField
-                    v-slot="$field"
                     name="user_friendliness"
                     class="flex flex-col items-center"
                 >
-                    <span class="font-semibold mb-1" >
+                    <span class="font-semibold mb-1">
                         User Friendliness
                         <span class="text-red-500"> * </span></span
                     >
 
                     <Rating v-model="form.user_friendliness" :cancel="false" />
                     <PrimeVueFormError
-                        v-if="$field.invalid"
-                        :errors="$field.errors"
+                        v-if="errors.user_friendliness"
+                        :errors="errors.user_friendliness"
                     />
                 </FormField>
 
-                <FormField
-                    v-slot="$field"
-                    name="updates"
-                    class="flex flex-col items-center"
-                >
-                    <span class="font-semibold mb-1" >
+                <FormField name="updates" class="flex flex-col items-center">
+                    <span class="font-semibold mb-1">
                         Updates <span class="text-red-500"> * </span></span
                     >
 
                     <Rating v-model="form.updates" :cancel="false" />
                     <PrimeVueFormError
-                        v-if="$field.invalid"
-                        :errors="$field.errors"
+                        v-if="errors.updates"
+                        :errors="errors.updates"
                     />
                 </FormField>
             </div>
 
             <!-- Pros and Cons side by side -->
             <div class="flex flex-col md:flex-row gap-6 mt-6">
-                <FormField v-slot="$field" name="pros" class="flex-1">
-                    <label class="font-semibold">Pros</label>
+                <FormField name="pros" class="flex-1">
+                    <label
+                        class="font-semibold text-gray-900 dark:text-gray-100"
+                        >Pros</label
+                    >
                     <ListInput
                         :maxSize="10"
                         :initialValues="form.pros"
                         @change="(val) => (form.pros = val)"
+                        class="dark:bg-gray-900 dark:text-gray-100 dark:border-gray-800"
                     />
                     <PrimeVueFormError
-                        v-if="$field.invalid"
-                        :errors="$field.errors"
+                        v-if="errors.pros"
+                        :errors="errors.pros"
                     />
                 </FormField>
 
-                <FormField v-slot="$field" name="cons" class="flex-1">
-                    <label class="font-semibold">Cons</label>
+                <FormField name="cons" class="flex-1">
+                    <label
+                        class="font-semibold text-gray-900 dark:text-gray-100"
+                        >Cons</label
+                    >
                     <ListInput
                         :maxSize="10"
                         :initialValues="form.cons"
                         @change="(val) => (form.cons = val)"
+                        class="dark:bg-gray-900 dark:text-gray-100 dark:border-gray-800"
                     />
                     <PrimeVueFormError
-                        v-if="$field.invalid"
-                        :errors="$field.errors"
+                        v-if="errors.cons"
+                        :errors="errors.cons"
                     />
                 </FormField>
             </div>
@@ -299,7 +291,7 @@ const submitReview = async () => {
             <!-- Check if not auth since unauthed user will always fail (need to be logged in) -->
             <div
                 v-if="error && $page.props.auth.user"
-                class="text-red-500 bg-red-100 p-3 rounded-md"
+                class="text-red-500 bg-red-100 dark:bg-red-900 p-3 rounded-md"
             >
                 {{ error }}
             </div>
@@ -309,7 +301,7 @@ const submitReview = async () => {
                 <Button
                     type="submit"
                     :label="isEditingMode ? 'Update Review' : 'Submit Review'"
-                    class="bg-primaryDark text-white rounded-lg px-6 py-2 mt-4"
+                    class="bg-primaryDark text-white rounded-lg px-6 py-2 mt-4 hover:bg-primary focus:bg-primaryDark/90 dark:bg-primaryDark dark:text-white"
                     :disabled="isSubmitting"
                 />
             </div>

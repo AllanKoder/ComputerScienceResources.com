@@ -26,9 +26,7 @@ function formatError(error) {
         variant="simple"
     >
         <template v-for="error in errors" :key="error">
-            <p>
-                {{ formatError(error.toString()) }}
-            </p>
+            <p><span class="text-red-600 dark:text-red-400">{{ formatError(error.toString()) }}</span></p>
         </template>
     </Message>
 </template>

@@ -202,14 +202,14 @@ onMounted(() => {
 </script>
 
 <template>
-    <div class="comments-section bg-white rounded-lg p-1">
+    <div class="comments-section bg-white dark:bg-gray-900 rounded-lg p-1">
         <SortByDropdown
             v-if="props.hasSortByDropdown && hasOpenedComments"
             @change="handleSortChange"
         ></SortByDropdown>
 
         <!-- Error State -->
-        <div v-if="error" class="text-red-500 mb-4">{{ error }}</div>
+    <div v-if="error" class="text-red-500 dark:text-red-400 mb-4">{{ error }}</div>
 
         <!-- Comments List -->
         <CommentList :id-to-children="idToChildren" />
@@ -231,7 +231,7 @@ onMounted(() => {
             <button
                 v-if="canLoadMoreComments && !isLoading"
                 @click="loadComments"
-                class="w-full py-2 text-center text-primary hover:bg-background/50 transition-colors"
+                class="w-full py-2 text-center text-primary dark:text-primaryLight hover:bg-background/50 dark:hover:bg-gray-800/50 transition-colors"
             >
                 View {{ commentsLeft }} Comments
             </button>

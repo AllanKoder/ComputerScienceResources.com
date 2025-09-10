@@ -23,14 +23,14 @@ const props = defineProps({
             class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4"
         >
             <div class="flex items-center gap-3">
-                <h1 class="text-3xl font-bold">
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
                     {{ props.resource.name }}
                 </h1>
                 <a
                     :href="props.resource.page_url"
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-gray-400 hover:text-primary transition-colors duration-200"
+                    class="text-gray-400 hover:text-primary dark:hover:text-primaryLight transition-colors duration-200"
                 >
                     <Icon icon="mdi:external-link" width="24" height="24" />
                 </a>
@@ -60,7 +60,7 @@ const props = defineProps({
         </div>
 
         <p
-            class="text-gray-700 mb-6 text-base leading-relaxed whitespace-pre-line"
+            class="text-gray-700 dark:text-gray-200 mb-6 text-base leading-relaxed whitespace-pre-line"
         >
             {{ props.resource.description }}
         </p>
@@ -71,13 +71,13 @@ const props = defineProps({
             <div class="flex flex-wrap items-center gap-4 text-sm">
                 <!-- Difficulties -->
                 <div
-                    class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-3 py-1 rounded-md"
+                    class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-900/70 px-3 py-1 rounded-md"
                 >
                     <span class="font-semibold text-gray-900 dark:text-gray-100"
                         >Difficulties:</span
                     >
                     <div
-                        class="inline-flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-300"
+                        class="inline-flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-200"
                     >
                         <span
                             v-for="level in props.resource.difficulties"
@@ -96,13 +96,13 @@ const props = defineProps({
 
                 <!-- Pricing -->
                 <div
-                    class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-3 py-1 rounded-md"
+                    class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-900/70 px-3 py-1 rounded-md"
                 >
                     <span class="font-semibold text-gray-900 dark:text-gray-100"
                         >Pricing:</span
                     >
                     <span
-                        class="inline-flex items-center gap-1 text-gray-700 dark:text-gray-300"
+                        class="inline-flex items-center gap-1 text-gray-700 dark:text-gray-200"
                     >
                         <Icon
                             :icon="pricingIcons[props.resource.pricing]"
@@ -115,13 +115,13 @@ const props = defineProps({
 
                 <!-- Platforms -->
                 <div
-                    class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-800/50 px-3 py-1 rounded-md"
+                    class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-900/70 px-3 py-1 rounded-md"
                 >
                     <span class="font-semibold text-gray-900 dark:text-gray-100"
                         >Platforms:</span
                     >
                     <div
-                        class="inline-flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-300"
+                        class="inline-flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-200"
                     >
                         <span
                             v-for="type in props.resource.platforms"
@@ -156,7 +156,7 @@ const props = defineProps({
                         <span
                             v-for="tag in props.resource.topic_tags"
                             :key="tag"
-                            class="inline-flex items-center gap-1 bg-blue-100/50 dark:bg-blue-800/30 px-2 py-0.5 rounded-full text-blue-700 dark:text-blue-200"
+                            class="inline-flex items-center gap-1 bg-blue-100/50 dark:bg-blue-900/60 px-2 py-0.5 rounded-full text-blue-700 dark:text-blue-100"
                         >
                             {{ tag }}
                         </span>
@@ -183,7 +183,7 @@ const props = defineProps({
                             v-for="tag in props.resource
                                 .programming_language_tags"
                             :key="tag"
-                            class="inline-flex items-center gap-1 bg-purple-100/50 dark:bg-purple-800/30 px-2 py-0.5 rounded-full text-purple-700 dark:text-purple-200"
+                            class="inline-flex items-center gap-1 bg-purple-100/50 dark:bg-purple-900/60 px-2 py-0.5 rounded-full text-purple-700 dark:text-purple-100"
                         >
                             {{ tag }}
                         </span>
@@ -205,7 +205,7 @@ const props = defineProps({
                         <span
                             v-for="tag in props.resource.general_tags"
                             :key="tag"
-                            class="inline-flex items-center gap-1 bg-yellow-100/50 dark:bg-yellow-800/30 px-2 py-0.5 rounded-full text-yellow-700 dark:text-yellow-200"
+                            class="inline-flex items-center gap-1 bg-yellow-100/50 dark:bg-yellow-900/60 px-2 py-0.5 rounded-full text-yellow-700 dark:text-yellow-100"
                         >
                             {{ tag }}
                         </span>
