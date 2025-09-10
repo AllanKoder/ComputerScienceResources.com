@@ -64,8 +64,7 @@ const formFields = [
     "cons",
 ];
 
-const { isSavedToLocalStorage, hasFormContent, clearLocalStorage } =
-    useLocalStorageSaver(form, props.resourceId, formFields, "review-draft");
+const { isSavedToLocalStorage, hasFormContent, clearLocalStorage } = useLocalStorageSaver(form, props.resourceId, formFields, "review-draft");
 
 const isSubmitting = ref(false);
 const error = ref(null);
