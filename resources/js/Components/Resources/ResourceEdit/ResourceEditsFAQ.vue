@@ -112,8 +112,8 @@ import FrequentlyAskedQuestion from "@/Components/FrequentlyAskedQuestion.vue";
                                     <td
                                         class="border border-gray-300 dark:border-gray-600 px-4 py-2"
                                     >
-                                        Since there are no existing votes (positive or negative), the entire community can merge any edits.<th></th>
-                                        The reasoning is that someone could've made a typo and needed a quick fix.<th></th>
+                                        Since there are no existing votes (positive or negative), the entire community can merge any edits.
+                                        The reasoning is that someone could've made a typo and needed a quick fix.
                                         Everyone automatically upvotes their own resources. So, you must unvote your newly created resource to reach 0 votes.
                                     </td>
                                 </tr>
