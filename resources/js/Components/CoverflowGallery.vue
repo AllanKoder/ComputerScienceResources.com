@@ -18,6 +18,7 @@ const root = ref(null)
 const containerWidth = ref(0)
 let rafId = null
 let lastTs = 0
+let roRef = null
 
 // compute slide width so exactly three slides can fit comfortably
 const slideGap = 14 // px gap between slides (slightly smaller gap)
@@ -123,18 +124,17 @@ onMounted(() => {
   measure()
   window.addEventListener('resize', measure)
   // observe the root for layout changes (images/font load)
-  const ro = new ResizeObserver(measure)
-  if (root.value) ro.observe(root.value)
-  ;(root.value || {}).__ro = ro
+  roRef = new ResizeObserver(measure)
+  if (root.value) roRef.observe(root.value)
   play()
 })
 
 onBeforeUnmount(() => {
   pause()
   window.removeEventListener('resize', measure)
-  if (root.value && root.value.__ro) {
-    try { root.value.__ro.disconnect() } catch (e) {}
-    delete root.value.__ro
+  if (roRef) {
+    try { roRef.disconnect() } catch (e) {}
+    roRef = null
   }
 })
 

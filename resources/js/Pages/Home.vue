@@ -5,8 +5,8 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import { Head } from "@inertiajs/vue3";
 import CoverflowGallery from "@/Components/CoverflowGallery.vue";
 import { Link } from "@inertiajs/vue3";
-import SecondaryButton from "@/Components/SecondaryButton.vue";
 import ApplicationLogo from "@/Components/ApplicationLogo.vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
     resources_top: Object,
@@ -95,9 +95,9 @@ const fmt = (n) => new Intl.NumberFormat().format(Number(n || 0));
                         <!-- Explore Resources CTA -->
                         <div class="flex justify-center mb-6">
                             <Link :href="route('resources.index')">
-                                <SecondaryButton class="px-6 py-3 text-lg md:text-xl font-semibold">
+                                <PrimaryButton class="px-6 py-3 text-lg md:text-xl font-semibold">
                                     Explore Resources
-                                </SecondaryButton>
+                                </PrimaryButton>
                             </Link>
                         </div>
 
