@@ -26,6 +26,7 @@ return new class extends Migration
         DB::statement("
             UPDATE computer_science_resources
             SET difficulties = SUBSTRING_INDEX(difficulties, ',', 1)
+            WHERE difficulties IS NOT NULL AND difficulties != ''
         ");
 
         DB::statement("
