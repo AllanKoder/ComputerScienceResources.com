@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ComputerScienceResourceController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ResourceEditsController;
 use App\Http\Controllers\ResourceReviewController;
 use App\Http\Controllers\TagFrequencyController;
@@ -51,8 +52,8 @@ Route::middleware([
 // Public
 // -----------------------
 Route::middleware('guest.or.verified')->group(function () {
-    Route::get('/', function () {
-        return redirect('/resources');
+    Route::controller(HomeController::class)->group(function () {
+        Route::get('/', 'show')->name('home.show');
     });
 
     Route::get('/about', function () {

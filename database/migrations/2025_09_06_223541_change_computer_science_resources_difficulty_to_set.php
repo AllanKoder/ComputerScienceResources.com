@@ -22,7 +22,12 @@ return new class extends Migration
 
     public function down(): void
     {
-        // Rollback: rename back and revert type
+        // Keep only the first value from the SET
+        DB::statement("
+            UPDATE computer_science_resources
+            SET difficulties = SUBSTRING_INDEX(difficulties, ',', 1)
+        ");
+
         DB::statement("
             ALTER TABLE computer_science_resources
             CHANGE difficulties difficulty ENUM(
