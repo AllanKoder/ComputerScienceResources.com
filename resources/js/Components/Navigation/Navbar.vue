@@ -26,7 +26,7 @@ const { isDark, toggleDark } = useDarkMode();
                 <div class="flex">
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center">
-                        <Link :href="route('resources.index')">
+                        <Link :href="route('home.show')">
                             <ApplicationHeaderLogo class="block h-9 w-auto max-w-[250px] sm:max-w-64 md:max-w-72 lg:max-w-80 xl:max-w-96 mr-2" />
                         </Link>
                     </div>
