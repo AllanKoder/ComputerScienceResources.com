@@ -53,7 +53,7 @@ Route::middleware([
 // -----------------------
 Route::middleware('guest.or.verified')->group(function () {
     Route::controller(HomeController::class)->group(function () {
-        Route::get('/', 'show')->name('home.show');
+        Route::get('/', 'show')->name('home');
     });
 
     Route::get('/about', function () {

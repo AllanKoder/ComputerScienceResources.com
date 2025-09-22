@@ -6,7 +6,8 @@ import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import PictureInput from "vue-picture-input";
 import Select from "primevue/select";
 import { defineEmits, ref, watch } from "vue";
-import ConfirmationModal from '@/Components/ConfirmationModal.vue';
+import ConfirmationModal from "@/Components/ConfirmationModal.vue";
+import DialogModal from "@/Components/DialogModal.vue";
 import {
     platformsObject,
     pricingsObject,
@@ -27,16 +28,48 @@ const emit = defineEmits(["change", "next"]);
 
 const errors = ref({});
 const showDescriptionHelp = ref(false);
+const showImageError = ref(false);
+const imageErrorMessage = ref("");
 
-function onImageChange(event) {
-    const file = event.target.files[0];
+// ref to access the PictureInput component instance
+const pictureInput = ref(null);
+
+
+function onImageChange(_event) {
+    const file = pictureInput.value?.file ?? null;
     props.formData.image_file = file;
 }
 
-function onImageRemove(event) {
+function onImageRemove() {
+    // clear reactive state
     props.formData.image_file = null;
+
+    // also clear the PictureInput internals so the preview actually disappears
+    try {
+        if (pictureInput.value) {
+            if (typeof pictureInput.value.remove === "function") {
+                pictureInput.value.remove();
+            } else {
+                pictureInput.value.image = null;
+                pictureInput.value.file = null;
+            }
+        }
+    } catch (e) {
+        console.warn("Failed to clear pictureInput internals:", e);
+    }
 }
 
+function onImageError(err) {
+    console.error("PictureInput error:", err);
+    onImageRemove();
+
+    // Open dialog showing the error message (prefer err.message)
+    imageErrorMessage.value =
+        err?.message ||
+        JSON.stringify(err) ||
+        "An unknown image error occurred.";
+    showImageError.value = true;
+}
 
 const validateAndNext = async () => {
     try {
@@ -68,7 +101,8 @@ watch(
         <div class="space-y-4">
             <!-- Name Field -->
             <div class="flex flex-col gap-1">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >Name
                     <span class="text-red-500"> * </span>
                 </label>
@@ -78,15 +112,13 @@ watch(
                     placeholder="Enter the Name"
                     class="mt-1 w-full border border-gray-300 dark:border-gray-800 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-900 dark:text-gray-100"
                 />
-                <PrimeVueFormError
-                    v-if="errors.name"
-                    :errors="errors.name"
-                />
+                <PrimeVueFormError v-if="errors.name" :errors="errors.name" />
             </div>
 
             <!-- URL Field -->
             <div class="flex flex-col gap-1">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >Resource Website URL
                     <span class="text-red-500"> * </span>
                 </label>
@@ -103,7 +135,8 @@ watch(
 
             <!-- Image URL Field -->
             <div class="flex flex-col gap-1">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >Image Thumbnail</label
                 >
                 <PictureInput
@@ -117,9 +150,30 @@ watch(
                     button-class="inline-flex items-center px-4 py-2 border border-primary rounded-md font-semibold text-xs text-primary uppercase tracking-widest hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-accent focus:ring-offset-2 transition ease-in-out duration-150 mr-4"
                     removable
                     :prefill="props.formData.image_file"
+                    :alert-on-error="false"
                     @change="onImageChange"
                     @remove="onImageRemove"
+                    @error="onImageError"
                 />
+                <DialogModal
+                    :show="showImageError"
+                    @close="showImageError = false"
+                >
+                    <template #title>Error loading image</template>
+                    <template #content>
+                        <div class="text-sm text-gray-700 dark:text-gray-200">
+                            {{ imageErrorMessage }}
+                        </div>
+                    </template>
+                    <template #footer>
+                        <button
+                            @click="showImageError = false"
+                            class="px-4 py-2 bg-primary text-white rounded hover:bg-primaryDark transition"
+                        >
+                            Close
+                        </button>
+                    </template>
+                </DialogModal>
                 <PrimeVueFormError
                     v-if="errors.image_file"
                     :errors="errors.image_file"
@@ -128,7 +182,8 @@ watch(
 
             <div class="flex flex-col gap-1">
                 <!-- Resource Platforms Field -->
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >Resource Platforms
                     <span class="text-red-500"> * </span>
                 </label>
@@ -150,17 +205,29 @@ watch(
             <!-- Description Field -->
             <div class="flex flex-col gap-1">
                 <div class="flex items-center gap-2">
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-200">
+                    <label
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                    >
                         Description
                         <span class="text-red-500"> * </span>
                     </label>
-                    <button type="button" @click="showDescriptionHelp = true" class="focus:outline-none" title="Help: What makes a good description?">
-                        <Icon icon="mdi:help-circle-outline" class="w-5 h-5 text-primary hover:text-primaryDark" />
+                    <button
+                        type="button"
+                        @click="showDescriptionHelp = true"
+                        class="focus:outline-none"
+                        title="Help: What makes a good description?"
+                    >
+                        <Icon
+                            icon="mdi:help-circle-outline"
+                            class="w-5 h-5 text-primary hover:text-primaryDark"
+                        />
                     </button>
                 </div>
                 <Textarea
                     v-model="props.formData.description"
-                    :placeholder="`${props.formData.name || 'Resource Name'} is a...`"
+                    :placeholder="`${
+                        props.formData.name || 'Resource Name'
+                    } is a...`"
                     class="mt-1 w-full border border-gray-300 dark:border-gray-800 rounded-md shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200 dark:bg-gray-900 dark:text-gray-100"
                     rows="8"
                 />
@@ -168,41 +235,104 @@ watch(
                     v-if="errors.description"
                     :errors="errors.description"
                 />
-                <ConfirmationModal :show="showDescriptionHelp" @close="showDescriptionHelp = false">
+                <ConfirmationModal
+                    :show="showDescriptionHelp"
+                    @close="showDescriptionHelp = false"
+                >
                     <template #title>
                         What makes a good resource description?
                     </template>
                     <template #content>
                         <div class="space-y-3">
                             <p>
-                                <span class="font-semibold">We want details!</span> A good description should clearly explain what the resource is, who it's for, and what makes it valuable. Mention the format (podcast, platform, channel, etc.), the main topics covered, and any unique features or strengths. Imagine you're helping someone decide if this resource is right for them.
+                                <span class="font-semibold"
+                                    >We want details!</span
+                                >
+                                A good description should clearly explain what
+                                the resource is, who it's for, and what makes it
+                                valuable. Mention the format (podcast, platform,
+                                channel, etc.), the main topics covered, and any
+                                unique features or strengths. Imagine you're
+                                helping someone decide if this resource is right
+                                for them.
                             </p>
-                            <div class="border-l-4 border-primary pl-4 py-2 bg-secondary">
+                            <div
+                                class="border-l-4 border-primary pl-4 py-2 bg-secondary"
+                            >
                                 <div class="font-semibold mb-1">Example 1:</div>
                                 <div class="text-xs text-gray-700">
-                                    Soft Skills Engineering is a weekly advice podcast specifically designed for software developers who want to navigate the non-technical challenges of their careers. Hosted by experienced developers Dave Smith and Jamison Dance, the show addresses the interpersonal and professional situations that coding bootcamps and computer science programs typically don't cover.<br><br>
-                                    The podcast tackles practical workplace scenarios that software engineers encounter regularly, including salary negotiations, managing difficult colleagues, advancing into technical leadership roles, handling code review feedback diplomatically, and making strategic career decisions like when to change jobs or seek promotions. Episodes feature listener-submitted questions covering situations ranging from dealing with underperforming team members to managing the transition into management roles.
+                                    Soft Skills Engineering is a weekly advice
+                                    podcast specifically designed for software
+                                    developers who want to navigate the
+                                    non-technical challenges of their careers.
+                                    Hosted by experienced developers Dave Smith
+                                    and Jamison Dance, the show addresses the
+                                    interpersonal and professional situations
+                                    that coding bootcamps and computer science
+                                    programs typically don't cover.<br /><br />
+                                    The podcast tackles practical workplace
+                                    scenarios that software engineers encounter
+                                    regularly, including salary negotiations,
+                                    managing difficult colleagues, advancing
+                                    into technical leadership roles, handling
+                                    code review feedback diplomatically, and
+                                    making strategic career decisions like when
+                                    to change jobs or seek promotions. Episodes
+                                    feature listener-submitted questions
+                                    covering situations ranging from dealing
+                                    with underperforming team members to
+                                    managing the transition into management
+                                    roles.
                                 </div>
                             </div>
-                            <div class="border-l-4 border-primary pl-4 py-2 bg-secondary">
+                            <div
+                                class="border-l-4 border-primary pl-4 py-2 bg-secondary"
+                            >
                                 <div class="font-semibold mb-1">Example 2:</div>
                                 <div class="text-xs text-gray-700">
-                                    NeetCode is an online platform designed for coding interview preparation, particularly for FAANG and big tech companies. The platform provides a structured approach to preparing for coding interviews with curated problem sets and comprehensive learning resources.<br><br>
-                                    The platform's flagship offering is the NeetCode 150, which expands on the popular Blind 75 problem set by adding 75 additional problems, creating a comprehensive list for developers familiar with basic algorithms and data structures. The site includes video explanations, coding solutions, and systematic approaches to tackling technical interview questions across various difficulty levels and problem categories.<br><br>
-                                    NeetCode also maintains a popular YouTube channel known for its concise and straightforward explanations of common interview questions, with clear problem-solving strategies that are accessible to both beginners and experienced coders.
+                                    NeetCode is an online platform designed for
+                                    coding interview preparation, particularly
+                                    for FAANG and big tech companies. The
+                                    platform provides a structured approach to
+                                    preparing for coding interviews with curated
+                                    problem sets and comprehensive learning
+                                    resources.<br /><br />
+                                    The platform's flagship offering is the
+                                    NeetCode 150, which expands on the popular
+                                    Blind 75 problem set by adding 75 additional
+                                    problems, creating a comprehensive list for
+                                    developers familiar with basic algorithms
+                                    and data structures. The site includes video
+                                    explanations, coding solutions, and
+                                    systematic approaches to tackling technical
+                                    interview questions across various
+                                    difficulty levels and problem categories.<br /><br />
+                                    NeetCode also maintains a popular YouTube
+                                    channel known for its concise and
+                                    straightforward explanations of common
+                                    interview questions, with clear
+                                    problem-solving strategies that are
+                                    accessible to both beginners and experienced
+                                    coders.
                                 </div>
                             </div>
                         </div>
                     </template>
                     <template #footer>
-                        <button @click="showDescriptionHelp = false" class="px-4 py-2 bg-primary text-white rounded hover:bg-primaryDark transition">Close</button>
+                        <button
+                            @click="showDescriptionHelp = false"
+                            class="px-4 py-2 bg-primary text-white rounded hover:bg-primaryDark transition"
+                        >
+                            Close
+                        </button>
                     </template>
                 </ConfirmationModal>
             </div>
 
             <!-- Difficulty Field -->
             <div class="flex flex-col gap-1">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >Difficulty
                     <span class="text-red-500"> * </span>
                 </label>
@@ -222,7 +352,8 @@ watch(
 
             <!-- Pricing Field -->
             <div class="flex flex-col gap-1">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-200"
+                <label
+                    class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >Pricing
                     <span class="text-red-500"> * </span>
                 </label>
@@ -242,11 +373,9 @@ watch(
         </div>
         <!-- continue Button -->
         <div class="flex pt-6 justify-end">
-            <PrimaryButton
-                @click="validateAndNext"
-            >
+            <PrimaryButton @click="validateAndNext">
                 Next
-                <Icon class="ml-2" icon="mdi:arrow-right"/>
+                <Icon class="ml-2" icon="mdi:arrow-right" />
             </PrimaryButton>
         </div>
     </div>

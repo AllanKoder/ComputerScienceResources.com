@@ -64,8 +64,23 @@ const navigateToStep = (step) => {
     scrollToForm();
 };
 
+const resetFormData = () => {
+    formData.name = "";
+    formData.platforms = [];
+    formData.page_url = "";
+    formData.image_file = null;
+    formData.pricing = "";
+    formData.difficulties = [];
+    formData.description = "";
+    formData.topic_tags = [];
+    formData.programming_language_tags = [];
+    formData.general_tags = [];
+};
+
+// Update resetForm to also clear the reactive formData
 const resetForm = () => {
     clearLocalStorage();
+    resetFormData();
     showReset.value = false;
     stepperValue.value = "1";
 };

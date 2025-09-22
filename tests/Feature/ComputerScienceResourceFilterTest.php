@@ -91,7 +91,8 @@ class ComputerScienceResourceFilterTest extends TestCase
         $validData[$field] = $invalidValue;
 
         $response = $this->getJson(route('resources.index', $validData));
-        $response->assertStatus(422);
+        $response->assertSessionHas('error');
+        $response->assertStatus(200);
     }
 
     public static function filterProvider(): array
