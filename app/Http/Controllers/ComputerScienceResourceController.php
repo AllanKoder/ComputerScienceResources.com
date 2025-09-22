@@ -6,7 +6,6 @@ use App\Exceptions\Resources\ResourceAlreadyCreatedException;
 use App\Exceptions\Resources\ResourceInvalidTabException;
 use App\Http\Requests\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
-use App\Models\NewsPost;
 use App\Services\ComputerScienceResourceFilter;
 use App\Services\ComputerScienceResourceService;
 use Illuminate\Http\Request;
