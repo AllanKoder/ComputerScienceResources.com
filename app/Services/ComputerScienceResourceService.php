@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\Resources\ResourceAlreadyCreatedException;
 use App\Exceptions\Resources\ResourceInvalidTabException;
 use App\Models\ComputerScienceResource;
+use App\Models\NewsPost;
 use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
 use App\Services\SortingManagers\ResourceSortingManager;
@@ -24,7 +25,34 @@ class ComputerScienceResourceService
         protected UpvoteService $upvoteService,
         protected ResourceReviewService $reviewService,
         protected ResourceSortingManager $resourceSortingManager,
+        protected ComputerScienceResourceFilter $filterService,
     ) {}
+
+    /**
+     * Get data for the resources index page (filters, pagination, news)
+     *
+     * @return array{
+     *     resources: \Illuminate\Contracts\Pagination\LengthAwarePaginator,
+     *     news_posts: \Illuminate\Database\Eloquent\Collection
+     * }
+     */
+    public function getIndexData(Request $request): array
+    {
+        $query = ComputerScienceResource::query();
+
+        // Apply filters and sorting through the dedicated filter service
+        $filters = $request->query();
+        $query = $this->filterService->applyFilters($query, $filters);
+
+        $resources = $query->paginate(20)->appends($request->query());
+
+        $news = NewsPost::limit(10)->get();
+
+        return [
+            'resources' => $resources,
+            'news_posts' => $news,
+        ];
+    }
 
     /**
      * Create a new ComputerScienceResource

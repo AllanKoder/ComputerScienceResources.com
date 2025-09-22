@@ -27,21 +27,26 @@ class ComputerScienceResourceController extends Controller
      */
     public function index(Request $request)
     {
-        $query = ComputerScienceResource::query();
+        try {
+            $data = $this->resourceService->getIndexData($request);
 
-        // Apply all filters and sorting
-        $filters = $request->query();
-        $query = $this->filterService->applyFilters($query, $filters);
+            return Inertia::render('Resources/Index', $data);
+        } catch (Throwable $e) {
+            Log::error('Error loading resources index', [
+                'user_id' => Auth::id(),
+                'query' => $request->query(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
 
-        // Paginate with appended query params
-        $resources = $query->paginate(20)->appends($request->query());
+            // Return an empty page with an error flash so the UI can show a message
+            session()->flash('error', 'Unable to load resources right now.');
 
-        $news = NewsPost::limit(10)->get();
-
-        return Inertia::render('Resources/Index', [
-            'resources' => $resources,
-            'news_posts' => $news,
-        ]);
+            return Inertia::render('Resources/Index', [
+                'resources' => ComputerScienceResource::query()->paginate(1),
+                'news_posts' => collect(),
+            ]);
+        }
     }
 
     /**
