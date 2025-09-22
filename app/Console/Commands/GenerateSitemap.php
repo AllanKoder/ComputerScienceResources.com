@@ -15,11 +15,11 @@ class GenerateSitemap extends Command
 
     public function handle()
     {
-            ->add(Url::create(route('home'))) // homepage
-            ->add(Url::create(route('about'))) // about page example
+        $sitemap = Sitemap::create()
+            ->add(Url::create(route('home')))
+            ->add(Url::create(route('about')))
             ->add(Url::create(route('login')))
             ->add(Url::create(route('register')));
-            ->add(Url::create('/register'));
 
         // Add each resource page to the sitemap with last modification date if available
         // Limit to a maximum of 30,000 resources
