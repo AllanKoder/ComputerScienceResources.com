@@ -139,7 +139,6 @@ watch(
                     class="block text-sm font-medium text-gray-700 dark:text-gray-200"
                     >Image Thumbnail</label
                 >
-                {{ props.formData.image_file }}
                 <PictureInput
                     ref="pictureInput"
                     width="220"
