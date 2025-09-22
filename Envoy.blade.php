@@ -4,6 +4,7 @@
 @story('deploy', ['skipBackup' => false, 'skipFrontend' => false])
     @if(!$skipFrontend)
         build-frontend
+        push-frontend
     @endif
     @if(!$skipBackup)
         backup-database
@@ -14,7 +15,7 @@
     perform-migration
     optimize-cache
     @if(!$skipFrontend)
-        push-frontend
+        switch-frontend
     @endif
     up
 @endstory
@@ -76,6 +77,39 @@
 
 @task('push-frontend', ['on' => 'local'])
     set -e
-    echo "Copying compiled assets to server..."
-    scp -r {{ __DIR__ }}/public/build root@143.198.129.111:/var/www/ComputerScienceResources.com/public
+    echo "Copying compiled frontend to server (staging to new_public)..."
+    # ensure destination staging directory exists on server
+    ssh root@143.198.129.111 'mkdir -p /var/www/ComputerScienceResources.com/new_public'
+    # copy the whole public directory (including build assets) to the staging directory
+    scp -r {{ __DIR__ }}/public root@143.198.129.111:/var/www/ComputerScienceResources.com/new_public
+@endtask
+
+
+@task('switch-frontend', ['on' => 'server'])
+    set -e
+    cd /var/www/ComputerScienceResources.com
+    echo "Checking maintenance mode before switching frontend..."
+    # only switch if application is in maintenance mode (artisan creates storage/framework/down)
+    if [ -f storage/framework/down ]; then
+        echo "Maintenance mode detected — performing frontend switch"
+        if [ ! -d new_public ]; then
+            echo "No new_public directory found, aborting frontend switch"
+            exit 1
+        fi
+
+        if [ -d public ]; then
+            timestamp=$(date +%s)
+            echo "Backing up current public to public_old_$timestamp"
+            mv public public_old_$timestamp
+        fi
+
+        echo "Promoting new_public to public"
+        mv new_public public
+
+        # Fix permissions if needed
+        chown -R www-data:www-data public || true
+        echo "Frontend switch complete"
+    else
+        echo "Application is not in maintenance mode — skipping frontend switch"
+    fi
 @endtask
