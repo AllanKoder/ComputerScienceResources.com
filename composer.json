@@ -35,7 +35,6 @@
         "barryvdh/laravel-ide-helper": "^3.5",
         "beyondcode/laravel-query-detector": "^2.0",
         "fakerphp/faker": "^1.23",
-        "laravel/envoy": "^2.10",
         "laravel/pail": "^1.1",
         "laravel/pint": "^1.24",
         "laravel/sail": "^1.40",
