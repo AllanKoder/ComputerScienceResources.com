@@ -1,4 +1,4 @@
-@servers(['local' => ['127.0.0.1'], 'server' => ['root@143.198.129.111']])
+@servers(['local' => ['127.0.0.1'], 'server' => ['root@0.0.0.0']])
 
 {{-- Full deploy flow --}}
 @story('deploy', ['skipBackup' => false, 'skipFrontend' => false])

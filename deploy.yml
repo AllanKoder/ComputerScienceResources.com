@@ -1,0 +1,84 @@
+---
+- name: Build Frontend Locally
+  hosts: local
+  tasks:
+    - name: Build frontend
+      shell: |
+        npm ci && npm run build
+      args:
+        chdir: "{{ playbook_dir }}"
+      when: not skip_frontend | default(false)
+
+
+- name: Deploy Updates To Server
+  hosts: app_servers
+  become: yes
+  vars:
+    project_path: /var/www/ComputerScienceResources.com
+    repo_url: git@github.com:AllanKoder/ComputerScienceResources.com.git
+
+  tasks:
+    - name: Ensure project directory exists
+      file:
+        path: /var/www/ComputerScienceResources.com/public
+        state: directory
+        mode: '0755'
+        owner: www-data
+        group: www-data
+
+    - name: Push frontend as new_build
+      synchronize:
+        src: "{{ playbook_dir }}/public/build/"
+        dest: /var/www/ComputerScienceResources.com/public/new_build/
+        recursive: yes
+
+    - name: Backup database
+      command: php artisan backup:run --only-db
+      args:
+        chdir: "{{ project_path }}"
+      when: not skip_backup | default(false)
+
+    - name: Bring app down
+      command: php artisan down
+      args:
+        chdir: "{{ project_path }}"
+
+    - name: Update code
+      git:
+        repo: "{{ repo_url }}"
+        dest: "{{ project_path }}"
+        version: master
+
+    - name: Install PHP dependencies
+      shell: |
+        php -d memory_limit=-1 $(which composer) install \
+          --no-dev \
+          --optimize-autoloader \
+          --prefer-dist \
+          --no-interaction
+      args:
+        chdir: "{{ project_path }}"
+
+    - name: Run migrations
+      command: php artisan migrate --force
+      args:
+        chdir: "{{ project_path }}"
+
+    - name: Swap new_build into build
+      command: mv /var/www/ComputerScienceResources.com/public/new_build /var/www/ComputerScienceResources.com/public/build
+      when: not skip_frontend | default(false)
+
+    - name: Optimize caches
+      command: php artisan {{ item }}
+      args:
+        chdir: "{{ project_path }}"
+      loop:
+        - cache:clear
+        - config:cache
+        - route:cache
+        - view:cache
+
+    - name: Bring app up
+      command: php artisan up
+      args:
+        chdir: "{{ project_path }}"
