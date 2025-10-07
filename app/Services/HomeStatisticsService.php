@@ -19,7 +19,7 @@ class HomeStatisticsService
     {
         return DB::table('computer_science_resources')
             ->whereNotNull('image_path')
-            ->limit(10)
+            ->limit(30)
             ->get()
             ->map(fn ($res) => [
                 'id' => $res->id,
@@ -35,7 +35,7 @@ class HomeStatisticsService
     private function topTopics(): Collection
     {
         return DB::table('tag_frequencies')->where('type', 'topics_tags')
-            ->orderByDesc('count')->limit(10)->get();
+            ->orderByDesc('count')->limit(20)->get();
     }
 
     private function topicsCount(): int

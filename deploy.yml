@@ -7,7 +7,7 @@
         npm ci && npm run build
       args:
         chdir: "{{ playbook_dir }}"
-      when: not skip_frontend | default(false)
+      when: not (skip_frontend | default(false))
 
 
 - name: Deploy Updates To Server
@@ -31,12 +31,13 @@
         src: "{{ playbook_dir }}/public/build/"
         dest: /var/www/ComputerScienceResources.com/public/new_build/
         recursive: yes
+      when: not (skip_frontend | default(false))
 
     - name: Backup database
       command: php artisan backup:run --only-db
       args:
         chdir: "{{ project_path }}"
-      when: not skip_backup | default(false)
+      when: not (skip_backup | default(false))
 
     - name: Bring app down
       command: php artisan down
@@ -66,7 +67,7 @@
 
     - name: Swap new_build into build
       command: mv /var/www/ComputerScienceResources.com/public/new_build /var/www/ComputerScienceResources.com/public/build
-      when: not skip_frontend | default(false)
+      when: not (skip_frontend | default(false))
 
     - name: Optimize caches
       command: php artisan {{ item }}

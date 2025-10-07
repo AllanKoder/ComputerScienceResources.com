@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Utilities\UrlUtilities;
+use Illuminate\Support\Facades\Auth;
 
 class ResourceEditsService
 {
@@ -34,6 +35,10 @@ class ResourceEditsService
     public function canMergeEdits(ResourceEdits $edits): bool
     {
         if (app()->isLocal()) {
+            return true;
+        }
+
+        if (Auth::user()->isAdmin()) {
             return true;
         }
 

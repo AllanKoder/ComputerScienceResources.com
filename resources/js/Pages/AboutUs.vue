@@ -111,7 +111,7 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                                     What kind of resources are accepted?
                                 </template>
                                 <template #answer>
-                                    I focus on comprehensive, structured, and high-quality resources—things that provide long-term learning value. That includes interactive platforms, educational YouTube channels, curated book series, technical newsletters, and more. The more focused or specialized the resource is, the better.
+                                    We focus on comprehensive, structured, and high-quality resources—things that provide long-term learning value. That includes interactive platforms, educational YouTube channels, curated book series, technical newsletters, and more. The more focused or specialized the resource is, the better.
                                 </template>
                             </FrequentlyAskedQuestion>
 
