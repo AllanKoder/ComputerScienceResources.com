@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Models\ComputerScienceResource;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 class UpdateTagFrequencies extends Command
@@ -36,6 +36,7 @@ class UpdateTagFrequencies extends Command
         }
 
         $this->info('✅ Tag frequency update complete!');
+
         return self::SUCCESS;
     }
 
@@ -63,6 +64,6 @@ class UpdateTagFrequencies extends Command
             );
         }
 
-        $this->line("Updated " . count($frequencies) . " entries for {$type}.");
+        $this->line('Updated '.count($frequencies)." entries for {$type}.");
     }
 }
