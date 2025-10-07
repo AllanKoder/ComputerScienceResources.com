@@ -84,9 +84,9 @@ class ComputerScienceResourceTest extends TestCase
             'invalid page_url' => ['page_url', 'not-a-url'],
             'invalid difficulty' => ['difficulties', 'invalid_difficulty'],
             'invalid pricing' => ['pricing', 'invalid_pricing'],
-            'too few topic_tags' => ['topic_tags', ['tag1']],
+            'too few topics_tags' => ['topics_tags', ['tag1']],
             'invalid image_file' => ['image_file', 'not-an-image'],
-            'null programming_language_tags' => ['programming_language_tags', null],
+            'null programming_languages_tags' => ['programming_languages_tags', null],
             'non-distinct general_tags' => ['general_tags', ['a', 'a', 'a']],
         ];
     }

@@ -46,9 +46,9 @@ const formData = useForm({
         difficulties: props.resource.difficulties,
         pricing: props.resource.pricing,
         platforms: props.resource.platforms,
-        topic_tags: props.resource.topic_tags || [],
-        programming_language_tags:
-            props.resource.programming_language_tags || [],
+        topics_tags: props.resource.topics_tags || [],
+        programming_languages_tags:
+            props.resource.programming_languages_tags || [],
         general_tags: props.resource.general_tags || [],
     },
 });
@@ -455,20 +455,20 @@ const submit = async () => {
                                 <TagSelector
                                     :tag-type="'topics_tags'"
                                     v-model="
-                                        formData.proposed_changes.topic_tags
+                                        formData.proposed_changes.topics_tags
                                     "
                                     @blur="
                                         validateField(
-                                            'proposed_changes.topic_tags'
+                                            'proposed_changes.topics_tags'
                                         )
                                     "
                                 />
                                 <InputError
                                     class="mt-2"
                                     :message="
-                                        errors['proposed_changes.topic_tags'] ||
+                                        errors['proposed_changes.topics_tags'] ||
                                         formData.errors[
-                                            'proposed_changes.topic_tags'
+                                            'proposed_changes.topics_tags'
                                         ]
                                     "
                                 />
@@ -480,11 +480,11 @@ const submit = async () => {
                                     :tag-type="'programming_languages_tags'"
                                     v-model="
                                         formData.proposed_changes
-                                            .programming_language_tags
+                                            .programming_languages_tags
                                     "
                                     @blur="
                                         validateField(
-                                            'proposed_changes.programming_language_tags'
+                                            'proposed_changes.programming_languages_tags'
                                         )
                                     "
                                 />
@@ -492,10 +492,10 @@ const submit = async () => {
                                     class="mt-2"
                                     :message="
                                         errors[
-                                            'proposed_changes.programming_language_tags'
+                                            'proposed_changes.programming_languages_tags'
                                         ] ||
                                         formData.errors[
-                                            'proposed_changes.programming_language_tags'
+                                            'proposed_changes.programming_languages_tags'
                                         ]
                                     "
                                 />

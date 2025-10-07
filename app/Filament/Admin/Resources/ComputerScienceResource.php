@@ -57,12 +57,12 @@ class ComputerScienceResource extends Resource
                     ->columns(2)
                     ->required(),
 
-                Forms\Components\TagsInput::make('topic_tags')
+                Forms\Components\TagsInput::make('topics_tags')
                     ->label('Topic Tags')
                     ->disabled()
                     ->helperText('These are computed from relationships'),
 
-                Forms\Components\TagsInput::make('programming_language_tags')
+                Forms\Components\TagsInput::make('programming_languages_tags')
                     ->label('Programming Language Tags')
                     ->disabled()
                     ->helperText('These are computed from relationships'),
@@ -94,16 +94,16 @@ class ComputerScienceResource extends Resource
                 TextColumn::make('name')->searchable()
                     ->description(fn (ModelsComputerScienceResource $resource): string => $resource->description)->wrap(),
                 TextColumn::make('page_url')->searchable()->wrap()->copyable(),
-                TextColumn::make('topic_tags')
+                TextColumn::make('topics_tags')
                     ->label('topics_tags')
                     ->badge()
                     ->color('primary')
-                    ->getStateUsing(fn ($record) => $record->topic_tags),
-                TextColumn::make('programming_language_tags')
+                    ->getStateUsing(fn ($record) => $record->topics_tags),
+                TextColumn::make('programming_languages_tags')
                     ->label('Languages')
                     ->badge()
                     ->color('info')
-                    ->getStateUsing(fn ($record) => $record->programming_language_tags),
+                    ->getStateUsing(fn ($record) => $record->programming_languages_tags),
                 TextColumn::make('general_tags')
                     ->label('General Tags')
                     ->badge()

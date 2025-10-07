@@ -86,11 +86,11 @@ class ComputerScienceResourceService
             ]);
 
             // Add topics as tags
-            $resource->topic_tags = $validatedData['topic_tags'];
+            $resource->topics_tags = $validatedData['topics_tags'];
 
             // Add programming languages as tags (if provided)
-            if (isset($validatedData['programming_language_tags'])) {
-                $resource->programming_language_tags = $validatedData['programming_language_tags'];
+            if (isset($validatedData['programming_languages_tags'])) {
+                $resource->programming_languages_tags = $validatedData['programming_languages_tags'];
             }
 
             // Add general tags (if provided)

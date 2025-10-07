@@ -109,13 +109,13 @@ const emit = defineEmits(["upvote", "downvote"]);
                 <!-- Row 2: Tags -->
                 <div class="flex flex-wrap items-center gap-3 text-xs">
                     <!-- Topic Tags -->
-                    <div v-if="resource.topic_tags?.length" class="flex items-center gap-1 px-2 py-1 rounded-md">
+                    <div v-if="resource.topics_tags?.length" class="flex items-center gap-1 px-2 py-1 rounded-md">
                         <span class="inline-flex items-center gap-1 font-semibold text-blue-700 dark:text-blue-200">
                             <Icon icon="mdi:bookmark" width="14" height="14" />
                             Topics:
                         </span>
                         <div class="inline-flex flex-wrap items-center gap-0.5">
-                            <span v-for="tag in resource.topic_tags" :key="tag"
+                            <span v-for="tag in resource.topics_tags" :key="tag"
                                 class="inline-flex items-center gap-1 bg-blue-100/50 dark:bg-blue-800/30 px-2 py-0.5 rounded-full text-blue-700 dark:text-blue-200">
                                 {{ tag }}
                             </span>
@@ -123,13 +123,13 @@ const emit = defineEmits(["upvote", "downvote"]);
                     </div>
 
                     <!-- Programming Language Tags -->
-                    <div v-if="resource.programming_language_tags?.length" class="flex items-center gap-1.5 px-2 py-1 rounded-md">
+                    <div v-if="resource.programming_languages_tags?.length" class="flex items-center gap-1.5 px-2 py-1 rounded-md">
                         <span class="inline-flex items-center gap-1 font-semibold text-purple-700 dark:text-purple-200">
                             <Icon icon="mdi:language-typescript" width="14" height="14" />
                             Languages:
                         </span>
                         <div class="inline-flex flex-wrap items-center gap-0.5">
-                            <span v-for="tag in resource.programming_language_tags" :key="tag"
+                            <span v-for="tag in resource.programming_languages_tags" :key="tag"
                                 class="inline-flex items-center gap-1 bg-purple-100/50 dark:bg-purple-800/30 px-2 py-0.5 rounded-full text-purple-700 dark:text-purple-200">
                                 {{ tag }}
                             </span>

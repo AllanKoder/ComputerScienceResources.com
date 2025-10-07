@@ -23,8 +23,8 @@ use Spatie\Activitylog\Traits\LogsActivity;
 use Spatie\Tags\HasTags;
 
 /**
- * @property array $topic_tags
- * @property array $programming_language_tags
+ * @property array $topics_tags
+ * @property array $programming_languages_tags
  * @property array $general_tags
  */
 #[ObservedBy([ComputerScienceResourceObserver::class])]
@@ -54,9 +54,9 @@ class ComputerScienceResource extends Model
 
     protected $table = 'computer_science_resources';
 
-    protected $guarded = ['topic_tags', 'programming_language_tags', 'general_tags'];
+    protected $guarded = ['topics_tags', 'programming_languages_tags', 'general_tags'];
 
-    protected $appends = ['topic_tags', 'programming_language_tags', 'general_tags', 'vote_score', 'user_vote', 'comments_count', 'image_url'];
+    protected $appends = ['topics_tags', 'programming_languages_tags', 'general_tags', 'vote_score', 'user_vote', 'comments_count', 'image_url'];
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -140,12 +140,12 @@ class ComputerScienceResource extends Model
     /**
      * Accessor to get topic tags.
      */
-    protected function topicTags(): Attribute
+    protected function topicsTags(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->tagsWithType('topics_tags')->pluck('name')->toArray(),
             set: function (array $value) {
-                $old_value = $this->topic_tags;
+                $old_value = $this->topics_tags;
                 $this->syncTagsWithType($value, 'topics_tags');
                 TagFrequencyChanged::dispatch('topics_tags', $old_value, $value);
 
@@ -157,12 +157,12 @@ class ComputerScienceResource extends Model
     /**
      * Accessor to get programming language tags.
      */
-    protected function programmingLanguageTags(): Attribute
+    protected function programmingLanguagesTags(): Attribute
     {
         return Attribute::make(
             get: fn () => $this->tagsWithType('programming_languages_tags')->pluck('name')->toArray(),
             set: function (array $value) {
-                $old_value = $this->programming_language_tags;
+                $old_value = $this->programming_languages_tags;
                 $this->syncTagsWithType($value, 'programming_languages_tags');
                 TagFrequencyChanged::dispatch('programming_languages_tags', $old_value, $value);
 

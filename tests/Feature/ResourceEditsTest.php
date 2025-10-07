@@ -40,10 +40,10 @@ class ResourceEditsTest extends TestCase
             'invalid page_url' => ['page_url', 'not-a-url'],
             'invalid difficulty' => ['difficulties', 'invalid_difficulty'],
             'invalid pricing' => ['pricing', 'invalid_pricing'],
-            'topic_tags too few' => ['topic_tags', ['tag1']],
+            'topics_tags too few' => ['topics_tags', ['tag1']],
             'invalid image_file' => ['image_file', 'not-a-file'],
             'general_tags not an array' => ['general_tags', 'not-an-array'],
-            'programming_language_tags not an array' => ['programming_language_tags', 'not-an-array'],
+            'programming_languages_tags not an array' => ['programming_languages_tags', 'not-an-array'],
         ];
     }
 
@@ -104,8 +104,8 @@ class ResourceEditsTest extends TestCase
             $editData['proposed_changes']['platforms'] = $resource->platforms;
             $editData['proposed_changes']['difficulties'] = $resource->difficulties;
             $editData['proposed_changes']['pricing'] = $resource->pricing;
-            $editData['proposed_changes']['topic_tags'] = $resource->topic_tags;
-            $editData['proposed_changes']['programming_language_tags'] = $resource->programming_language_tags;
+            $editData['proposed_changes']['topics_tags'] = $resource->topics_tags;
+            $editData['proposed_changes']['programming_languages_tags'] = $resource->programming_languages_tags;
             $editData['proposed_changes']['general_tags'] = $resource->general_tags;
 
             $response = $this->post(route('resource_edits.store', $resource), $editData);
@@ -160,8 +160,8 @@ class ResourceEditsTest extends TestCase
                 'difficulties' => fake()->randomElements(config('computerScienceResource.difficulties'), rand(1, 3)),
                 'platforms' => fake()->randomElements(config('computerScienceResource.platforms'), fake()->numberBetween(1, 3)),
                 'pricing' => fake()->randomElement(config('computerScienceResource.pricings')),
-                'topic_tags' => ["$i-a", "$i-b", "$i-c"],
-                'programming_language_tags' => ["$i-a", "$i-b", "$i-c"],
+                'topics_tags' => ["$i-a", "$i-b", "$i-c"],
+                'programming_languages_tags' => ["$i-a", "$i-b", "$i-c"],
                 'general_tags' => ["$i-a", "$i-b", "$i-c"],
             ];
 
@@ -185,8 +185,8 @@ class ResourceEditsTest extends TestCase
             // Arrays
             $this->assertEqualsCanonicalizing($changes['difficulties'], $resource->difficulties);
             $this->assertEqualsCanonicalizing($changes['platforms'], $resource->platforms);
-            $this->assertEqualsCanonicalizing($changes['topic_tags'], $resource->topic_tags);
-            $this->assertEqualsCanonicalizing($changes['programming_language_tags'], $resource->programming_language_tags);
+            $this->assertEqualsCanonicalizing($changes['topics_tags'], $resource->topics_tags);
+            $this->assertEqualsCanonicalizing($changes['programming_languages_tags'], $resource->programming_languages_tags);
             $this->assertEqualsCanonicalizing($changes['general_tags'], $resource->general_tags);
         }
     }
@@ -200,8 +200,8 @@ class ResourceEditsTest extends TestCase
             'name' => 'Resource Name Edited',
             'description' => 'Resource Description Changed',
             'image_file' => null, // Delete operation
-            'topic_tags' => ['1', '2', '3'],
-            'programming_language_tags' => [],
+            'topics_tags' => ['1', '2', '3'],
+            'programming_languages_tags' => [],
             'general_tags' => [],
         ];
 
@@ -215,8 +215,8 @@ class ResourceEditsTest extends TestCase
         $this->assertNull($resource->image_path);
 
         // Changes
-        $this->assertEqualsCanonicalizing($changes['topic_tags'], $resource->topic_tags);
-        $this->assertEqualsCanonicalizing($changes['programming_language_tags'], $resource->programming_language_tags);
+        $this->assertEqualsCanonicalizing($changes['topics_tags'], $resource->topics_tags);
+        $this->assertEqualsCanonicalizing($changes['programming_languages_tags'], $resource->programming_languages_tags);
         $this->assertEqualsCanonicalizing($changes['general_tags'], $resource->general_tags);
     }
 
