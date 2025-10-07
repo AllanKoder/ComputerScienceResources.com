@@ -475,7 +475,7 @@ const submit = async () => {
                             </div>
 
                             <div class="mt-4">
-                                <InputLabel value="Programming Language Tags" />
+                                <InputLabel value="Programming Languages/Frameworks" />
                                 <TagSelector
                                     :tag-type="'programming_languages_tags'"
                                     v-model="

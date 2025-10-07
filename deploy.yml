@@ -66,7 +66,9 @@
         chdir: "{{ project_path }}"
 
     - name: Remove old build directory
-      command: rm -rf /var/www/ComputerScienceResources.com/public/build
+      file:
+        path: /var/www/ComputerScienceResources.com/public/build
+        state: absent
       when: not (skip_frontend | default(false))
 
     - name: Swap new_build into build

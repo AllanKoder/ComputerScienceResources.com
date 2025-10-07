@@ -60,7 +60,7 @@ class ResourceEdits extends Model
     {
         return [
             'slug' => [
-                'source' => ['edit_title', 'computer_science_resource_id'],
+                'source' => ['edit_title', 'id'],
                 'unique' => true,
             ],
         ];

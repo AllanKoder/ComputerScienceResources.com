@@ -89,7 +89,7 @@ const validateAndNext = async () => {
 
             <!-- Tag Selector for Programming Languages -->
             <h2 class="text-2xl font-bold mt-5 mb-1 text-center text-gray-900 dark:text-gray-100">
-                Programming languages/frameworks taught (if any)?
+                Programming Languages/Frameworks taught (if any)?
             </h2>
             <p class="text-center italic mb-2 text-gray-600 dark:text-gray-300">python, c++, c#, vue.js, pytorch</p>
             <TagSelector
