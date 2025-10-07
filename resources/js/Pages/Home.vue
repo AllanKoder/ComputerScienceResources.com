@@ -104,15 +104,14 @@ const fmt = (n) => new Intl.NumberFormat().format(Number(n || 0));
                     <p
                         class="mt-2 text-2xl md:text-3xl font-semibold text-gray-800 dark:text-gray-200 mb-4"
                     >
-                        Over
                         <span class="text-primary">{{
                             fmt(props.resources_count)
-                        }}</span>
-                        resources, covering over
+                        }}+</span>
+                        resources covering over
                         <span class="text-primary">{{
                             fmt(props.topics_count)
                         }}</span>
-                        topics.
+                        topics
                     </p>
 
                     <div
