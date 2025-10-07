@@ -38,7 +38,8 @@ class ResourceEditsService
             return true;
         }
 
-        if (Auth::user()->isAdmin()) {
+        $user = Auth::user();
+        if ($user && $user->isAdmin()) {
             return true;
         }
 
