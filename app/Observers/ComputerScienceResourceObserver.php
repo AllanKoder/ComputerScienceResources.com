@@ -41,8 +41,8 @@ class ComputerScienceResourceObserver
 
     public function deleting(ComputerScienceResource $computerScienceResource): void
     {
-        $computerScienceResource->topic_tags = [];
-        $computerScienceResource->programming_language_tags = [];
+        $computerScienceResource->topics_tags = [];
+        $computerScienceResource->programming_languages_tags = [];
         $computerScienceResource->general_tags = [];
 
         // Delete the image

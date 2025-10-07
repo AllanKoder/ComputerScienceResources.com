@@ -68,8 +68,8 @@ class TagSearchTest extends TestCase
         $this->actingAs($this->user);
 
         $formData = StoreResourceRequestFactory::new()->create([
-            'topic_tags' => ['python', 'algorithms', 'java'],
-            'programming_language_tags' => ['python'],
+            'topics_tags' => ['python', 'algorithms', 'java'],
+            'programming_languages_tags' => ['python'],
             'general_tags' => ['beginner'],
         ]);
 
@@ -130,8 +130,8 @@ class TagSearchTest extends TestCase
         $editData['edit_title'] = 'Tag Update';
         $editData['edit_description'] = 'Tag change for test';
         $editData['proposed_changes'] = [];
-        $editData['proposed_changes']['topic_tags'] = ['python', 'algorithms', 'tag1'];
-        $editData['proposed_changes']['programming_language_tags'] = ['python'];
+        $editData['proposed_changes']['topics_tags'] = ['python', 'algorithms', 'tag1'];
+        $editData['proposed_changes']['programming_languages_tags'] = ['python'];
         $editData['proposed_changes']['general_tags'] = ['tutorial'];
 
         // Create the edit

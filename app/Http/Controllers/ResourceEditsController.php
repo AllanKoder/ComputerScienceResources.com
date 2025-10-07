@@ -123,7 +123,7 @@ class ResourceEditsController extends Controller
 
             $resource->save();
 
-            $proposedTagFields = ['topic_tags', 'programming_language_tags', 'general_tags'];
+            $proposedTagFields = ['topics_tags', 'programming_languages_tags', 'general_tags'];
             foreach ($proposedTagFields as $field) {
                 if (array_key_exists($field, $changes)) {
                     $resource->$field = $changes[$field];

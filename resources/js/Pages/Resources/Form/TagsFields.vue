@@ -83,7 +83,7 @@ const validateAndNext = async () => {
             </p>
             <TagSelector
                 :tag-type="'topics_tags'"
-                v-model="props.form.topic_tags"
+                v-model="props.form.topics_tags"
             ></TagSelector>
             <PrimeVueFormError :errors="errors" />
 
@@ -94,7 +94,7 @@ const validateAndNext = async () => {
             <p class="text-center italic mb-2 text-gray-600 dark:text-gray-300">python, c++, c#, vue.js, pytorch</p>
             <TagSelector
                 :tag-type="'programming_languages_tags'"
-                v-model="props.form.programming_language_tags"
+                v-model="props.form.programming_languages_tags"
             />
 
             <!-- Tag Selector for Other tags -->

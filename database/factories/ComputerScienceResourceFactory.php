@@ -67,8 +67,8 @@ class ComputerScienceResourceFactory extends Factory
             $generalTags = $this->generalTags ?? fake()->randomElements($fakerTags);
             $generalTags = array_map([$this, 'sanitizeTag'], $generalTags);
 
-            $resource->topic_tags = $topicTags;
-            $resource->programming_language_tags = $programmingLanguageTags;
+            $resource->topics_tags = $topicTags;
+            $resource->programming_languages_tags = $programmingLanguageTags;
             $resource->general_tags = $generalTags;
         });
     }

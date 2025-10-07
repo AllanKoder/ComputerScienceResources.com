@@ -22,8 +22,8 @@ class ComputerScienceResourceResource extends JsonResource
             'platforms' => $this->platforms,
             'difficulties' => $this->difficulties,
             'pricing' => $this->pricing,
-            'topic_tags' => $this->topic_tags,
-            'programming_language_tags' => $this->programming_language_tags,
+            'topics_tags' => $this->topics_tags,
+            'programming_languages_tags' => $this->programming_languages_tags,
             'general_tags' => $this->general_tags,
         ];
     }

@@ -22,8 +22,8 @@ const formFields = [
     "pricing",
     "difficulties",
     "description",
-    "topic_tags",
-    "programming_language_tags",
+    "topics_tags",
+    "programming_languages_tags",
     "general_tags",
 ];
 
@@ -35,8 +35,8 @@ const formData = reactive({
     pricing: "",
     difficulties: [],
     description: "",
-    topic_tags: [],
-    programming_language_tags: [],
+    topics_tags: [],
+    programming_languages_tags: [],
     general_tags: [],
 });
 
@@ -72,8 +72,8 @@ const resetFormData = () => {
     formData.pricing = "";
     formData.difficulties = [];
     formData.description = "";
-    formData.topic_tags = [];
-    formData.programming_language_tags = [];
+    formData.topics_tags = [];
+    formData.programming_languages_tags = [];
     formData.general_tags = [];
 };
 

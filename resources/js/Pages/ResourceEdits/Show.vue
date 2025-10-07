@@ -52,8 +52,8 @@ const fieldConfig = {
         component: TagDiffViewer,
         formatter: getPlatformLabel
     },
-    topic_tags: { label: "Topic Tags", component: TagDiffViewer },
-    programming_language_tags: {
+    topics_tags: { label: "Topic Tags", component: TagDiffViewer },
+    programming_languages_tags: {
         label: "Programming Language Tags",
         component: TagDiffViewer,
     },

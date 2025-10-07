@@ -32,8 +32,8 @@ class ResourceEditsFactory extends Factory
             'platforms' => $this->faker->randomElements($platforms, rand(1, 3)),
             'difficulties' => $this->faker->randomElements($difficulties, rand(1, 3)),
             'pricing' => $this->faker->randomElement($pricings),
-            'topic_tags' => ['data-structures', 'algorithms'],
-            'programming_language_tags' => ['python'],
+            'topics_tags' => ['data-structures', 'algorithms'],
+            'programming_languages_tags' => ['python'],
             'general_tags' => ['interactive', 'challenging'],
         ];
 

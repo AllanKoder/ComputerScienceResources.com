@@ -24,8 +24,8 @@ class StoreResourceRequestFactory extends RequestFactory
             'platforms' => fake()->randomElements($platforms, rand(1, 3)),
             'difficulties' => fake()->randomElements($difficulties, rand(1, 3)),
             'pricing' => fake()->randomElement($pricings),
-            'topic_tags' => array_values($topicTags),
-            'programming_language_tags' => array_unique($this->faker->words(mt_rand(1, 5))),
+            'topics_tags' => array_values($topicTags),
+            'programming_languages_tags' => array_unique($this->faker->words(mt_rand(1, 5))),
             'general_tags' => array_unique($this->faker->words(mt_rand(2, 6))),
         ];
     }

@@ -143,7 +143,7 @@ const props = defineProps({
             <div class="flex flex-wrap items-center gap-4 text-sm">
                 <!-- Topic Tags -->
                 <div
-                    v-if="props.resource.topic_tags?.length"
+                    v-if="props.resource.topics_tags?.length"
                     class="flex items-center gap-1 px-2 py-1 rounded-md"
                 >
                     <span
@@ -154,7 +154,7 @@ const props = defineProps({
                     </span>
                     <div class="inline-flex flex-wrap items-center gap-0.5">
                         <span
-                            v-for="tag in props.resource.topic_tags"
+                            v-for="tag in props.resource.topics_tags"
                             :key="tag"
                             class="inline-flex items-center gap-1 bg-blue-100/50 dark:bg-blue-900/60 px-2 py-0.5 rounded-full text-blue-700 dark:text-blue-100"
                         >
@@ -165,7 +165,7 @@ const props = defineProps({
 
                 <!-- Programming Language Tags -->
                 <div
-                    v-if="props.resource.programming_language_tags?.length"
+                    v-if="props.resource.programming_languages_tags?.length"
                     class="flex items-center gap-1.5 px-2 py-1 rounded-md"
                 >
                     <span
@@ -181,7 +181,7 @@ const props = defineProps({
                     <div class="inline-flex flex-wrap items-center gap-0.5">
                         <span
                             v-for="tag in props.resource
-                                .programming_language_tags"
+                                .programming_languages_tags"
                             :key="tag"
                             class="inline-flex items-center gap-1 bg-purple-100/50 dark:bg-purple-900/60 px-2 py-0.5 rounded-full text-purple-700 dark:text-purple-100"
                         >

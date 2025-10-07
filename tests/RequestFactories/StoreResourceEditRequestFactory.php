@@ -18,7 +18,7 @@ class StoreResourceEditRequestFactory extends RequestFactory
             $topicTags = array_map([$this, 'sanitizeTag'], $topicTags);
         } while (count($topicTags) < 3);
 
-        // Ensure programming_language_tags and general_tags are sanitized and valid
+        // Ensure programming_languages_tags and general_tags are sanitized and valid
         do {
             $programmingLanguageTags = array_unique($this->faker->words(mt_rand(1, 3)));
             $programmingLanguageTags = array_map([$this, 'sanitizeTag'], $programmingLanguageTags);
@@ -37,8 +37,8 @@ class StoreResourceEditRequestFactory extends RequestFactory
             'platforms' => $this->faker->randomElements($platforms, rand(1, 3)),
             'difficulties' => $this->faker->randomElements($difficulties, rand(1, 3)),
             'pricing' => $this->faker->randomElement($pricings),
-            'topic_tags' => array_values($topicTags),
-            'programming_language_tags' => array_values($programmingLanguageTags),
+            'topics_tags' => array_values($topicTags),
+            'programming_languages_tags' => array_values($programmingLanguageTags),
             'general_tags' => array_values($generalTags),
         ];
 
