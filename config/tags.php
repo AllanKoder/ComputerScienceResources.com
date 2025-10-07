@@ -8,6 +8,7 @@ return [
      */
     'slugger' => function (string $name) {
         $lower = mb_strtolower($name);
+
         return $lower;
     },
 
