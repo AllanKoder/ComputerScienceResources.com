@@ -15,14 +15,14 @@ export const resourceMandatoryFields = object({
 });
 
 export const resourceMandatoryTags = object({
-    topic_tags: array()
+    topics_tags: array()
         .of(string().max(50))
         .min(2, "At least two topics are required")
         .required("Topics are required"),
 });
 
 export const optionalFields = object({
-    programming_languages: array().of(string().max(50)),
+    programming_languages_tags: array().of(string().max(50)),
     general_tags: array().of(string().max(50)),
 });
 
@@ -106,10 +106,10 @@ export const nullableResourceFields = object({
     description: string().max(10000),
     difficulties: array().of(string()),
     pricing: string(),
-    topic_tags: array()
+    topics_tags: array()
         .of(string().max(50))
         .min(2, "At least two topics are required"),
-    programming_language_tags: array().of(string().max(50)),
+    programming_languages_tags: array().of(string().max(50)),
     general_tags: array().of(string().max(50)),
 });
 
