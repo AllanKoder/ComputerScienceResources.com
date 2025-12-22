@@ -176,7 +176,7 @@ const props = defineProps({
                             width="14"
                             height="14"
                         />
-                        Languages:
+                        Languages/Frameworks:
                     </span>
                     <div class="inline-flex flex-wrap items-center gap-0.5">
                         <span

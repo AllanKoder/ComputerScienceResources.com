@@ -9,18 +9,20 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import Tag from "primevue/tag";
 import TabView from "primevue/tabview";
 import TabPanel from "primevue/tabpanel";
-
-// Component mapping for the Difference (Diff) view
-import TextDiffViewer from "@/Components/Diff/TextDiffViewer.vue";
-import SelectDiffViewer from "@/Components/Diff/SelectDiffViewer.vue";
-import TagDiffViewer from "@/Components/Diff/TagDiffViewer.vue";
-import ImageDiffViewer from "@/Components/Diff/ImageDiffViewer.vue";
 import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
 import Upvotable from "@/Components/Upvote/Upvotable.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import UserProfile from "@/Components/Profile/UserProfile.vue";
 import BackButton from "@/Components/Navigation/BackButton.vue";
+
+// Component mapping for the Difference (Diff) view
+import TextDiffViewer from "@/Components/Diff/TextDiffViewer.vue";
+import SelectDiffViewer from "@/Components/Diff/SelectDiffViewer.vue";
+import TagDiffViewer from "@/Components/Diff/TagDiffViewer.vue";
+import ImageDiffViewer from "@/Components/Diff/ImageDiffViewer.vue";
+
+
 
 const props = defineProps({
     editedResource: {

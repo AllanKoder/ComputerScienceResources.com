@@ -3,11 +3,12 @@ import { ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import UserDropdown from "@/Components/Navbar/UserDropdown.vue";
+import AboutDropdown from "@/Components/Navigation/AboutDropdown.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import ApplicationHeaderLogo from "@/Components/ApplicationHeaderLogo.vue";
-import { useDarkMode } from '@/Composables/useDarkMode.js';
+import { useDarkMode } from "@/Composables/useDarkMode.js";
 
 const showingNavigationDropdown = ref(false);
 
@@ -19,7 +20,9 @@ const { isDark, toggleDark } = useDarkMode();
 </script>
 
 <template>
-    <nav class="bg-white dark:bg-gray-900 border-accent dark:border-accent-dark">
+    <nav
+        class="bg-white dark:bg-gray-900 border-accent dark:border-accent-dark"
+    >
         <!-- Primary Navigation Menu -->
         <div class="w-full max-w-screen-2xl mx-auto px-4 md:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -27,19 +30,15 @@ const { isDark, toggleDark } = useDarkMode();
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center">
                         <Link :href="route('home')">
-                            <ApplicationHeaderLogo class="block h-9 w-auto max-w-[250px] sm:max-w-64 md:max-w-72 lg:max-w-80 xl:max-w-96 mr-2" />
+                            <ApplicationHeaderLogo
+                                class="block h-9 w-auto max-w-[250px] sm:max-w-64 md:max-w-72 lg:max-w-80 xl:max-w-96 mr-2"
+                            />
                         </Link>
                     </div>
 
                     <!-- Navigation Links -->
-                    <div class="hidden space-x-8 md:-my-px md:ms-10 md:flex">
-                        <NavLink
-                            :href="route('about')"
-                            :active="route().current('about')"
-                            class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
-                        >
-                            About Us
-                        </NavLink>
+                    <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
+                        <AboutDropdown />
 
                         <NavLink
                             :href="route('resources.index')"
@@ -51,24 +50,32 @@ const { isDark, toggleDark } = useDarkMode();
                     </div>
                 </div>
 
-
-
                 <!-- Authenticated -->
-                <div class="hidden md:flex md:items-center md:ms-6">
+                <div class="hidden lg:flex lg:items-center lg:ms-6">
                     <!-- Dark mode icon button -->
                     <button
                         @click="toggleDark"
                         type="button"
                         class="mx-2 p-2 rounded-full hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none text-primaryDark dark:text-primary"
                     >
-                        <Icon v-if="!isDark" icon="mdi:weather-night" class="size-6" />
-                        <Icon v-else icon="mdi:white-balance-sunny" class="size-6" />
+                        <Icon
+                            v-if="!isDark"
+                            icon="mdi:weather-night"
+                            class="size-6"
+                        />
+                        <Icon
+                            v-else
+                            icon="mdi:white-balance-sunny"
+                            class="size-6"
+                        />
                     </button>
 
                     <template v-if="$page.props.auth.user">
                         <!-- Create Resource Button -->
                         <Link :href="route('resources.create')">
-                            <SecondaryButton class="dark:bg-primary dark:text-white dark:hover:bg-primary">
+                            <SecondaryButton
+                                class="dark:bg-primary dark:text-white dark:hover:bg-primary"
+                            >
                                 <Icon icon="mdi:plus" class="mr-2" />
                                 Post a Resource
                             </SecondaryButton>
@@ -81,9 +88,11 @@ const { isDark, toggleDark } = useDarkMode();
                     </template>
                     <!-- Guest -->
                     <template v-else>
-                        <div class="hidden md:flex md:items-center md:ms-6">
+                        <div class="hidden lg:flex lg:items-center lg:ms-6">
                             <Link :href="route('login')">
-                                <SecondaryButton class="dark:bg-primary dark:text-white dark:hover:bg-primary">
+                                <SecondaryButton
+                                    class="dark:bg-primary dark:text-white dark:hover:bg-primary"
+                                >
                                     <Icon icon="mdi:login" class="mr-2" />
                                     Sign In
                                 </SecondaryButton>
@@ -92,12 +101,14 @@ const { isDark, toggleDark } = useDarkMode();
                     </template>
                 </div>
 
-
                 <!-- Hamburger -->
-                <div class="-me-2 flex items-center md:hidden">
+                <div class="-me-2 flex items-center lg:hidden">
                     <button
                         class="inline-flex items-center justify-center p-2 rounded-md text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none focus:bg-accent/30 dark:focus:bg-primaryDark/30 focus:text-primary dark:focus:text-primaryLight transition duration-150 ease-in-out"
-                        @click="showingNavigationDropdown = !showingNavigationDropdown"
+                        @click="
+                            showingNavigationDropdown =
+                                !showingNavigationDropdown
+                        "
                     >
                         <svg
                             class="size-6"
@@ -137,7 +148,7 @@ const { isDark, toggleDark } = useDarkMode();
                 block: showingNavigationDropdown,
                 hidden: !showingNavigationDropdown,
             }"
-            class="md:hidden bg-white dark:bg-gray-900 border-t border-accent dark:border-accent-dark"
+            class="lg:hidden bg-white dark:bg-gray-900 border-t border-accent dark:border-accent-dark"
         >
             <div class="pt-2 pb-3 space-y-2">
                 <!-- Dark mode icon button -->
@@ -146,17 +157,39 @@ const { isDark, toggleDark } = useDarkMode();
                     type="button"
                     class="mx-2 p-2 rounded-full hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none text-primaryDark dark:text-primary"
                 >
-                    <Icon v-if="!isDark" icon="mdi:weather-night" class="size-6" />
-                    <Icon v-else icon="mdi:white-balance-sunny" class="size-6" />
+                    <Icon
+                        v-if="!isDark"
+                        icon="mdi:weather-night"
+                        class="size-6"
+                    />
+                    <Icon
+                        v-else
+                        icon="mdi:white-balance-sunny"
+                        class="size-6"
+                    />
                 </button>
 
-                <ResponsiveNavLink
-                    :href="route('about')"
-                    :active="route().current('about')"
-                    class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
-                >
-                    About Us
-                </ResponsiveNavLink>
+                <!-- About Section -->
+                <div class="pl-4">
+                    <div class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">About</div>
+                    <ResponsiveNavLink
+                        :href="route('about')"
+                        :active="route().current('about')"
+                        class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight ml-4"
+                    >
+                        <Icon icon="mdi:information-outline" class="inline mr-2" />
+                        About Us
+                    </ResponsiveNavLink>
+
+                    <ResponsiveNavLink
+                        :href="route('rules')"
+                        :active="route().current('rules')"
+                        class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight ml-4"
+                    >
+                        <Icon icon="mdi:gavel" class="inline mr-2" />
+                        Rules
+                    </ResponsiveNavLink>
+                </div>
 
                 <ResponsiveNavLink
                     :href="route('resources.index')"
@@ -192,7 +225,9 @@ const { isDark, toggleDark } = useDarkMode();
 
             <!-- Responsive Settings Options -->
             <template v-if="$page.props.auth.user">
-                <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700">
+                <div
+                    class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-700"
+                >
                     <div class="flex items-center px-4">
                         <div
                             v-if="$page.props.jetstream.managesProfilePhotos"
@@ -207,10 +242,14 @@ const { isDark, toggleDark } = useDarkMode();
                         </div>
 
                         <div>
-                            <div class="font-medium text-base text-gray-800 dark:text-gray-200">
+                            <div
+                                class="font-medium text-base text-gray-800 dark:text-gray-200"
+                            >
                                 {{ $page.props.auth.user.name }}
                             </div>
-                            <div class="font-medium text-sm text-gray-500 dark:text-gray-400">
+                            <div
+                                class="font-medium text-sm text-gray-500 dark:text-gray-400"
+                            >
                                 {{ $page.props.auth.user.email }}
                             </div>
                         </div>

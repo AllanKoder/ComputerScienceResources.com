@@ -1,5 +1,6 @@
 <script setup>
 import ProfilePhoto from "@/Components/Profile/ProfilePhoto.vue";
+import { formatDate } from "@/Helpers/dates";
 
 defineProps({
     user: {
@@ -11,15 +12,6 @@ defineProps({
         required: true,
     },
 });
-
-const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-    });
-};
 </script>
 
 <template>
