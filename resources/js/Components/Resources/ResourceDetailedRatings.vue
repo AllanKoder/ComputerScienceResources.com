@@ -1,4 +1,4 @@
-t <script setup>
+<script setup>
 import { defineProps } from "vue";
 import { Icon } from "@iconify/vue";
 import StarRating from "@/Components/StarRating/StarRating.vue";
