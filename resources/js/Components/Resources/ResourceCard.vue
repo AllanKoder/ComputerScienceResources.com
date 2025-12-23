@@ -25,9 +25,36 @@ const emit = defineEmits(["upvote", "downvote"]);
     <div
         class="rounded-sm border bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-700 text-gray-900 dark:text-gray-100 shadow-sm overflow-hidden transition-shadow hover:shadow-md"
     >
-        <div class="flex gap-3 p-4">
-            <!-- Vote section -->
-            <div class="flex flex-col items-center gap-1 pt-1 my-auto">
+        <div class="flex flex-col sm:flex-row gap-3 p-3 sm:p-4">
+            <!-- Mobile: Image and Vote Row -->
+            <div class="flex sm:hidden gap-6 items-start">
+                <!-- Vote section (mobile) -->
+                <div class="flex flex-col items-center gap-1">
+                    <Upvotable
+                        :upvotable-id="resource.id"
+                        :upvotable-key="'resource'"
+                        :initial-votes="resource.vote_score"
+                        :user-vote="resource.user_vote"
+                        class="flex flex-col items-center"
+                    />
+                </div>
+
+                <!-- Image section (mobile) -->
+                <div class="shrink-0">
+                    <ClickableImage
+                        :href="route('resources.show', { slug: resource.slug })"
+                    >
+                        <ResourceThumbnail
+                            :src="resource.image_url"
+                            :alt="resource.name"
+                        />
+                    </ClickableImage>
+                </div>
+
+            </div>
+
+            <!-- Desktop: Vote section -->
+            <div class="hidden sm:flex flex-col items-center gap-1 pt-1 my-auto">
                 <Upvotable
                     :upvotable-id="resource.id"
                     :upvotable-key="'resource'"
@@ -37,8 +64,8 @@ const emit = defineEmits(["upvote", "downvote"]);
                 />
             </div>
 
-            <!-- Image section -->
-            <div class="shrink-0 my-auto mr-4">
+            <!-- Desktop: Image section -->
+            <div class="hidden sm:block shrink-0 my-auto mr-4">
                 <ClickableImage
                     :href="route('resources.show', { slug: resource.slug })"
                 >
