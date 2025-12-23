@@ -182,11 +182,9 @@ Xdebug is pre-configured in the Sail Docker environment for local debugging.
    - Start the "Listen for Xdebug" configuration in VS Code.
    - Trigger a request (web, test, or CLI) and Xdebug will connect to VS Code.
 
+## Deployment
 
-## Documentation
-
-- [Project Roadmap](docs/ROADMAP.md): See the planned phases and milestones for the project.
-- [Application Routes & UI Previews](docs/ROUTES.md): Browse all main routes and their associated UI images.
+`ansible-playbook -i ./ansible/inventory/production.ini deploy.yml`
 
 ## License
 

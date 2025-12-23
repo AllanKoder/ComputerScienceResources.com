@@ -20,11 +20,31 @@ const props = defineProps({
 <template>
     <!-- Header Section -->
     <div
-        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-sm shadow-sm px-4 py-4"
+        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-sm shadow-sm px-3 sm:px-4 py-3 sm:py-4"
     >
-        <div class="flex items-start gap-4">
-            <!-- Image Section -->
-            <div class="shrink-0 flex flex-row my-auto gap-3">
+        <div class="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+            <!-- Mobile: Image and Vote Row -->
+            <div class="flex sm:hidden gap-3 items-start w-full">
+                <!-- Thumbnail -->
+                <div class="shrink-0">
+                    <ResourceThumbnail
+                        :src="props.resource.image_url"
+                        :alt="props.resource.name"
+                    />
+                </div>
+
+                <!-- Vote Section (mobile) -->
+                <UpvoteResource
+                    :upvotable-id="props.resource.id"
+                    :upvotable-key="'resource'"
+                    :initial-votes="props.resource.vote_score"
+                    :user-vote="props.resource.user_vote"
+                    class="flex flex-col pt-1"
+                />
+            </div>
+
+            <!-- Desktop: Image Section -->
+            <div class="hidden sm:flex shrink-0 flex-row my-auto gap-3">
                 <!-- Vote Section -->
                 <UpvoteResource
                     :upvotable-id="props.resource.id"
@@ -40,7 +60,7 @@ const props = defineProps({
             </div>
 
             <!-- Content -->
-            <div class="flex-1 min-w-0">
+            <div class="flex-1 min-w-0 w-full sm:w-auto">
                 <!-- Title -->
                 <h1
                     class="text-2xl font-bold mb-2 text-gray-900 dark:text-gray-100 text-balance"
