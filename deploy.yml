@@ -2,6 +2,8 @@
 - name: Build Frontend Locally
   hosts: local
   tasks:
+
+    # Add a task to checkout master and update
     - name: Build frontend
       shell: |
         npm ci && npm run build

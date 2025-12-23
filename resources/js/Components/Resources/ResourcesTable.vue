@@ -1,5 +1,5 @@
 <script setup>
-import ResourceItem from "./ResourceItem.vue";
+import ResourceCard from "@/Components/Resources/ResourceCard.vue";
 import PaginateLinks from "@/Components/Pagination/PaginateLinks.vue";
 
 const props = defineProps({
@@ -15,7 +15,7 @@ const props = defineProps({
         <div class="overflow-x-auto">
             <div class="w-full flex flex-col gap-2">
                 <template v-for="(resource, idx) in resources.data" :key="resource.id">
-                    <ResourceItem :resource="resource" />
+                    <ResourceCard :resource="resource" />
                     <div v-if="idx < resources.data.length - 1" class="border-t border-gray-200 dark:border-gray-700 my-2"></div>
                 </template>
             </div>

@@ -85,6 +85,7 @@ export const getPlatformLabel = (platform) => platformLabels[platform] || "Unkno
 
 /// Sorting
 export const resourceSortingLabels = [
+    { value: "overall", label: "Overall Rating" },
     { value: "top", label: "Top Votes (Best Score)" },
     { value: "controversial", label: "Controversial (Mixed Votes)" },
     { value: "total_votes", label: "Most Voted (Negative + Postive)" },
@@ -97,5 +98,4 @@ export const resourceSortingLabels = [
     { value: "practicality", label: "Practicality" },
     { value: "user_friendliness", label: "User Friendliness" },
     { value: "updates", label: "Most Updates" },
-    { value: "overall", label: "Overall Rating" },
 ];

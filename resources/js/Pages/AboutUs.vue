@@ -19,18 +19,18 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
             <meta head-key="about:og:url" property="og:url" :content="canonicalFor('/about')" />
             <meta head-key="about:og:site_name" property="og:site_name" :content="SITE_NAME" />
         </Head>
-        <div class="py-7">
-            <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+            <main class="max-w-4xl mx-auto sm:px-6 lg:px-8 py-7">
+                <!-- Header -->
+                <div class="mb-8">
+                    <h1 class="text-4xl font-bold mb-3 text-balance text-primary">About Computer Science Resources.com</h1>
+                    <p class="text-lg text-gray-600 dark:text-gray-400 text-pretty">
+                        Learn about our mission, origin, and purpose!
+                    </p>
+                </div>
                 <div
                     class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg"
                 >
                     <div class="p-6 sm:p-12">
-                        <!-- Header -->
-                        <div class="text-center mb-12">
-                            <h1 class="text-4xl font-bold text-primary">
-                                About Computer Science Resources.com
-                            </h1>
-                        </div>
 
                         <!-- Main Content -->
                         <div
@@ -70,7 +70,7 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                             <p
                                 class="text-center text-lg font-medium text-primary dark:text-accent mt-8"
                             >
-                                ComputerScienceResources.com values the community—because in the end, we all love software!
+                                <b>ComputerScienceResources.com values the community—because in the end, we all love software!</b>
                             </p>
                         </div>
 
@@ -144,7 +144,6 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </main>
     </AppLayout>
 </template>

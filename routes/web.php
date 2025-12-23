@@ -56,6 +56,10 @@ Route::middleware('guest.or.verified')->group(function () {
         Route::get('/', 'show')->name('home');
     });
 
+    Route::get('/rules', function () {
+        return Inertia::render('Rules');
+    })->name('rules');
+
     Route::get('/about', function () {
         return Inertia::render('AboutUs');
     })->name('about');
