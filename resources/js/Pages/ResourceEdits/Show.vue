@@ -22,8 +22,6 @@ import SelectDiffViewer from "@/Components/Diff/SelectDiffViewer.vue";
 import TagDiffViewer from "@/Components/Diff/TagDiffViewer.vue";
 import ImageDiffViewer from "@/Components/Diff/ImageDiffViewer.vue";
 
-
-
 const props = defineProps({
     editedResource: {
         type: Object,
