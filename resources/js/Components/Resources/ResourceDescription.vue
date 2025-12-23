@@ -64,15 +64,15 @@ const props = defineProps({
                 </span>
             </div>
             <!-- Languages -->
-            <div v-if="props.resource.languages?.length" class="flex items-center gap-2 flex-wrap">
-                <span v-for="language in props.resource.languages" :key="language" class="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+            <div v-if="props.resource.programming_languages_tags?.length" class="flex items-center gap-2 flex-wrap">
+                <span v-for="language in props.resource.programming_languages_tags" :key="language" class="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
                     {{ language }}
                 </span>
             </div>
             <!-- Tags -->
-            <div v-if="props.resource.tags?.length" class="flex items-center gap-2 flex-wrap">
-                <span v-for="tag in props.resource.tags" :key="tag.id" class="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
-                    {{ tag.name }}
+            <div v-if="props.resource.general_tags?.length" class="flex items-center gap-2 flex-wrap">
+                <span v-for="tag in props.resource.general_tags" :key="tag" class="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+                    {{ tag }}
                 </span>
             </div>
         </div>
