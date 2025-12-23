@@ -196,7 +196,6 @@ const { isDark, toggleDark } = useDarkMode();
                     Rules
                 </ResponsiveNavLink>
 
-
                 <ResponsiveNavLink
                     :href="route('resources.index')"
                     :active="route().current('resources.index')"
