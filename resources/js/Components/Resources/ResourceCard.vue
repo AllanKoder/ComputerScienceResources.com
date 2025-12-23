@@ -163,7 +163,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                         </template>
 
                         <template v-if="resource.general_tags?.length">
-                                •
+                            •
                             {{ resource.general_tags.join(", ") }}
                         </template>
                     </span>
