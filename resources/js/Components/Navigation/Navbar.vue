@@ -3,7 +3,6 @@ import { ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import UserDropdown from "@/Components/Navbar/UserDropdown.vue";
-import AboutDropdown from "@/Components/Navigation/AboutDropdown.vue";
 import NavLink from "@/Components/NavLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -30,15 +29,27 @@ const { isDark, toggleDark } = useDarkMode();
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center">
                         <Link :href="route('home')">
-                            <ApplicationHeaderLogo
-                                class="block h-9 w-auto max-w-[250px] sm:max-w-64 md:max-w-72 lg:max-w-80 xl:max-w-96 mr-2"
-                            />
+                            <ApplicationHeaderLogo/>
                         </Link>
                     </div>
 
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
-                        <AboutDropdown />
+                        <NavLink
+                            :href="route('about')"
+                            :active="route().current('about')"
+                            class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
+                        >
+                            About Us
+                        </NavLink>
+
+                        <NavLink
+                            :href="route('rules')"
+                            :active="route().current('rules')"
+                            class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
+                        >
+                            Rules
+                        </NavLink>
 
                         <NavLink
                             :href="route('resources.index')"
@@ -169,27 +180,22 @@ const { isDark, toggleDark } = useDarkMode();
                     />
                 </button>
 
-                <!-- About Section -->
-                <div class="pl-4">
-                    <div class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-2">About</div>
-                    <ResponsiveNavLink
-                        :href="route('about')"
-                        :active="route().current('about')"
-                        class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight ml-4"
-                    >
-                        <Icon icon="mdi:information-outline" class="inline mr-2" />
-                        About Us
-                    </ResponsiveNavLink>
+                <ResponsiveNavLink
+                    :href="route('about')"
+                    :active="route().current('about')"
+                    class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
+                >
+                    About Us
+                </ResponsiveNavLink>
 
-                    <ResponsiveNavLink
-                        :href="route('rules')"
-                        :active="route().current('rules')"
-                        class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight ml-4"
-                    >
-                        <Icon icon="mdi:gavel" class="inline mr-2" />
-                        Rules
-                    </ResponsiveNavLink>
-                </div>
+                <ResponsiveNavLink
+                    :href="route('rules')"
+                    :active="route().current('rules')"
+                    class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
+                >
+                    Rules
+                </ResponsiveNavLink>
+
 
                 <ResponsiveNavLink
                     :href="route('resources.index')"

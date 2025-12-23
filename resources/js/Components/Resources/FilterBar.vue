@@ -38,7 +38,7 @@ const selectedUserFriendliness = ref(null);
 const selectedUpdates = ref(null);
 
 // sort_by options
-const selectedSorting = ref("top");
+const selectedSorting = ref();
 const selectedReverse = ref(false);
 
 // date filters
@@ -80,7 +80,7 @@ onMounted(() => {
     }
 
     // initialize sort_by
-    selectedSorting.value = urlParams.get("sort_by") || "top";
+    selectedSorting.value = urlParams.get("sort_by") || "overall";
     selectedReverse.value = urlParams.get("reverse") === "true";
 
     createdFrom.value = urlParams.get("created_from")
@@ -108,7 +108,7 @@ onMounted(() => {
             createdTo.value !== null ||
             updatedFrom.value !== null ||
             updatedTo.value !== null ||
-            selectedSorting.value !== "top" ||
+            selectedSorting.value !== "overall" ||
             selectedReverse.value == true
         );
     }
@@ -204,7 +204,7 @@ function resetFilters() {
     updatedTo.value = null;
 
     // Sorting
-    selectedSorting.value = "top";
+    selectedSorting.value = "overall";
     selectedReverse.value = false;
 }
 </script>

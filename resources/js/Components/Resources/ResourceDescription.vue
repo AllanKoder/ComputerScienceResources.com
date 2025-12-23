@@ -1,13 +1,7 @@
 <script setup>
-import { defineProps, computed } from "vue";
+import { defineProps } from "vue";
 import { Icon } from "@iconify/vue";
 import StarRating from "@/Components/StarRating/StarRating.vue";
-import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
-import {
-    platformLabels,
-    pricingLabels,
-    difficultyLabels,
-} from "@/Helpers/labels";
 
 const props = defineProps({
     resource: {
@@ -19,9 +13,7 @@ const props = defineProps({
 
 <template>
     <div class="flex-grow w-full">
-        <div
-            class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4"
-        >
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-4">
             <div class="flex items-center gap-3">
                 <h1 class="text-3xl font-bold text-gray-900 dark:text-gray-100">
                     {{ props.resource.name }}
@@ -48,169 +40,40 @@ const props = defineProps({
                             "
                             :size="23"
                         />
+                        <span class="text-lg font-medium text-gray-700 dark:text-gray-300">
+                            {{ Number(props.resource.review_summary?.overall_rating || 0).toFixed(1) }}
+                        </span>
                     </div>
-                    <div
-                        class="inline-flex items-center gap-1 text-lg font-medium text-gray-700 dark:text-gray-300"
-                    >
+                    <div class="inline-flex items-center gap-1 text-lg font-medium text-gray-700 dark:text-gray-300">
                         <Icon icon="mdi:account-group" width="20" height="20" />
-                        {{ props.resource.review_summary?.review_count || 0 }}
+                        {{ props.resource.review_summary?.review_count || 0 }} reviews
                     </div>
                 </div>
             </div>
         </div>
 
-        <p
-            class="text-gray-700 dark:text-gray-200 mb-6 text-base leading-relaxed whitespace-pre-line"
-        >
+        <p class="text-gray-700 dark:text-gray-200 mb-6 text-base leading-relaxed whitespace-pre-line">
             {{ props.resource.description }}
         </p>
-
-        <!-- Resource Metadata Section -->
-        <div class="flex flex-col gap-3 mb-4">
-            <!-- Row 1: Resource Properties -->
-            <div class="flex flex-wrap items-center gap-4 text-sm">
-                <!-- Difficulties -->
-                <div
-                    class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-900/70 px-3 py-1 rounded-md"
-                >
-                    <span class="font-semibold text-gray-900 dark:text-gray-100"
-                        >Difficulties:</span
-                    >
-                    <div
-                        class="inline-flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-200"
-                    >
-                        <span
-                            v-for="level in props.resource.difficulties"
-                            :key="level"
-                            class="inline-flex items-center gap-1"
-                        >
-                            <Icon
-                                :icon="difficultyIcons[level.trim()]"
-                                width="16"
-                                height="16"
-                            />
-                            {{ difficultyLabels[level.trim()] }}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Pricing -->
-                <div
-                    class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-900/70 px-3 py-1 rounded-md"
-                >
-                    <span class="font-semibold text-gray-900 dark:text-gray-100"
-                        >Pricing:</span
-                    >
-                    <span
-                        class="inline-flex items-center gap-1 text-gray-700 dark:text-gray-200"
-                    >
-                        <Icon
-                            :icon="pricingIcons[props.resource.pricing]"
-                            width="16"
-                            height="16"
-                        />
-                        {{ pricingLabels[props.resource.pricing] }}
-                    </span>
-                </div>
-
-                <!-- Platforms -->
-                <div
-                    class="flex items-center gap-1.5 bg-gray-50 dark:bg-gray-900/70 px-3 py-1 rounded-md"
-                >
-                    <span class="font-semibold text-gray-900 dark:text-gray-100"
-                        >Platforms:</span
-                    >
-                    <div
-                        class="inline-flex flex-wrap items-center gap-2 text-gray-700 dark:text-gray-200"
-                    >
-                        <span
-                            v-for="type in props.resource.platforms"
-                            :key="type"
-                            class="inline-flex items-center gap-1"
-                        >
-                            <Icon
-                                :icon="platformIcons[type.trim()]"
-                                width="16"
-                                height="16"
-                            />
-                            {{ platformLabels[type.trim()] }}
-                        </span>
-                    </div>
-                </div>
+        <!-- Platforms, Languages, Tags (bottom, horizontal list) -->
+        <div class="flex flex-col gap-2 mt-6">
+            <!-- Platforms -->
+            <div v-if="props.resource.platforms?.length" class="flex items-center gap-2 flex-wrap">
+                <span v-for="platform in props.resource.platforms" :key="platform" class="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+                    {{ platformLabels[platform] }}
+                </span>
             </div>
-
-            <!-- Row 2: Tags -->
-            <div class="flex flex-wrap items-center gap-4 text-sm">
-                <!-- Topic Tags -->
-                <div
-                    v-if="props.resource.topics_tags?.length"
-                    class="flex items-center gap-1 px-2 py-1 rounded-md"
-                >
-                    <span
-                        class="inline-flex items-center gap-1 font-semibold text-blue-700 dark:text-blue-200"
-                    >
-                        <Icon icon="mdi:bookmark" width="14" height="14" />
-                        Topics:
-                    </span>
-                    <div class="inline-flex flex-wrap items-center gap-0.5">
-                        <span
-                            v-for="tag in props.resource.topics_tags"
-                            :key="tag"
-                            class="inline-flex items-center gap-1 bg-blue-100/50 dark:bg-blue-900/60 px-2 py-0.5 rounded-full text-blue-700 dark:text-blue-100"
-                        >
-                            {{ tag }}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- Programming Language Tags -->
-                <div
-                    v-if="props.resource.programming_languages_tags?.length"
-                    class="flex items-center gap-1.5 px-2 py-1 rounded-md"
-                >
-                    <span
-                        class="inline-flex items-center gap-1 font-semibold text-purple-700 dark:text-purple-200"
-                    >
-                        <Icon
-                            icon="mdi:language-typescript"
-                            width="14"
-                            height="14"
-                        />
-                        Languages/Frameworks:
-                    </span>
-                    <div class="inline-flex flex-wrap items-center gap-0.5">
-                        <span
-                            v-for="tag in props.resource
-                                .programming_languages_tags"
-                            :key="tag"
-                            class="inline-flex items-center gap-1 bg-purple-100/50 dark:bg-purple-900/60 px-2 py-0.5 rounded-full text-purple-700 dark:text-purple-100"
-                        >
-                            {{ tag }}
-                        </span>
-                    </div>
-                </div>
-
-                <!-- General Tags -->
-                <div
-                    v-if="props.resource.general_tags?.length"
-                    class="flex items-center gap-1.5 px-2 py-1 rounded-md"
-                >
-                    <span
-                        class="inline-flex items-center gap-1 font-semibold text-yellow-700 dark:text-yellow-200"
-                    >
-                        <Icon icon="mdi:tag" width="14" height="14" />
-                        Tags:
-                    </span>
-                    <div class="inline-flex flex-wrap items-center gap-0.5">
-                        <span
-                            v-for="tag in props.resource.general_tags"
-                            :key="tag"
-                            class="inline-flex items-center gap-1 bg-yellow-100/50 dark:bg-yellow-900/60 px-2 py-0.5 rounded-full text-yellow-700 dark:text-yellow-100"
-                        >
-                            {{ tag }}
-                        </span>
-                    </div>
-                </div>
+            <!-- Languages -->
+            <div v-if="props.resource.languages?.length" class="flex items-center gap-2 flex-wrap">
+                <span v-for="language in props.resource.languages" :key="language" class="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+                    {{ language }}
+                </span>
+            </div>
+            <!-- Tags -->
+            <div v-if="props.resource.tags?.length" class="flex items-center gap-2 flex-wrap">
+                <span v-for="tag in props.resource.tags" :key="tag.id" class="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700">
+                    {{ tag.name }}
+                </span>
             </div>
         </div>
     </div>

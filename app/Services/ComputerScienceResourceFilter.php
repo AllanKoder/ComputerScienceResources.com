@@ -148,7 +148,7 @@ class ComputerScienceResourceFilter
         }
 
         // Sorting
-        $sortBy = $filters['sort_by'] ?? 'top';
+        $sortBy = $filters['sort_by'] ?? 'overall';
         $query = $this->resourceSortingManager->applySort($query, $sortBy);
 
         if (($filters['reverse'] ?? 'false') === 'true') {
