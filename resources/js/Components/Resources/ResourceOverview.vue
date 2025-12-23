@@ -22,7 +22,7 @@ const props = defineProps({
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-sm shadow-sm px-4 py-4">
         <div class="flex items-start gap-4">
             <!-- Image Section -->
-            <div class="shrink-0 flex flex-row gap-3">
+            <div class="shrink-0 flex flex-row my-auto gap-3">
                 <!-- Vote Section -->
                 <UpvoteResource
                     :upvotable-id="props.resource.id"
@@ -94,10 +94,10 @@ const props = defineProps({
                 </p>
 
                 <!-- Secondary info row -->
-                <div class="flex items-center gap-2 flex-wrap mb-3">
+                <div class="flex items-left gap-2 flex-col mb-3">
                     <!-- Platforms -->
-                    <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Platforms:</span>
                     <div class="flex items-center gap-1.5 flex-wrap">
+                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Platforms:</span>
                         <span
                             v-for="platform in props.resource.platforms"
                             :key="platform"
