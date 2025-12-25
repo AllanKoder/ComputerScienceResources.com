@@ -232,12 +232,8 @@ const emit = defineEmits(["upvote", "downvote"]);
                             :size="16"
                         />
                         <span>
-
-                            ({{
-                                resource.review_summary?.review_count || 0
-                            }}
-                        reviews)
-                    </span>
+                            ({{ resource.review_summary?.review_count || 0 }} reviews)
+                        </span>
                     </ClickableHeading>
                 </div>
             </div>
