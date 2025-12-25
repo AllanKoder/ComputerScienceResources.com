@@ -96,7 +96,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                                     4
                                 )"
                                 :key="topic"
-                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 bg-transparent"                            >
+                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"                            >
                                 <Icon
                                     icon="mdi:lightbulb-outline"
                                     width="12"
@@ -155,7 +155,7 @@ const emit = defineEmits(["upvote", "downvote"]);
 
                 <!-- Description -->
                 <p
-                    class="text-sm text-gray-600 dark:text-gray-400 mb-3 line-clamp-2 text-pretty"
+                    class="text-sm text-gray-600 dark:text-gray-100 mb-3 line-clamp-2 text-pretty"
                 >
                     {{ resource.description }}
                 </p>
@@ -165,7 +165,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                     <span
                         v-for="platform in resource.platforms.slice(0, 2)"
                         :key="platform"
-                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 bg-transparent"
+                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
                     >
                         <Icon
                             :icon="platformIcons[platform]"
@@ -181,7 +181,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                             resource.programming_languages_tags?.length ||
                             resource.general_tags?.length
                         "
-                        class="text-xs text-gray-600 dark:text-gray-400"
+                        class="text-xs text-gray-600 dark:text-gray-100"
                     >
                         <template
                             v-if="resource.programming_languages_tags?.length"
@@ -203,7 +203,7 @@ const emit = defineEmits(["upvote", "downvote"]);
 
                 <!-- Bottom actions -->
                 <div
-                    class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400"
+                    class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-100"
                 >
                     <a
                         :href="resource.page_url"
