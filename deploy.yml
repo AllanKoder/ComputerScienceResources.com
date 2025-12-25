@@ -51,6 +51,7 @@
         repo: "{{ repo_url }}"
         dest: "{{ project_path }}"
         version: master
+        force: yes
 
     - name: Install Composer dependencies
       command: composer install --no-dev --optimize-autoloader --no-interaction
