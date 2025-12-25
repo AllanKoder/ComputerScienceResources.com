@@ -1,5 +1,5 @@
 <script setup>
-import { Deferred, Link, Head } from "@inertiajs/vue3";
+import { Head } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
 import ResourceOverview from "@/Components/Resources/ResourceOverview.vue";
 import ResourceDetailedRatings from "@/Components/Resources/ResourceDetailedRatings.vue";

@@ -9,6 +9,7 @@ import PrimeVue from "primevue/config";
 import customTheme from "./../../theming.config";
 import ToastService from 'primevue/toastservice';
 import Toast from 'primevue/toast';
+import Tooltip from 'primevue/tooltip';
 import './axios';
 
 const appName = import.meta.env.VITE_APP_NAME || "Laravel";
@@ -34,6 +35,7 @@ createInertiaApp({
             })
             .use(ToastService)
             .component('Toast', Toast)
+            .directive('tooltip', Tooltip)
             .mount(el);
     },
     progress: {

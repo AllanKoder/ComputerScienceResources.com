@@ -142,6 +142,12 @@ function selectTag(tag) {
     // showDropdown.value = false;
 }
 
+function addMultipleTags(input) {
+    const tags = input.split(',').map(t => t.trim()).filter(t => t);
+    tags.forEach(tag => addTag(tag));
+    searchQuery.value = "";
+}
+
 function onInput() {
     showDropdown.value = true;
     highlightedIndex.value = -1;
@@ -171,7 +177,12 @@ function onKeydown(event) {
         ) {
             selectTag(searchQuery.value.trim());
         } else if (searchQuery.value.trim()) {
-            selectTag(searchQuery.value.trim());
+            // Handle comma-separated tags
+            if (searchQuery.value.includes(',')) {
+                addMultipleTags(searchQuery.value);
+            } else {
+                selectTag(searchQuery.value.trim());
+            }
         }
         return;
     }
@@ -265,21 +276,28 @@ onMounted(async () => {
 
         <!-- search input container -->
         <div class="relative">
-            <input
-                ref="searchInput"
-                v-model="searchQuery"
-                @input="onInput"
-                @keydown="onKeydown"
-                @focus="showDropdown = true"
-                @blur="onBlur"
-                placeholder="Add tags..."
-                class="w-full px-3 py-2 text-md border border-gray-400 dark:border-gray-600 rounded-lg focus:outline-none placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary dark:bg-black transition-all"
-                :class="{
-                    'rounded-b-none border-b-0':
-                        showDropdown &&
-                        (availableTags.length > 0 || canCreateNew || isLoading),
-                }"
-            />
+            <div class="relative flex items-center">
+                <input
+                    ref="searchInput"
+                    v-model="searchQuery"
+                    @input="onInput"
+                    @keydown="onKeydown"
+                    @focus="showDropdown = true"
+                    @blur="onBlur"
+                    placeholder="Add tags..."
+                    class="w-full px-3 py-2 pr-10 text-md border border-gray-400 dark:border-gray-600 rounded-lg focus:outline-none placeholder-gray-400 focus:ring-2 focus:ring-primary focus:border-primary dark:bg-black transition-all"
+                    :class="{
+                        'rounded-b-none border-b-0':
+                            showDropdown &&
+                            (availableTags.length > 0 || canCreateNew || isLoading),
+                    }"
+                />
+                <Icon
+                    icon="mdi:information-outline"
+                    class="absolute right-3 size-5 text-gray-400 dark:text-gray-500 cursor-help"
+                    v-tooltip.top="'You can add multiple tags at once by separating them with commas (e.g., tag1, tag2, tag3)'"
+                />
+            </div>
 
             <!-- dropdown rendered in body using teleport -->
             <teleport to="body">

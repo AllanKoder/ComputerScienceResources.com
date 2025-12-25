@@ -4,6 +4,8 @@ import { Link, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import UserDropdown from "@/Components/Navbar/UserDropdown.vue";
 import NavLink from "@/Components/NavLink.vue";
+import NavLinkDropdown from "@/Components/NavLinkDropdown.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import ApplicationHeaderLogo from "@/Components/ApplicationHeaderLogo.vue";
@@ -35,21 +37,20 @@ const { isDark, toggleDark } = useDarkMode();
 
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
-                        <NavLink
-                            :href="route('about')"
-                            :active="route().current('about')"
-                            class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
+                        <NavLinkDropdown
+                            label="About"
+                            :active="route().current('about') || route().current('rules')"
                         >
-                            About Us
-                        </NavLink>
+                            <DropdownLink :href="route('about')">
+                                About Us
+                            </DropdownLink>
 
-                        <NavLink
-                            :href="route('rules')"
-                            :active="route().current('rules')"
-                            class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
-                        >
-                            Rules
-                        </NavLink>
+                            <div class="border-t border-gray-200 dark:border-gray-600" />
+
+                            <DropdownLink :href="route('rules')">
+                                Rules
+                            </DropdownLink>
+                        </NavLinkDropdown>
 
                         <NavLink
                             :href="route('resources.index')"
