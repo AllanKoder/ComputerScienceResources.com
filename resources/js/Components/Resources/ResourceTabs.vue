@@ -62,6 +62,7 @@ const tabs = [
                     v-for="tabItem in tabs"
                     :key="tabItem.value"
                     :except="['resource']"
+                    view-transition
                     preserve-scroll
                     preserve-state
                     prefetch
@@ -135,9 +136,7 @@ const tabs = [
 
             <!-- Edits Tab -->
             <div v-else-if="props.tab === 'edits'" class="space-y-6">
-                <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4 bg-gray-50/30 dark:bg-gray-800/20">
-                    <ProposeEditsButton :resource-slug="props.resource.slug" />
-                </div>
+                <ProposeEditsButton :resource-slug="props.resource.slug" />
                 <div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4">
                     <ResourceEditsFAQ />
                 </div>
