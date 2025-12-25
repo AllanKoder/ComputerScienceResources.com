@@ -8,6 +8,7 @@ import {
     pricingLabels,
     difficultyLabels,
 } from "@/Helpers/labels";
+import StarRating from "@/Components/StarRating/StarRating.vue";
 
 const props = defineProps({
     resource: {
@@ -70,7 +71,7 @@ const props = defineProps({
 
                 <!-- Description -->
                 <p
-                    class="text-sm text-gray-600 dark:text-gray-400 mb-3 leading-relaxed whitespace-pre-line"
+                    class="text-sm text-gray-600 dark:text-gray-100 mb-3 leading-relaxed whitespace-pre-line"
                 >
                     {{ props.resource.description }}
                 </p>
@@ -87,16 +88,16 @@ const props = defineProps({
                                 icon="mdi:lightbulb-outline"
                                 width="12"
                                 height="12"
-                                class="text-gray-500 dark:text-gray-400"
+                                class="text-gray-500 dark:text-gray-100"
                             />
                             <span
-                                class="text-xs font-semibold text-gray-600 dark:text-gray-400"
+                                class="text-xs font-semibold text-gray-600 dark:text-gray-100"
                                 >Topics:</span
                             >
                             <span
                                 v-for="topic in props.resource.topics_tags"
                                 :key="topic"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 bg-transparent"
+                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
                             >
                                 {{ topic }}
                             </span>
@@ -115,16 +116,16 @@ const props = defineProps({
                                 "
                                 width="12"
                                 height="12"
-                                class="text-gray-500 dark:text-gray-400"
+                                class="text-gray-500 dark:text-gray-100"
                             />
                             <span
-                                class="text-xs font-semibold text-gray-600 dark:text-gray-400"
+                                class="text-xs font-semibold text-gray-600 dark:text-gray-100"
                                 >Difficulty:</span
                             >
                             <span
                                 v-for="difficulty in props.resource.difficulties"
                                 :key="difficulty"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 bg-transparent"
+                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
                             >
                                 <Icon
                                     :icon="difficultyIcons[difficulty]"
@@ -142,14 +143,14 @@ const props = defineProps({
                                 :icon="pricingIcons[props.resource.pricing]"
                                 width="12"
                                 height="12"
-                                class="text-gray-500 dark:text-gray-400"
+                                class="text-gray-500 dark:text-gray-100"
                             />
                             <span
-                                class="text-xs font-semibold text-gray-600 dark:text-gray-400"
+                                class="text-xs font-semibold text-gray-600 dark:text-gray-100"
                                 >Pricing:</span
                             >
                             <span
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 bg-transparent"
+                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
                             >
                                 <Icon
                                     :icon="pricingIcons[props.resource.pricing]"
@@ -172,16 +173,16 @@ const props = defineProps({
                                 icon="mdi:devices"
                                 width="12"
                                 height="12"
-                                class="text-gray-500 dark:text-gray-400"
+                                class="text-gray-500 dark:text-gray-100"
                             />
                             <span
-                                class="text-xs font-semibold text-gray-600 dark:text-gray-400"
+                                class="text-xs font-semibold text-gray-600 dark:text-gray-100"
                                 >Platforms:</span
                             >
                             <span
                                 v-for="platform in props.resource.platforms"
                                 :key="platform"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 bg-transparent"
+                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
                             >
                                 <Icon
                                     :icon="platformIcons[platform]"
@@ -205,16 +206,16 @@ const props = defineProps({
                                 icon="mdi:code-tags"
                                 width="12"
                                 height="12"
-                                class="text-gray-500 dark:text-gray-400"
+                                class="text-gray-500 dark:text-gray-100"
                             />
                             <span
-                                class="text-xs font-semibold text-gray-600 dark:text-gray-400"
+                                class="text-xs font-semibold text-gray-600 dark:text-gray-100"
                                 >Languages:</span
                             >
                             <span
                                 v-for="language in props.resource.programming_languages_tags"
                                 :key="language"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 bg-transparent"
+                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
                             >
                                 {{ language }}
                             </span>
@@ -229,16 +230,16 @@ const props = defineProps({
                                 icon="mdi:label-outline"
                                 width="12"
                                 height="12"
-                                class="text-gray-500 dark:text-gray-400"
+                                class="text-gray-500 dark:text-gray-100"
                             />
                             <span
-                                class="text-xs font-semibold text-gray-600 dark:text-gray-400"
+                                class="text-xs font-semibold text-gray-600 dark:text-gray-100"
                                 >Tags:</span
                             >
                             <span
                                 v-for="tag in props.resource.general_tags"
                                 :key="tag"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 bg-transparent"
+                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
                             >
                                 {{ tag }}
                             </span>
@@ -252,7 +253,7 @@ const props = defineProps({
 
                 <!-- Bottom actions -->
                 <div
-                    class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400"
+                    class="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-100"
                 >
                     <a
                         :href="props.resource.page_url"
@@ -268,23 +269,16 @@ const props = defineProps({
                         v-if="props.resource.review_summary?.overall_rating > 0"
                         class="flex items-center gap-1"
                     >
-                        <Icon
-                            icon="mdi:star"
-                            width="16"
-                            height="16"
-                            class="text-primary"
-                        />
-                        <span
-                            class="font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{
+                        <StarRating
+                            :model-value="
                                 Number(
                                     props.resource.review_summary
-                                        ?.overall_rating || 0
-                                ).toFixed(1)
-                            }}
-                        </span>
-                        <span class="text-gray-500 dark:text-gray-400">
+                                        ?.overall_rating
+                                )
+                            "
+                            :size="16"
+                        />
+                        <span class="text-gray-500 dark:text-gray-100">
                             ({{
                                 props.resource.review_summary?.review_count || 0
                             }}

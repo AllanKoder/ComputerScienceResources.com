@@ -27,15 +27,12 @@ const getStarClass = (type) =>
 
 <template>
     <div class="inline-flex items-center flex-wrap gap-1">
-        <span class="text-sm font-medium text-gray-600 dark:text-gray-200">
-            {{ formattedRating }}
-        </span>
         <div class="inline-flex items-center">
             <!-- Full stars -->
             <Icon
             v-for="i in stars.full"
             :key="'full-' + i"
-            icon="material-symbols:star-rounded"
+            icon="mdi:star"
             :class="getStarClass('full')"
             :width="size"
             :height="size"
@@ -43,7 +40,7 @@ const getStarClass = (type) =>
             <!-- Half star -->
             <Icon
             v-if="stars.hasHalf"
-            icon="material-symbols:star-half-rounded"
+            icon="mdi:star-half-full"
             :class="getStarClass('half')"
             :width="size"
             :height="size"
@@ -52,11 +49,12 @@ const getStarClass = (type) =>
             <Icon
             v-for="i in stars.empty"
             :key="'empty-' + i"
-            icon="material-symbols:star-outline-rounded"
+            icon="mdi:star-outline"
             :class="getStarClass('empty')"
             :width="size"
             :height="size"
             />
         </div>
+        {{ formattedRating }}
     </div>
 </template>
