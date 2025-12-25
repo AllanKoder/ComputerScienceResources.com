@@ -8,6 +8,7 @@ import {
     pricingLabels,
     difficultyLabels,
 } from "@/Helpers/labels";
+import StarRating from "@/Components/StarRating/StarRating.vue";
 
 const props = defineProps({
     resource: {
@@ -268,22 +269,15 @@ const props = defineProps({
                         v-if="props.resource.review_summary?.overall_rating > 0"
                         class="flex items-center gap-1"
                     >
-                        <Icon
-                            icon="mdi:star"
-                            width="16"
-                            height="16"
-                            class="text-primary"
-                        />
-                        <span
-                            class="font-medium text-gray-900 dark:text-gray-100"
-                        >
-                            {{
+                        <StarRating
+                            :model-value="
                                 Number(
                                     props.resource.review_summary
-                                        ?.overall_rating || 0
-                                ).toFixed(1)
-                            }}
-                        </span>
+                                        ?.overall_rating
+                                )
+                            "
+                            :size="16"
+                        />
                         <span class="text-gray-500 dark:text-gray-400">
                             ({{
                                 props.resource.review_summary?.review_count || 0

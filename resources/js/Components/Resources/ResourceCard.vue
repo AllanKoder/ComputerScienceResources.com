@@ -9,7 +9,8 @@ import {
     platformLabels,
 } from "@/Helpers/labels";
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
-import ResourceThumbnail from "./ResourceThumbnail.vue";
+import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
+import StarRating from "@/Components/StarRating/StarRating.vue";
 
 const props = defineProps({
     resource: {
@@ -81,7 +82,7 @@ const emit = defineEmits(["upvote", "downvote"]);
                 <!-- Primary info row -->
                 <div class="flex items-center gap-2 mb-1">
                     <Icon
-                        icon="mdi:star"
+                        icon="mdi:label-outline"
                         width="14"
                         height="14"
                         class="text-primary"
@@ -221,21 +222,22 @@ const emit = defineEmits(["upvote", "downvote"]);
                         "
                         class="flex items-center gap-1 hover:text-primary transition-colors"
                     >
-                        <Icon
-                            icon="mdi:star"
-                            width="16"
-                            height="16"
-                            class="text-primary"
+                        <StarRating
+                            :model-value="
+                                Number(
+                                    resource.review_summary
+                                        ?.overall_rating
+                                )
+                            "
+                            :size="16"
                         />
-                        {{
-                            Number(
-                                resource.review_summary?.overall_rating || 0
-                            ).toFixed(1)
-                        }}
-                        ({{
-                            resource.review_summary?.review_count || 0
-                        }}
+                        <span>
+
+                            ({{
+                                resource.review_summary?.review_count || 0
+                            }}
                         reviews)
+                    </span>
                     </ClickableHeading>
                 </div>
             </div>
