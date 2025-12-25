@@ -3,7 +3,7 @@
   hosts: local
   tasks:
 
-    # Add a task to checkout master and update
+    # Build the frontend locally
     - name: Build frontend
       shell: |
         npm ci && npm run build
@@ -22,7 +22,7 @@
   tasks:
     - name: Ensure project directory exists
       file:
-        path: /var/www/ComputerScienceResources.com/public
+        path: "{{ project_path }}/public"
         state: directory
         mode: '0755'
         owner: www-data
@@ -31,7 +31,7 @@
     - name: Push frontend as new_build
       synchronize:
         src: "{{ playbook_dir }}/public/build/"
-        dest: /var/www/ComputerScienceResources.com/public/new_build/
+        dest: "{{ project_path }}/public/new_build/"
         recursive: yes
       when: not (skip_frontend | default(false))
 
@@ -52,15 +52,13 @@
         dest: "{{ project_path }}"
         version: master
 
-    - name: Install PHP dependencies
-      shell: |
-        php -d memory_limit=-1 $(which composer) install \
-          --no-dev \
-          --optimize-autoloader \
-          --prefer-dist \
-          --no-interaction
+    - name: Install Composer dependencies
+      command: composer install --no-dev --optimize-autoloader --no-interaction
       args:
         chdir: "{{ project_path }}"
+      environment:
+        COMPOSER_ALLOW_SUPERUSER: "1"
+        COMPOSER_MEMORY_LIMIT: "-1"
 
     - name: Run migrations
       command: php artisan migrate --force
@@ -69,12 +67,12 @@
 
     - name: Remove old build directory
       file:
-        path: /var/www/ComputerScienceResources.com/public/build
+        path: "{{ project_path }}/public/build"
         state: absent
       when: not (skip_frontend | default(false))
 
     - name: Swap new_build into build
-      command: mv /var/www/ComputerScienceResources.com/public/new_build /var/www/ComputerScienceResources.com/public/build
+      command: mv {{ project_path }}/public/new_build {{ project_path }}/public/build
       when: not (skip_frontend | default(false))
 
     - name: Optimize caches

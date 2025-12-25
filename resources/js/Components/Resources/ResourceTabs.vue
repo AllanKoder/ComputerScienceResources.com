@@ -62,7 +62,6 @@ const tabs = [
                     v-for="tabItem in tabs"
                     :key="tabItem.value"
                     :except="['resource']"
-                    view-transition
                     preserve-scroll
                     preserve-state
                     prefetch
