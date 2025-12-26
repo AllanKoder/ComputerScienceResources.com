@@ -84,8 +84,7 @@ class ComputerScienceResourceController extends Controller
             session()->flash('success', 'Created Resource!');
 
             return response()->json($resource);
-        }
-        catch (ResourceAlreadyCreatedException $e) {
+        } catch (ResourceAlreadyCreatedException $e) {
             Log::warning('Resource already exists', [
                 'user_id' => Auth::id(),
                 'resource_id' => $e->resource->id ?? null,
@@ -94,18 +93,17 @@ class ComputerScienceResourceController extends Controller
             session()->flash('warning', 'Resource Already Exists!');
 
             return response()->json($e->resource);
-        }
-        catch (Throwable $e) {
-           DB::rollBack();
+        } catch (Throwable $e) {
+            DB::rollBack();
 
-           Log::critical('Failed to create resource', [
-               'error' => $e->getMessage(),
-               'trace' => $e->getTraceAsString(),
-               'user_id' => Auth::id(),
-               'data' => $validatedData,
-           ]);
+            Log::critical('Failed to create resource', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'user_id' => Auth::id(),
+                'data' => $validatedData,
+            ]);
 
-           return response()->json([], 500);
+            return response()->json([], 500);
         }
     }
 
