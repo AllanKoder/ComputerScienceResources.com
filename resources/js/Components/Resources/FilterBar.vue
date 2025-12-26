@@ -247,112 +247,112 @@ function resetFilters() {
 
         <!-- Quick Filters Section -->
     <div class="px-6 py-6 border-b border-primary/10 dark:border-primary/20 bg-secondary/5 dark:bg-gray-800/60">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-4">
-                <!-- Platform Filter -->
-                <div class="w-full lg:col-span-2">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        <Icon icon="mdi:devices" class="w-4 h-4" />
-                        Platform
-                    </label>
-                    <MultiSelect
-                        v-model="selectedPlatforms"
-                        :options="platformsObject"
-                        filter
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="All Platforms"
-                        class="w-full min-h-[40px]"
-                    />
-                </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-8 gap-4">
+            <!-- Platform Filter -->
+            <div class="w-full lg:col-span-2">
+                <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
+                    <Icon icon="mdi:devices" class="w-4 h-4" />
+                    Platform
+                </label>
+                <MultiSelect
+                    v-model="selectedPlatforms"
+                    :options="platformsObject"
+                    filter
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="All Platforms"
+                    class="w-full min-h-[40px]"
+                />
+            </div>
 
-                <!-- Difficulty Level -->
-                <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        <Icon icon="mdi:stairs" class="w-4 h-4" />
-                        Difficulty
-                    </label>
-                    <MultiSelect
-                        v-model="selectedDifficulties"
-                        :options="difficultiesObject"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="All Levels"
-                        class="w-full min-h-[40px]"
-                    />
-                </div>
+            <!-- Difficulty Level -->
+            <div class="w-full lg:col-span-1">
+                <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
+                    <Icon icon="mdi:stairs" class="w-4 h-4" />
+                    Difficulty
+                </label>
+                <MultiSelect
+                    v-model="selectedDifficulties"
+                    :options="difficultiesObject"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="All Levels"
+                    class="w-full min-h-[40px]"
+                />
+            </div>
 
-                <!-- Pricing -->
-                <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        <Icon icon="mdi:currency-usd" class="w-4 h-4" />
-                        Pricing
-                    </label>
-                    <MultiSelect
-                        v-model="selectedPricings"
-                        :options="pricingsObject"
-                        optionLabel="label"
-                        optionValue="value"
-                        placeholder="Any Price"
-                        class="w-full min-h-[40px]"
-                    />
-                </div>
+            <!-- Pricing -->
+            <div class="w-full lg:col-span-1">
+                <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
+                    <Icon icon="mdi:currency-usd" class="w-4 h-4" />
+                    Pricing
+                </label>
+                <MultiSelect
+                    v-model="selectedPricings"
+                    :options="pricingsObject"
+                    optionLabel="label"
+                    optionValue="value"
+                    placeholder="Any Price"
+                    class="w-full min-h-[40px]"
+                />
+            </div>
 
-                <!-- Overall Rating -->
-                <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        <Icon icon="mdi:star" class="w-4 h-4" />
-                        Min Rating
-                    </label>
-                    <div class="flex items-center h-10">
-                        <Rating
-                            v-model="selectedOverallRating"
-                            :stars="4"
-                            cancel
-                            class="text-accent"
-                        />
-                    </div>
-                </div>
-
-                <!-- Topics Filter -->
-                <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        <Icon icon="mdi:tag-multiple" class="w-4 h-4" />
-                        Topics
-                    </label>
-                    <TagSelector
-                        :tag-type="'topics_tags'"
-                        v-model="selectedTopics"
-                        class="w-full"
-                    />
-                </div>
-
-                <!-- Programming Languages Filter -->
-                <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        <Icon icon="mdi:language-javascript" class="w-4 h-4" />
-                        Languages
-                    </label>
-                    <TagSelector
-                        :tag-type="'programming_languages_tags'"
-                        v-model="selectedProgrammingLanguages"
-                        class="w-full"
-                    />
-                </div>
-
-                <!-- General Tags Filter -->
-                <div class="w-full lg:col-span-1">
-                    <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
-                        <Icon icon="mdi:tag" class="w-4 h-4" />
-                        Tags
-                    </label>
-                    <TagSelector
-                        :tag-type="'general_tags'"
-                        v-model="selectedGeneralTags"
-                        class="w-full"
+            <!-- Overall Rating -->
+            <div class="w-full lg:col-span-1">
+                <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
+                    <Icon icon="mdi:star" class="w-4 h-4" />
+                    Min Rating
+                </label>
+                <div class="flex items-center h-10">
+                    <Rating
+                        v-model="selectedOverallRating"
+                        :stars="4"
+                        cancel
+                        class="text-accent"
                     />
                 </div>
             </div>
+
+            <!-- Topics Filter -->
+            <div class="w-full lg:col-span-1">
+                <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
+                    <Icon icon="mdi:tag-multiple" class="w-4 h-4" />
+                    Topics
+                </label>
+                <TagSelector
+                    :tag-type="'topics_tags'"
+                    v-model="selectedTopics"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- Programming Languages Filter -->
+            <div class="w-full lg:col-span-1">
+                <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
+                    <Icon icon="mdi:language-javascript" class="w-4 h-4" />
+                    Languages
+                </label>
+                <TagSelector
+                    :tag-type="'programming_languages_tags'"
+                    v-model="selectedProgrammingLanguages"
+                    class="w-full"
+                />
+            </div>
+
+            <!-- General Tags Filter -->
+            <div class="w-full lg:col-span-1">
+                <label class="flex items-center gap-2 text-xs font-medium text-gray-600 dark:text-gray-300 mb-2">
+                    <Icon icon="mdi:tag" class="w-4 h-4" />
+                    Tags
+                </label>
+                <TagSelector
+                    :tag-type="'general_tags'"
+                    v-model="selectedGeneralTags"
+                    class="w-full"
+                />
+            </div>
         </div>
+    </div>
 
         <!-- Advanced Filters Section -->
     <div v-show="advancedOpen" class="p-6 bg-secondary/5 dark:bg-gray-800/60 space-y-6">

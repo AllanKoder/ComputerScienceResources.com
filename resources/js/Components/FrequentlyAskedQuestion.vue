@@ -11,9 +11,9 @@ const isAnswerOpen = ref(false);
             @click="isAnswerOpen = !isAnswerOpen"
             class="w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
         >
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white">
+            <h2 class="font-semibold text-gray-900 dark:text-white">
                 <slot name="question"></slot>
-            </h3>
+            </h2>
             <Icon
                 :icon="isAnswerOpen ? 'mdi:expand-less' : 'mdi:expand-more'"
                 class="text-xl text-gray-500 dark:text-gray-400 flex-shrink-0 ml-4"

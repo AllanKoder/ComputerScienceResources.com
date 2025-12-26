@@ -80,6 +80,7 @@ Route::middleware('guest.or.verified')->group(function () {
 
     // Resource Edits
     Route::controller(ResourceEditsController::class)->group(function () {
+        Route::get('/resource/edit', 'index')->name('resource_edits.index');
         Route::get('/resource/edit/{slug}', 'show')->name('resource_edits.show');
     });
 });

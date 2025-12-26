@@ -65,7 +65,7 @@ const { isDark, toggleDark } = useDarkMode();
 
                             <div class="border-t border-gray-200 dark:border-gray-600" />
 
-                            <DropdownLink :href="route('resources.index', { tab: 'edits' })">
+                            <DropdownLink :href="route('resource_edits.index')">
                                 <Icon icon="mdi:pencil-box-multiple" class="mr-2" />
                                 Resource Edits
                             </DropdownLink>

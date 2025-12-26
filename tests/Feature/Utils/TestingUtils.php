@@ -68,13 +68,11 @@ trait TestingUtils
 
     public function approveResourceEdit(ResourceEdits $edit)
     {
-        // Stub the ResourceEditsService to always allow merging
-        $this->instance(
-            ResourceEditsService::class,
-            Mockery::mock(ResourceEditsService::class, function (MockInterface $mock) {
-                $mock->shouldReceive('canMergeEdits')->andReturnTrue();
-            })
-        );
+        // Create a partial mock that only mocks canMergeEdits
+        $service = Mockery::mock(ResourceEditsService::class)->makePartial();
+        $service->shouldReceive('canMergeEdits')->andReturnTrue();
+
+        $this->instance(ResourceEditsService::class, $service);
 
         // Merge the edit
         $mergeResponse = $this->post(route('resource_edits.merge', ['resourceEdits' => $edit->id]));

@@ -90,15 +90,6 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
 
                             <FrequentlyAskedQuestion>
                                 <template #question>
-                                    Why is Computer Science Resources not open source if you love the community?
-                                </template>
-                                <template #answer>
-                                    It will be! I wanted to keep it closed source in the early release to prevent people from forking the codebase and taking credit for the project. I also need to do some refactoring to make it more appealing for contributors. I'll be happy to open source it in the near future—ideally once there are at least 200 users.
-                                </template>
-                            </FrequentlyAskedQuestion>
-
-                            <FrequentlyAskedQuestion>
-                                <template #question>
                                     How does Computer Science Resources make money?
                                 </template>
                                 <template #answer>
@@ -112,6 +103,7 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                                 </template>
                                 <template #answer>
                                     We focus on comprehensive, structured, and high-quality resources—things that provide long-term learning value. That includes interactive platforms, educational YouTube channels, curated book series, technical newsletters, and more. The more focused or specialized the resource is, the better.
+                                    Check out <u><a :href="route('rules')">this link for more information.</a></u>
                                 </template>
                             </FrequentlyAskedQuestion>
 

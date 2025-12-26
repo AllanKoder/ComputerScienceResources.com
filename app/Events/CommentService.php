@@ -58,7 +58,7 @@ class CommentService
         ]);
 
         // Apply sorting on the comments
-        $query = app(GeneralVotesSortingManager::class)->applySort($query, $sortBy, Comment::class);
+        $query = app(GeneralVotesSortingManager::class)->applySort($query, $sortBy);
 
         $rootComments = $query->get();
         Log::debug('Root comments retrieved', [

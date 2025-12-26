@@ -4,26 +4,23 @@ import { defineProps } from 'vue';
 import SortUpvotesByDropdown from "@/Components/Comments/SortUpvotesByDropdown.vue";
 
 const props = defineProps({
-    resourceSlug: {
+    routeName: {
         type: String,
         required: true
+    },
+    routeParams: {
+        type: Object,
+        default: () => ({})
     },
     initialValue: {
         type: String,
         default: 'top',
-    },
-    tab: {
-        type: String,
-        default: 'discussion',
     }
 })
 
 function handleSortChange(newSortType) {
     // Change the sort_by parameter
-    const baseUrl = route('resources.show', {
-        slug: props.resourceSlug,
-        tab: props.tab,
-    });
+    const baseUrl = route(props.routeName, props.routeParams);
 
     // Create a new URL object based on the current location
     const url = new URL(baseUrl, window.location.origin);
@@ -34,7 +31,8 @@ function handleSortChange(newSortType) {
     // Visit the new URL with Inertia
     router.visit(url.toString(), {
         preserveState: true,
-        preserveScroll: true
+        preserveScroll: true,
+        viewTransition: true
     });
 }
 </script>

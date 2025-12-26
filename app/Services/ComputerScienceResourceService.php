@@ -133,7 +133,7 @@ class ComputerScienceResourceService
                 function () use ($computerScienceResource, $sortBy, $request) {
                     try {
                         $query = ResourceReview::whereBelongsTo($computerScienceResource);
-                        $query = $this->resourceSortingManager->applySort($query, $sortBy, ResourceReview::class);
+                        $query = $this->resourceSortingManager->applySort($query, $sortBy);
 
                         return $query->with('user')->paginate(10)->appends($request->query());
                     } catch (Throwable $e) {
