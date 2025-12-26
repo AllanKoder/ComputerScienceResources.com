@@ -77,9 +77,9 @@ class ComputerScienceResourceController extends Controller
                 'platforms' => $resource->platforms,
             ]);
 
-            DB::commit();
-
             $this->upvoteService->upvote('resource', $resource->id);
+
+            DB::commit();
 
             session()->flash('success', 'Created Resource!');
 

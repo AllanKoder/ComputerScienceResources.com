@@ -43,9 +43,9 @@ class CommentController extends Controller
                 'depth' => $comment->depth,
             ]);
 
-            DB::commit();
-
             $this->upvoteService->upvote('comment', $comment->id);
+
+            DB::commit();
 
             return response()->json([
                 'new_comment' => new CommentResource($comment),
