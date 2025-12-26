@@ -43,6 +43,30 @@ class ComputerScienceResourceTest extends TestCase
         $this->assertNotNull($createdResource);
     }
 
+    public function test_resource_is_auto_upvoted_after_creation()
+    {
+        $this->actingAs($this->user);
+
+        $formData = StoreResourceRequestFactory::new()->create();
+
+        $response = $this->postJson(route('resources.store'), $formData);
+
+        $response->assertStatus(200);
+
+        // Get the created resource
+        $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
+        $this->assertNotNull($createdResource);
+
+        // Assert that an upvote was created for the user
+        $this->assertDatabaseHas('upvotes', [
+            'user_id' => $this->user->id,
+            'upvotable_type' => 'resource',
+            'upvotable_id' => $createdResource->id,
+            'value' => 1,
+        ]);
+
+    }
+
     public function test_can_post_resource_with_image()
     {
         Storage::fake('public');
@@ -200,11 +224,11 @@ class ComputerScienceResourceTest extends TestCase
         // Assert resource and comment are deleted
         $this->assertDatabaseMissing('computer_science_resources', ['id' => $resource->id]);
         $this->assertDatabaseMissing('comments', ['id' => $commentId]);
-        $this->assertDatabaseMissing('comments_counts', ['commentable_id' => $resource->id, 'commentable_type' => ComputerScienceResource::class]);
+        $this->assertDatabaseMissing('comments_counts', ['commentable_id' => $resource->id, 'commentable_type' => 'resource']);
 
         // Assert votes and voteSummaries are gone
-        $this->assertDatabaseMissing('upvotes', ['upvotable_id' => $resource->id, 'upvotable_type' => ComputerScienceResource::class]);
-        $this->assertDatabaseMissing('upvote_summaries', ['upvotable_id' => $resource->id, 'upvotable_type' => ComputerScienceResource::class]);
+        $this->assertDatabaseMissing('upvotes', ['upvotable_id' => $resource->id, 'upvotable_type' => 'resource']);
+        $this->assertDatabaseMissing('upvote_summaries', ['upvotable_id' => $resource->id, 'upvotable_type' => 'resource']);
 
         // Assert Reviews are removed
         $this->assertDatabaseMissing('resource_reviews', ['id' => $resourceReview->id]);

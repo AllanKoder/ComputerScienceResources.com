@@ -5,7 +5,7 @@ import ResourceReviews from "@/Components/Resources/Reviews/ResourceReviews.vue"
 import ToggleCreateReview from "@/Components/Resources/Reviews/ToggleCreateReview.vue";
 import Commentable from "@/Components/Comments/Commentable.vue";
 import ResourceEdits from "@/Components/Resources/ResourceEdit/ResourceEdits.vue";
-import ResourceUpvoteSorting from "@/Components/Resources/ResourceUpvoteSorting.vue";
+import UpvoteSorting from "@/Components/Upvote/UpvoteSorting.vue";
 import { getConfigData } from "@/Helpers/config";
 import LoadingAnimation from "@/Components/LoadingAnimation.vue";
 import ProposeEditsButton from "@/Components/Resources/ResourceEdit/ProposeEditsButton.vue";
@@ -62,7 +62,7 @@ const tabs = [
                     preserve-scroll
                     preserve-state
                     prefetch
-                    cache-for="10s"
+                    cache-for="2s"
                     :href="route('resources.show', { slug: props.resource.slug, tab: tabItem.value })"
                     :class="[
                         'py-4 px-1 border-b-2 font-medium text-sm transition-all duration-200',
@@ -84,10 +84,10 @@ const tabs = [
 
         <!-- Sorting Controls -->
         <div class="px-6 border-b border-gray-200 dark:border-gray-700 ">
-            <ResourceUpvoteSorting
-                :resource-slug="props.resource.slug"
+            <UpvoteSorting
+                route-name="resources.show"
+                :route-params="{ slug: props.resource.slug, tab: props.tab }"
                 :initial-value="props.sortingType"
-                :tab="props.tab"
             />
         </div>
 

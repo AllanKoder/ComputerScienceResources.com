@@ -12,9 +12,7 @@ use App\Services\SortingManagers\ResourceSortingManager;
 use App\Utilities\UrlUtilities;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Throwable;
 
@@ -65,64 +63,39 @@ class ComputerScienceResourceService
             throw new ResourceAlreadyCreatedException($conflictingResource);
         }
 
-        DB::beginTransaction();
-        try {
-            // Store the image onto storage
-            $path = null;
-            if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file']) {
-                // TODO: FIGURE OUT WHAT TO DO IN CASE OF EXCEPTION IN CODE FROM LATER STEPS
-                $path = $imageFile->store('resource', 'public');
-            }
-
-            $resource = ComputerScienceResource::create([
-                'user_id' => Auth::id(),
-                'name' => $validatedData['name'],
-                'image_path' => $path,
-                'description' => $validatedData['description'],
-                'page_url' => $validatedData['page_url'],
-                'platforms' => $validatedData['platforms'],
-                'difficulties' => $validatedData['difficulties'],
-                'pricing' => $validatedData['pricing'],
-            ]);
-
-            // Add topics as tags
-            $resource->topics_tags = $validatedData['topics_tags'];
-
-            // Add programming languages as tags (if provided)
-            if (isset($validatedData['programming_languages_tags'])) {
-                $resource->programming_languages_tags = $validatedData['programming_languages_tags'];
-            }
-
-            // Add general tags (if provided)
-            if (isset($validatedData['general_tags'])) {
-                $resource->general_tags = $validatedData['general_tags'];
-            }
-
-            DB::commit();
-
-            $this->upvoteService->upvote('resource', $resource->id);
-
-            Log::info('Resource created', [
-                'resource_id' => $resource->id,
-                'user_id' => Auth::id(),
-                'name' => $resource->name,
-                'slug' => $resource->slug,
-                'platforms' => $resource->platforms,
-            ]);
-
-            return $resource;
-        } catch (Throwable $e) {
-            DB::rollBack();
-
-            Log::critical('Failed to create resource', [
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-                'user_id' => Auth::id(),
-                'data' => $validatedData,
-            ]);
-
-            throw $e;
+        // Store the image onto storage
+        $path = null;
+        if (array_key_exists('image_file', $validatedData) && $imageFile = $validatedData['image_file']) {
+            // TODO: FIGURE OUT WHAT TO DO IN CASE OF EXCEPTION IN CODE FROM LATER STEPS
+            $path = $imageFile->store('resource', 'public');
         }
+
+        $resource = ComputerScienceResource::create([
+            'user_id' => Auth::id(),
+            'name' => $validatedData['name'],
+            'image_path' => $path,
+            'description' => $validatedData['description'],
+            'page_url' => $validatedData['page_url'],
+            'platforms' => $validatedData['platforms'],
+            'difficulties' => $validatedData['difficulties'],
+            'pricing' => $validatedData['pricing'],
+        ]);
+
+        // Add topics as tags
+        $resource->topics_tags = $validatedData['topics_tags'];
+
+        // Add programming languages as tags (if provided)
+        if (isset($validatedData['programming_languages_tags'])) {
+            $resource->programming_languages_tags = $validatedData['programming_languages_tags'];
+        }
+
+        // Add general tags (if provided)
+        if (isset($validatedData['general_tags'])) {
+            $resource->general_tags = $validatedData['general_tags'];
+        }
+
+        return $resource;
+
     }
 
     /**
@@ -160,7 +133,7 @@ class ComputerScienceResourceService
                 function () use ($computerScienceResource, $sortBy, $request) {
                     try {
                         $query = ResourceReview::whereBelongsTo($computerScienceResource);
-                        $query = $this->resourceSortingManager->applySort($query, $sortBy, ResourceReview::class);
+                        $query = $this->resourceSortingManager->applySort($query, $sortBy);
 
                         return $query->with('user')->paginate(10)->appends($request->query());
                     } catch (Throwable $e) {

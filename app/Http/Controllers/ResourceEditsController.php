@@ -6,12 +6,10 @@ use App\Http\Requests\StoreResourceEditRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
-use Str;
 use Throwable;
 
 class ResourceEditsController extends Controller
@@ -39,36 +37,61 @@ class ResourceEditsController extends Controller
     public function store(ComputerScienceResource $computerScienceResource, StoreResourceEditRequest $request)
     {
         $validatedData = $request->validated();
-        $proposedChanges = $validatedData['proposed_changes'] ?? [];
 
-        $actualChanges = $this->resourceEditsService->calculateChanges($computerScienceResource, $proposedChanges);
+        try {
+            $resourceEdit = $this->resourceEditsService->createResourceEdit($computerScienceResource, $validatedData);
 
-        // Add image path to the actual changes
-        if (array_key_exists('image_file', $proposedChanges)) {
-            $actualChanges['image_path'] = null;
-            if (isset($proposedChanges['image_file'])) {
-                $path = $proposedChanges['image_file']->store('resource-edits', 'public');
-                $actualChanges['image_path'] = $path;
-            }
-            unset($actualChanges['image_file']);
-        }
+            Log::info('Resource edit created', [
+                'resource_edit_id' => $resourceEdit->id,
+                'resource_id' => $computerScienceResource->id,
+                'user_id' => Auth::id(),
+                'edit_title' => $resourceEdit->edit_title,
+            ]);
 
-        if (empty($actualChanges)) {
-            Log::warning("Resource edit was submitted without any changes for resource ID: {$computerScienceResource->id}");
+            return redirect()->route('resource_edits.show', ['slug' => $resourceEdit->slug])
+                ->with('success', 'Edits Created!');
+        } catch (\InvalidArgumentException $e) {
+            Log::warning('Resource edit submitted with no changes', [
+                'resource_id' => $computerScienceResource->id,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+            ]);
 
             return redirect()->back()->with('warning', 'Cannot submit an edit with no changes made.');
+        } catch (Throwable $e) {
+            Log::critical('Failed to create resource edit', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+                'resource_id' => $computerScienceResource->id,
+                'user_id' => Auth::id(),
+                'data' => $validatedData,
+            ]);
+
+            return redirect()->back()->withErrors(['error' => 'Failed to create resource edit. Please try again.']);
         }
+    }
 
-        $resourceEdit = ResourceEdits::create([
-            'user_id' => Auth::id(),
-            'computer_science_resource_id' => $computerScienceResource->id,
-            'edit_title' => $validatedData['edit_title'],
-            'edit_description' => $validatedData['edit_description'],
-            'proposed_changes' => $actualChanges,
-        ]);
+    public function index(Request $request)
+    {
+        try {
+            $data = $this->resourceEditsService->getIndexData($request);
 
-        return redirect()->route('resource_edits.show', ['slug' => $resourceEdit->slug])
-            ->with('success', 'Edits Created!');
+            return Inertia::render('ResourceEdits/Index', $data);
+        } catch (Throwable $e) {
+            Log::error('Error loading resource edits index', [
+                'user_id' => Auth::id(),
+                'query' => $request->query(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            // Return an empty page with an error flash so the UI can show a message
+            session()->flash('error', 'Unable to load resource edits right now.');
+
+            return Inertia::render('ResourceEdits/Index', [
+                'resource_edits' => ResourceEdits::query()->paginate(1),
+            ]);
+        }
     }
 
     public function show(string $slug)
@@ -83,57 +106,10 @@ class ResourceEditsController extends Controller
         ]);
     }
 
-    public function merge(ResourceEditsService $editsService, ResourceEdits $resourceEdits)
+    public function merge(ResourceEdits $resourceEdits)
     {
-        if (! $editsService->canMergeEdits($resourceEdits)) {
-            return redirect()->back()->with('warning', 'Not enough approvals');
-        }
-
-        DB::beginTransaction();
         try {
-            $resource = ComputerScienceResource::findOrFail($resourceEdits->computer_science_resource_id);
-
-            // Go through each property in proposed_changes, and if it exists. then set the value
-            $changes = $resourceEdits->proposed_changes;
-            $proposedFields = ['name', 'description', 'page_url', 'platforms', 'difficulties', 'pricing'];
-            foreach ($proposedFields as $field) {
-                if (array_key_exists($field, $changes)) {
-                    $resource->$field = $changes[$field];
-                }
-            }
-
-            if (array_key_exists('image_path', $changes)) {
-                if ($resource->image_path) {
-                    Storage::disk('public')->delete($resource->image_path);
-                }
-                $destPath = null;
-                if (isset($changes['image_path'])) {
-                    // Move the new file from 'resource-edits' to 'resource'
-                    $sourcePath = $changes['image_path'];
-                    $fileExtension = pathinfo($sourcePath, PATHINFO_EXTENSION);
-                    $newFileName = Str::random(40).'.'.$fileExtension;
-                    $destPath = 'resource/'.$newFileName;
-
-                    // TODO: FIGURE OUT WHAT TO DO IN CASE OF EXCEPTION IN CODE FROM LATER STEPS
-                    Storage::disk('public')->move($sourcePath, $destPath);
-                }
-                // Update image_path in DB
-                $resource->image_path = $destPath;
-            }
-
-            $resource->save();
-
-            $proposedTagFields = ['topics_tags', 'programming_languages_tags', 'general_tags'];
-            foreach ($proposedTagFields as $field) {
-                if (array_key_exists($field, $changes)) {
-                    $resource->$field = $changes[$field];
-                }
-            }
-
-            // Delete the edit since we successfully merged the changes
-            $resourceEdits->delete();
-
-            DB::commit();
+            $resource = $this->resourceEditsService->mergeResourceEdit($resourceEdits);
 
             Log::info('Resource edit merged', [
                 'resource_id' => $resource->id,
@@ -145,12 +121,20 @@ class ResourceEditsController extends Controller
 
             return redirect(route('resources.show', ['slug' => $resource->slug]))
                 ->with('success', 'Successfully Merged Changes!');
+        } catch (\LogicException $e) {
+            Log::warning('Insufficient approvals for resource edit merge', [
+                'resource_edit_id' => $resourceEdits->id,
+                'user_id' => Auth::id(),
+                'error' => $e->getMessage(),
+            ]);
+
+            return redirect()->back()->with('warning', 'Not enough approvals');
         } catch (Throwable $e) {
-            DB::rollBack();
             Log::critical('Failed to merge resource edits', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'resource_edit_id' => $resourceEdits->id,
+                'user_id' => Auth::id(),
             ]);
 
             return redirect()->back()->withErrors(['error' => 'Failed to merge resource edits. Please try again.']);

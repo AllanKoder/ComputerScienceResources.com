@@ -42,23 +42,34 @@ const { isDark, toggleDark } = useDarkMode();
                             :active="route().current('about') || route().current('rules')"
                         >
                             <DropdownLink :href="route('about')">
+                                <Icon icon="mdi:information-outline" class="mr-2" />
                                 About Us
                             </DropdownLink>
 
                             <div class="border-t border-gray-200 dark:border-gray-600" />
 
                             <DropdownLink :href="route('rules')">
+                                <Icon icon="mdi:gavel" class="mr-2" />
                                 Rules
                             </DropdownLink>
                         </NavLinkDropdown>
 
-                        <NavLink
-                            :href="route('resources.index')"
-                            :active="route().current('resources.index')"
-                            class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
+                        <NavLinkDropdown
+                            label="Resources"
+                            :active="route().current('resources.*')"
                         >
-                            Resources
-                        </NavLink>
+                            <DropdownLink :href="route('resources.index')">
+                                <Icon icon="mdi:magnify" class="mr-2" />
+                                Browse Resources
+                            </DropdownLink>
+
+                            <div class="border-t border-gray-200 dark:border-gray-600" />
+
+                            <DropdownLink :href="route('resource_edits.index')">
+                                <Icon icon="mdi:pencil-box-multiple" class="mr-2" />
+                                Resource Edits
+                            </DropdownLink>
+                        </NavLinkDropdown>
                     </div>
                 </div>
 
@@ -202,7 +213,17 @@ const { isDark, toggleDark } = useDarkMode();
                     :active="route().current('resources.index')"
                     class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
                 >
-                    Resources
+                    <Icon icon="mdi:magnify" class="mr-2" />
+                    Browse Resources
+                </ResponsiveNavLink>
+
+                <ResponsiveNavLink
+                    :href="route('resource_edits.index')"
+                    :active="route().current('resource_edits.index')"
+                    class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
+                >
+                    <Icon icon="mdi:pencil-box-multiple" class="mr-2" />
+                    Resource Edits
                 </ResponsiveNavLink>
 
                 <!-- Authenticated -->

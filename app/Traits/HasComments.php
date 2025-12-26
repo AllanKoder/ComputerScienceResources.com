@@ -16,7 +16,7 @@ trait HasComments
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'commentable_id', 'id')
-            ->where('commentable_type', static::class);
+            ->where('commentable_type', $this->getMorphClass());
     }
 
     /**
@@ -25,7 +25,7 @@ trait HasComments
     public function commentsCountRelationship(): HasOne
     {
         return $this->hasOne(CommentsCount::class, 'commentable_id', 'id')
-            ->where('commentable_type', static::class);
+            ->where('commentable_type', $this->getMorphClass());
     }
 
     /**

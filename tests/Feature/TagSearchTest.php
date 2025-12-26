@@ -141,9 +141,9 @@ class TagSearchTest extends TestCase
         $edit = ResourceEdits::latest()->first();
 
         // Mock approval
-        $this->instance(ResourceEditsService::class, Mockery::mock(ResourceEditsService::class, function ($mock) {
-            $mock->shouldReceive('canMergeEdits')->andReturnTrue();
-        }));
+        $service = Mockery::mock(ResourceEditsService::class)->makePartial();
+        $service->shouldReceive('canMergeEdits')->andReturnTrue();
+        $this->instance(ResourceEditsService::class, $service);
 
         // Merge the edit
         $mergeResponse = $this->post(route('resource_edits.merge', ['resourceEdits' => $edit->id]));

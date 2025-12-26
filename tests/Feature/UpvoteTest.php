@@ -4,7 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\ComputerScienceResource;
 use App\Models\User;
-use App\Services\ModelResolverService;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utils\TestingUtils;
 use Tests\TestCase;
@@ -48,7 +48,7 @@ class UpvoteTest extends TestCase
 
         foreach (config('upvotes.upvotable_keys') as $typeKey) {
             // Get the Model service with app
-            $modelClass = app(ModelResolverService::class)->getModelClass($typeKey); // Resolve the model class.
+            $modelClass = Relation::getMorphedModel($typeKey); // Resolve the model class.
 
             $model = $modelClass::factory()->create();
 
@@ -56,7 +56,7 @@ class UpvoteTest extends TestCase
 
             $this->assertDatabaseHas('upvotes', [
                 'user_id' => $user->id,
-                'upvotable_type' => $modelClass,
+                'upvotable_type' => $typeKey,
                 'upvotable_id' => $model->id,
                 'value' => 1,
             ]);

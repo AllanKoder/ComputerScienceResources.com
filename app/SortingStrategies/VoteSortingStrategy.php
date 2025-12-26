@@ -15,12 +15,12 @@ class VoteSortingStrategy implements SortingStrategy
     public static function apply(Builder $query, string $sortBy): Builder
     {
         $table = $query->getModel()->getTable();
-        $modelClass = get_class($query->getModel());
+        $morphClass = $query->getModel()->getMorphClass();
 
         // Join on polymorphic relationship
-        $query->join('upvote_summaries', function ($join) use ($table, $modelClass) {
+        $query->join('upvote_summaries', function ($join) use ($table, $morphClass) {
             $join->on('upvote_summaries.upvotable_id', '=', "{$table}.id")
-                ->where('upvote_summaries.upvotable_type', '=', $modelClass);
+                ->where('upvote_summaries.upvotable_type', '=', $morphClass);
         })->select("{$table}.*");
 
         switch ($sortBy) {

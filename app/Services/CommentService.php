@@ -8,6 +8,7 @@ use App\Models\Comment;
 use App\Services\SortingManagers\GeneralVotesSortingManager;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -16,13 +17,6 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CommentService
 {
-    protected $modelResolver;
-
-    public function __construct(ModelResolverService $resolver)
-    {
-        $this->modelResolver = $resolver;
-    }
-
     /**
      * Get paginated comments with custom logic.
      *
@@ -46,7 +40,7 @@ class CommentService
             'sort_by' => ['required', 'string'],
         ]);
 
-        $commentableType = $this->modelResolver->getModelClass($commentableKey);
+        $commentableType = Relation::getMorphedModel($commentableKey);
         Log::debug('Getting paginated comments', [
             'commentable_type' => $commentableType,
             'commentable_id' => $commentableId,
@@ -57,13 +51,13 @@ class CommentService
 
         // Get the root comments:
         $query = Comment::where([
-            'commentable_type' => $commentableType,
+            'commentable_type' => $commentableKey,
             'commentable_id' => $commentableId,
             'depth' => 1,
         ]);
 
         // Apply sorting on the comments
-        $query = app(GeneralVotesSortingManager::class)->applySort($query, $sortBy, Comment::class);
+        $query = app(GeneralVotesSortingManager::class)->applySort($query, $sortBy);
 
         $rootComments = $query->get();
         Log::debug('Root comments retrieved', [
@@ -167,17 +161,18 @@ class CommentService
         $comment->content = $validatedData['content'];
         $comment->user_id = Auth::id();
 
-        $commentableType = $this->modelResolver->getModelClass($validatedData['commentable_key']);
+        $commentableKey = $validatedData['commentable_key'];
+        $commentableModel = Relation::getMorphedModel($commentableKey);
         $commentableId = $validatedData['commentable_id'];
 
         // Ensure that the model exists
-        $model = $this->modelResolver->resolve($validatedData['commentable_key'], $commentableId);
+        $model = $commentableModel::find($commentableId);
         if (! $model) {
             throw new NotFoundHttpException;
         }
 
         // Set the commentable type
-        $comment->commentable_type = $commentableType;
+        $comment->commentable_type = $commentableKey;
         $comment->commentable_id = $commentableId;
 
         // Top level comment
@@ -209,7 +204,7 @@ class CommentService
             Validator::validate(
                 [
                     'commentable_id' => $commentableId,
-                    'commentable_type' => $commentableType,
+                    'commentable_type' => $commentableKey,
                     'depth' => $new_comment_depth,
                     'replies_count' => $replies_count,
                 ],
