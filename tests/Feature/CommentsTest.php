@@ -343,7 +343,8 @@ class CommentsTest extends TestCase
         $commentData = $this->createComment('resource', $resource->id);
         $commentId = $commentData['id'];
 
-        // Upvote the comment
+        // Upvote the comment, downvote first to prevent existing upvote
+        $this->downvote('comment', $commentId);
         $this->upvote('comment', $commentId);
 
         // Verify upvote and summary exist

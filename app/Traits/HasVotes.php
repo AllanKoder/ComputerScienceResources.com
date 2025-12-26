@@ -85,7 +85,7 @@ trait HasVotes
             UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 0);
 
             return [
-                'model' => $this->deleteVote($userId),
+                'model' => $this->vote($userId, 0),
                 // The value of the user vote (-n,0,n)
                 'userVote' => 0,
                 // What the change of votes of the model after the user voted
@@ -115,7 +115,7 @@ trait HasVotes
             UpvoteProcessed::dispatch($modelType, $modelId, $currentVote, 0);
 
             return [
-                'model' => $this->deleteVote($userId),
+                'model' => $this->vote($userId, 0),
                 'userVote' => 0,
                 'changeFromVote' => 0 - $currentVote,
             ];
