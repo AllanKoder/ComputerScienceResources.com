@@ -8,7 +8,6 @@ use App\Models\ResourceReview;
 use App\Models\User;
 use App\Services\ResourceEditsService;
 use Mockery;
-use Mockery\MockInterface;
 use Tests\RequestFactories\StoreCommentRequestFactory;
 use Tests\RequestFactories\StoreResourceEditRequestFactory;
 use Tests\RequestFactories\StoreResourceRequestFactory;

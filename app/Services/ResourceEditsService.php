@@ -17,9 +17,9 @@ class ResourceEditsService
 {
     public function __construct(
         protected UpvoteService $upvoteService,
-        protected ComputerScienceResourceFilter $filterService,
         protected GeneralVotesSortingManager $sortingManager,
     ) {}
+
     /**
      * Determines the amount of votes needed to merge the resource edit into the
      *
@@ -147,7 +147,7 @@ class ResourceEditsService
      */
     public function mergeResourceEdit(ResourceEdits $resourceEdits): ComputerScienceResource
     {
-        if (!$this->canMergeEdits($resourceEdits)) {
+        if (! $this->canMergeEdits($resourceEdits)) {
             throw new \LogicException('Not enough approvals to merge this edit.');
         }
 
