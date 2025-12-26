@@ -62,7 +62,7 @@ const tabs = [
                     preserve-scroll
                     preserve-state
                     prefetch
-                    cache-for="10s"
+                    cache-for="2s"
                     :href="route('resources.show', { slug: props.resource.slug, tab: tabItem.value })"
                     :class="[
                         'py-4 px-1 border-b-2 font-medium text-sm transition-all duration-200',

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -10,8 +11,6 @@ use Throwable;
 
 class UpvoteService
 {
-    public function __construct(protected ModelResolverService $modelResolver) {}
-
     /**
      * Upvote a Model
      */
@@ -28,7 +27,7 @@ class UpvoteService
 
         DB::beginTransaction();
         try {
-            $model = $this->modelResolver->resolve($typeKey, $id);
+            $model = Relation::getMorphedModel($typeKey)::find($id);
 
             if (! $model) {
                 Log::warning('Upvote failed: Model not found', [
@@ -86,7 +85,7 @@ class UpvoteService
 
         DB::beginTransaction();
         try {
-            $model = $this->modelResolver->resolve($typeKey, $id);
+            $model = Relation::getMorphedModel($typeKey)::find($id);
 
             if (! $model) {
                 Log::warning('Downvote failed: Model not found', [

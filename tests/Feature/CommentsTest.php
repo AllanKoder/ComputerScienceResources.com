@@ -6,7 +6,7 @@ use App\Models\Comment;
 use App\Models\ComputerScienceResource;
 use App\Models\UpvoteSummary;
 use App\Models\User;
-use App\Services\ModelResolverService;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\Feature\Utils\TestingUtils;
 use Tests\RequestFactories\StoreCommentRequestFactory;
@@ -86,7 +86,7 @@ class CommentsTest extends TestCase
         $this->actingAs($user);
 
         foreach (config('comment.commentable_keys') as $typeKey) {
-            $modelClass = app(ModelResolverService::class)->getModelClass($typeKey);
+            $modelClass = Relation::getMorphedModel($typeKey);
 
             // Skip comments
             if ($modelClass === Comment::class) {
@@ -99,7 +99,7 @@ class CommentsTest extends TestCase
 
             $this->assertDatabaseHas('comments', [
                 'content' => $commentContent,
-                'commentable_type' => $modelClass,
+                'commentable_type' => $typeKey,
                 'commentable_id' => $commentable->id,
             ]);
         }
@@ -278,7 +278,7 @@ class CommentsTest extends TestCase
         // Verify upvote summary was created for root comment
         $this->assertDatabaseHas('upvote_summaries', [
             'upvotable_id' => $rootComment['id'],
-            'upvotable_type' => Comment::class,
+            'upvotable_type' => 'comment',
         ]);
 
         // Create a reply comment
@@ -287,7 +287,7 @@ class CommentsTest extends TestCase
         // Verify upvote summary was created for reply comment
         $this->assertDatabaseHas('upvote_summaries', [
             'upvotable_id' => $replyComment['id'],
-            'upvotable_type' => Comment::class,
+            'upvotable_type' => 'comment',
         ]);
 
         // Also test commenting on a comment directly
@@ -296,11 +296,11 @@ class CommentsTest extends TestCase
         // Verify upvote summary was created for comment on comment
         $this->assertDatabaseHas('upvote_summaries', [
             'upvotable_id' => $commentOnComment['id'],
-            'upvotable_type' => Comment::class,
+            'upvotable_type' => 'comment',
         ]);
 
         // Verify that we have exactly 3 upvote summaries for comments
-        $upvoteSummariesCount = UpvoteSummary::where('upvotable_type', Comment::class)->count();
+        $upvoteSummariesCount = UpvoteSummary::where('upvotable_type', 'comment')->count();
         $this->assertEquals(3, $upvoteSummariesCount);
     }
 
@@ -323,11 +323,11 @@ class CommentsTest extends TestCase
         // Verify upvote and summary exist
         $this->assertDatabaseHas('upvotes', [
             'upvotable_id' => $commentId,
-            'upvotable_type' => Comment::class,
+            'upvotable_type' => 'comment',
         ]);
         $this->assertDatabaseHas('upvote_summaries', [
             'upvotable_id' => $commentId,
-            'upvotable_type' => Comment::class,
+            'upvotable_type' => 'comment',
         ]);
 
         // Delete the comment
@@ -336,11 +336,11 @@ class CommentsTest extends TestCase
         // Verify upvote and summary were deleted
         $this->assertDatabaseMissing('upvotes', [
             'upvotable_id' => $commentId,
-            'upvotable_type' => Comment::class,
+            'upvotable_type' => 'comment',
         ]);
         $this->assertDatabaseMissing('upvote_summaries', [
             'upvotable_id' => $commentId,
-            'upvotable_type' => Comment::class,
+            'upvotable_type' => 'comment',
         ]);
     }
 }

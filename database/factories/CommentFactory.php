@@ -4,8 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Comment;
 use App\Models\User;
-use App\Services\ModelResolverService;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Comment>
@@ -23,8 +23,7 @@ class CommentFactory extends Factory
     {
         // Pick a random commentable type from config.
         $commentableKey = $this->faker->randomElement(['comment', 'resource']);
-        $modelResolver = app(ModelResolverService::class);
-        $modelClass = $modelResolver->getModelClass($commentableKey);
+        $modelClass = Relation::getMorphedModel($commentableKey);
 
         // Use an existing user or create one.
         $user = User::inRandomOrder()->first() ?? User::factory()->create();
@@ -47,7 +46,7 @@ class CommentFactory extends Factory
             // For non-comment targets, fetch or create the commentable model.
             $commenting = $modelClass::inRandomOrder()->first() ?? $modelClass::factory()->create();
             $commentableId = $commenting->id;
-            $commentableType = $modelClass;
+            $commentableType = $commentableKey;
 
             // For non-comment targets we always create a top-level comment.
             $parentCommentId = null;

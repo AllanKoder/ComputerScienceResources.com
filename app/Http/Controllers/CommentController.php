@@ -6,7 +6,6 @@ use App\Http\Requests\StoreCommentRequest;
 use App\Http\Resources\CommentResource;
 use App\Http\Resources\UserResource;
 use App\Services\CommentService;
-use App\Services\ModelResolverService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -17,7 +16,7 @@ use Throwable;
 
 class CommentController extends Controller
 {
-    public function __construct(protected ModelResolverService $modelResolver,
+    public function __construct(
         protected CommentService $commentService,
     ) {}
 
@@ -43,6 +42,8 @@ class CommentController extends Controller
             ]);
 
             DB::commit();
+
+            // $this->upvoteService->upvote('comment', $resource->id);
 
             return response()->json([
                 'new_comment' => new CommentResource($comment),

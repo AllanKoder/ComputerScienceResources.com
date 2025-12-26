@@ -237,10 +237,10 @@ class ResourceEditsTest extends TestCase
         $this->approveResourceEdit($edit);
 
         // Assert None of found for the following:
-        $this->assertEmpty(Upvote::where('upvotable_id', $edit->id)->where('upvotable_type', ResourceEdits::class)->get());
-        $this->assertEmpty(UpvoteSummary::where('upvotable_id', $edit->id)->where('upvotable_type', ResourceEdits::class)->get());
+        $this->assertEmpty(Upvote::where('upvotable_id', $edit->id)->where('upvotable_type', 'edit')->get());
+        $this->assertEmpty(UpvoteSummary::where('upvotable_id', $edit->id)->where('upvotable_type', 'edit')->get());
 
-        $this->assertEmpty(Comment::where('commentable_id', $edit->id)->where('commentable_type', ResourceEdits::class)->get());
+        $this->assertEmpty(Comment::where('commentable_id', $edit->id)->where('commentable_type', 'edit')->get());
 
         // Check that the resource edit still edits (soft deleted)
         $this->assertNotEmpty(ResourceEdits::withTrashed()->find($edit->id));

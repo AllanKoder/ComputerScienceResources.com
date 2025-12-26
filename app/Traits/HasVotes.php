@@ -20,7 +20,7 @@ trait HasVotes
         static::created(function ($model) {
             UpvoteSummary::firstOrCreate([
                 'upvotable_id' => $model->id,
-                'upvotable_type' => get_class($model),
+                'upvotable_type' => $model->getMorphClass(),
             ]);
         });
     }
@@ -78,7 +78,7 @@ trait HasVotes
     public function upvote($userId): array
     {
         $currentVote = $this->getVoteValue($userId);
-        $modelType = get_class($this);
+        $modelType = $this->getMorphClass();
         $modelId = $this->id;
 
         if ($currentVote > 0) {
@@ -108,7 +108,7 @@ trait HasVotes
     public function downvote($userId): array
     {
         $currentVote = $this->getVoteValue($userId);
-        $modelType = get_class($this);
+        $modelType = $this->getMorphClass();
         $modelId = $this->id;
 
         if ($currentVote < 0) {

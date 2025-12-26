@@ -2,21 +2,12 @@
 
 namespace App\Http\Requests;
 
-use App\Services\ModelResolverService;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class StoreCommentRequest extends FormRequest
 {
-    protected $modelResolver;
-
-    public function __construct(ModelResolverService $modelResolver)
-    {
-        parent::__construct();
-        $this->modelResolver = $modelResolver;
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      */
