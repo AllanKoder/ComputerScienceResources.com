@@ -103,7 +103,7 @@ import { canonicalFor, defaultOgImage, SITE_NAME } from "@/Helpers/seo";
                                 </template>
                                 <template #answer>
                                     We focus on comprehensive, structured, and high-quality resources—things that provide long-term learning value. That includes interactive platforms, educational YouTube channels, curated book series, technical newsletters, and more. The more focused or specialized the resource is, the better.
-                                    Check out <u><a :href="route('rules')">this link for more information.</a></u>
+                                    Check out <a :href="route('rules')" class="underline">this link for more information.</a>
                                 </template>
                             </FrequentlyAskedQuestion>
 
