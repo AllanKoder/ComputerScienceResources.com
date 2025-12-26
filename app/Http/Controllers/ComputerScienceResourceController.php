@@ -8,8 +8,10 @@ use App\Http\Requests\StoreResourceRequest;
 use App\Models\ComputerScienceResource;
 use App\Services\ComputerScienceResourceFilter;
 use App\Services\ComputerScienceResourceService;
+use App\Services\UpvoteService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Throwable;
@@ -18,6 +20,7 @@ class ComputerScienceResourceController extends Controller
 {
     public function __construct(
         protected ComputerScienceResourceService $resourceService,
+        protected UpvoteService $upvoteService,
         protected ComputerScienceResourceFilter $filterService
     ) {}
 
@@ -63,11 +66,26 @@ class ComputerScienceResourceController extends Controller
     {
         $validatedData = $request->validated();
         try {
+            DB::beginTransaction();
             $resource = $this->resourceService->createResource($validatedData);
+
+            Log::info('Resource created', [
+                'resource_id' => $resource->id,
+                'user_id' => Auth::id(),
+                'name' => $resource->name,
+                'slug' => $resource->slug,
+                'platforms' => $resource->platforms,
+            ]);
+
+            DB::commit();
+
+            $this->upvoteService->upvote('resource', $resource->id);
+
             session()->flash('success', 'Created Resource!');
 
             return response()->json($resource);
-        } catch (ResourceAlreadyCreatedException $e) {
+        }
+        catch (ResourceAlreadyCreatedException $e) {
             Log::warning('Resource already exists', [
                 'user_id' => Auth::id(),
                 'resource_id' => $e->resource->id ?? null,
@@ -76,14 +94,18 @@ class ComputerScienceResourceController extends Controller
             session()->flash('warning', 'Resource Already Exists!');
 
             return response()->json($e->resource);
-        } catch (Throwable $e) {
-            Log::error('Error creating resource', [
-                'user_id' => Auth::id(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+        }
+        catch (Throwable $e) {
+           DB::rollBack();
 
-            return response()->json([], 500);
+           Log::critical('Failed to create resource', [
+               'error' => $e->getMessage(),
+               'trace' => $e->getTraceAsString(),
+               'user_id' => Auth::id(),
+               'data' => $validatedData,
+           ]);
+
+           return response()->json([], 500);
         }
     }
 

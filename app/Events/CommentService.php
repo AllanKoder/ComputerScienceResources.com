@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -157,6 +158,8 @@ class CommentService
      */
     public function createComment(array $validatedData): Comment
     {
+        DB::beginTransaction();
+
         $comment = new Comment;
         $comment->content = $validatedData['content'];
         $comment->user_id = Auth::id();
@@ -247,6 +250,17 @@ class CommentService
         }
 
         $comment->save();
+
+
+        Log::debug('New comment saved', [
+            'comment_id' => $comment->id,
+            'user_id' => $comment->user_id,
+            'commentable_type' => $comment->commentable_type,
+            'commentable_id' => $comment->commentable_id,
+            'depth' => $comment->depth,
+        ]);
+
+        DB::commit();
 
         return $comment;
     }

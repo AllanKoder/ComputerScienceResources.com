@@ -72,6 +72,32 @@ class ResourceReviewsTest extends TestCase
         ]);
     }
 
+    public function test_review_is_auto_upvoted_after_creation(): void
+    {
+        $user = User::factory()->create();
+        $resource = ComputerScienceResource::factory()->create();
+
+        $data = StoreResourceReviewRequestFactory::new()->create();
+
+        $this->actingAs($user)
+            ->post(route('reviews.store', $resource), $data);
+
+        $createdReview = \App\Models\ResourceReview::where([
+            'computer_science_resource_id' => $resource->id,
+            'title' => $data['title'],
+        ])->first();
+
+        $this->assertNotNull($createdReview);
+
+        // Assert that an upvote was created for the user
+        $this->assertDatabaseHas('upvotes', [
+            'user_id' => $user->id,
+            'upvotable_type' => 'review',
+            'upvotable_id' => $createdReview->id,
+            'value' => 1,
+        ]);
+    }
+
     public function test_resource_review_cannot_be_posted_twice(): void
     {
         $user = User::factory()->create();

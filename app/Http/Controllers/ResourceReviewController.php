@@ -5,11 +5,16 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreResourceReviewRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceReview;
+use App\Services\UpvoteService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ResourceReviewController extends Controller
 {
+    public function __construct(
+        protected UpvoteService $upvoteService,
+    ) {}
+
     // Store the review on the resource
     public function store(StoreResourceReviewRequest $request, ComputerScienceResource $computerScienceResource)
     {
@@ -57,6 +62,8 @@ class ResourceReviewController extends Controller
             'computer_science_resource_id' => $computerScienceResource->id,
             'review_id' => $review->id,
         ]);
+
+        $this->upvoteService->upvote('review', $review->id);
 
         return response()->json($review);
     }

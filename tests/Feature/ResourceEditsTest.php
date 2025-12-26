@@ -140,6 +140,41 @@ class ResourceEditsTest extends TestCase
     }
 
     /**
+     * Test that an edit is automatically upvoted after creation.
+     */
+    public function test_edit_is_auto_upvoted_after_creation(): void
+    {
+        $this->actingAs($this->user);
+
+        // Create the original resource.
+        $resource = ComputerScienceResource::factory()->create();
+
+        // Create valid edit payload and change at least one attribute.
+        $editData = StoreResourceEditRequestFactory::new()->create();
+        $editData['proposed_changes']['name'] = $resource->name.' Updated';
+
+        $response = $this->post(route('resource_edits.store', $resource), $editData);
+
+        // Expect redirection to the edit show page with a success message.
+        $response->assertRedirect();
+
+        $createdEdit = ResourceEdits::where([
+            'computer_science_resource_id' => $resource->id,
+            'edit_title' => $editData['edit_title'],
+        ])->first();
+
+        $this->assertNotNull($createdEdit);
+
+        // Assert that an upvote was created for the user
+        $this->assertDatabaseHas('upvotes', [
+            'user_id' => $this->user->id,
+            'upvotable_type' => 'edit',
+            'upvotable_id' => $createdEdit->id,
+            'value' => 1,
+        ]);
+    }
+
+    /**
      * Test that merging an edit updates the original resource.
      * We run multiple merges to simulate multiple edit merges.
      */

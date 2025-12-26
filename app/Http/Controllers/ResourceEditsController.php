@@ -6,6 +6,7 @@ use App\Http\Requests\StoreResourceEditRequest;
 use App\Models\ComputerScienceResource;
 use App\Models\ResourceEdits;
 use App\Services\ResourceEditsService;
+use App\Services\UpvoteService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -17,8 +18,10 @@ use Throwable;
 class ResourceEditsController extends Controller
 {
     public function __construct(
-        protected ResourceEditsService $resourceEditsService
+        protected ResourceEditsService $resourceEditsService,
+        protected UpvoteService $upvoteService
     ) {}
+
 
     /**
      * Return the form to create a edit.
@@ -66,6 +69,8 @@ class ResourceEditsController extends Controller
             'edit_description' => $validatedData['edit_description'],
             'proposed_changes' => $actualChanges,
         ]);
+
+        $this->upvoteService->upvote('edit', $resourceEdit->id);
 
         return redirect()->route('resource_edits.show', ['slug' => $resourceEdit->slug])
             ->with('success', 'Edits Created!');

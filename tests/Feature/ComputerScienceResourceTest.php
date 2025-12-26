@@ -43,6 +43,30 @@ class ComputerScienceResourceTest extends TestCase
         $this->assertNotNull($createdResource);
     }
 
+    public function test_resource_is_auto_upvoted_after_creation()
+    {
+        $this->actingAs($this->user);
+
+        $formData = StoreResourceRequestFactory::new()->create();
+
+        $response = $this->postJson(route('resources.store'), $formData);
+
+        $response->assertStatus(200);
+
+        // Get the created resource
+        $createdResource = ComputerScienceResource::where('name', $formData['name'])->first();
+        $this->assertNotNull($createdResource);
+
+        // Assert that an upvote was created for the user
+        $this->assertDatabaseHas('upvotes', [
+            'user_id' => $this->user->id,
+            'upvotable_type' => 'resource',
+            'upvotable_id' => $createdResource->id,
+            'value' => 1,
+        ]);
+
+    }
+
     public function test_can_post_resource_with_image()
     {
         Storage::fake('public');
