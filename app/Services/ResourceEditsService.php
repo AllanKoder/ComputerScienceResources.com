@@ -17,7 +17,6 @@ class ResourceEditsService
 {
     public function __construct(
         protected UpvoteService $upvoteService,
-        protected ComputerScienceResourceFilter $filterService,
         protected GeneralVotesSortingManager $sortingManager,
     ) {}
 
