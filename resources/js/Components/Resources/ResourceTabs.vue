@@ -36,10 +36,6 @@ const props = defineProps({
         type: Object,
         required: false,
     },
-    discussionSortByValue: {
-        type: String,
-        required: false,
-    },
     sortingType: {
         type: String,
         required: true,
@@ -123,7 +119,6 @@ const tabs = [
                         </div>
                     </template>
                     <Commentable
-                        :sort-by-initial-value="props.discussionSortByValue"
                         :has-sort-by-dropdown="false"
                         :commentable-id="props.resource.id"
                         :commentable-key="'resource'"

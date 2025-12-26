@@ -37,12 +37,16 @@ const props = defineProps({
         type: Object,
         required: false,
     },
+    sortingType: {
+        type: String,
+        required: false,
+    },
 });
 
 const emit = defineEmits(["upvote", "downvote"]);
 
 const urlParams = new URLSearchParams(window.location.search);
-const sortingType = urlParams.get("sort_by") || "top";
+const sortingType = props.sortingType || urlParams.get("sort_by") || "top";
 </script>
 
 <template>
@@ -116,7 +120,6 @@ const sortingType = urlParams.get("sort_by") || "top";
                 :reviews="props.reviews"
                 :user-review="props.userReview"
                 :resource-edits="props.resourceEdits"
-                :discussion-sort-by-value="props.discussionSortByValue"
                 :sorting-type="sortingType"
             />
         </div>

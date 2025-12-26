@@ -147,6 +147,8 @@ class ComputerScienceResourceService
         ];
 
         $sortBy = $request->query('sort_by', 'top');
+        $data['sortingType'] = $sortBy;
+
         if ($tab === 'reviews') {
             $userReview = null;
             if ($userId = Auth::id()) {
@@ -156,24 +158,56 @@ class ComputerScienceResourceService
             $data['userReview'] = $userReview;
             $data['reviews'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy, $request) {
-                    $query = ResourceReview::whereBelongsTo($computerScienceResource);
-                    $query = $this->resourceSortingManager->applySort($query, $sortBy, ResourceReview::class);
+                    try {
+                        $query = ResourceReview::whereBelongsTo($computerScienceResource);
+                        $query = $this->resourceSortingManager->applySort($query, $sortBy, ResourceReview::class);
 
-                    return $query->with('user')->paginate(10)->appends($request->query());
+                        return $query->with('user')->paginate(10)->appends($request->query());
+                    } catch (Throwable $e) {
+                        Log::error('Failed to load reviews', [
+                            'resource_id' => $computerScienceResource->id,
+                            'sort_by' => $sortBy,
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                        throw $e;
+                    }
                 }
             );
         } elseif ($tab === 'edits') {
             $data['resourceEdits'] = Inertia::defer(
                 function () use ($computerScienceResource, $sortBy, $request) {
-                    $query = ResourceEdits::whereBelongsTo($computerScienceResource);
-                    $query = $this->resourceSortingManager->applySort($query, $sortBy, ResourceEdits::class);
+                    try {
+                        $query = ResourceEdits::whereBelongsTo($computerScienceResource);
+                        $query = $this->resourceSortingManager->applySort($query, $sortBy, ResourceEdits::class);
 
-                    return $query->with('user')->paginate(10)->appends($request->query());
+                        return $query->with('user')->paginate(10)->appends($request->query());
+                    } catch (Throwable $e) {
+                        Log::error('Failed to load resource edits', [
+                            'resource_id' => $computerScienceResource->id,
+                            'sort_by' => $sortBy,
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                        throw $e;
+                    }
                 }
             );
         } elseif ($tab === 'discussion') {
             $data['discussion'] = Inertia::defer(
-                fn () => $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy)
+                function () use ($computerScienceResource, $sortBy) {
+                    try {
+                        return $this->commentService->getPaginatedComments('resource', $computerScienceResource->id, 0, 150, $sortBy);
+                    } catch (Throwable $e) {
+                        Log::error('Failed to load discussion comments', [
+                            'resource_id' => $computerScienceResource->id,
+                            'sort_by' => $sortBy,
+                            'error' => $e->getMessage(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                        throw $e;
+                    }
+                }
             );
         }
 
