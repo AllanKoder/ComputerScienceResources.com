@@ -218,8 +218,8 @@ const { isDark, toggleDark } = useDarkMode();
                 </ResponsiveNavLink>
 
                 <ResponsiveNavLink
-                    :href="route('resources.index', { tab: 'edits' })"
-                    :active="route().current('resources.index') && route().params.tab === 'edits'"
+                    :href="route('resource_edits.index')"
+                    :active="route().current('resource_edits.index')"
                     class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
                 >
                     <Icon icon="mdi:pencil-box-multiple" class="mr-2" />
