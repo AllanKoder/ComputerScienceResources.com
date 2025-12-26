@@ -37,7 +37,7 @@ Don't be afraid to put up a PR or address any of the open issues in the tabs!
 
 ## Getting Started
 
-This project uses [Laravel 11](https://laravel.com/) (PHP 8.2+) as the backend framework, with [Inertia.js](https://inertiajs.com/) and [Vue 3](https://vuejs.org/) for the frontend.
+This project uses [Laravel 11](https://laravel.com/) (PHP 8.4+) as the backend framework, with [Inertia.js](https://inertiajs.com/) and [Vue 3](https://vuejs.org/) for the frontend.
 
 ### Laravel Sail
 
