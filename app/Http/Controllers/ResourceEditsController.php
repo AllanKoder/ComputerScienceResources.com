@@ -22,7 +22,6 @@ class ResourceEditsController extends Controller
         protected UpvoteService $upvoteService
     ) {}
 
-
     /**
      * Return the form to create a edit.
      */

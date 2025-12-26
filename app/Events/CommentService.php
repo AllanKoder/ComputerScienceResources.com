@@ -251,7 +251,6 @@ class CommentService
 
         $comment->save();
 
-
         Log::debug('New comment saved', [
             'comment_id' => $comment->id,
             'user_id' => $comment->user_id,
