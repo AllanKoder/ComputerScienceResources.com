@@ -3,8 +3,8 @@ import { ref } from "vue";
 import { Link, router } from "@inertiajs/vue3";
 import { Icon } from "@iconify/vue";
 import UserDropdown from "@/Components/Navbar/UserDropdown.vue";
-import NavLink from "@/Components/NavLink.vue";
 import NavLinkDropdown from "@/Components/NavLinkDropdown.vue";
+// import NavLink from "@/Components/NavLink.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
@@ -56,7 +56,7 @@ const { isDark, toggleDark } = useDarkMode();
 
                         <NavLinkDropdown
                             label="Resources"
-                            :active="route().current('resources.*')"
+                            :active="route().current('resources.index') || route().current('resource_edits.index')"
                         >
                             <DropdownLink :href="route('resources.index')">
                                 <Icon icon="mdi:magnify" class="mr-2" />

@@ -20,7 +20,7 @@ const emit = defineEmits(['merge']);
 
 <template>
     <div>
-        <div class="my-2">
+        <div class="my-2 flex flex-row gap-2">
             <BackButton
                 :route="
                     route('resources.show', {
@@ -28,7 +28,9 @@ const emit = defineEmits(['merge']);
                         tab: 'edits',
                     })
                 "
-            />
+            >
+            <span class="my-auto">Back to {{ originalResource.name }}</span>
+            </BackButton>
         </div>
         <div class="border-b border-gray-200 dark:border-gray-800 pb-6 mb-6">
             <div class="flex items-start justify-between">

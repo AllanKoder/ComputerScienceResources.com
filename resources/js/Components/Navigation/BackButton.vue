@@ -6,13 +6,18 @@ const props = defineProps({
     route: {
         type: String,
         required: true,
-    }
-})
-
+    },
+});
 </script>
 
 <template>
-    <Link :href="props.route">
-        <Icon icon="mdi:arrow-back" class="text-xl my-auto"></Icon>
-    </Link>
+    <div>
+        <Link :href="props.route">
+            <div class="flex flex-row gap-2">
+                <Icon icon="mdi:arrow-back" class="text-xl my-auto"></Icon>
+                <slot />
+            </div>
+        </Link>
+        <div class="mt-2 border-t border-gray-200 dark:border-gray-700"></div>
+    </div>
 </template>

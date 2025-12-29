@@ -5,7 +5,10 @@ import { diffChars } from "diff";
 import { getDifficultyLabel, getPricingLabel, getPlatformLabel } from "@/Helpers/labels";
 
 import AppLayout from "@/Layouts/AppLayout.vue";
-import TabView from "primevue/tabview";
+import Tabs from 'primevue/tabs';
+import TabList from 'primevue/tablist';
+import Tab from 'primevue/tab';
+import TabPanels from 'primevue/tabpanels';
 import TabPanel from "primevue/tabpanel";
 import Commentable from "@/Components/Comments/Commentable.vue";
 
@@ -111,27 +114,30 @@ const hasChanges = computed(() => changedFields.value.length > 0);
                         @merge="mergeEdits"
                     />
 
-                    <TabView class="custom-tabview">
-                        <!-- Side-by-Side Comparison Tab -->
-                        <TabPanel header="Split View" class="custom-tab-panel">
-                            <SplitViewTab
-                                :changed-fields="changedFields"
-                                :original-resource="originalResource"
-                                :has-changes="hasChanges"
-                            />
-                        </TabPanel>
+                    <Tabs value="0">
+                        <TabList>
+                            <Tab value="0">Split View</Tab>
+                            <Tab value="1">View Differences</Tab>
+                        </TabList>
+                        <TabPanels>
+                            <!-- Side-by-Side Comparison Tab -->
+                            <TabPanel value="0">
+                                <SplitViewTab
+                                    :changed-fields="changedFields"
+                                    :original-resource="originalResource"
+                                    :has-changes="hasChanges"
+                                />
+                            </TabPanel>
 
-                        <!-- Diff Tab -->
-                        <TabPanel
-                            header="View Differences"
-                            class="custom-tab-panel"
-                        >
-                            <DiffViewTab
-                                :changed-fields="changedFields"
-                                :has-changes="hasChanges"
-                            />
-                        </TabPanel>
-                    </TabView>
+                            <!-- Diff Tab -->
+                            <TabPanel value="1">
+                                <DiffViewTab
+                                    :changed-fields="changedFields"
+                                    :has-changes="hasChanges"
+                                />
+                            </TabPanel>
+                        </TabPanels>
+                    </Tabs>
 
                     <!-- Approval Actions -->
                     <ApprovalActions :edited-resource="editedResource" />
