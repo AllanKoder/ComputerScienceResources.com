@@ -455,6 +455,7 @@ const submit = async () => {
                                 <InputLabel value="Topic Tags" />
                                 <TagSelector
                                     :tag-type="'topics_tags'"
+                                    :mode="'create'"
                                     v-model="
                                         formData.proposed_changes.topics_tags
                                     "
@@ -479,6 +480,7 @@ const submit = async () => {
                                 <InputLabel value="Programming Languages/Frameworks" />
                                 <TagSelector
                                     :tag-type="'programming_languages_tags'"
+                                    :mode="'create'"
                                     v-model="
                                         formData.proposed_changes
                                             .programming_languages_tags
@@ -506,6 +508,8 @@ const submit = async () => {
                                 <InputLabel value="General Tags" />
                                 <TagSelector
                                     :tag-type="'general_tags'"
+                                    :mode="'create'"
+                                    :allow-everything="false"
                                     v-model="
                                         formData.proposed_changes.general_tags
                                     "

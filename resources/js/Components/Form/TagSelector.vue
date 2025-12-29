@@ -5,6 +5,7 @@ import { ref, computed, watch, nextTick, onMounted, onBeforeUnmount } from "vue"
 import { defineModel } from "vue";
 import axios from "axios";
 import { Icon } from "@iconify/vue";
+import Tag from "@/Components/Tag.vue";
 
 const DEBOUNCE_TIME = 450; // milliseconds
 
@@ -12,6 +13,15 @@ const props = defineProps({
     tagType: {
         type: String,
         required: true,
+    },
+    mode: {
+        type: String,
+        default: 'create', // 'create' or 'search'
+        validator: (value) => ['create', 'search'].includes(value),
+    },
+    allowEverything: {
+        type: Boolean,
+        default: true,
     },
 });
 
@@ -90,6 +100,9 @@ const availableTags = computed(() => {
 });
 
 const canCreateNew = computed(() => {
+    // In search mode, cannot create new tags
+    if (props.mode === 'search') return false;
+
     const query = searchQuery.value.trim();
     if (!query || isLoading.value) return false;
 
@@ -176,7 +189,8 @@ function onKeydown(event) {
             canCreateNew.value
         ) {
             selectTag(searchQuery.value.trim());
-        } else if (searchQuery.value.trim()) {
+        } else if (props.mode === 'create' && searchQuery.value.trim()) {
+            // Only allow adding tags in create mode
             // Handle comma-separated tags
             if (searchQuery.value.includes(',')) {
                 addMultipleTags(searchQuery.value);
@@ -241,7 +255,7 @@ async function searchTags(query) {
 onMounted(async () => {
     try {
         const response = await axios.get(
-            route("tags.search", { type: props.tagType, query: "" })
+            route("tags.search", { type: props.tagType, query: ""})
         );
         const tags = response.data.tags;
 
@@ -258,20 +272,15 @@ onMounted(async () => {
     <div class="mb-2">
         <!-- list of selected tags -->
         <div class="mb-2 flex flex-wrap" v-if="selectedTags.length > 0">
-            <span
+            <Tag
                 v-for="tag in selectedTags"
                 :key="tag"
-                class="inline-flex items-center mr-2 my-1 bg-secondary text-primaryDark  dark:bg-gray-700 dark:text-white px-3 py-1 rounded-full text-sm font-medium transition-colors"
-            >
-                <button
-                    @click="removeTag(tag)"
-                    class="mr-2 text-primaryDark dark:text-white"
-                    type="button"
-                >
-                    <Icon :icon="'mdi:close'" />
-                </button>
-                <span>{{ tag }}</span>
-            </span>
+                :tag="tag"
+                variant="selected"
+                removable
+                @remove="removeTag"
+                class="mr-2 my-1"
+            />
         </div>
 
         <!-- search input container -->
@@ -289,13 +298,13 @@ onMounted(async () => {
                     :class="{
                         'rounded-b-none border-b-0':
                             showDropdown &&
-                            (availableTags.length > 0 || canCreateNew || isLoading),
+                            (availableTags.length > 0 || canCreateNew || isLoading || searchQuery.trim()),
                     }"
                 />
                 <Icon
                     icon="mdi:information-outline"
                     class="absolute right-3 size-5 text-gray-400 dark:text-gray-500 cursor-help"
-                    v-tooltip.top="'You can add multiple tags at once by separating them with commas (e.g., tag1, tag2, tag3)'"
+                    v-tooltip.top="`'everything' tag covers all possible tags`"
                 />
             </div>
 
@@ -304,7 +313,7 @@ onMounted(async () => {
                 <div
                     v-show="
                         showDropdown &&
-                        (availableTags.length > 0 || canCreateNew || isLoading)
+                        (availableTags.length > 0 || canCreateNew || isLoading || searchQuery.trim())
                     "
                     class="z-[9999] bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-800 border-t-0 rounded-b-lg shadow-lg max-h-60 overflow-y-auto"
                     :style="dropdownStyles"
@@ -325,6 +334,20 @@ onMounted(async () => {
 
                     <!-- available tags -->
                     <template v-else>
+                        <!-- No results message -->
+                        <div
+                            v-if="availableTags.length === 0 && !canCreateNew"
+                            class="px-4 py-3 text-sm text-gray-500 dark:text-gray-400 text-center"
+                        >
+                            <Icon icon="mdi:information-outline" class="inline-block w-4 h-4 mr-1" />
+                            <span v-if="searchQuery.trim()">
+                                No tags found matching "{{ searchQuery.trim() }}"
+                            </span>
+                            <span v-else-if="props.mode === 'search'">
+                                No tags available
+                            </span>
+                        </div>
+
                         <div
                             v-for="(tag, index) in availableTags"
                             :key="tag.name"
@@ -334,18 +357,15 @@ onMounted(async () => {
                             :class="{
                                 'bg-secondary text-primaryDark dark:bg-gray-800 dark:text-primaryLight': highlightedIndex === index,
                                 'hover:bg-gray-50 dark:hover:bg-gray-900': highlightedIndex !== index,
+                                'bg-orange-50 dark:bg-orange-900/20 border-l-2 border-orange-400': tag.name === 'everything' && highlightedIndex !== index,
+                                'bg-orange-100 dark:bg-orange-900/30 border-l-2 border-orange-500': tag.name === 'everything' && highlightedIndex === index,
                             }"
                         >
-                            <span class="text-sm">{{ tag.name }}</span>
-                            <span
-                                v-if="tag.count"
-                                class="text-xs bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-300 px-2 py-1 rounded-full"
-                                :class="{
-                                    'bg-secondary text-primaryDark dark:bg-gray-800 dark:text-primaryLight': highlightedIndex === index,
-                                }"
-                            >
-                                {{ tag.count }}
-                            </span>
+                            <Tag
+                                :tag="tag.name"
+                                :variant="highlightedIndex === index ? 'highlighted' : 'default'"
+                                :count="tag.count || null"
+                            />
                         </div>
 
                         <!-- create new tag option -->
