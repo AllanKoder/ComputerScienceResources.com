@@ -82,7 +82,7 @@ const logout = () => {
                     <div class="border-t border-gray-200 dark:border-gray-600" />
 
                     <!-- Authentication -->
-                    <form @submit.prevent="logout">
+                    <form method="POST" @submit.prevent="logout">
                         <DropdownLink as="button">
                             Log Out
                         </DropdownLink>
