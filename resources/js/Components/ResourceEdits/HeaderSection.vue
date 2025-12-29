@@ -19,19 +19,17 @@ const emit = defineEmits(['merge']);
 </script>
 
 <template>
-    <div>
-        <div class="my-2 flex flex-row gap-2">
-            <BackButton
-                :route="
-                    route('resources.show', {
-                        slug: originalResource.slug,
-                        tab: 'edits',
-                    })
-                "
-            >
+    <div class="my-2">
+        <BackButton
+            :route="
+                route('resources.show', {
+                    slug: originalResource.slug,
+                    tab: 'edits',
+                })
+            "
+        >
             <span class="my-auto">Back to {{ originalResource.name }}</span>
-            </BackButton>
-        </div>
+        </BackButton>
         <div class="border-b border-gray-200 dark:border-gray-800 pb-6 mb-6">
             <div class="flex items-start justify-between">
                 <div class="flex-1">
