@@ -48,6 +48,8 @@ class ResourceEditsController extends Controller
                 'edit_title' => $resourceEdit->edit_title,
             ]);
 
+            throw "tet";
+
             return redirect()->route('resource_edits.show', ['slug' => $resourceEdit->slug])
                 ->with('success', 'Edits Created!');
         } catch (\InvalidArgumentException $e) {
@@ -67,7 +69,7 @@ class ResourceEditsController extends Controller
                 'data' => $validatedData,
             ]);
 
-            return redirect()->back()->withErrors(['error' => 'Failed to create resource edit. Please try again.']);
+            return redirect()->back()->with('error', 'Failed to create resource edit. Please try again.');
         }
     }
 
@@ -137,7 +139,7 @@ class ResourceEditsController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            return redirect()->back()->withErrors(['error' => 'Failed to merge resource edits. Please try again.']);
+            return redirect()->back()->with('error', 'Failed to merge resource edits. Please try again.');
         }
     }
 }
