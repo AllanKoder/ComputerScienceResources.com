@@ -154,7 +154,7 @@ const validateAndNext = async () => {
                         </div>
                         <p class="text-gray-700 dark:text-gray-300">
                             Be specific and only include languages or frameworks
-                            the resource actively teaches or uses. If it coveres
+                            the resource actively teaches or uses. If it covers
                             too many languages and frameworks to list (e.g.
                             codecademy), add <b>'everything'</b>
                         </p>
