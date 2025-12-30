@@ -67,7 +67,7 @@ class ResourceEditsController extends Controller
                 'data' => $validatedData,
             ]);
 
-            return redirect()->back()->withErrors(['error' => 'Failed to create resource edit. Please try again.']);
+            return redirect()->back()->with('error', 'Failed to create resource edit. Please try again.');
         }
     }
 
@@ -137,7 +137,7 @@ class ResourceEditsController extends Controller
                 'user_id' => Auth::id(),
             ]);
 
-            return redirect()->back()->withErrors(['error' => 'Failed to merge resource edits. Please try again.']);
+            return redirect()->back()->with('error', 'Failed to merge resource edits. Please try again.');
         }
     }
 }

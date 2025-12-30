@@ -60,7 +60,7 @@ class ResourceEdits extends Model
     {
         return [
             'slug' => [
-                'source' => ['edit_title', 'id'],
+                'source' => ['edit_title'],
                 'unique' => true,
             ],
         ];

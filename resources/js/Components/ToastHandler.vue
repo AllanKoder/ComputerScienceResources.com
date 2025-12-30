@@ -28,6 +28,14 @@ watch(
                 detail: flash.warning,
                 life: TOAST_LIFETIME,
             });
+
+        } else if (flash.error) {
+            toast.add({
+                severity: "error",
+                summary: "Error",
+                detail: flash.error,
+                life: TOAST_LIFETIME,
+            });
         }
     },
     { deep: true },

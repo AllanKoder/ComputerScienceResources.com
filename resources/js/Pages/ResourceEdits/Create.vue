@@ -155,7 +155,9 @@ const submit = async () => {
                                     tab: 'edits',
                                 })
                             "
-                        />
+                        >
+                            <span class="my-auto">Back to {{ props.resource.name }}</span>
+                        </BackButton>
                         <FormSaverChip
                             :is-saved="isSavedToLocalStorage"
                             :has-content="hasFormContent"
