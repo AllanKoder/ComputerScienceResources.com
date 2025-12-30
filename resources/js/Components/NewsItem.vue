@@ -26,7 +26,7 @@ defineProps({
             </h3>
 
             <img
-                v-if="resource.image_url "
+                v-if="resource.image_url"
                 :src="resource.image_url"
                 :alt="resource.name"
                 class="w-full h-32 object-cover rounded mb-2"
