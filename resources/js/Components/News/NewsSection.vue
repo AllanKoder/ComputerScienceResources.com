@@ -48,9 +48,9 @@ const showNewsDialog = ref(false);
     </button>
 
     <!-- Trending Resources Dialog for Mobile -->
-    <NewsDialog
+    <!-- <NewsDialog
         :show="showNewsDialog"
         :resource-items="hotResources"
         @close="showNewsDialog = false"
-    />
+    /> -->
 </template>
