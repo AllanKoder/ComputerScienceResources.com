@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Exceptions\Resources\ResourceAlreadyCreatedException;
 use App\Exceptions\Resources\ResourceInvalidTabException;
 use App\Models\ComputerScienceResource;
-use App\Models\NewsPost;
 use App\Models\ResourceEdits;
 use App\Models\ResourceReview;
 use App\Services\SortingManagers\ResourceSortingManager;
@@ -47,8 +46,9 @@ class ComputerScienceResourceService
 
         // TODO (TEMP): will replace with user activity or something
 
-        $hot_resources_query =  ComputerScienceResource::query()->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
+        $hot_resources_query = ComputerScienceResource::query()->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
         $hot_resources = $this->resourceSortingManager->applySort($hot_resources_query, 'hot')->limit(10)->get();
+
         return [
             'resources' => $resources,
             'hot_resources' => $hot_resources,
