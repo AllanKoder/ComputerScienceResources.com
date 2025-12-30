@@ -1,6 +1,7 @@
 <script setup>
 import { Icon } from "@iconify/vue";
 import Tag from "@/Components/Tag.vue";
+import { computed } from "vue";
 
 const props = defineProps({
     tags: {
@@ -33,7 +34,21 @@ const props = defineProps({
     },
 });
 
-const visibleTags = props.maxVisible ? props.tags.slice(0, props.maxVisible) : props.tags;
+const sortedTags = computed(() => {
+    const tagsCopy = [...props.tags];
+    return tagsCopy.sort((a, b) => {
+        const aLower = a.toLowerCase();
+        const bLower = b.toLowerCase();
+
+        if (aLower === 'everything') return -1;
+        if (bLower === 'everything') return 1;
+        return 0;
+    });
+});
+
+const visibleTags = computed(() =>
+    props.maxVisible ? sortedTags.value.slice(0, props.maxVisible) : sortedTags.value
+);
 </script>
 
 <template>
@@ -59,5 +74,11 @@ const visibleTags = props.maxVisible ? props.tags.slice(0, props.maxVisible) : p
             :icon="tagIcon"
             :icon-size="tagIconSize"
         />
+        <span
+            v-if="maxVisible && sortedTags.length > maxVisible"
+            class="text-xs text-gray-500 dark:text-gray-400"
+        >
+            ...
+        </span>
     </div>
 </template>
