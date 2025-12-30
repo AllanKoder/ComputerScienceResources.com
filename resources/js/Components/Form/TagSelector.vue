@@ -255,7 +255,7 @@ async function searchTags(query) {
 onMounted(async () => {
     try {
         const response = await axios.get(
-            route("tags.search", { type: props.tagType, query: ""})
+            route("tags.search", { type: props.tagType, query: "" })
         );
         const tags = response.data.tags;
 
