@@ -1,6 +1,6 @@
 <script setup>
 import DialogModal from '@/Components/DialogModal.vue';
-import NewsItem from "@/Components/NewsItem.vue";
+import TrendingResourceItem from "@/Components/TrendingResourceItem.vue";
 import { Icon } from "@iconify/vue";
 
 defineProps({
@@ -29,7 +29,7 @@ defineEmits(['close']);
         <template #content>
             <div class="divide-y divide-secondary dark:divide-gray-700 -mx-6">
                 <div class="space-y-0 max-h-[60vh] overflow-y-auto">
-                    <NewsItem
+                    <TrendingResourceItem
                         v-for="(resource, index) in resourceItems"
                         :key="index"
                         :resource="resource"
