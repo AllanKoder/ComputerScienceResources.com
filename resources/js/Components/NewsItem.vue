@@ -10,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-    <Link :href="route('resources.show', { slug: resource.slug })  || '#'" target="_blank" rel="noopener noreferrer">
+    <Link :href="route('resources.show', { slug: resource.slug }) || '#'" target="_blank" rel="noopener noreferrer">
         <div class="my-4 border hover:bg-gray-50 dark:hover:bg-gray-700 p-2 rounded-sm transition-colors cursor-pointer">
             <div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-1">
                 <span v-if="resource.upvotes_count || resource.vote_score" class="flex items-center gap-1">
