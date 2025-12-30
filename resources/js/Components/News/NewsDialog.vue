@@ -1,6 +1,6 @@
 <script setup>
 import DialogModal from '@/Components/DialogModal.vue';
-import NewsItem from "@/Components/NewsItem.vue";
+import TrendingResourceItem from "@/Components/TrendingResourceItem.vue";
 import { Icon } from "@iconify/vue";
 
 defineProps({
@@ -8,7 +8,7 @@ defineProps({
         type: Boolean,
         required: true
     },
-    newsItems: {
+    resourceItems: {
         type: Array,
         required: true
     }
@@ -21,18 +21,18 @@ defineEmits(['close']);
     <DialogModal :show="show" @close="$emit('close')" max-width="lg">
         <template #title>
             <div class="bg-secondary dark:bg-gray-700 -m-6 p-6 mb-0 flex items-center gap-2">
-                <Icon icon="mdi:newspaper" class="w-6 h-6 text-primary dark:text-white" />
-                <h2 class="text-xl font-bold text-primary dark:text-white">Latest News</h2>
+                <Icon icon="mdi:trending-up" class="w-6 h-6 text-primary dark:text-white" />
+                <h2 class="text-xl font-bold text-primary dark:text-white">Trending Resources</h2>
             </div>
         </template>
 
         <template #content>
             <div class="divide-y divide-secondary dark:divide-gray-700 -mx-6">
                 <div class="space-y-0 max-h-[60vh] overflow-y-auto">
-                    <NewsItem
-                        v-for="(news, index) in newsItems"
+                    <TrendingResourceItem
+                        v-for="(resource, index) in resourceItems"
                         :key="index"
-                        :news="news"
+                        :resource="resource"
                         class="px-6 hover:bg-secondary/50 dark:hover:bg-gray-700/50 transition-colors duration-200"
                     />
                 </div>

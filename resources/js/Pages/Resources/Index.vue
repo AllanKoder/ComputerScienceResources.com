@@ -7,7 +7,7 @@ import ResourcesTable from "@/Components/Resources/ResourcesTable.vue";
 import NewsSection from "@/Components/News/NewsSection.vue";
 const props = defineProps({
     resources: Object,
-    news_posts: Array,
+    hot_resources: Array,
 });
 
 </script>
@@ -36,7 +36,8 @@ const props = defineProps({
                     <ResourcesTable :resources="props.resources" />
                 </section>
 
-                <NewsSection :news-posts="news_posts" />
+                <!-- Trending Resources Section -->
+                <NewsSection :hot-resources="props.hot_resources" />
             </div>
         </div>
     </AppLayout>
