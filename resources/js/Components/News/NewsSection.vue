@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import NewsItem from "@/Components/NewsItem.vue";
+import TrendingResourceItem from "@/Components/TrendingResourceItem.vue";
 import NewsDialog from "@/Components/News/NewsDialog.vue";
 import { Icon } from "@iconify/vue";
 import EmptyState from "../EmptyState.vue";
@@ -30,7 +30,7 @@ const showNewsDialog = ref(false);
             <h2 class="font-bold text-primary dark:text-white">Trending Resources</h2>
         </div>
         <div class="space-y-4" v-if="hotResources.length > 0">
-            <NewsItem
+            <TrendingResourceItem
                 v-for="(resource, index) in hotResources"
                 :key="index"
                 :resource="resource"
