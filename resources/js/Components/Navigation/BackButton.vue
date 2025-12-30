@@ -18,6 +18,6 @@ const props = defineProps({
                 <slot />
             </div>
         </Link>
-        <div class="mt-2 border-t border-gray-200 dark:border-gray-700"></div>
+        <div class="my-2 border-t border-gray-200 dark:border-gray-700"></div>
     </div>
 </template>

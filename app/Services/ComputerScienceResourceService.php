@@ -18,6 +18,7 @@ use Throwable;
 
 class ComputerScienceResourceService
 {
+    // TODO: Make a service for ComputerScienceResources
     public function __construct(
         protected CommentService $commentService,
         protected UpvoteService $upvoteService,
@@ -36,19 +37,21 @@ class ComputerScienceResourceService
      */
     public function getIndexData(Request $request): array
     {
-        $query = ComputerScienceResource::query();
+        $resources_query = ComputerScienceResource::query();
 
         // Apply filters and sorting through the dedicated filter service
         $filters = $request->query();
-        $query = $this->filterService->applyFilters($query, $filters);
+        $resources_query = $this->filterService->applyFilters($resources_query, $filters);
 
-        $resources = $query->paginate(20)->appends($request->query());
+        $resources = $resources_query->paginate(20)->appends($request->query());
 
-        $news = NewsPost::limit(10)->get();
+        // TODO (TEMP): will replace with user activity or something
 
+        $hot_resources_query =  ComputerScienceResource::query()->with(['tags', 'votes', 'upvoteSummary', 'reviewSummary', 'commentsCountRelationship']);
+        $hot_resources = $this->resourceSortingManager->applySort($hot_resources_query, 'hot')->limit(10)->get();
         return [
             'resources' => $resources,
-            'news_posts' => $news,
+            'hot_resources' => $hot_resources,
         ];
     }
 
@@ -152,7 +155,7 @@ class ComputerScienceResourceService
                 function () use ($computerScienceResource, $sortBy, $request) {
                     try {
                         $query = ResourceEdits::whereBelongsTo($computerScienceResource);
-                        $query = $this->resourceSortingManager->applySort($query, $sortBy, ResourceEdits::class);
+                        $query = $this->resourceSortingManager->applySort($query, $sortBy);
 
                         return $query->with('user')->paginate(10)->appends($request->query());
                     } catch (Throwable $e) {
