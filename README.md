@@ -184,6 +184,8 @@ Xdebug is pre-configured in the Sail Docker environment for local debugging.
 
 ## Deployment
 
+We use Ansible with a `deploy.yaml` script, along with the inventory `production.ini`
+
 `ansible-playbook -i ./ansible/inventory/production.ini deploy.yml`
 
 ## License

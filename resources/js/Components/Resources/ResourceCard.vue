@@ -11,6 +11,7 @@ import {
 import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
 import StarRating from "@/Components/StarRating/StarRating.vue";
+import Tag from "@/Components/Tag.vue";
 
 const props = defineProps({
     resource: {
@@ -90,21 +91,16 @@ const emit = defineEmits(["upvote", "downvote"]);
                     <div class="flex items-center gap-3 flex-wrap">
                         <!-- Top topics -->
                         <div class="flex items-center gap-1">
-                            <span
+                            <Tag
                                 v-for="topic in resource.topics_tags?.slice(
                                     0,
                                     4
                                 )"
                                 :key="topic"
-                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"                            >
-                                <Icon
-                                    icon="mdi:lightbulb-outline"
-                                    width="12"
-                                    height="12"
-                                    class="mr-1"
-                                />
-                                {{ topic }}
-                            </span>
+                                :tag="topic"
+                                icon="mdi:lightbulb-outline"
+                                :icon-size="12"
+                            />
                         </div>
 
                         <!-- Difficulty -->
@@ -112,33 +108,21 @@ const emit = defineEmits(["upvote", "downvote"]);
                             v-if="resource.difficulties?.length"
                             class="flex items-center gap-1"
                         >
-                            <span
+                            <Tag
                                 v-for="difficulty in resource.difficulties"
                                 :key="difficulty"
-                                class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-transparent text-primaryDark border border-primary/20"
-                            >
-                                <Icon
-                                    :icon="difficultyIcons[difficulty]"
-                                    width="12"
-                                    height="12"
-                                    class="mr-1"
-                                />
-                                {{ difficultyLabels[difficulty] }}
-                            </span>
+                                :tag="difficultyLabels[difficulty]"
+                                :icon="difficultyIcons[difficulty]"
+                                :icon-size="12"
+                            />
                         </div>
 
                         <!-- Pricing -->
-                        <span
-                            class="inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium bg-transparent text-primaryDark border border-primary/20"
-                        >
-                            <Icon
-                                :icon="pricingIcons[resource.pricing]"
-                                width="12"
-                                height="12"
-                                class="mr-1"
-                            />
-                            {{ pricingLabels[resource.pricing] }}
-                        </span>
+                        <Tag
+                            :tag="pricingLabels[resource.pricing]"
+                            :icon="pricingIcons[resource.pricing]"
+                            :icon-size="12"
+                        />
                     </div>
                 </div>
 
@@ -162,19 +146,12 @@ const emit = defineEmits(["upvote", "downvote"]);
 
                 <!-- Secondary info row -->
                 <div class="flex items-center gap-1">
-                    <span
+                    <Tag
                         v-for="platform in resource.platforms.slice(0, 2)"
                         :key="platform"
-                        class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
-                    >
-                        <Icon
-                            :icon="platformIcons[platform]"
-                            width="10"
-                            height="10"
-                            class="mr-1"
-                        />
-                        {{ platformLabels[platform] }}
-                    </span>
+                        :tag="platformLabels[platform]"
+                        :icon="platformIcons[platform]"
+                    />
                     <!-- Rest as comma-separated text -->
                     <span
                         v-if="

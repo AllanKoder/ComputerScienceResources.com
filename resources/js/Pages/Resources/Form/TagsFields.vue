@@ -8,7 +8,7 @@ import PrimeVueFormError from "@/Components/Form/PrimeVueFormError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import { Icon } from "@iconify/vue";
-import ConfirmationModal from '@/Components/ConfirmationModal.vue';
+import ConfirmationModal from "@/Components/ConfirmationModal.vue";
 
 const props = defineProps({
     form: {
@@ -18,7 +18,7 @@ const props = defineProps({
     isLoading: {
         type: Boolean,
         required: true,
-    }
+    },
 });
 
 const emit = defineEmits(["change", "next", "back"]);
@@ -60,7 +60,7 @@ const validateAndNext = async () => {
         :initialValues="props.form"
         class="flex flex-col gap-4 w-full bg-white dark:bg-gray-900 border border-transparent dark:border-gray-800 rounded-lg p-4"
     >
-    <div class="flex flex-col gap-1 justify-center items-center">
+        <div class="flex flex-col gap-1 justify-center items-center">
             <div class="self-end">
                 <button
                     type="button"
@@ -74,80 +74,123 @@ const validateAndNext = async () => {
             </div>
             <!-- TODO: MAKE THIS A COMPONENT -->
             <!-- Tag Selector for topics -->
-            <h2 class="text-2xl font-bold text-center text-gray-900 dark:text-gray-100">
+            <h2
+                class="text-2xl font-bold text-center text-gray-900 dark:text-gray-100"
+            >
                 What's this resource about?
                 <span class="text-red-500"> * </span>
             </h2>
             <p class="text-center italic mb-2 text-gray-600 dark:text-gray-300">
-                software-engineering, career-consulting, data-science
+                software-engineering, career-consulting, data-science, everything
             </p>
             <TagSelector
                 :tag-type="'topics_tags'"
+                :mode="'create'"
                 v-model="props.form.topics_tags"
             ></TagSelector>
             <PrimeVueFormError :errors="errors" />
 
             <!-- Tag Selector for Programming Languages -->
-            <h2 class="text-2xl font-bold mt-5 mb-1 text-center text-gray-900 dark:text-gray-100">
+            <h2
+                class="text-2xl font-bold mt-5 mb-1 text-center text-gray-900 dark:text-gray-100"
+            >
                 Programming Languages/Frameworks taught (if any)?
             </h2>
-            <p class="text-center italic mb-2 text-gray-600 dark:text-gray-300">python, c++, c#, vue.js, pytorch</p>
+            <p class="text-center italic mb-2 text-gray-600 dark:text-gray-300">
+                python, c++, c#, vue.js, pytorch, everything
+            </p>
             <TagSelector
                 :tag-type="'programming_languages_tags'"
+                :mode="'create'"
                 v-model="props.form.programming_languages_tags"
             />
 
             <!-- Tag Selector for Other tags -->
-            <h2 class="text-2xl font-bold mt-5 mb-1 text-center text-gray-900 dark:text-gray-100">
+            <h2
+                class="text-2xl font-bold mt-5 mb-1 text-center text-gray-900 dark:text-gray-100"
+            >
                 Additional general tags
             </h2>
-            <p class="text-center italic mb-2 text-gray-600 dark:text-gray-300">non-profit, open-source, funny</p>
+            <p class="text-center italic mb-2 text-gray-600 dark:text-gray-300">
+                non-profit, open-source, funny
+            </p>
             <TagSelector
                 :tag-type="'general_tags'"
+                :mode="'create'"
+                :allow-everything="false"
                 v-model="props.form.general_tags"
             />
         </div>
 
         <ConfirmationModal :show="showTagsHelp" @close="showTagsHelp = false">
-            <template #title>
-                How to choose good tags
-            </template>
+            <template #title> How to choose good tags </template>
             <template #content>
                 <div class="space-y-4 text-sm">
                     <div>
-                        <div class="font-semibold mb-1">Topic tags (required)</div>
+                        <div class="font-semibold mb-1">
+                            Topic tags (required)
+                        </div>
                         <p class="text-gray-700 dark:text-gray-300">
-                            Use broad, descriptive categories that capture what the resource is mainly about.
-                            Avoid super niche labels here.
+                            Use broad, descriptive categories that capture what
+                            the resource is mainly about. Avoid super niche
+                            labels here.
                         </p>
-                        <ul class="list-disc pl-5 text-gray-700 dark:text-gray-300">
-                            <li>Examples: software-engineering, data-science, devops, algorithms, system-design, career</li>
+                        <ul
+                            class="list-disc pl-5 text-gray-700 dark:text-gray-300"
+                        >
+                            <li>
+                                Examples: software-engineering, data-science,
+                                devops, algorithms, system-design, career
+                            </li>
+                            <li>
+                                If it covers too many topics to list (e.g.
+                                codecademy), add <b>'everything'</b>
+                            </li>
                         </ul>
                     </div>
                     <div>
-                        <div class="font-semibold mb-1">Programming languages/frameworks</div>
+                        <div class="font-semibold mb-1">
+                            Programming languages/frameworks
+                        </div>
                         <p class="text-gray-700 dark:text-gray-300">
-                            Be specific and only include languages or frameworks the resource actively teaches or uses.
-                            Please <b>don’t type "everything"</b> as a tag.
+                            Be specific and only include languages or frameworks
+                            the resource actively teaches or uses. If it covers
+                            too many languages and frameworks to list (e.g.
+                            codecademy), add <b>'everything'</b>
                         </p>
-                        <ul class="list-disc pl-5 text-gray-700 dark:text-gray-300">
+                        <ul
+                            class="list-disc pl-5 text-gray-700 dark:text-gray-300"
+                        >
                             <li>Good: python, c++, c#, vue.js, pytorch</li>
-                            <li>Avoid: "all-languages" or adding many unrelated ones</li>
+                            <li>
+                                In case there are too many: <b>'everything'</b>
+                            </li>
                         </ul>
                     </div>
                     <div>
                         <div class="font-semibold mb-1">Other/general tags</div>
                         <p class="text-gray-700 dark:text-gray-300">
-                            Everything else that helps discovery: tone, format, credentials, audience, etc.
+                            Everything else that helps discovery: tone, format,
+                            credentials, audience, etc.
                         </p>
-                        <ul class="list-disc pl-5 text-gray-700 dark:text-gray-300">
-                            <li>Examples: humour, certifications, non-profit, open-source, interview-prep</li>
+                        <ul
+                            class="list-disc pl-5 text-gray-700 dark:text-gray-300"
+                        >
+                            <li>
+                                Examples: humour, certifications, non-profit,
+                                open-source, interview-prep
+                            </li>
                         </ul>
                     </div>
                 </div>
             </template>
             <template #footer>
-                <button @click="showTagsHelp = false" class="px-4 py-2 bg-primary text-white rounded hover:bg-primaryDark transition">Close</button>
+                <button
+                    @click="showTagsHelp = false"
+                    class="px-4 py-2 bg-primary text-white rounded hover:bg-primaryDark transition"
+                >
+                    Close
+                </button>
             </template>
         </ConfirmationModal>
 

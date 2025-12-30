@@ -9,6 +9,8 @@ import {
     difficultyLabels,
 } from "@/Helpers/labels";
 import StarRating from "@/Components/StarRating/StarRating.vue";
+import Tag from "@/Components/Tag.vue";
+import TagList from "@/Components/TagList.vue";
 
 const props = defineProps({
     resource: {
@@ -83,25 +85,11 @@ const props = defineProps({
                         class="space-y-2 rounded-md p-3 border border-gray-200 dark:border-gray-700"
                     >
                         <!-- Topics -->
-                        <div class="flex items-center gap-1.5 flex-wrap">
-                            <Icon
-                                icon="mdi:lightbulb-outline"
-                                width="12"
-                                height="12"
-                                class="text-gray-500 dark:text-gray-100"
-                            />
-                            <span
-                                class="text-xs font-semibold text-gray-600 dark:text-gray-100"
-                                >Topics:</span
-                            >
-                            <span
-                                v-for="topic in props.resource.topics_tags"
-                                :key="topic"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
-                            >
-                                {{ topic }}
-                            </span>
-                        </div>
+                        <TagList
+                            :tags="props.resource.topics_tags"
+                            label="Topics:"
+                            label-icon="mdi:lightbulb-outline"
+                        />
 
                         <!-- Difficulty -->
                         <div
@@ -122,19 +110,12 @@ const props = defineProps({
                                 class="text-xs font-semibold text-gray-600 dark:text-gray-100"
                                 >Difficulty:</span
                             >
-                            <span
+                            <Tag
                                 v-for="difficulty in props.resource.difficulties"
                                 :key="difficulty"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
-                            >
-                                <Icon
-                                    :icon="difficultyIcons[difficulty]"
-                                    width="10"
-                                    height="10"
-                                    class="mr-1"
-                                />
-                                {{ difficultyLabels[difficulty] }}
-                            </span>
+                                :tag="difficultyLabels[difficulty]"
+                                :icon="difficultyIcons[difficulty]"
+                            />
                         </div>
 
                         <!-- Pricing -->
@@ -149,17 +130,10 @@ const props = defineProps({
                                 class="text-xs font-semibold text-gray-600 dark:text-gray-100"
                                 >Pricing:</span
                             >
-                            <span
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
-                            >
-                                <Icon
-                                    :icon="pricingIcons[props.resource.pricing]"
-                                    width="10"
-                                    height="10"
-                                    class="mr-1"
-                                />
-                                {{ pricingLabels[props.resource.pricing] }}
-                            </span>
+                            <Tag
+                                :tag="pricingLabels[props.resource.pricing]"
+                                :icon="pricingIcons[props.resource.pricing]"
+                            />
                         </div>
                     </div>
 
@@ -179,71 +153,32 @@ const props = defineProps({
                                 class="text-xs font-semibold text-gray-600 dark:text-gray-100"
                                 >Platforms:</span
                             >
-                            <span
+                            <Tag
                                 v-for="platform in props.resource.platforms"
                                 :key="platform"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
-                            >
-                                <Icon
-                                    :icon="platformIcons[platform]"
-                                    width="10"
-                                    height="10"
-                                    class="mr-1"
-                                />
-                                {{ platformLabels[platform] }}
-                            </span>
+                                :tag="platformLabels[platform]"
+                                :icon="platformIcons[platform]"
+                            />
                         </div>
 
                         <!-- Languages -->
-                        <div
+                        <TagList
                             v-if="
                                 props.resource.programming_languages_tags
                                     ?.length
                             "
-                            class="flex items-center gap-1.5 flex-wrap"
-                        >
-                            <Icon
-                                icon="mdi:code-tags"
-                                width="12"
-                                height="12"
-                                class="text-gray-500 dark:text-gray-100"
-                            />
-                            <span
-                                class="text-xs font-semibold text-gray-600 dark:text-gray-100"
-                                >Languages:</span
-                            >
-                            <span
-                                v-for="language in props.resource.programming_languages_tags"
-                                :key="language"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
-                            >
-                                {{ language }}
-                            </span>
-                        </div>
+                            :tags="props.resource.programming_languages_tags"
+                            label="Languages:"
+                            label-icon="mdi:code-tags"
+                        />
 
                         <!-- Tags -->
-                        <div
+                        <TagList
                             v-if="props.resource.general_tags?.length"
-                            class="flex items-center gap-1.5 flex-wrap"
-                        >
-                            <Icon
-                                icon="mdi:label-outline"
-                                width="12"
-                                height="12"
-                                class="text-gray-500 dark:text-gray-100"
-                            />
-                            <span
-                                class="text-xs font-semibold text-gray-600 dark:text-gray-100"
-                                >Tags:</span
-                            >
-                            <span
-                                v-for="tag in props.resource.general_tags"
-                                :key="tag"
-                                class="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-100 bg-transparent"
-                            >
-                                {{ tag }}
-                            </span>
-                        </div>
+                            :tags="props.resource.general_tags"
+                            label="Tags:"
+                            label-icon="mdi:label-outline"
+                        />
                     </div>
                 </div>
 
