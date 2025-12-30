@@ -48,8 +48,6 @@ class ResourceEditsController extends Controller
                 'edit_title' => $resourceEdit->edit_title,
             ]);
 
-            throw 'tet';
-
             return redirect()->route('resource_edits.show', ['slug' => $resourceEdit->slug])
                 ->with('success', 'Edits Created!');
         } catch (\InvalidArgumentException $e) {
