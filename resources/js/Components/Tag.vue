@@ -68,9 +68,7 @@ const iconClasses = computed(() => {
 const countClasses = computed(() => {
     if (isEverything.value) {
         // Orange theme for "everything" tag count
-        if (props.variant === 'highlighted') {
-            return 'bg-orange-200 text-orange-800 dark:bg-orange-800 dark:text-orange-200';
-        } else if (props.variant === 'selected') {
+        if (props.variant === 'highlighted' || props.variant === 'selected') {
             return 'bg-orange-200 text-orange-800 dark:bg-orange-800 dark:text-orange-200';
         } else {
             return 'bg-orange-200 text-orange-700 dark:bg-orange-800 dark:text-orange-300';
