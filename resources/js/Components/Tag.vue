@@ -64,6 +64,24 @@ const iconClasses = computed(() => {
     }
     return props.variant === 'selected' ? 'text-primaryDark dark:text-white' : '';
 });
+
+const countClasses = computed(() => {
+    if (isEverything.value) {
+        // Orange theme for "everything" tag count
+        if (props.variant === 'highlighted') {
+            return 'bg-orange-200 text-orange-800 dark:bg-orange-800 dark:text-orange-200';
+        } else {
+            return 'bg-orange-200 text-orange-700 dark:bg-orange-800 dark:text-orange-300';
+        }
+    }
+    
+    // Default gray theme for regular tags
+    if (props.variant === 'highlighted') {
+        return 'bg-secondary text-primaryDark dark:bg-gray-800 dark:text-primaryLight';
+    } else {
+        return 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-300';
+    }
+});
 </script>
 
 <template>
@@ -89,9 +107,7 @@ const iconClasses = computed(() => {
         <span
             v-if="count !== null"
             class="ml-1.5 text-xs px-2 py-1 rounded-full"
-            :class="variant === 'highlighted'
-                ? 'bg-secondary text-primaryDark dark:bg-gray-800 dark:text-primaryLight'
-                : 'bg-gray-100 text-gray-600 dark:bg-gray-900 dark:text-gray-300'"
+            :class="countClasses"
         >
             {{ count }}
         </span>
