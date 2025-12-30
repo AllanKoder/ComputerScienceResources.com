@@ -115,6 +115,20 @@ const canCreateNew = computed(() => {
     );
 });
 
+const tooltipText = computed(() => {
+    const parts = [];
+    
+    if (props.mode === 'create') {
+        parts.push("Add multiple tags using commas");
+    }
+    
+    if (props.allowEverything) {
+        parts.push("'everything' tag covers all possible tags");
+    }
+    
+    return parts.join('. ');
+});
+
 // sync model
 watch(
     () => model.value,
@@ -302,9 +316,10 @@ onMounted(async () => {
                     }"
                 />
                 <Icon
+                    v-if="tooltipText"
                     icon="mdi:information-outline"
                     class="absolute right-3 size-5 text-gray-400 dark:text-gray-500 cursor-help"
-                    v-tooltip.top="`'everything' tag covers all possible tags`"
+                    v-tooltip.top="tooltipText"
                 />
             </div>
 
