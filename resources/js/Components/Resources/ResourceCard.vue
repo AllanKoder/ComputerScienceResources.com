@@ -12,6 +12,7 @@ import { platformIcons, pricingIcons, difficultyIcons } from "@/Helpers/icons";
 import ResourceThumbnail from "@/Components/Resources/ResourceThumbnail.vue";
 import StarRating from "@/Components/StarRating/StarRating.vue";
 import Tag from "@/Components/Tag.vue";
+import TagList from "@/Components/TagList.vue";
 
 const props = defineProps({
     resource: {
@@ -81,7 +82,7 @@ const emit = defineEmits(["upvote", "downvote"]);
             <!-- Content section -->
             <div class="flex-1 min-w-0">
                 <!-- Primary info row -->
-                <div class="flex items-center gap-2 mb-1">
+                <div class="flex items-center gap-1 mb-1">
                     <Icon
                         icon="mdi:label-outline"
                         width="14"
@@ -90,18 +91,17 @@ const emit = defineEmits(["upvote", "downvote"]);
                     />
                     <div class="flex items-center gap-3 flex-wrap">
                         <!-- Top topics -->
-                        <div class="flex items-center gap-1">
-                            <Tag
-                                v-for="topic in resource.topics_tags?.slice(
-                                    0,
-                                    4
-                                )"
-                                :key="topic"
-                                :tag="topic"
-                                icon="mdi:lightbulb-outline"
-                                :icon-size="12"
+                        <div class="flex items-center gap-2">
+                            <TagList
+                                v-if="resource.topics_tags?.length"
+                                :tags="resource.topics_tags"
+                                :max-visible="4"
+                                tag-icon="mdi:lightbulb-outline"
+                                :tag-icon-size="12"
                             />
                         </div>
+
+                        <span class="text-gray-400 dark:text-gray-500 -mx-1">-</span>
 
                         <!-- Difficulty -->
                         <div
@@ -116,6 +116,8 @@ const emit = defineEmits(["upvote", "downvote"]);
                                 :icon-size="12"
                             />
                         </div>
+
+                        <span class="text-gray-400 dark:text-gray-500 -mx-1">-</span>
 
                         <!-- Pricing -->
                         <Tag

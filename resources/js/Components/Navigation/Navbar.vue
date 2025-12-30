@@ -31,22 +31,30 @@ const { isDark, toggleDark } = useDarkMode();
                     <!-- Logo -->
                     <div class="shrink-0 flex items-center">
                         <Link :href="route('home')">
-                            <ApplicationHeaderLogo/>
+                            <ApplicationHeaderLogo />
                         </Link>
                     </div>
 
                     <!-- Navigation Links -->
-                    <div class="hidden space-x-8 lg:-my-px lg:ms-10 lg:flex">
+                    <div class="hidden space-x-8 xl:-my-px xl:ms-10 xl:flex">
                         <NavLinkDropdown
                             label="About"
-                            :active="route().current('about') || route().current('rules')"
+                            :active="
+                                route().current('about') ||
+                                route().current('rules')
+                            "
                         >
                             <DropdownLink :href="route('about')">
-                                <Icon icon="mdi:information-outline" class="mr-2" />
+                                <Icon
+                                    icon="mdi:information-outline"
+                                    class="mr-2"
+                                />
                                 About Us
                             </DropdownLink>
 
-                            <div class="border-t border-gray-200 dark:border-gray-600" />
+                            <div
+                                class="border-t border-gray-200 dark:border-gray-600"
+                            />
 
                             <DropdownLink :href="route('rules')">
                                 <Icon icon="mdi:gavel" class="mr-2" />
@@ -56,17 +64,25 @@ const { isDark, toggleDark } = useDarkMode();
 
                         <NavLinkDropdown
                             label="Resources"
-                            :active="route().current('resources.index') || route().current('resource_edits.index')"
+                            :active="
+                                route().current('resources.index') ||
+                                route().current('resource_edits.index')
+                            "
                         >
                             <DropdownLink :href="route('resources.index')">
                                 <Icon icon="mdi:magnify" class="mr-2" />
                                 Browse Resources
                             </DropdownLink>
 
-                            <div class="border-t border-gray-200 dark:border-gray-600" />
+                            <div
+                                class="border-t border-gray-200 dark:border-gray-600"
+                            />
 
                             <DropdownLink :href="route('resource_edits.index')">
-                                <Icon icon="mdi:pencil-box-multiple" class="mr-2" />
+                                <Icon
+                                    icon="mdi:pencil-box-multiple"
+                                    class="mr-2"
+                                />
                                 Resource Edits
                             </DropdownLink>
                         </NavLinkDropdown>
@@ -74,7 +90,17 @@ const { isDark, toggleDark } = useDarkMode();
                 </div>
 
                 <!-- Authenticated -->
-                <div class="hidden lg:flex lg:items-center lg:ms-6">
+                <div class="hidden xl:flex xl:items-center xl:ms-6">
+                    <!-- GitHub link button -->
+                    <a
+                        href="https://github.com/AllanKoder/ComputerScienceResources.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="mx-2 p-2 rounded-full hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none text-primaryDark dark:text-primary"
+                    >
+                        <Icon icon="mdi:github" class="size-6" />
+                    </a>
+
                     <!-- Dark mode icon button -->
                     <button
                         @click="toggleDark"
@@ -111,7 +137,7 @@ const { isDark, toggleDark } = useDarkMode();
                     </template>
                     <!-- Guest -->
                     <template v-else>
-                        <div class="hidden lg:flex lg:items-center lg:ms-6">
+                        <div class="hidden xl:flex xl:items-center xl:ms-6">
                             <Link :href="route('login')">
                                 <SecondaryButton
                                     class="dark:bg-primary dark:text-white dark:hover:bg-primary"
@@ -125,7 +151,7 @@ const { isDark, toggleDark } = useDarkMode();
                 </div>
 
                 <!-- Hamburger -->
-                <div class="-me-2 flex items-center lg:hidden">
+                <div class="-me-2 flex items-center xl:hidden">
                     <button
                         class="inline-flex items-center justify-center p-2 rounded-md text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none focus:bg-accent/30 dark:focus:bg-primaryDark/30 focus:text-primary dark:focus:text-primaryLight transition duration-150 ease-in-out"
                         @click="
@@ -171,26 +197,39 @@ const { isDark, toggleDark } = useDarkMode();
                 block: showingNavigationDropdown,
                 hidden: !showingNavigationDropdown,
             }"
-            class="lg:hidden bg-white dark:bg-gray-900 border-t border-accent dark:border-accent-dark"
+            class="xl:hidden bg-white dark:bg-gray-900 border-t border-accent dark:border-accent-dark"
         >
             <div class="pt-2 pb-3 space-y-2">
-                <!-- Dark mode icon button -->
-                <button
-                    @click="toggleDark"
-                    type="button"
-                    class="mx-2 p-2 rounded-full hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none text-primaryDark dark:text-primary"
+                <div class="flex items-center gap-2 px-2">
+                    <!-- Dark mode icon button -->
+                    <button
+                        @click="toggleDark"
+                        type="button"
+                        class="p-2 rounded-full hover:bg-accent/30 dark:hover:bg-primaryDark/30 focus:outline-none text-primaryDark dark:text-primary"
+                    >
+                        <Icon
+                            v-if="!isDark"
+                            icon="mdi:weather-night"
+                            class="size-6"
+                        />
+                        <Icon
+                            v-else
+                            icon="mdi:white-balance-sunny"
+                            class="size-6"
+                        />
+                    </button>
+                </div>
+
+                <ResponsiveNavLink
+                    href="https://github.com/AllanKoder/ComputerScienceResources.com"
+                    class="text-primaryDark dark:text-primary hover:text-primary dark:hover:text-primaryLight"
+                    as="a"
+                    target="_blank"
+                    rel="noopener noreferrer"
                 >
-                    <Icon
-                        v-if="!isDark"
-                        icon="mdi:weather-night"
-                        class="size-6"
-                    />
-                    <Icon
-                        v-else
-                        icon="mdi:white-balance-sunny"
-                        class="size-6"
-                    />
-                </button>
+                    <Icon icon="mdi:github" class="mr-2" />
+                    GitHub
+                </ResponsiveNavLink>
 
                 <ResponsiveNavLink
                     :href="route('about')"
