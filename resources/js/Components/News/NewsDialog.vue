@@ -27,7 +27,7 @@ defineEmits(['close']);
         </template>
 
         <template #content>
-            <div class="divide-y divide-secondary dark:divide-gray-700 -mx-6">
+            <div class="divide-y divide-secondary dark:divide-gray-700 px-4 -mx-6">
                 <div class="space-y-0 max-h-[60vh] overflow-y-auto">
                     <TrendingResourceItem
                         v-for="(resource, index) in resourceItems"
