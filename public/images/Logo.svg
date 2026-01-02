@@ -20,9 +20,9 @@
      inkscape:pageopacity="0.0"
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
-     inkscape:zoom="0.7071068"
-     inkscape:cx="-4.2426406"
-     inkscape:cy="422.14274"
+     inkscape:zoom="1"
+     inkscape:cx="240.49999"
+     inkscape:cy="640.49998"
      inkscape:window-width="1920"
      inkscape:window-height="991"
      inkscape:window-x="-9"
@@ -360,26 +360,26 @@
   <text
      xml:space="preserve"
      style="font-stretch:condensed;font-size:101.98px;font-family:Arial;-inkscape-font-specification:'Arial Condensed';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.382425"
-     x="330.23709"
-     y="633.62384"
+     x="283.91608"
+     y="658.13617"
      id="text1"
-     transform="rotate(3.5174734)"><tspan
+     transform="rotate(-1.0664767)"><tspan
        sodipodi:role="line"
        id="tspan1"
-       x="330.23709"
-       y="633.62384"
+       x="283.91608"
+       y="658.13617"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';fill:#000000;fill-opacity:1;stroke-width:0.382425">C</tspan></text>
   <text
      xml:space="preserve"
      style="font-stretch:condensed;font-size:101.98px;font-family:Arial;-inkscape-font-specification:'Arial Condensed';text-align:center;text-anchor:middle;fill:#000000;fill-opacity:1;stroke-width:0.382425"
-     x="340.14255"
-     y="704.19086"
+     x="433.52911"
+     y="646.57513"
      id="text1-5"
-     transform="rotate(-7.837011)"><tspan
+     transform="rotate(0.67902936)"><tspan
        sodipodi:role="line"
        id="tspan1-6"
-       x="340.14255"
-       y="704.19086"
+       x="433.52911"
+       y="646.57513"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-family:Arial;-inkscape-font-specification:'Arial Bold';fill:#000000;fill-opacity:1;stroke-width:0.382425">S</tspan></text>
   <path
      fill="#fcf8e8"
