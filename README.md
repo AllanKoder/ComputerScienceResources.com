@@ -25,7 +25,7 @@
 Our mission is simple: **make learning easier** by organizing the best content and empowering the community to contribute, review, and improve resource listings together.
 
 <p align="center">
-<img src="public/images/Logo.svg" alt = "Computer Science Resources Logo"/>
+<img src="public/images/Logo.svg" width="200" alt = "Computer Science Resources Logo"/>
     </br>
 <em>This is our mascot, look how studious this little guy is!</em>
 </p>
